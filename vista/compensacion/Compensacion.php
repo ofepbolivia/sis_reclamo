@@ -34,7 +34,7 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'nombre',
-				fieldLabel: 'nombre',
+				fieldLabel: 'Nombre',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -49,7 +49,7 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'codigo',
-				fieldLabel: 'codigo',
+				fieldLabel: 'Codigo',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
