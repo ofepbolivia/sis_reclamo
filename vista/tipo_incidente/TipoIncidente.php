@@ -48,8 +48,8 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'nombre_incidente',
-				fieldLabel: 'nombre_incidente',
+				name: 'Nombre_uno',
+				fieldLabel: 'Nombre_dos',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
