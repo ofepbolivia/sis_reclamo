@@ -3,7 +3,7 @@
 *@package pXP
 *@file gen-Respuesta.php
 *@author  (admin)
-*@date 09-08-2016 15:08:00
+*@date 11-08-2016 16:01:08
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
 
@@ -91,52 +91,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'estado_reg',
-				fieldLabel: 'Estado Reg.',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:10
-			},
-				type:'TextField',
-				filters:{pfiltro:'res.estado_reg',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'procedimiento',
-				fieldLabel: 'procedimiento',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:100
-			},
-				type:'TextField',
-				filters:{pfiltro:'res.procedimiento',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'fecha_notificacion',
-				fieldLabel: 'fecha_notificacion',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'res.fecha_notificacion',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
 				name: 'nro_cite',
 				fieldLabel: 'nro_cite',
 				allowBlank: false,
@@ -183,6 +137,82 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'estado_reg',
+				fieldLabel: 'Estado Reg.',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:10
+			},
+				type:'TextField',
+				filters:{pfiltro:'res.estado_reg',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
+		{
+			config:{
+				name: 'procedimiento',
+				fieldLabel: 'procedimiento',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:100
+			},
+				type:'TextField',
+				filters:{pfiltro:'res.procedimiento',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'fecha_notificacion',
+				fieldLabel: 'fecha_notificacion',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+							format: 'd/m/Y', 
+							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+			},
+				type:'DateField',
+				filters:{pfiltro:'res.fecha_notificacion',type:'date'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'id_usuario_ai',
+				fieldLabel: '',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+				type:'Field',
+				filters:{pfiltro:'res.id_usuario_ai',type:'numeric'},
+				id_grupo:1,
+				grid:false,
+				form:false
+		},
+		{
+			config:{
+				name: 'usr_reg',
+				fieldLabel: 'Creado por',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+				type:'Field',
+				filters:{pfiltro:'usu1.cuenta',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
+		{
+			config:{
 				name: 'usuario_ai',
 				fieldLabel: 'Funcionaro AI',
 				allowBlank: true,
@@ -210,36 +240,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'res.fecha_reg',type:'date'},
 				id_grupo:1,
 				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'usr_reg',
-				fieldLabel: 'Creado por',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'Field',
-				filters:{pfiltro:'usu1.cuenta',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'id_usuario_ai',
-				fieldLabel: 'Creado por',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'Field',
-				filters:{pfiltro:'res.id_usuario_ai',type:'numeric'},
-				id_grupo:1,
-				grid:false,
 				form:false
 		},
 		{
@@ -284,16 +284,16 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_respuesta', type: 'numeric'},
 		{name:'id_reclamo', type: 'numeric'},
 		{name:'recomendaciones', type: 'string'},
-		{name:'estado_reg', type: 'string'},
-		{name:'procedimiento', type: 'string'},
-		{name:'fecha_notificacion', type: 'date',dateFormat:'Y-m-d'},
 		{name:'nro_cite', type: 'numeric'},
 		{name:'respuesta', type: 'string'},
 		{name:'fecha_respuesta', type: 'date',dateFormat:'Y-m-d'},
+		{name:'estado_reg', type: 'string'},
+		{name:'procedimiento', type: 'string'},
+		{name:'fecha_notificacion', type: 'date',dateFormat:'Y-m-d'},
+		{name:'id_usuario_ai', type: 'numeric'},
+		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'usuario_ai', type: 'string'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
-		{name:'id_usuario_reg', type: 'numeric'},
-		{name:'id_usuario_ai', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},

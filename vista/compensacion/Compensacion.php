@@ -3,7 +3,7 @@
 *@package pXP
 *@file gen-Compensacion.php
 *@author  (admin)
-*@date 09-08-2016 13:50:44
+*@date 11-08-2016 15:38:39
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
 
@@ -48,21 +48,6 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'estado_reg',
-				fieldLabel: 'Estado Reg.',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:10
-			},
-				type:'TextField',
-				filters:{pfiltro:'com.estado_reg',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
 				name: 'codigo',
 				fieldLabel: 'codigo',
 				allowBlank: false,
@@ -78,15 +63,45 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'usr_reg',
-				fieldLabel: 'Creado por',
+				name: 'estado_reg',
+				fieldLabel: 'Estado Reg.',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:10
+			},
+				type:'TextField',
+				filters:{pfiltro:'com.estado_reg',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
+		{
+			config:{
+				name: 'id_usuario_ai',
+				fieldLabel: '',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
 			},
 				type:'Field',
-				filters:{pfiltro:'usu1.cuenta',type:'string'},
+				filters:{pfiltro:'com.id_usuario_ai',type:'numeric'},
+				id_grupo:1,
+				grid:false,
+				form:false
+		},
+		{
+			config:{
+				name: 'usuario_ai',
+				fieldLabel: 'Funcionaro AI',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:300
+			},
+				type:'TextField',
+				filters:{pfiltro:'com.usuario_ai',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:false
@@ -109,32 +124,17 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'usuario_ai',
-				fieldLabel: 'Funcionaro AI',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:300
-			},
-				type:'TextField',
-				filters:{pfiltro:'com.usuario_ai',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'id_usuario_ai',
-				fieldLabel: 'Funcionaro AI',
+				name: 'usr_reg',
+				fieldLabel: 'Creado por',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
 			},
 				type:'Field',
-				filters:{pfiltro:'com.id_usuario_ai',type:'numeric'},
+				filters:{pfiltro:'usu1.cuenta',type:'string'},
 				id_grupo:1,
-				grid:false,
+				grid:true,
 				form:false
 		},
 		{
@@ -178,12 +178,12 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 	fields: [
 		{name:'id_compensacion', type: 'numeric'},
 		{name:'nombre', type: 'string'},
-		{name:'estado_reg', type: 'string'},
 		{name:'codigo', type: 'string'},
-		{name:'id_usuario_reg', type: 'numeric'},
-		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
-		{name:'usuario_ai', type: 'string'},
+		{name:'estado_reg', type: 'string'},
 		{name:'id_usuario_ai', type: 'numeric'},
+		{name:'usuario_ai', type: 'string'},
+		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},

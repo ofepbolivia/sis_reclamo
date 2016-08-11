@@ -3,7 +3,7 @@
 *@package pXP
 *@file gen-ACTCompensacion.php
 *@author  (admin)
-*@date 09-08-2016 13:50:44
+*@date 11-08-2016 15:38:39
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 
