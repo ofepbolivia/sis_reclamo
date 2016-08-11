@@ -1,21 +1,21 @@
-CREATE OR REPLACE FUNCTION "rec"."ft_medio_reclamo_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
+CREATE OR REPLACE FUNCTION "rec"."ft_medio_reclamo_ime" (
+	p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
+	RETURNS character varying AS
 $BODY$
 
 /**************************************************************************
- SISTEMA:		medio reclamo
+ SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_medio_reclamo_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'rec.tmedio_reclamo'
  AUTOR: 		 (admin)
- FECHA:	        10-08-2016 20:59:01
- COMENTARIOS:	
+ FECHA:	        11-08-2016 01:21:34
+ COMENTARIOS:
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION:	
- AUTOR:			
- FECHA:		
+ DESCRIPCION:
+ AUTOR:
+ FECHA:
 ***************************************************************************/
 
 DECLARE
@@ -27,120 +27,124 @@ DECLARE
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
 	v_id_medio_reclamo	integer;
-			    
+
 BEGIN
 
-    v_nombre_funcion = 'rec.ft_medio_reclamo_ime';
-    v_parametros = pxp.f_get_record(p_tabla);
+	v_nombre_funcion = 'rec.ft_medio_reclamo_ime';
+	v_parametros = pxp.f_get_record(p_tabla);
 
-	/*********************************    
- 	#TRANSACCION:  'rc_rec_INS'
+	/*********************************
+ 	#TRANSACCION:  'REC_MERA_INS'
  	#DESCRIPCION:	Insercion de registros
- 	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 20:59:01
+ 	#AUTOR:		admin
+ 	#FECHA:		11-08-2016 01:21:34
 	***********************************/
 
-	if(p_transaccion='rc_rec_INS')then
-					
-        begin
-        	--Sentencia de la insercion
-        	insert into rec.tmedio_reclamo(
-			llave,
-			nombre_medio,
-			obs,
-			id_forenkey,
-			codigo,
-			tabla
-          	) values(
-			v_parametros.llave,
-			v_parametros.nombre_medio,
-			v_parametros.obs,
-			v_parametros.id_forenkey,
-			v_parametros.codigo,
-			v_parametros.tabla
-							
-			
-			
-			)RETURNING id_medio_reclamo into v_id_medio_reclamo;
-			
-			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','reclamo almacenado(a) con exito (id_medio_reclamo'||v_id_medio_reclamo||')'); 
-            v_resp = pxp.f_agrega_clave(v_resp,'id_medio_reclamo',v_id_medio_reclamo::varchar);
+	if(p_transaccion='REC_MERA_INS')then
 
-            --Devuelve la respuesta
-            return v_resp;
+		begin
+			--Sentencia de la insercion
+			insert into rec.tmedio_reclamo(
+				codigo,
+				estado_reg,
+				nombre_medio,
+				id_usuario_reg,
+				fecha_reg,
+				usuario_ai,
+				id_usuario_ai,
+				fecha_mod,
+				id_usuario_mod
+			) values(
+				v_parametros.codigo,
+				'activo',
+				v_parametros.nombre_medio,
+				p_id_usuario,
+				now(),
+				v_parametros._nombre_usuario_ai,
+				v_parametros._id_usuario_ai,
+				null,
+				null
+
+
+
+			)RETURNING id_medio_reclamo into v_id_medio_reclamo;
+
+			--Definicion de la respuesta
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Medio Reclamo almacenado(a) con exito (id_medio_reclamo'||v_id_medio_reclamo||')');
+			v_resp = pxp.f_agrega_clave(v_resp,'id_medio_reclamo',v_id_medio_reclamo::varchar);
+
+			--Devuelve la respuesta
+			return v_resp;
 
 		end;
 
-	/*********************************    
- 	#TRANSACCION:  'rc_rec_MOD'
- 	#DESCRIPCION:	Modificacion de registros
- 	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 20:59:01
-	***********************************/
+		/*********************************
+     #TRANSACCION:  'REC_MERA_MOD'
+     #DESCRIPCION:	Modificacion de registros
+     #AUTOR:		admin
+     #FECHA:		11-08-2016 01:21:34
+    ***********************************/
 
-	elsif(p_transaccion='rc_rec_MOD')then
+	elsif(p_transaccion='REC_MERA_MOD')then
 
 		begin
 			--Sentencia de la modificacion
 			update rec.tmedio_reclamo set
-			llave = v_parametros.llave,
-			nombre_medio = v_parametros.nombre_medio,
-			obs = v_parametros.obs,
-			id_forenkey = v_parametros.id_forenkey,
-			codigo = v_parametros.codigo,
-			tabla = v_parametros.tabla,
-			id_usuario_ai = v_parametros._id_usuario_ai,
-			usuario_ai = v_parametros._nombre_usuario_ai
+				codigo = v_parametros.codigo,
+				nombre_medio = v_parametros.nombre_medio,
+				fecha_mod = now(),
+				id_usuario_mod = p_id_usuario,
+				id_usuario_ai = v_parametros._id_usuario_ai,
+				usuario_ai = v_parametros._nombre_usuario_ai
 			where id_medio_reclamo=v_parametros.id_medio_reclamo;
-               
+
 			--Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','reclamo modificado(a)'); 
-            v_resp = pxp.f_agrega_clave(v_resp,'id_medio_reclamo',v_parametros.id_medio_reclamo::varchar);
-               
-            --Devuelve la respuesta
-            return v_resp;
-            
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Medio Reclamo modificado(a)');
+			v_resp = pxp.f_agrega_clave(v_resp,'id_medio_reclamo',v_parametros.id_medio_reclamo::varchar);
+
+			--Devuelve la respuesta
+			return v_resp;
+
 		end;
 
-	/*********************************    
- 	#TRANSACCION:  'rc_rec_ELI'
- 	#DESCRIPCION:	Eliminacion de registros
- 	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 20:59:01
-	***********************************/
+		/*********************************
+     #TRANSACCION:  'REC_MERA_ELI'
+     #DESCRIPCION:	Eliminacion de registros
+     #AUTOR:		admin
+     #FECHA:		11-08-2016 01:21:34
+    ***********************************/
 
-	elsif(p_transaccion='rc_rec_ELI')then
+	elsif(p_transaccion='REC_MERA_ELI')then
 
 		begin
 			--Sentencia de la eliminacion
 			delete from rec.tmedio_reclamo
-            where id_medio_reclamo=v_parametros.id_medio_reclamo;
-               
-            --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','reclamo eliminado(a)'); 
-            v_resp = pxp.f_agrega_clave(v_resp,'id_medio_reclamo',v_parametros.id_medio_reclamo::varchar);
-              
-            --Devuelve la respuesta
-            return v_resp;
+			where id_medio_reclamo=v_parametros.id_medio_reclamo;
+
+			--Definicion de la respuesta
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Medio Reclamo eliminado(a)');
+			v_resp = pxp.f_agrega_clave(v_resp,'id_medio_reclamo',v_parametros.id_medio_reclamo::varchar);
+
+			--Devuelve la respuesta
+			return v_resp;
 
 		end;
-         
+
 	else
-     
-    	raise exception 'Transaccion inexistente: %',p_transaccion;
+
+		raise exception 'Transaccion inexistente: %',p_transaccion;
 
 	end if;
 
-EXCEPTION
-				
+	EXCEPTION
+
 	WHEN OTHERS THEN
 		v_resp='';
 		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
 		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
 		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 		raise exception '%',v_resp;
-				        
+
 END;
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE

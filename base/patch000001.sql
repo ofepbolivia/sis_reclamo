@@ -74,3 +74,31 @@ WITH (oids = false);
 
 
 /***********************************F-SCP-FEA-REC-1-10/08/2016****************************************/
+
+/***********************************I-SCP-EAQ-REC-1-10/08/2016****************************************/
+CREATE TABLE rec.tmedio_reclamo (
+  id_medio_reclamo SERIAL,
+  codigo VARCHAR(255),
+  nombre_medio VARCHAR(255),
+  CONSTRAINT pk_tmedio_reclamo__id_medio_reclamo PRIMARY KEY(id_medio_reclamo)
+) INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+
+
+CREATE TABLE rec.tinforme (
+  id_informe SERIAL,
+  id_reclamo INTEGER,
+  nro_informe VARCHAR(255),
+  fecha_informe DATE,
+  id_funcionario INTEGER,
+  lista_compensacion VARCHAR(255),
+  antecedentes_informe VARCHAR(255),
+  analisis_tecnico VARCHAR(255),
+  sugerencia_respuesta VARCHAR(255),
+  conclusion_recomendacion VARCHAR(255),
+  CONSTRAINT pk_tinforme__id_informe PRIMARY KEY(id_informe)
+) INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+/***********************************F-SCP-EAQ-REC-1-10/08/2016****************************************/

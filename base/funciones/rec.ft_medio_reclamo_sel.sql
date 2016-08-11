@@ -3,11 +3,11 @@ CREATE OR REPLACE FUNCTION "rec"."ft_medio_reclamo_sel"(
 RETURNS character varying AS
 $BODY$
 /**************************************************************************
- SISTEMA:		medio reclamo
+ SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_medio_reclamo_sel
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'rec.tmedio_reclamo'
  AUTOR: 		 (admin)
- FECHA:	        10-08-2016 20:59:01
+ FECHA:	        11-08-2016 01:21:34
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -30,29 +30,32 @@ BEGIN
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'rc_rec_SEL'
+ 	#TRANSACCION:  'REC_MERA_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 20:59:01
+ 	#FECHA:		11-08-2016 01:21:34
 	***********************************/
 
-	if(p_transaccion='rc_rec_SEL')then
+	if(p_transaccion='REC_MERA_SEL')then
      				
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-						rec.id_medio_reclamo,
-						rec.llave,
-						rec.nombre_medio,
-						rec.obs,
-						rec.id_forenkey,
-						rec.codigo,
-						rec.tabla,
+						mera.id_medio_reclamo,
+						mera.codigo,
+						mera.estado_reg,
+						mera.nombre_medio,
+						mera.id_usuario_reg,
+						mera.fecha_reg,
+						mera.usuario_ai,
+						mera.id_usuario_ai,
+						mera.fecha_mod,
+						mera.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod	
-						from rec.tmedio_reclamo rec
-						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
+						from rec.tmedio_reclamo mera
+						inner join segu.tusuario usu1 on usu1.id_usuario = mera.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = mera.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -65,20 +68,20 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'rc_rec_CONT'
+ 	#TRANSACCION:  'REC_MERA_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 20:59:01
+ 	#FECHA:		11-08-2016 01:21:34
 	***********************************/
 
-	elsif(p_transaccion='rc_rec_CONT')then
+	elsif(p_transaccion='REC_MERA_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_medio_reclamo)
-					    from rec.tmedio_reclamo rec
-					    inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
+					    from rec.tmedio_reclamo mera
+					    inner join segu.tusuario usu1 on usu1.id_usuario = mera.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = mera.id_usuario_mod
 					    where ';
 			
 			--Definicion de la respuesta		    

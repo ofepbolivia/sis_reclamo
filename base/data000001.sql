@@ -29,3 +29,8 @@ select pxp.f_insert_testructura_gui ('SISINF', 'REC');
 select pxp.f_insert_tgui ('TipoIncidente', 'TipoIncidente', 'RECTI', 'si', 1, 'sis_reclamo/vista/tipo_incidente/TipoIncidente.php', 2, '', 'TipoIncidente', 'REC');
 select pxp.f_insert_testructura_gui ('RECTI', 'REC');
 /***********************************F-DAT-FEA-REC-1-10/08/2016****************************************/
+
+/***********************************I-DAT-EAQ-REC-1-10/08/2016****************************************/
+select pxp.f_insert_tgui ('medio reclamo', 'medio reclamo', 'MEDRE', 'si', 5, 'sis_reclamo/vista/medio_reclamo/MedioReclamo.php', 2, '', 'MedioReclamo', 'REC');
+select pxp.f_insert_tgui ('informe', 'informe', 'INFORM', 'si', 6, 'sis_reclamo/vista/informe/Informe.php', 2, '', 'Informe', 'REC');
+/***********************************F-DAT-EAQ-REC-1-10/08/2016****************************************/
