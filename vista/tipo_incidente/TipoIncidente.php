@@ -78,6 +78,21 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'prueba',
+				fieldLabel: 'Prueba',
+				allowBlank: true,
+				anchor: '60%',
+				gwidth: 100,
+				maxLength:10
+			},
+			type:'NumberField',
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+
+		{
+			config:{
 				name: 'fk_tipo_incidente',
 				fieldLabel: 'Incidente Origen',
 				allowBlank: true,
