@@ -84,3 +84,11 @@ REFERENCES rec.ttipo_incidente(id_tipo_incidente)
   ON UPDATE NO ACTION
 NOT DEFERRABLE;
 /***********************************F-DEP-FEA-REC-1-11/08/2016****************************************/
+
+/***********************************I-DEP-FEA-REC-1-12/08/2016****************************************/
+ALTER TABLE rec.tcliente
+DROP CONSTRAINT tcliente_pkey;
+
+ALTER TABLE rec.tcliente
+ADD PRIMARY KEY (id_cliente);
+/***********************************F-DEP-FEA-REC-1-12/08/2016****************************************/
