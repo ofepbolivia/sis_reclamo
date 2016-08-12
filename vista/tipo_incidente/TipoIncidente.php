@@ -48,8 +48,8 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'Nombre_uno',
-				fieldLabel: 'Nombre_dos',
+				name: 'nombre_incidente',
+				fieldLabel: 'Nombres',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -64,7 +64,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'nivel',
-				fieldLabel: 'nivel',
+				fieldLabel: 'Nivel Incidente',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -79,7 +79,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'fk_tipo_incidente',
-				fieldLabel: 'fk_tipo_incidente',
+				fieldLabel: 'Incidente Origen',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -94,7 +94,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'tiempo_respuesta',
-				fieldLabel: 'tiempo_respuesta',
+				fieldLabel: 'Tiempo Respuesta',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -201,9 +201,9 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 	],
 	tam_pag:50,	
 	title:'incidente',
-	ActSave:'../../sis_reclamos/control/TipoIncidente/insertarTipoIncidente',
-	ActDel:'../../sis_reclamos/control/TipoIncidente/eliminarTipoIncidente',
-	ActList:'../../sis_reclamos/control/TipoIncidente/listarTipoIncidente',
+	ActSave:'../../sis_reclamo/control/TipoIncidente/insertarTipoIncidente',
+	ActDel:'../../sis_reclamo/control/TipoIncidente/eliminarTipoIncidente',
+	ActList:'../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
 	id_store:'id_tipo_incidente',
 	fields: [
 		{name:'id_tipo_incidente', type: 'numeric'},
