@@ -8,7 +8,7 @@ $BODY$
  FUNCION: 		rec.ft_cliente_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'rec.tcliente'
  AUTOR: 		 (admin)
- FECHA:	        12-08-2016 13:37:36
+ FECHA:	        12-08-2016 14:29:16
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -37,7 +37,7 @@ BEGIN
  	#TRANSACCION:  'REC_CLI_INS'
  	#DESCRIPCION:	Insercion de registros
  	#AUTOR:		admin	
- 	#FECHA:		12-08-2016 13:37:36
+ 	#FECHA:		12-08-2016 14:29:16
 	***********************************/
 
 	if(p_transaccion='REC_CLI_INS')then
@@ -106,7 +106,7 @@ BEGIN
  	#TRANSACCION:  'REC_CLI_MOD'
  	#DESCRIPCION:	Modificacion de registros
  	#AUTOR:		admin	
- 	#FECHA:		12-08-2016 13:37:36
+ 	#FECHA:		12-08-2016 14:29:16
 	***********************************/
 
 	elsif(p_transaccion='REC_CLI_MOD')then
@@ -147,7 +147,7 @@ BEGIN
  	#TRANSACCION:  'REC_CLI_ELI'
  	#DESCRIPCION:	Eliminacion de registros
  	#AUTOR:		admin	
- 	#FECHA:		12-08-2016 13:37:36
+ 	#FECHA:		12-08-2016 14:29:16
 	***********************************/
 
 	elsif(p_transaccion='REC_CLI_ELI')then

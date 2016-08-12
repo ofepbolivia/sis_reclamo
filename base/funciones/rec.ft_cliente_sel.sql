@@ -7,7 +7,7 @@ $BODY$
  FUNCION: 		rec.ft_cliente_sel
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'rec.tcliente'
  AUTOR: 		 (admin)
- FECHA:	        12-08-2016 13:37:36
+ FECHA:	        12-08-2016 14:29:16
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -33,7 +33,7 @@ BEGIN
  	#TRANSACCION:  'REC_CLI_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		admin	
- 	#FECHA:		12-08-2016 13:37:36
+ 	#FECHA:		12-08-2016 14:29:16
 	***********************************/
 
 	if(p_transaccion='REC_CLI_SEL')then
@@ -83,7 +83,7 @@ BEGIN
  	#TRANSACCION:  'REC_CLI_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin	
- 	#FECHA:		12-08-2016 13:37:36
+ 	#FECHA:		12-08-2016 14:29:16
 	***********************************/
 
 	elsif(p_transaccion='REC_CLI_CONT')then

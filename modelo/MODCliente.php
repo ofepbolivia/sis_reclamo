@@ -3,7 +3,7 @@
 *@package pXP
 *@file gen-MODCliente.php
 *@author  (admin)
-*@date 12-08-2016 13:37:36
+*@date 12-08-2016 14:29:16
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
 */
 
