@@ -98,25 +98,4 @@ CREATE TABLE rec.tcliente (
 WITH (oids = false);
 /***********************************F-SCP-FEA-REC-1-11/08/2016****************************************/
 
-/***********************************I-SCP-FEA-REC-2-12/08/2016****************************************/
-CREATE TABLE rec.tcliente (
-  id_cliente SERIAL,
-  ci VARCHAR(20) NOT NULL,
-  lugar_expedicion VARCHAR(10),
-  nombre VARCHAR(30),
-  apellido_paterno VARCHAR(30),
-  apellido_materno VARCHAR(30),
-  genero CHAR(1),
-  nacionalidad VARCHAR(30),
-  email VARCHAR(30),
-  celular INTEGER,
-  telefono INTEGER,
-  pais_residencia VARCHAR(30),
-  ciudad_residencia VARCHAR(30),
-  barrio_zona VARCHAR(50),
-  direccion VARCHAR(50),
-  CONSTRAINT tcliente_pkey PRIMARY KEY(id_cliente)
-) INHERITS (pxp.tbase)
 
-WITH (oids = false);
-/***********************************F-SCP-FEA-REC-2-12/08/2016****************************************/
