@@ -97,3 +97,12 @@ CREATE TABLE rec.tcliente (
 
 WITH (oids = false);
 /***********************************F-SCP-FEA-REC-1-11/08/2016****************************************/
+
+
+/***********************************I-SCP-FEA-REC-1-12/08/2016****************************************/
+ALTER TABLE rec.tcliente
+DROP CONSTRAINT tcliente_pkey;
+
+ALTER TABLE rec.tcliente
+ADD PRIMARY KEY (id_cliente);
+/***********************************F-SCP-FEA-REC-1-12/08/2016****************************************/
