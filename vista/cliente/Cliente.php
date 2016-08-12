@@ -3,7 +3,7 @@
 *@package pXP
 *@file gen-Cliente.php
 *@author  (admin)
-*@date 12-08-2016 13:37:36
+*@date 12-08-2016 14:29:16
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
 

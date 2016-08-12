@@ -1,13 +1,13 @@
-CREATE OR REPLACE FUNCTION "recl"."ft_compensacion_sel"(	
+CREATE OR REPLACE FUNCTION "rec"."ft_cliente_sel"(	
 				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
 RETURNS character varying AS
 $BODY$
 /**************************************************************************
- SISTEMA:		Reclamo
- FUNCION: 		recl.ft_compensacion_sel
- DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'recl.tcompensacion'
+ SISTEMA:		Gestion de Reclamos
+ FUNCION: 		rec.ft_cliente_sel
+ DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'rec.tcliente'
  AUTOR: 		 (admin)
- FECHA:	        09-08-2016 13:50:44
+ FECHA:	        12-08-2016 14:29:16
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -26,36 +26,48 @@ DECLARE
 			    
 BEGIN
 
-	v_nombre_funcion = 'recl.ft_compensacion_sel';
+	v_nombre_funcion = 'rec.ft_cliente_sel';
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'RECL_COM_SEL'
+ 	#TRANSACCION:  'REC_CLI_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		admin	
- 	#FECHA:		09-08-2016 13:50:44
+ 	#FECHA:		12-08-2016 14:29:16
 	***********************************/
 
-	if(p_transaccion='RECL_COM_SEL')then
+	if(p_transaccion='REC_CLI_SEL')then
      				
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-						com.id_compensacion,
-						com.nombre,
-						com.estado_reg,
-						com.codigo,
-						com.id_usuario_reg,
-						com.fecha_reg,
-						com.usuario_ai,
-						com.id_usuario_ai,
-						com.fecha_mod,
-						com.id_usuario_mod,
+						cli.id_cliente,
+						cli.genero,
+						cli.ci,
+						cli.email,
+						cli.direccion,
+						cli.celular,
+						cli.nombre,
+						cli.lugar_expedicion,
+						cli.apellido_paterno,
+						cli.telefono,
+						cli.ciudad_residencia,
+						cli.pais_residencia,
+						cli.nacionalidad,
+						cli.barrio_zona,
+						cli.estado_reg,
+						cli.apellido_materno,
+						cli.id_usuario_ai,
+						cli.fecha_reg,
+						cli.usuario_ai,
+						cli.id_usuario_reg,
+						cli.fecha_mod,
+						cli.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod	
-						from recl.tcompensacion com
-						inner join segu.tusuario usu1 on usu1.id_usuario = com.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = com.id_usuario_mod
+						from rec.tcliente cli
+						inner join segu.tusuario usu1 on usu1.id_usuario = cli.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = cli.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -68,20 +80,20 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'RECL_COM_CONT'
+ 	#TRANSACCION:  'REC_CLI_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin	
- 	#FECHA:		09-08-2016 13:50:44
+ 	#FECHA:		12-08-2016 14:29:16
 	***********************************/
 
-	elsif(p_transaccion='RECL_COM_CONT')then
+	elsif(p_transaccion='REC_CLI_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_compensacion)
-					    from recl.tcompensacion com
-					    inner join segu.tusuario usu1 on usu1.id_usuario = com.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = com.id_usuario_mod
+			v_consulta:='select count(id_cliente)
+					    from rec.tcliente cli
+					    inner join segu.tusuario usu1 on usu1.id_usuario = cli.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = cli.id_usuario_mod
 					    where ';
 			
 			--Definicion de la respuesta		    
@@ -110,4 +122,4 @@ END;
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE
 COST 100;
-ALTER FUNCTION "recl"."ft_compensacion_sel"(integer, integer, character varying, character varying) OWNER TO postgres;
+ALTER FUNCTION "rec"."ft_cliente_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

@@ -10,12 +10,6 @@ ALTER TABLE rec.tinforme
 /***********************************F-DEP-MAM-REC-1-10/08/2016****************************************/
 
 /***********************************I-DEP-FEA-REC-1-10/08/2016****************************************/
-ALTER TABLE rec.ttipo_incidente
-ADD CONSTRAINT ttipo_incidente_fk FOREIGN KEY (fk_tipo_incidente)
-    REFERENCES rec.ttipo_incidente(id_tipo_incidente)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE;
 
 ALTER TABLE rec.treclamo
 ADD CONSTRAINT id_estado_wf_fk FOREIGN KEY (id_estado_wf)
@@ -82,10 +76,19 @@ ALTER TABLE rec.treclamo
 
 /***********************************F-DEP-FEA-REC-1-10/08/2016****************************************/
 
+/***********************************I-DEP-FEA-REC-1-11/08/2016****************************************/
+ALTER TABLE rec.ttipo_incidente
+ADD CONSTRAINT ttipo_incidente_fk FOREIGN KEY (fk_tipo_incidente)
+REFERENCES rec.ttipo_incidente(id_tipo_incidente)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+NOT DEFERRABLE;
+/***********************************F-DEP-FEA-REC-1-11/08/2016****************************************/
 
-/***********************************I-DEP-EAQ-REC-1-10/08/2016****************************************/
+/***********************************I-DEP-FEA-REC-1-12/08/2016****************************************/
+ALTER TABLE rec.tcliente
+DROP CONSTRAINT tcliente_pkey;
 
-select pxp.f_insert_testructura_gui ('MEDRE', 'REC');
-select pxp.f_insert_testructura_gui ('INFORM', 'REC');
-
-/***********************************F-DEP-EAQ-REC-1-10/08/2016****************************************/
+ALTER TABLE rec.tcliente
+ADD PRIMARY KEY (id_cliente);
+/***********************************F-DEP-FEA-REC-1-12/08/2016****************************************/

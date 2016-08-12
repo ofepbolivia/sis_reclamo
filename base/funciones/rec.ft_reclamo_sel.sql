@@ -1,13 +1,13 @@
-CREATE OR REPLACE FUNCTION "recl"."ft_respuesta_sel"(	
+CREATE OR REPLACE FUNCTION "rec"."ft_reclamo_sel"(	
 				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
 RETURNS character varying AS
 $BODY$
 /**************************************************************************
- SISTEMA:		Reclamo
- FUNCION: 		recl.ft_respuesta_sel
- DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'recl.trespuesta'
+ SISTEMA:		Sistema de Reclamos
+ FUNCION: 		rec.ft_reclamo_sel
+ DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'rec.treclamo'
  AUTOR: 		 (admin)
- FECHA:	        09-08-2016 15:08:00
+ FECHA:	        10-08-2016 18:32:59
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -26,41 +26,61 @@ DECLARE
 			    
 BEGIN
 
-	v_nombre_funcion = 'recl.ft_respuesta_sel';
+	v_nombre_funcion = 'rec.ft_reclamo_sel';
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'RECL_RES_SEL'
+ 	#TRANSACCION:  'REC_REC_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		admin	
- 	#FECHA:		09-08-2016 15:08:00
+ 	#FECHA:		10-08-2016 18:32:59
 	***********************************/
 
-	if(p_transaccion='RECL_RES_SEL')then
+	if(p_transaccion='REC_REC_SEL')then
      				
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-						res.id_respuesta,
-						res.id_reclamo,
-						res.recomendaciones,
-						res.estado_reg,
-						res.procedimiento,
-						res.fecha_notificacion,
-						res.nro_cite,
-						res.respuesta,
-						res.fecha_respuesta,
-						res.usuario_ai,
-						res.fecha_reg,
-						res.id_usuario_reg,
-						res.id_usuario_ai,
-						res.fecha_mod,
-						res.id_usuario_mod,
+						rec.id_reclamo,
+						rec.id_tipo_incidente,
+						rec.id_subtipo_incidente,
+						rec.id_medio_reclamo,
+						rec.id_funcionario_recepcion,
+						rec.id_funcionario_denunciado,
+						rec.id_oficina_incidente,
+						rec.id_oficina_registro_incidente,
+						rec.id_proceso_wf,
+						rec.id_estado_wf,
+						rec.id_cliente,
+						rec.estado,
+						rec.fecha_hora_incidente,
+						rec.nro_ripat_att,
+						rec.nro_hoja_ruta,
+						rec.fecha_hora_recepcion,
+						rec.estado_reg,
+						rec.hora_vuelo,
+						rec.origen,
+						rec.nro_frd,
+						rec.observaciones_incidente,
+						rec.destino,
+						rec.nro_pir,
+						rec.nro_frsa,
+						rec.nro_att_canalizado,
+						rec.nro_tramite,
+						rec.detalle_incidente,
+						rec.pnr,
+						rec.nro_vuelo,
+						rec.id_usuario_reg,
+						rec.fecha_reg,
+						rec.usuario_ai,
+						rec.id_usuario_ai,
+						rec.fecha_mod,
+						rec.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod	
-						from recl.trespuesta res
-						inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = res.id_usuario_mod
+						from rec.treclamo rec
+						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -73,20 +93,20 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'RECL_RES_CONT'
+ 	#TRANSACCION:  'REC_REC_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin	
- 	#FECHA:		09-08-2016 15:08:00
+ 	#FECHA:		10-08-2016 18:32:59
 	***********************************/
 
-	elsif(p_transaccion='RECL_RES_CONT')then
+	elsif(p_transaccion='REC_REC_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_respuesta)
-					    from recl.trespuesta res
-					    inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = res.id_usuario_mod
+			v_consulta:='select count(id_reclamo)
+					    from rec.treclamo rec
+					    inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 					    where ';
 			
 			--Definicion de la respuesta		    
@@ -115,4 +135,4 @@ END;
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE
 COST 100;
-ALTER FUNCTION "recl"."ft_respuesta_sel"(integer, integer, character varying, character varying) OWNER TO postgres;
+ALTER FUNCTION "rec"."ft_reclamo_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

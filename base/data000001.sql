@@ -39,3 +39,4 @@ select pxp.f_insert_tgui ('informe', 'informe', 'INFORM', 'si', 6, 'sis_reclamo/
 select pxp.f_delete_tgui ('INFORM');
 select pxp.f_delete_testructura_gui ('INFORM', 'REC');
 /***********************************F-DAT-FEA-REC-1-11/08/2016****************************************/
+

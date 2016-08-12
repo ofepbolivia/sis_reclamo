@@ -75,30 +75,48 @@ WITH (oids = false);
 
 /***********************************F-SCP-FEA-REC-1-10/08/2016****************************************/
 
-/***********************************I-SCP-EAQ-REC-1-10/08/2016****************************************/
-CREATE TABLE rec.tmedio_reclamo (
-  id_medio_reclamo SERIAL,
-  codigo VARCHAR(255),
-  nombre_medio VARCHAR(255),
-  CONSTRAINT pk_tmedio_reclamo__id_medio_reclamo PRIMARY KEY(id_medio_reclamo)
+/***********************************I-SCP-FEA-REC-1-11/08/2016****************************************/
+CREATE TABLE rec.tcliente (
+  id_cliente SERIAL,
+  ci VARCHAR(20),
+  lugar_expedicion VARCHAR(10),
+  nombre VARCHAR(30),
+  apellido_paterno VARCHAR(30),
+  apellido_materno VARCHAR(30),
+  genero CHAR(1),
+  nacionalidad VARCHAR(30),
+  email VARCHAR(30),
+  celular INTEGER,
+  telefono INTEGER,
+  pais_residencia VARCHAR(30),
+  ciudad_residencia VARCHAR(30),
+  barrio_zona VARCHAR(50),
+  direccion VARCHAR(50),
+  PRIMARY KEY(id_cliente, ci)
 ) INHERITS (pxp.tbase)
-WITHOUT OIDS;
 
+WITH (oids = false);
+/***********************************F-SCP-FEA-REC-1-11/08/2016****************************************/
 
-
-CREATE TABLE rec.tinforme (
-  id_informe SERIAL,
-  id_reclamo INTEGER,
-  nro_informe VARCHAR(255),
-  fecha_informe DATE,
-  id_funcionario INTEGER,
-  lista_compensacion VARCHAR(255),
-  antecedentes_informe VARCHAR(255),
-  analisis_tecnico VARCHAR(255),
-  sugerencia_respuesta VARCHAR(255),
-  conclusion_recomendacion VARCHAR(255),
-  CONSTRAINT pk_tinforme__id_informe PRIMARY KEY(id_informe)
+/***********************************I-SCP-FEA-REC-2-12/08/2016****************************************/
+CREATE TABLE rec.tcliente (
+  id_cliente SERIAL,
+  ci VARCHAR(20) NOT NULL,
+  lugar_expedicion VARCHAR(10),
+  nombre VARCHAR(30),
+  apellido_paterno VARCHAR(30),
+  apellido_materno VARCHAR(30),
+  genero CHAR(1),
+  nacionalidad VARCHAR(30),
+  email VARCHAR(30),
+  celular INTEGER,
+  telefono INTEGER,
+  pais_residencia VARCHAR(30),
+  ciudad_residencia VARCHAR(30),
+  barrio_zona VARCHAR(50),
+  direccion VARCHAR(50),
+  CONSTRAINT tcliente_pkey PRIMARY KEY(id_cliente)
 ) INHERITS (pxp.tbase)
-WITHOUT OIDS;
 
-/***********************************F-SCP-EAQ-REC-1-10/08/2016****************************************/
+WITH (oids = false);
+/***********************************F-SCP-FEA-REC-2-12/08/2016****************************************/

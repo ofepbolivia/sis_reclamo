@@ -77,11 +77,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'recomendaciones',
-				fieldLabel: 'recomendaciones',
+				fieldLabel: 'Recomendaciones',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:100
+				maxLength:100,
 			},
 				type:'TextField',
 				filters:{pfiltro:'res.recomendaciones',type:'string'},
@@ -92,7 +92,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'nro_cite',
-				fieldLabel: 'nro_cite',
+				fieldLabel: 'Nro cite',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -107,7 +107,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'respuesta',
-				fieldLabel: 'respuesta',
+				fieldLabel: 'Respuesta',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -122,10 +122,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'fecha_respuesta',
-				fieldLabel: 'fecha_respuesta',
+				fieldLabel: 'Fecha Respuesta',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '50%',
 				gwidth: 100,
+
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
 			},
@@ -153,7 +154,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'procedimiento',
-				fieldLabel: 'procedimiento',
+				fieldLabel: 'Procedimiento',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -168,9 +169,9 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'fecha_notificacion',
-				fieldLabel: 'fecha_notificacion',
+				fieldLabel: 'Fecha Notificacion',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '50%',
 				gwidth: 100,
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
