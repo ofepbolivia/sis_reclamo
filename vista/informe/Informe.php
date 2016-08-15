@@ -34,7 +34,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'sugerencia_respuesta',
-						fieldLabel: 'sugerencia_respuesta',
+						fieldLabel: 'sugerencia respuesta',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
@@ -92,7 +92,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'antecedentes_informe',
-						fieldLabel: 'antecedentes_informe',
+						fieldLabel: 'antecedentes informe',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
@@ -165,7 +165,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'conclusion_recomendacion',
-						fieldLabel: 'conclusion_recomendacion',
+						fieldLabel: 'conclusion recomendacion',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
@@ -211,7 +211,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'lista_compensacion',
-						fieldLabel: 'lista_compensacion',
+						fieldLabel: 'lista compensacion',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
