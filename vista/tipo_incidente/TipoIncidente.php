@@ -10,6 +10,19 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
+
+/*Phx.vista.TipoIncidente= Ext.extend(Phx.arbInterfaz,{
+	constructor:function (config) {
+		this.maestro = config.maestro;
+
+		Phx.vista.TipoIncidente.superclass.constructor.call(this, config);
+		this.init();
+		this.load({params:{start:0, limit:this.tam_pag}});
+	},
+	title:"bob",
+	bdel:true,
+	bsave:true
+});*/
 Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
@@ -19,7 +32,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}})
 	},
-			
+
 	Atributos:[
 		{
 			//configuracion del componente
@@ -241,10 +254,43 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_tipo_incidente',
 		direction: 'ASC'
 	},
+	tabsouth:[
+		{
+			url:'../../../sis_seguridad/vista/usuario_rol/UsuarioRol.php',
+			title:'Roles',
+			height:400,
+			cls:'usuario_rol'
+		}
+		,
+		{
+			url:'../../../sis_seguridad/vista/usuario_grupo_ep/UsuarioGrupoEp.php',
+			title:'EP',
+			height:400,
+			cls:'UsuarioGrupoEp'
+		},
+		{
+			url:'../../../sis_seguridad/vista/usuario_grupo_ep/UsuarioRol.php',
+			title:'Usuarios',
+			height:400,
+			cls:'UsuarioGrupoEp'
+		}
+	],
+
+
 	bdel:true,
 	bsave:true
 	}
 )
+
+/*var main = new Ext.Panel({
+	title: 'My first panel', //el título del panel
+	width:250, //la anchura del panel
+	height:300, //la altura que tendrá
+	renderTo: 'frame', //el elemento donde será insertado
+	html: 'Nothing important just dummy text' //el contenido del panel
+});
+
+this.add(main);*/
 </script>
 		
 		

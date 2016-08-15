@@ -118,6 +118,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'cli.nombre',type:'string'},
 				id_grupo:1,
+				bottom_filter:true,
 				grid:true,
 				form:true
 		},
