@@ -17,7 +17,8 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Respuesta.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
+		this.bloquearMenus();
+
 	},
 			
 	Atributos:[
@@ -34,7 +35,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		{
 			config: {
 				name: 'id_reclamo',
-				fieldLabel: 'id_reclamo',
+				fieldLabel: 'Reclamo',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -306,9 +307,21 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:true,
+	onReloadPage:function(m)
+	{
+		this.maestro=m;
+		this.store.baseParams={id_reclamo:this.maestro.id_reclamo}
+		this.load({params:{start:0, limit:50}});
+	},
+	loadValoresIniciales:function()
+	{
+		Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
+		this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+
 	}
-)
+	}
+
 </script>
 		
 		
