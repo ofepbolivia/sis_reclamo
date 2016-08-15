@@ -13,7 +13,7 @@ class ACTRespuesta extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_respuesta');
 
         if($this->objParam->getParametro('id_reclamo') != '') {
-            $this->objParam->addFiltro(" res.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+            $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
         }
 
 		$this->objParam->defecto('dir_ordenacion','asc');
