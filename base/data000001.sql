@@ -40,3 +40,14 @@ select pxp.f_delete_tgui ('INFORM');
 select pxp.f_delete_testructura_gui ('INFORM', 'REC');
 /***********************************F-DAT-FEA-REC-1-11/08/2016****************************************/
 
+
+/***********************************I-DAT-MAM-REC-1-15/08/2016****************************************/
+select pxp.f_insert_tgui ('Respuesta', 'Respuesta', 'SISRES', 'si', 1, 'sis_reclamo/vista/respuesta/Respuesta.php', 2, '', 'Respuesta', 'REC');
+select pxp.f_insert_tgui ('Reclamo', 'Reclamo', 'recl', 'si', 1, 'sis_reclamo/vista/reclamo/Reclamo.php', 2, '', 'Reclamo', 'REC');
+----------------------------------
+--COPY LINES TO dependencies.sql FILE
+---------------------------------
+
+select pxp.f_insert_testructura_gui ('recl', 'REC');
+/***********************************F-DAT-MAM-REC-1-15/08/2016****************************************/
+
