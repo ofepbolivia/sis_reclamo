@@ -34,8 +34,8 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'codigo',
-				fieldLabel: 'codigo',
-				allowBlank: true,
+				fieldLabel: 'Codigo',
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:255
@@ -64,8 +64,8 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'nombre_medio',
-				fieldLabel: 'nombre_medio',
-				allowBlank: true,
+				fieldLabel: 'Nombre Medio',
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:255
