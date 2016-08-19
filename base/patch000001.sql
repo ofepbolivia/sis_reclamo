@@ -99,3 +99,31 @@ WITH (oids = false);
 /***********************************F-SCP-FEA-REC-1-11/08/2016****************************************/
 
 
+/***********************************I-SCP-EAQ-REC-1-19/08/2016****************************************/
+CREATE TABLE rec.tmedio_reclamo (
+  id_medio_reclamo SERIAL,
+  codigo VARCHAR(20),
+  nombre_medio VARCHAR(30),
+  PRIMARY KEY( id_medio_reclamo)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+/***********************************F-SCP-EAQ-REC-1-19/08/2016****************************************/
+
+/***********************************I-SCP-EAQ-REC-1-11/08/2016****************************************/
+CREATE TABLE rec.tinforme (
+  id_informe SERIAL,
+  id_reclamo SERIAL,
+  nro_informe SERIAL,
+  fecha_informe DATE,
+  id_funcionario SERIAL,
+  lista_compensacion VARCHAR(100),
+  antecedentes_informe VARCHAR(100),
+  analisis_tecnico VARCHAR(100),
+  sugerencia_respuesta VARCHAR(100),
+  conclusion_recomendacion VARCHAR(100),
+  PRIMARY KEY(tinforme)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+/***********************************F-SCP-EAQ-REC-1-11/08/2016****************************************/

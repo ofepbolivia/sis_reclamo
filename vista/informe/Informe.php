@@ -213,15 +213,43 @@ header("content-type: text/javascript; charset=UTF-8");
 						name: 'lista_compensacion',
 						fieldLabel: 'Lista Compensacion',
 						allowBlank: false,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:255
+						emptyText: 'Elija una opción...',
+						store: new Ext.data.JsonStore({
+							url: '../../sis_/control/Clase/Metodo',
+							id: 'id_',
+							root: 'datos',
+							sortInfo: {
+								field: 'nombre',
+								direction: 'ASC'
+							},
+							totalProperty: 'total',
+							fields: ['id_', 'nombre', 'codigo'],
+							remoteSort: true,
+							baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+						}),
+						valueField: 'id_',
+						displayField: 'nombre',
+						gdisplayField: 'desc_',
+						hiddenName: 'id_reclamo',
+						forceSelection: true,
+						typeAhead: false,
+						triggerAction: 'all',
+						lazyRender: true,
+						mode: 'remote',
+						pageSize: 15,
+						queryDelay: 1000,
+						anchor: '100%',
+						gwidth: 150,
+						minChars: 2,
+						renderer : function(value, p, record) {
+							return String.format('{0}', record.data['desc_']);
+						}
 					},
-					type:'TextField',
-					filters:{pfiltro:'infor.lista_compensacion',type:'string'},
-					id_grupo:1,
-					grid:true,
-					form:true
+					type: 'ComboBox',
+					id_grupo: 0,
+					filters: {pfiltro: 'movtip.nombre',type: 'string'},
+					grid: true,
+					form: true
 				},
 				{
 					config:{
