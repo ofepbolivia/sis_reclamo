@@ -69,3 +69,6 @@ select pxp.f_delete_testructura_gui ('RECR', 'REC');
 select pxp.f_insert_testructura_gui ('RESRE', 'REC');
 /***********************************F-DAT-MAM-REC-1-19/08/2016****************************************/
 
+/***********************************I-DAT-EAQ-REC-1-19/08/2016****************************************/
+select pxp.f_insert_testructura_gui ('MEDRE', 'REC');
+/***********************************F-DAT-EAQ-REC-1-19/08/2016****************************************/
