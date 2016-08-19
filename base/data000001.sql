@@ -51,3 +51,24 @@ select pxp.f_insert_tgui ('Reclamo', 'Reclamo', 'recl', 'si', 1, 'sis_reclamo/vi
 select pxp.f_insert_testructura_gui ('recl', 'REC');
 /***********************************F-DAT-MAM-REC-1-15/08/2016****************************************/
 
+
+/***********************************I-DAT-MAM-REC-1-19/08/2016****************************************/
+select pxp.f_delete_tgui ('SISRES');
+select pxp.f_delete_tgui ('recl');
+select pxp.f_delete_tgui ('RED');
+select pxp.f_delete_tgui ('RECR');
+select pxp.f_insert_tgui ('Respuesta Reclamo', 'Respuesta Reclamo', 'RESRE', 'si', 1, 'sis_reclamo/vista/respuesta/RespuestaRecla.php', 2, '', 'RespuestaRecla', 'REC');
+----------------------------------
+--COPY LINES TO dependencies.sql FILE
+---------------------------------
+
+select pxp.f_delete_testructura_gui ('SISRES', 'REC');
+select pxp.f_delete_testructura_gui ('recl', 'REC');
+select pxp.f_delete_testructura_gui ('RED', 'REC');
+select pxp.f_delete_testructura_gui ('RECR', 'REC');
+select pxp.f_insert_testructura_gui ('RESRE', 'REC');
+/***********************************F-DAT-MAM-REC-1-19/08/2016****************************************/
+
+/***********************************I-DAT-EAQ-REC-1-19/08/2016****************************************/
+select pxp.f_insert_testructura_gui ('MEDRE', 'REC');
+/***********************************F-DAT-EAQ-REC-1-19/08/2016****************************************/
