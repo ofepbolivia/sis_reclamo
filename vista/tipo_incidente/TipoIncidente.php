@@ -8,6 +8,9 @@
 */
 
 header("content-type: text/javascript; charset=UTF-8");
+
+
+
 ?>
 <script>
 
@@ -23,262 +26,257 @@ header("content-type: text/javascript; charset=UTF-8");
 	bdel:true,
 	bsave:true
 });*/
-Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 
-	constructor:function(config){
-		this.maestro=config.maestro;
-    	//llama al constructor de la clase padre
-		Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
-		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
-	},
 
-	Atributos:[
-		{
-			//configuracion del componente
-			config:{
+Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
+		constructor:function(config){
+			this.maestro=config.maestro;
+			this.initButtons=[this.cmbGestion];
+
+			//llama al constructor de la clase padre
+			Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
+			this.init();
+
+
+			this.addButton('btnImprimir',
+				{
+					text: 'Imprimir',
+					iconCls: 'bprint',
+					disabled: false,
+					handler: this.imprimirCbte,
+					tooltip: '<b>Imprimir Clasificador</b><br/>Imprime el clasificador en el formato oficial.'
+				}
+			);
+
+			this.loaderTree.baseParams={id_tipo_incidente: 1};
+
+			Ext.define('Task', {
+				extend: 'Ext.data.Model',
+				fields: [
+					{name: 'task',     type: 'string'},
+					{name: 'user',     type: 'string'},
+					{name: 'duration', type: 'string'}
+				]
+			});
+
+			this.store = Ext.create('Ext.data.TreeStore', {
+				model: 'Task',
+				proxy: {
+					type: 'ajax',
+					//the store will get the content from the .json file
+					url: 'http://http://192.168.17.112/kerp/sis_reclamo/vista/treegrid.json'
+				},
+				folderSort: true
+			});
+
+			//Ext.ux.tree.TreeGrid is no longer a Ux. You can simply use a tree.TreePanel
+			this.tree = Ext.create('Ext.tree.Panel', {
+				title: 'Equipo giniu',
+				width: 500,
+				height: 300,
+				renderTo: Ext.getBody(),
+				collapsible: true,
+				useArrows: true,
+				rootVisible: false,
+				store: store,
+				multiSelect: true,
+				singleExpand: true,
+				//the 'columns' property is now 'headers'
+				columns: [{
+					xtype: 'treecolumn', //this is so we know which column will show the tree
+					text: 'Task',
+					flex: 2,
+					sortable: true,
+					dataIndex: 'task'
+				},{
+					//we must use the templateheader component so we can use a custom tpl
+					xtype: 'templatecolumn',
+					text: 'Duration',
+					flex: 1,
+					sortable: true,
+					dataIndex: 'duration',
+					align: 'center',
+					//add in the custom tpl for the rows
+					tpl: Ext.create('Ext.XTemplate', '{duration:this.formatHours}', {
+						formatHours: function(v) {
+							if (v < 1) {
+								return Math.round(v * 60) + ' mins';
+							} else if (Math.floor(v) !== v) {
+								var min = v - Math.floor(v);
+								return Math.floor(v) + 'h ' + Math.round(min * 60) + 'm';
+							} else {
+								return v + ' hour' + (v === 1 ? '' : 's');
+							}
+						}
+					})
+				},{
+					text: 'Assigned To',
+					flex: 1,
+					dataIndex: 'user',
+					sortable: true
+				}]
+			});
+		},
+		rootVisible: true,
+
+		Atributos:[
+			{
+				//configuracion del componente
+				config:{
 					labelSeparator:'',
 					inputType:'hidden',
 					name: 'id_tipo_incidente'
+				},
+				type:'Field',
+				form:true
 			},
-			type:'Field',
-			form:true 
-		},
-		{
-			config:{
-				name: 'estado_reg',
-				fieldLabel: 'Estado Reg.',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:10
+			{
+				config:{
+					name: 'id_partida_fk',
+					inputType:'hidden'
+				},
+				type:'Field',
+				form:true
 			},
-				type:'TextField',
-				filters:{pfiltro:'inc.estado_reg',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'nombre_incidente',
-				fieldLabel: 'Nombres',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:50
-			},
+			{
+				config:{
+					name: 'nombre_incidente',
+					fieldLabel: 'Nombres',
+					allowBlank: false,
+					anchor: '80%',
+					gwidth: 100,
+					maxLength:50
+				},
 				type:'TextField',
 				filters:{pfiltro:'inc.nombre_incidente',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:true
-		},
-		{
-			config:{
-				name: 'nivel',
-				fieldLabel: 'Nivel Incidente',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
 			},
-				type:'NumberField',
-				filters:{pfiltro:'inc.nivel',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'prueba',
-				fieldLabel: 'Prueba',
-				allowBlank: true,
-				anchor: '60%',
-				gwidth: 100,
-				maxLength:10
-			},
-			type:'NumberField',
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-
-		{
-			config:{
-				name: 'fk_tipo_incidente',
-				fieldLabel: 'Incidente Origen',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'inc.fk_tipo_incidente',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'tiempo_respuesta',
-				fieldLabel: 'Tiempo Respuesta',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
+			{
+				config:{
+					name: 'tiempo_respuesta',
+					fieldLabel: 'Tiempo Respuesta',
+					allowBlank: true,
+					anchor: '80%',
+					gwidth: 100,
+					maxLength:4
+				},
 				type:'NumberField',
 				filters:{pfiltro:'inc.tiempo_respuesta',type:'numeric'},
 				id_grupo:1,
 				grid:true,
 				form:true
+			}
+
+		],
+		title:'Incidentes',
+		ActSave:'../../sis_reclamo/control/TipoIncidente/insertarTipoIncidente',
+		ActDel:'../../sis_reclamo/control/TipoIncidente/eliminarTipoIncidente',
+		ActList:'../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+		id_store:'id_tipo_incidente',
+		textRoot:'INCIDENTES',
+		id_nodo:'id_tipo_incidente',
+		id_nodo_p:'fk_tipo_incidente',
+		fields: [
+			'id',
+			'tipo_meta',
+			{name:'id_tipo_incidente', type: 'numeric'},
+			{name:'estado_reg', type: 'string'},
+			{name:'nombre_incidente', type: 'string'},
+			{name:'nivel', type: 'numeric'},
+			{name:'fk_tipo_incidente', type: 'numeric'},
+			{name:'tiempo_respuesta', type: 'numeric'},
+			{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+			{name:'id_usuario_reg', type: 'numeric'},
+			{name:'usuario_ai', type: 'string'},
+			{name:'id_usuario_ai', type: 'numeric'},
+			{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+			{name:'id_usuario_mod', type: 'numeric'},
+			{name:'usr_reg', type: 'string'},
+			{name:'usr_mod', type: 'string'},
+
+		],
+
+
+		cmbGestion:new Ext.form.ComboBox({
+			fieldLabel: 'Incidentes',
+			allowBlank: true,
+			emptyText:'Incidentes...',
+			store: ['Equipaje','Vuelo','Atencion Al Cliente','Carga Encomienda'],
+			valueField: 'id_tipo_incidente',
+			triggerAction: 'all',
+			displayField: 'incidente',
+			hiddenName: 'id_tipo_incidente',
+			mode:'local',
+			editable:false,
+
+			width:80
+		}),
+		sortInfo:{
+			field: 'id_tipo_incidente',
+			direction: 'ASC'
 		},
-		{
-			config:{
-				name: 'fecha_reg',
-				fieldLabel: 'Fecha creación',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'inc.fecha_reg',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:false
+		bdel:true,
+		bsave:true,
+		rootVisible:true,
+		expanded:false,
+
+		onButtonNew:function(){
+			var win = new Ext.Window({
+				title: 'Registro de Incidente',
+				width: 500,
+				height:300,
+				maximizable:true,
+				modal:true,
+
+			});
+
+			win.show();
 		},
-		{
-			config:{
-				name: 'usr_reg',
-				fieldLabel: 'Creado por',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'Field',
-				filters:{pfiltro:'usu1.cuenta',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'usuario_ai',
-				fieldLabel: 'Funcionaro AI',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:300
-			},
-				type:'TextField',
-				filters:{pfiltro:'inc.usuario_ai',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'id_usuario_ai',
-				fieldLabel: 'Funcionaro AI',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'Field',
-				filters:{pfiltro:'inc.id_usuario_ai',type:'numeric'},
-				id_grupo:1,
-				grid:false,
-				form:false
-		},
-		{
-			config:{
-				name: 'fecha_mod',
-				fieldLabel: 'Fecha Modif.',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'inc.fecha_mod',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'usr_mod',
-				fieldLabel: 'Modificado por',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'Field',
-				filters:{pfiltro:'usu2.cuenta',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		}
-	],
-	tam_pag:50,	
-	title:'incidente',
-	ActSave:'../../sis_reclamo/control/TipoIncidente/insertarTipoIncidente',
-	ActDel:'../../sis_reclamo/control/TipoIncidente/eliminarTipoIncidente',
-	ActList:'../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
-	id_store:'id_tipo_incidente',
-	fields: [
-		{name:'id_tipo_incidente', type: 'numeric'},
-		{name:'estado_reg', type: 'string'},
-		{name:'nombre_incidente', type: 'string'},
-		{name:'nivel', type: 'numeric'},
-		{name:'fk_tipo_incidente', type: 'numeric'},
-		{name:'tiempo_respuesta', type: 'numeric'},
-		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
-		{name:'id_usuario_reg', type: 'numeric'},
-		{name:'usuario_ai', type: 'string'},
-		{name:'id_usuario_ai', type: 'numeric'},
-		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
-		{name:'id_usuario_mod', type: 'numeric'},
-		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
-		
-	],
-	sortInfo:{
-		field: 'id_tipo_incidente',
-		direction: 'ASC'
+
+	south:{
+
+			url:'../../sis_reclamo/vista/cliente/Cliente.php',
+			title:'Lista de Clientes',
+			height:'50%',
+			cls:'Cliente'
 	},
-	tabsouth:[
-		{
-			url:'../../../sis_seguridad/vista/usuario_rol/UsuarioRol.php',
-			title:'Roles',
-			height:400,
-			cls:'usuario_rol'
-		}
-		,
-		{
-			url:'../../../sis_seguridad/vista/usuario_grupo_ep/UsuarioGrupoEp.php',
-			title:'EP',
-			height:400,
-			cls:'UsuarioGrupoEp'
+	preparaMenu:function(n){
+			if(n.attributes.tipo_nodo == 'hijo' || n.attributes.tipo_nodo == 'raiz' || n.attributes.id == 'id'){
+				this.tbar.items.get('b-new-'+this.idContenedor).enable()
+			}
+			else {
+				this.tbar.items.get('b-new-'+this.idContenedor).disable()
+			}
+			// llamada funcion clase padre
+			Phx.vista.TipoIncidente.superclass.preparaMenu.call(this,n);
 		},
-		{
-			url:'../../../sis_seguridad/vista/usuario_grupo_ep/UsuarioRol.php',
-			title:'Usuarios',
-			height:400,
-			cls:'UsuarioGrupoEp'
+
+		EnableSelect:function(n){
+			var nivel = n.getDepth();
+			var direc = this.getNombrePadre(n)
+			if(direc){
+				Phx.vista.Partida.superclass.EnableSelect.call(this,n)
+			}
+		},
+
+		getNombrePadre:function(n){
+			var direc
+			var padre = n.parentNode;
+			if(padre){
+				if(padre.attributes.id!='id'){
+					direc = n.attributes.nombre +' - '+ this.getNombrePadre(padre)
+					return direc;
+				}else{
+
+					return n.attributes.nombre;
+				}
+			}
+			else{
+				return undefined;
+			}
 		}
-	],
-
-
-	bdel:true,
-	bsave:true
 	}
 )
 
@@ -292,5 +290,4 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 
 this.add(main);*/
 </script>
-		
-		
+
