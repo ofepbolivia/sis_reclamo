@@ -886,12 +886,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 	},
 	bdel: true,
 	bsave: true,
-	south:{
-		url: '../../../sis_reclamo/vista/respuesta/Respuesta.php',
-		title: 'Respuesta',
-		height: '50%',
-		cls: 'Respuesta'
-	},
+	
 
 
 });

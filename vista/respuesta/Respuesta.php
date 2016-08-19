@@ -21,6 +21,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 	},
 
+
 	Atributos: [
 		{
 			//configuracion del componente
@@ -33,48 +34,16 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			form: true
 		},
 		{
+
 			config: {
-				name: 'id_reclamo',
-				fieldLabel: 'Reclamo',
-				allowBlank: false,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
-				hiddenName: 'id_reclamo',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
-				}
+				labelSeparator: '',
+				inputType: 'hidden',
+				name: 'id_reclamo'
 			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
-			grid: true,
+			type: 'Field',
 			form: true
 		},
+
 		{
 			config: {
 				name: 'recomendaciones',
@@ -316,6 +285,8 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 	bdel: true,
 	bsave: true,
+
+	
 	onReloadPage: function (m) {
 		this.maestro = m;
 		this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
