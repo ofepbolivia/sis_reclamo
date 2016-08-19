@@ -48,75 +48,19 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				}
 			);
 
+			this.loaderTree.url='../../sis_reclamo/vista/treegrid.json';
 			this.loaderTree.baseParams={id_tipo_incidente: 1};
+			this.root.reload();
 
-			Ext.define('Task', {
-				extend: 'Ext.data.Model',
-				fields: [
-					{name: 'task',     type: 'string'},
-					{name: 'user',     type: 'string'},
-					{name: 'duration', type: 'string'}
-				]
-			});
-
-			this.store = Ext.create('Ext.data.TreeStore', {
-				model: 'Task',
-				proxy: {
-					type: 'ajax',
-					//the store will get the content from the .json file
-					url: 'http://http://192.168.17.112/kerp/sis_reclamo/vista/treegrid.json'
-				},
-				folderSort: true
-			});
-
-			//Ext.ux.tree.TreeGrid is no longer a Ux. You can simply use a tree.TreePanel
-			this.tree = Ext.create('Ext.tree.Panel', {
-				title: 'Equipo giniu',
-				width: 500,
-				height: 300,
-				renderTo: Ext.getBody(),
-				collapsible: true,
-				useArrows: true,
-				rootVisible: false,
-				store: store,
-				multiSelect: true,
-				singleExpand: true,
-				//the 'columns' property is now 'headers'
-				columns: [{
-					xtype: 'treecolumn', //this is so we know which column will show the tree
-					text: 'Task',
-					flex: 2,
-					sortable: true,
-					dataIndex: 'task'
-				},{
-					//we must use the templateheader component so we can use a custom tpl
-					xtype: 'templatecolumn',
-					text: 'Duration',
-					flex: 1,
-					sortable: true,
-					dataIndex: 'duration',
-					align: 'center',
-					//add in the custom tpl for the rows
-					tpl: Ext.create('Ext.XTemplate', '{duration:this.formatHours}', {
-						formatHours: function(v) {
-							if (v < 1) {
-								return Math.round(v * 60) + ' mins';
-							} else if (Math.floor(v) !== v) {
-								var min = v - Math.floor(v);
-								return Math.floor(v) + 'h ' + Math.round(min * 60) + 'm';
-							} else {
-								return v + ' hour' + (v === 1 ? '' : 's');
-							}
-						}
-					})
-				},{
-					text: 'Assigned To',
-					flex: 1,
-					dataIndex: 'user',
-					sortable: true
-				}]
-			});
 		},
+		root: {
+			nodeType: 'async',
+			text: 'Ext JS',
+			draggable: false,
+			id: 'source'
+		},
+		dataUrl: '../../sis_reclamo/vista/treegrid.json',
+		enableGrid:true,
 		rootVisible: true,
 
 		Atributos:[
@@ -131,8 +75,37 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				form:true
 			},
 			{
+				//configuracion del componente
+				config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'tipo'
+				},
+				type:'Field',
+				form:true
+			},
+
+			{
 				config:{
 					name: 'id_partida_fk',
+					inputType:'hidden'
+				},
+				type:'Field',
+				form:true
+			},
+			{
+				//configuracion del componente
+				config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'id_tipo_incidente'
+				},
+				type:'Field',
+				form:true
+			},
+			{
+				config:{
+					name: 'fk_tipo_incidente',
 					inputType:'hidden'
 				},
 				type:'Field',
@@ -236,13 +209,13 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 			win.show();
 		},
 
-	south:{
+	tabsouth:[{
 
 			url:'../../sis_reclamo/vista/cliente/Cliente.php',
 			title:'Lista de Clientes',
 			height:'50%',
 			cls:'Cliente'
-	},
+	}],
 	preparaMenu:function(n){
 			if(n.attributes.tipo_nodo == 'hijo' || n.attributes.tipo_nodo == 'raiz' || n.attributes.id == 'id'){
 				this.tbar.items.get('b-new-'+this.idContenedor).enable()
