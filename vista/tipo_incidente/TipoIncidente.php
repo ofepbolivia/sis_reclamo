@@ -18,8 +18,11 @@ header("content-type: text/javascript; charset=UTF-8");
 				//llama al constructor de la clase padre
 				Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
 				this.init();
-				this.load({params:{start:0, limit:this.tam_pag}})
+
+				//this.load({params:{start:0, limit:this.tam_pag}})
 			},
+
+
 
 			Atributos:[
 				{
@@ -227,12 +230,12 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'usr_mod', type: 'string'},
 
 			],
-			south:{
-				url:'../../sis_reclamo/vista/cliente/Cliente.php',
+			tabsouth:[{
+				url:'../../../sis_reclamo/vista/cliente/Cliente.php',
 				title:'Clientes...',
 				height:'50%',
-				grid:true
-			},
+				cls:'Cliente'
+			}],
 
 		combo:new Ext.form.ComboBox({
 			fieldLabel:'Incidentes',
