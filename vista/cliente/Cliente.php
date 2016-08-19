@@ -79,7 +79,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'direccion',
-				fieldLabel: 'direccion',
+				fieldLabel: 'Direccion',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -94,7 +94,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'celular',
-				fieldLabel: 'celular',
+				fieldLabel: 'Celular',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -109,7 +109,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'nombre',
-				fieldLabel: 'nombre',
+				fieldLabel: 'Nombre',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -125,7 +125,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'lugar_expedicion',
-				fieldLabel: 'lugar_expedicion',
+				fieldLabel: 'Lugar Expedicion',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -140,7 +140,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'apellido_paterno',
-				fieldLabel: 'apellido_paterno',
+				fieldLabel: 'Apellido Paterno',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -155,7 +155,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'telefono',
-				fieldLabel: 'telefono',
+				fieldLabel: 'Telefono',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -170,7 +170,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'ciudad_residencia',
-				fieldLabel: 'ciudad_residencia',
+				fieldLabel: 'Ciudad de Residencia',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -185,7 +185,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'pais_residencia',
-				fieldLabel: 'pais_residencia',
+				fieldLabel: 'Pais de Residencia',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -200,7 +200,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'nacionalidad',
-				fieldLabel: 'nacionalidad',
+				fieldLabel: 'Nacionalidad',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -215,7 +215,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'barrio_zona',
-				fieldLabel: 'barrio_zona',
+				fieldLabel: 'Zona Barrial',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,

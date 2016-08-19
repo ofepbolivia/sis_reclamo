@@ -150,6 +150,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'inc.nombre_incidente',type:'string'},
 				id_grupo:1,
+				bottom_filter:true,
 				grid:true,
 				form:true
 			},
