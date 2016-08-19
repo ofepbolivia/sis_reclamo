@@ -1,21 +1,21 @@
 <?php
 /**
 *@package pXP
-*@file gen-MedioReclamo.php
+*@file gen-TipoIncidente.php
 *@author  (admin)
-*@date 11-08-2016 01:21:34
+*@date 19-08-2016 16:44:11
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
-		Phx.vista.MedioReclamo.superclass.constructor.call(this,config);
+		Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}})
 	},
@@ -26,22 +26,22 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 			config:{
 					labelSeparator:'',
 					inputType:'hidden',
-					name: 'id_medio_reclamo'
+					name: 'id_tipo_incidente'
 			},
 			type:'Field',
 			form:true 
 		},
 		{
 			config:{
-				name: 'codigo',
-				fieldLabel: 'Codigo',
-				allowBlank: false,
+				name: 'fk_tipo_incidente',
+				fieldLabel: 'fk_tipo_incidente',
+				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:255
+				maxLength:4
 			},
-				type:'TextField',
-				filters:{pfiltro:'mera.codigo',type:'string'},
+				type:'NumberField',
+				filters:{pfiltro:'tipinc.fk_tipo_incidente',type:'numeric'},
 				id_grupo:1,
 				grid:true,
 				form:true
@@ -56,25 +56,86 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 				maxLength:10
 			},
 				type:'TextField',
-				filters:{pfiltro:'mera.estado_reg',type:'string'},
+				filters:{pfiltro:'tipinc.estado_reg',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:false
 		},
 		{
 			config:{
-				name: 'nombre_medio',
-				fieldLabel: 'Nombre Medio',
-				allowBlank: false,
+				name: 'tiempo_respuesta',
+				fieldLabel: 'tiempo_respuesta',
+				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:255
+				maxLength:4
 			},
-				type:'TextField',
-				filters:{pfiltro:'mera.nombre_medio',type:'string'},
+				type:'NumberField',
+				filters:{pfiltro:'tipinc.tiempo_respuesta',type:'numeric'},
 				id_grupo:1,
 				grid:true,
 				form:true
+		},
+		{
+			config:{
+				name: 'nivel',
+				fieldLabel: 'nivel',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+				type:'NumberField',
+				filters:{pfiltro:'tipinc.nivel',type:'numeric'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'nombre_incidente',
+				fieldLabel: 'nombre_incidente',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:50
+			},
+				type:'TextField',
+				filters:{pfiltro:'tipinc.nombre_incidente',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'fecha_reg',
+				fieldLabel: 'Fecha creación',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+							format: 'd/m/Y', 
+							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+			},
+				type:'DateField',
+				filters:{pfiltro:'tipinc.fecha_reg',type:'date'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
+		{
+			config:{
+				name: 'usuario_ai',
+				fieldLabel: 'Funcionaro AI',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:300
+			},
+				type:'TextField',
+				filters:{pfiltro:'tipinc.usuario_ai',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:false
 		},
 		{
 			config:{
@@ -93,64 +154,17 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'fecha_reg',
-				fieldLabel: 'Fecha creación',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'mera.fecha_reg',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'usuario_ai',
-				fieldLabel: 'Funcionaro AI',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:300
-			},
-				type:'TextField',
-				filters:{pfiltro:'mera.usuario_ai',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
 				name: 'id_usuario_ai',
-				fieldLabel: 'Funcionaro AI',
+				fieldLabel: 'Creado por',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
 			},
 				type:'Field',
-				filters:{pfiltro:'mera.id_usuario_ai',type:'numeric'},
+				filters:{pfiltro:'tipinc.id_usuario_ai',type:'numeric'},
 				id_grupo:1,
 				grid:false,
-				form:false
-		},
-		{
-			config:{
-				name: 'fecha_mod',
-				fieldLabel: 'Fecha Modif.',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'mera.fecha_mod',type:'date'},
-				id_grupo:1,
-				grid:true,
 				form:false
 		},
 		{
@@ -167,31 +181,49 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:false
+		},
+		{
+			config:{
+				name: 'fecha_mod',
+				fieldLabel: 'Fecha Modif.',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+							format: 'd/m/Y', 
+							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+			},
+				type:'DateField',
+				filters:{pfiltro:'tipinc.fecha_mod',type:'date'},
+				id_grupo:1,
+				grid:true,
+				form:false
 		}
 	],
 	tam_pag:50,	
-	title:'Medio Reclamo',
-	ActSave:'../../sis_reclamo/control/MedioReclamo/insertarMedioReclamo',
-	ActDel:'../../sis_reclamo/control/MedioReclamo/eliminarMedioReclamo',
-	ActList:'../../sis_reclamo/control/MedioReclamo/listarMedioReclamo',
-	id_store:'id_medio_reclamo',
+	title:'TipoIncidente',
+	ActSave:'../../sis_reclamo/control/TipoIncidente/insertarTipoIncidente',
+	ActDel:'../../sis_reclamo/control/TipoIncidente/eliminarTipoIncidente',
+	ActList:'../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+	id_store:'id_tipo_incidente',
 	fields: [
-		{name:'id_medio_reclamo', type: 'numeric'},
-		{name:'codigo', type: 'string'},
+		{name:'id_tipo_incidente', type: 'numeric'},
+		{name:'fk_tipo_incidente', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
-		{name:'nombre_medio', type: 'string'},
-		{name:'id_usuario_reg', type: 'numeric'},
+		{name:'tiempo_respuesta', type: 'numeric'},
+		{name:'nivel', type: 'numeric'},
+		{name:'nombre_incidente', type: 'string'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usuario_ai', type: 'string'},
+		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'id_usuario_ai', type: 'numeric'},
-		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
+		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
 		
 	],
 	sortInfo:{
-		field: 'id_medio_reclamo',
+		field: 'id_tipo_incidente',
 		direction: 'ASC'
 	},
 	bdel:true,

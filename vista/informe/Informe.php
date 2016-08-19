@@ -34,7 +34,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'sugerencia_respuesta',
-						fieldLabel: 'sugerencia_respuesta',
+						fieldLabel: 'Sugerencia Respuesta',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
@@ -49,8 +49,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config: {
 						name: 'id_reclamo',
-						fieldLabel: 'id_reclamo',
-						allowBlank: true,
+						fieldLabel: 'Id Reclamo',
+						allowBlank: false,
 						emptyText: 'Elija una opción...',
 						store: new Ext.data.JsonStore({
 							url: '../../sis_/control/Clase/Metodo',
@@ -92,7 +92,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'antecedentes_informe',
-						fieldLabel: 'antecedentes_informe',
+						fieldLabel: 'Antecedentes Informe',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
@@ -107,8 +107,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'nro_informe',
-						fieldLabel: 'nro_informe',
-						allowBlank: true,
+						fieldLabel: 'Nro Informe',
+						allowBlank: false,
 						anchor: '80%',
 						gwidth: 100,
 						maxLength:255
@@ -122,8 +122,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config: {
 						name: 'id_funcionario',
-						fieldLabel: 'id_funcionario',
-						allowBlank: true,
+						fieldLabel: 'Id Funcionario',
+						allowBlank: false,
 						emptyText: 'Elija una opción...',
 						store: new Ext.data.JsonStore({
 							url: '../../sis_/control/Clase/Metodo',
@@ -165,7 +165,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'conclusion_recomendacion',
-						fieldLabel: 'conclusion_recomendacion',
+						fieldLabel: 'Conclusion Recomendacion',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
@@ -180,8 +180,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'fecha_informe',
-						fieldLabel: 'fecha_informe',
-						allowBlank: true,
+						fieldLabel: 'Fecha Informe',
+						allowBlank: false,
 						anchor: '80%',
 						gwidth: 100,
 						format: 'd/m/Y',
@@ -211,8 +211,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'lista_compensacion',
-						fieldLabel: 'lista_compensacion',
-						allowBlank: true,
+						fieldLabel: 'Lista Compensacion',
+						allowBlank: false,
 						anchor: '80%',
 						gwidth: 100,
 						maxLength:255
@@ -226,7 +226,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'analisis_tecnico',
-						fieldLabel: 'analisis_tecnico',
+						fieldLabel: 'Analisis Tecnico',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
