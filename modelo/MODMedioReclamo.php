@@ -22,8 +22,8 @@ class MODMedioReclamo extends MODbase{
 		//Definicion de la lista del resultado del query
 		$this->captura('id_medio_reclamo','int4');
 		$this->captura('codigo','varchar');
-		$this->captura('estado_reg','varchar');
 		$this->captura('nombre_medio','varchar');
+		$this->captura('estado_reg','varchar');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_reg','timestamp');
 		$this->captura('usuario_ai','varchar');

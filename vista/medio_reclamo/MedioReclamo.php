@@ -36,9 +36,9 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 				name: 'codigo',
 				fieldLabel: 'Codigo',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '50%',
 				gwidth: 100,
-				maxLength:255
+				maxLength:5
 			},
 				type:'TextField',
 				filters:{pfiltro:'mera.codigo',type:'string'},
@@ -66,7 +66,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 				name: 'nombre_medio',
 				fieldLabel: 'Nombre Medio',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '50%',
 				gwidth: 100,
 				maxLength:255
 			},

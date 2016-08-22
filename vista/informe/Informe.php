@@ -33,19 +33,93 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				{
 					config:{
-						name: 'sugerencia_respuesta',
-						fieldLabel: 'Sugerencia Respuesta',
-						allowBlank: true,
+						name: 'fecha_informe',
+						fieldLabel: 'Fecha Informe',
+						allowBlank: false,
 						anchor: '80%',
 						gwidth: 100,
-						maxLength:255
+						format: 'd/m/Y',
+						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
 					},
-					type:'TextField',
-					filters:{pfiltro:'infor.sugerencia_respuesta',type:'string'},
+					type:'DateField',
+					filters:{pfiltro:'infor.fecha_informe',type:'date'},
 					id_grupo:1,
 					grid:true,
 					form:true
 				},
+				//Inicia combo uno
+				{
+					config:{
+						name:'id_persona',
+						fieldLabel:'Funcionario',
+						allowBlank:false,
+						emptyText:'Persona...',
+						store: new Ext.data.JsonStore({
+							url: '../../sis_seguridad/control/Persona/listarPersona',
+							id: 'id_persona',
+							root: 'datos',
+							sortInfo:{
+								field: 'nombre_completo1',
+								direction: 'ASC'
+							},
+							totalProperty: 'total',
+							fields: ['id_persona','nombre_completo1','ci'],
+							// turn on remote sorting
+							remoteSort: true,
+							baseParams:{par_filtro:'p.nombre_completo1#p.ci'}
+						}),
+						valueField: 'id_persona',
+						displayField: 'nombre_completo1',
+						gdisplayField:'desc_person',//mapea al store del grid
+						tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo1}</p><p>CI:{ci}</p> </div></tpl>',
+						hiddenName: 'id_persona',
+						forceSelection:true,
+						typeAhead: true,
+						triggerAction: 'all',
+						lazyRender:true,
+						mode:'remote',
+						pageSize:10,
+						queryDelay:1000,
+						width:250,
+						gwidth:280,
+						minChars:2,
+						turl:'../../../sis_seguridad/vista/persona/Persona.php',
+						ttitle:'Personas',
+						// tconfig:{width:1800,height:500},
+						tdata:{},
+						tcls:'persona',
+						pid:this.idContenedor,
+
+						renderer:function (value, p, record){return String.format('{0}', record.data['desc_person']);}
+					},
+					type:'TrigguerCombo',
+					bottom_filter:true,
+					id_grupo:0,
+					filters:{
+						pfiltro:'nombre_completo1',
+						type:'string'
+					},
+
+					grid:true,
+					form:true
+				},
+				//Finaliza combo uno
+				/*
+				{
+					config:{
+						name: 'id_usuario_ai',
+						fieldLabel: '',
+						allowBlank: true,
+						anchor: '80%',
+						gwidth: 100,
+						maxLength:4
+					},
+					type:'Field',
+					filters:{pfiltro:'infor.id_usuario_ai',type:'numeric'},
+					id_grupo:1,
+					grid:false,
+					form:false
+				},*/
 				{
 					config: {
 						name: 'id_reclamo',
@@ -91,27 +165,12 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				{
 					config:{
-						name: 'antecedentes_informe',
-						fieldLabel: 'Antecedentes Informe',
-						allowBlank: true,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:255
-					},
-					type:'TextField',
-					filters:{pfiltro:'infor.antecedentes_informe',type:'string'},
-					id_grupo:1,
-					grid:true,
-					form:true
-				},
-				{
-					config:{
 						name: 'nro_informe',
 						fieldLabel: 'Nro Informe',
 						allowBlank: false,
 						anchor: '80%',
 						gwidth: 100,
-						maxLength:255
+						maxLength:20
 					},
 					type:'TextField',
 					filters:{pfiltro:'infor.nro_informe',type:'string'},
@@ -120,80 +179,51 @@ header("content-type: text/javascript; charset=UTF-8");
 					form:true
 				},
 				{
-					config: {
-						name: 'id_funcionario',
-						fieldLabel: 'Id Funcionario',
-						allowBlank: false,
-						emptyText: 'Elija una opción...',
-						store: new Ext.data.JsonStore({
-							url: '../../sis_/control/Clase/Metodo',
-							id: 'id_',
-							root: 'datos',
-							sortInfo: {
-								field: 'nombre',
-								direction: 'ASC'
-							},
-							totalProperty: 'total',
-							fields: ['id_', 'nombre', 'codigo'],
-							remoteSort: true,
-							baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-						}),
-						valueField: 'id_',
-						displayField: 'nombre',
-						gdisplayField: 'desc_',
-						hiddenName: 'id_funcionario',
-						forceSelection: true,
-						typeAhead: false,
-						triggerAction: 'all',
-						lazyRender: true,
-						mode: 'remote',
-						pageSize: 15,
-						queryDelay: 1000,
-						anchor: '100%',
-						gwidth: 150,
-						minChars: 2,
-						renderer : function(value, p, record) {
-							return String.format('{0}', record.data['desc_']);
-						}
-					},
-					type: 'ComboBox',
-					id_grupo: 0,
-					filters: {pfiltro: 'movtip.nombre',type: 'string'},
-					grid: true,
-					form: true
-				},
-				{
 					config:{
-						name: 'conclusion_recomendacion',
-						fieldLabel: 'Conclusion Recomendacion',
+						name: 'antecedentes_informe',
+						fieldLabel: 'Antecedentes Informe',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
 						maxLength:255
 					},
-					type:'TextField',
-					filters:{pfiltro:'infor.conclusion_recomendacion',type:'string'},
+					type:'TextArea',
+					filters:{pfiltro:'infor.antecedentes_informe',type:'string'},
 					id_grupo:1,
 					grid:true,
 					form:true
 				},
 				{
 					config:{
-						name: 'fecha_informe',
-						fieldLabel: 'Fecha Informe',
-						allowBlank: false,
+						name: 'analisis_tecnico',
+						fieldLabel: 'Analisis Tecnico',
+						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
-						format: 'd/m/Y',
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+						maxLength:255
 					},
-					type:'DateField',
-					filters:{pfiltro:'infor.fecha_informe',type:'date'},
+					type:'TextArea',
+					filters:{pfiltro:'infor.analisis_tecnico',type:'string'},
 					id_grupo:1,
 					grid:true,
 					form:true
 				},
 				{
+					config:{
+						name: 'sugerencia_respuesta',
+						fieldLabel: 'Sugerencia Respuesta',
+						allowBlank: true,
+						anchor: '80%',
+						gwidth: 100,
+						maxLength:255
+					},
+					type:'TextArea',
+					filters:{pfiltro:'infor.sugerencia_respuesta',type:'string'},
+					id_grupo:1,
+					grid:true,
+					form:true
+				},
+								{
 					config:{
 						name: 'estado_reg',
 						fieldLabel: 'Estado Reg.',
@@ -232,6 +262,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						gdisplayField: 'desc_',
 						hiddenName: 'id_reclamo',
 						forceSelection: true,
+						enableMultiSelect:true,
 						typeAhead: false,
 						triggerAction: 'all',
 						lazyRender: true,
@@ -253,33 +284,18 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				{
 					config:{
-						name: 'analisis_tecnico',
-						fieldLabel: 'Analisis Tecnico',
+						name: 'conclusion_recomendacion',
+						fieldLabel: 'Conclusion Recomendacion',
 						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
 						maxLength:255
 					},
-					type:'TextField',
-					filters:{pfiltro:'infor.analisis_tecnico',type:'string'},
+					type:'TextArea',
+					filters:{pfiltro:'infor.conclusion_recomendacion',type:'string'},
 					id_grupo:1,
 					grid:true,
 					form:true
-				},
-				{
-					config:{
-						name: 'id_usuario_ai',
-						fieldLabel: '',
-						allowBlank: true,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:4
-					},
-					type:'Field',
-					filters:{pfiltro:'infor.id_usuario_ai',type:'numeric'},
-					id_grupo:1,
-					grid:false,
-					form:false
 				},
 				{
 					config:{
