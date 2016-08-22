@@ -15,6 +15,8 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
+		this.fwidth = '55%';
+		this.fheight = '65%';
 		Phx.vista.Cliente.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}})
@@ -33,14 +35,61 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'genero',
-				fieldLabel: 'genero',
-				allowBlank: true,
-				anchor: '80%',
+				name: 'nombre',
+				fieldLabel: 'Nombres',
+				allowBlank: false,
+				anchor: '100%',
 				gwidth: 100,
-				maxLength:1
+				maxLength:50
 			},
-				type:'TextField',
+			type:'TextField',
+			filters:{pfiltro:'cli.nombre',type:'string'},
+			id_grupo:1,
+			bottom_filter:true,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'apellido_paterno',
+				fieldLabel: 'Apellido Paterno',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:30
+			},
+			type:'TextField',
+			filters:{pfiltro:'cli.apellido_paterno',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		}
+		,{
+			config:{
+				name: 'apellido_materno',
+				fieldLabel: 'Apellido Materno',
+				allowBlank: true,
+				anchor: '90%',
+				gwidth: 100,
+				maxLength:30
+			},
+			type:'TextField',
+			filters:{pfiltro:'cli.apellido_materno',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'genero',
+				fieldLabel: 'Genero',
+				allowBlank:false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:10,
+				store:['HOMBRE','MUJER']
+			},
+				type:'ComboBox',
 				filters:{pfiltro:'cli.genero',type:'string'},
 				id_grupo:1,
 				grid:true,
@@ -49,11 +98,11 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'ci',
-				fieldLabel: 'ci',
+				fieldLabel: 'Doc. Identificacion',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
-				maxLength:20
+				maxLength:15
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.ci',type:'string'},
@@ -63,16 +112,63 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'email',
-				fieldLabel: 'email',
-				allowBlank: true,
-				anchor: '80%',
+				name: 'lugar_expedicion',
+				fieldLabel: 'Lugar Expedicion',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:10,
+				mode: 'local',
+				store:['CBA','SC','LP','BEN','PAN','TAR','OR','POT','CH']
+			},
+			type:'ComboBox',
+			filters:{pfiltro:'cli.lugar_expedicion',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'nacionalidad',
+				fieldLabel: 'Nacionalidad',
+				allowBlank: false,
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:30
 			},
+			type:'TextField',
+			filters:{pfiltro:'cli.nacionalidad',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'celular',
+				fieldLabel: 'Celular',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:8
+			},
+			type:'NumberField',
+			filters:{pfiltro:'cli.celular',type:'numeric'},
+			id_grupo:2,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'email',
+				fieldLabel: 'email',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:50
+			},
 				type:'TextField',
 				filters:{pfiltro:'cli.email',type:'string'},
-				id_grupo:1,
+				id_grupo:2,
 				grid:true,
 				form:true
 		},
@@ -80,75 +176,14 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'direccion',
 				fieldLabel: 'Direccion',
-				allowBlank: true,
-				anchor: '80%',
+				allowBlank: false,
+				anchor: '100%',
 				gwidth: 100,
-				maxLength:50
+				maxLength:100
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.direccion',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'celular',
-				fieldLabel: 'Celular',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'cli.celular',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'nombre',
-				fieldLabel: 'Nombre',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:30
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.nombre',type:'string'},
-				id_grupo:1,
-				bottom_filter:true,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'lugar_expedicion',
-				fieldLabel: 'Lugar Expedicion',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:10
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.lugar_expedicion',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'apellido_paterno',
-				fieldLabel: 'Apellido Paterno',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:30
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.apellido_paterno',type:'string'},
-				id_grupo:1,
+				id_grupo:2,
 				grid:true,
 				form:true
 		},
@@ -157,13 +192,13 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				name: 'telefono',
 				fieldLabel: 'Telefono',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
-				maxLength:4
+				maxLength:10
 			},
 				type:'NumberField',
 				filters:{pfiltro:'cli.telefono',type:'numeric'},
-				id_grupo:1,
+				id_grupo:2,
 				grid:true,
 				form:true
 		},
@@ -171,14 +206,14 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'ciudad_residencia',
 				fieldLabel: 'Ciudad de Residencia',
-				allowBlank: true,
-				anchor: '80%',
+				allowBlank: false,
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:30
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.ciudad_residencia',type:'string'},
-				id_grupo:1,
+				id_grupo:2,
 				grid:true,
 				form:true
 		},
@@ -186,29 +221,14 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'pais_residencia',
 				fieldLabel: 'Pais de Residencia',
-				allowBlank: true,
-				anchor: '80%',
+				allowBlank: false,
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:30
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.pais_residencia',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'nacionalidad',
-				fieldLabel: 'Nacionalidad',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:30
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.nacionalidad',type:'string'},
-				id_grupo:1,
+				id_grupo:2,
 				grid:true,
 				form:true
 		},
@@ -217,13 +237,13 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				name: 'barrio_zona',
 				fieldLabel: 'Zona Barrial',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:50
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.barrio_zona',type:'string'},
-				id_grupo:1,
+				id_grupo:2,
 				grid:true,
 				form:true
 		},
@@ -241,21 +261,6 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:false
-		},
-		{
-			config:{
-				name: 'apellido_materno',
-				fieldLabel: 'apellido_materno',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:30
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.apellido_materno',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
 		},
 		{
 			config:{
@@ -279,7 +284,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-							format: 'd/m/Y', 
+							format: 'd/m/Y',
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',
@@ -325,7 +330,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-							format: 'd/m/Y', 
+							format: 'd/m/Y',
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',
@@ -348,6 +353,34 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:false
+		}
+	],
+	Grupos: [
+		{
+			layout: 'column',
+			border: false,
+			defaults: {
+				border: false
+			},
+			items: [{
+				bodyStyle: 'padding-right:5px;',
+				items: [{
+					xtype: 'fieldset',
+					title: 'Datos Importantes',
+					autoHeight: true,
+					items: [],
+					id_grupo:1
+				}]
+			},{
+				bodyStyle: 'padding-left:5px;',
+				items: [{
+					xtype: 'fieldset',
+					title: 'Datos de Contacto',
+					autoHeight: true,
+					items: [],
+					id_grupo:2
+				}]
+			}]
 		}
 	],
 	tam_pag:50,	
@@ -388,7 +421,9 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:true,
+
+
 	}
 )
 </script>

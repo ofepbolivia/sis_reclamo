@@ -31,21 +31,7 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
-		{
-			config:{
-				name: 'nombre',
-				fieldLabel: 'Nombre',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:100
-			},
-				type:'TextField',
-				filters:{pfiltro:'com.nombre',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
+
 		{
 			config:{
 				name: 'codigo',
@@ -60,6 +46,21 @@ Phx.vista.Compensacion=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:true
+		},
+		{
+			config:{
+				name: 'nombre',
+				fieldLabel: 'Nombre',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 300,
+				maxLength:300
+			},
+			type:'TextField',
+			filters:{pfiltro:'com.nombre',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
 		},
 		{
 			config:{
