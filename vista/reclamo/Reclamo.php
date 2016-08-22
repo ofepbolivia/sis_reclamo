@@ -34,7 +34,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'id_tipo_incidente',
-				fieldLabel: 'id_tipo_incidente',
+				fieldLabel: 'Tipo Incidente',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -77,7 +77,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'id_subtipo_incidente',
-				fieldLabel: 'id_subtipo_incidente',
+				fieldLabel: 'subtipo de Incidente',
 				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -119,26 +119,41 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
+				name: 'nro_tramite',
+				fieldLabel: 'Nro. Tramite',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.nro_tramite', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
 				name: 'id_medio_reclamo',
-				fieldLabel: 'id_medio_reclamo',
+				fieldLabel: 'Medio Reclamo',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
+					url: '../../sis_reclamo/control/MedioReclamo/listarMedioReclamo',
+					id: 'id_medio_reclamo',
 					root: 'datos',
 					sortInfo: {
-						field: 'nombre',
+						field: 'nombre_medio',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
+					fields: ['id_medio_reclamo', 'nombre_medio'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
+				valueField: 'id_medio_reclamo',
+				displayField: 'nombre_medio',
+				gdisplayField: 'desc_nombre_medio',
 				hiddenName: 'id_medio_reclamo',
 				forceSelection: true,
 				typeAhead: false,
@@ -151,7 +166,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				gwidth: 150,
 				minChars: 2,
 				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
+					return String.format('{0}', record.data['desc_nombre_medio']);
 				}
 			},
 			type: 'ComboBox',
@@ -163,7 +178,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'id_funcionario_recepcion',
-				fieldLabel: 'id_funcionario_recepcion',
+				fieldLabel: 'Funcionario Recepcion',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -205,9 +220,45 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
-				name: 'id_funcionario_denunciado',
-				fieldLabel: 'id_funcionario_denunciado',
-				allowBlank: false,
+				name: 'Fecha Incidente',
+				fieldLabel: 'Fecha Incidente',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				format: 'd/m/Y',
+				renderer: function (value, p, record) {
+					return value ? value.dateFormat('d/m/Y H:i:s') : ''
+				}
+			},
+			type: 'DateField',
+			filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'fecha_hora_recepcion',
+				fieldLabel: 'Fecha Recepcion',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				format: 'd/m/Y',
+				renderer: function (value, p, record) {
+					return value ? value.dateFormat('d/m/Y H:i:s') : ''
+				}
+			},
+			type: 'DateField',
+			filters: {pfiltro: 'rec.fecha_hora_recepcion', type: 'date'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'id_cliente',
+				fieldLabel: 'Cliente',
+				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_/control/Clase/Metodo',
@@ -225,7 +276,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				valueField: 'id_',
 				displayField: 'nombre',
 				gdisplayField: 'desc_',
-				hiddenName: 'id_funcionario_denunciado',
+				hiddenName: 'id_cliente',
 				forceSelection: true,
 				typeAhead: false,
 				triggerAction: 'all',
@@ -248,8 +299,83 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
+				name: 'pnr',
+				fieldLabel: 'P.N.R.',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.pnr', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'nro_vuelo',
+				fieldLabel: 'Nro. Vuelo',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 10
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.nro_vuelo', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'origen',
+				fieldLabel: 'Origen',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 10
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.origen', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'destino',
+				fieldLabel: 'Destino',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 10
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.destino', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'hora_vuelo',
+				fieldLabel: 'Hora Vuelo',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 8
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.hora_vuelo', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
 				name: 'id_oficina_incidente',
-				fieldLabel: 'id_oficina_incidente',
+				fieldLabel: 'Oficina Incidente',
 				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -292,7 +418,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'id_oficina_registro_incidente',
-				fieldLabel: 'id_oficina_registro_incidente',
+				fieldLabel: 'Oficina Registro Incidente',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -334,8 +460,172 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
+				name: 'nro_frd',
+				fieldLabel: 'Nro. FRD',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.nro_frd', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'nro_frsa',
+				fieldLabel: 'Nro. FTSA',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.nro_frsa', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'nro_pir',
+				fieldLabel: 'Nro. PIR',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.nro_pir', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'nro_att_canalizado',
+				fieldLabel: 'Nro. Att Canalizado',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.nro_att_canalizado', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'nro_ripat_att',
+				fieldLabel: 'Nro. RIPAT Att',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.nro_ripat_att', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'nro_hoja_ruta',
+				fieldLabel: 'Nro. Hoja Ruta',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 4
+			},
+			type: 'NumberField',
+			filters: {pfiltro: 'rec.nro_hoja_ruta', type: 'numeric'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'id_funcionario_denunciado',
+				fieldLabel: 'Funcionario Denunciado',
+				allowBlank: false,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_/control/Clase/Metodo',
+					id: 'id_',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_', 'nombre', 'codigo'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+				}),
+				valueField: 'id_',
+				displayField: 'nombre',
+				gdisplayField: 'desc_',
+				hiddenName: 'id_funcionario_denunciado',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				renderer: function (value, p, record) {
+					return String.format('{0}', record.data['desc_']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'detalle_incidente',
+				fieldLabel: 'Detalle Incidente',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: -5
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.detalle_incidente', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'observaciones_incidente',
+				fieldLabel: 'Observaciones Incidente',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: -5
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.observaciones_incidente', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+
+		{
+			config: {
 				name: 'id_proceso_wf',
-				fieldLabel: 'id_proceso_wf',
+				fieldLabel: 'Proceso_wf',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -378,7 +668,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'id_estado_wf',
-				fieldLabel: 'id_estado_wf',
+				fieldLabel: 'Estado_wf',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -420,51 +710,8 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
-				name: 'id_cliente',
-				fieldLabel: 'id_cliente',
-				allowBlank: true,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
-				hiddenName: 'id_cliente',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config: {
 				name: 'estado',
-				fieldLabel: 'estado',
+				fieldLabel: 'Estado',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -476,72 +723,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			grid: true,
 			form: true
 		},
-		{
-			config: {
-				name: 'fecha_hora_incidente',
-				fieldLabel: 'fecha_hora_incidente',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				format: 'd/m/Y',
-				renderer: function (value, p, record) {
-					return value ? value.dateFormat('d/m/Y H:i:s') : ''
-				}
-			},
-			type: 'DateField',
-			filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_ripat_att',
-				fieldLabel: 'nro_ripat_att',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.nro_ripat_att', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_hoja_ruta',
-				fieldLabel: 'nro_hoja_ruta',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.nro_hoja_ruta', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'fecha_hora_recepcion',
-				fieldLabel: 'fecha_hora_recepcion',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				format: 'd/m/Y',
-				renderer: function (value, p, record) {
-					return value ? value.dateFormat('d/m/Y H:i:s') : ''
-				}
-			},
-			type: 'DateField',
-			filters: {pfiltro: 'rec.fecha_hora_recepcion', type: 'date'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
+
 		{
 			config: {
 				name: 'estado_reg',
@@ -557,186 +739,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			grid: true,
 			form: false
 		},
-		{
-			config: {
-				name: 'hora_vuelo',
-				fieldLabel: 'hora_vuelo',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 8
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.hora_vuelo', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'origen',
-				fieldLabel: 'origen',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 10
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.origen', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_frd',
-				fieldLabel: 'nro_frd',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.nro_frd', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'observaciones_incidente',
-				fieldLabel: 'observaciones_incidente',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: -5
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.observaciones_incidente', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'destino',
-				fieldLabel: 'destino',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 10
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.destino', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_pir',
-				fieldLabel: 'nro_pir',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.nro_pir', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_frsa',
-				fieldLabel: 'nro_frsa',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.nro_frsa', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_att_canalizado',
-				fieldLabel: 'nro_att_canalizado',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.nro_att_canalizado', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_tramite',
-				fieldLabel: 'nro_tramite',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.nro_tramite', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'detalle_incidente',
-				fieldLabel: 'detalle_incidente',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: -5
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.detalle_incidente', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'pnr',
-				fieldLabel: 'pnr',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 4
-			},
-			type: 'NumberField',
-			filters: {pfiltro: 'rec.pnr', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'nro_vuelo',
-				fieldLabel: 'nro_vuelo',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 10
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.nro_vuelo', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
+
 		{
 			config: {
 				name: 'usr_reg',
@@ -834,11 +837,13 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			form: false
 		}
 	],
+	fheight: '80%',
+	fwidth: '80%',
 	tam_pag: 50,
-	title: 'Reclamos',
-	ActSave: '../../sis_reclamos/control/Reclamo/insertarReclamo',
-	ActDel: '../../sis_reclamos/control/Reclamo/eliminarReclamo',
-	ActList: '../../sis_reclamos/control/Reclamo/listarReclamo',
+	title: 'Reclamo',
+	ActSave: '../../sis_reclamo/control/Reclamo/insertarReclamo',
+	ActDel: '../../sis_reclamo/control/Reclamo/eliminarReclamo',
+	ActList: '../../sis_reclamo/control/Reclamo/listarReclamo',
 	id_store: 'id_reclamo',
 	fields: [
 		{name: 'id_reclamo', type: 'numeric'},
