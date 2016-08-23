@@ -7,7 +7,6 @@
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 
-require_once(dirname(__FILE__).'../../sis_reclamos/control/ACTRespuesta.php');
 class ACTReclamo extends ACTbase{    
 			
 	function listarReclamo(){
