@@ -78,4 +78,5 @@ select pxp.f_insert_testructura_gui ('RTI', 'REC');
 
 /***********************************I-DAT-MAM-REC-2-23/08/2016****************************************/
 select pxp.f_insert_tgui ('Reclamo', 'Reclamo', 'RECM', 'si', 1, 'sis_reclamo/vista/reclamo/Reclamo.php', 2, '', 'Reclamo', 'REC');
+select pxp.f_insert_testructura_gui ('RECM', 'REC');
 /***********************************F-DAT-MAM-REC-2-23/08/2016****************************************/

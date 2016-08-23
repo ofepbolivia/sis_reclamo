@@ -33,8 +33,53 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'nombre_incidente',
+				fieldLabel: 'Nombre Incidente',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:50
+			},
+			type:'TextField',
+			filters:{pfiltro:'rti.nombre_incidente',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'tiempo_respuesta',
+				fieldLabel: 'Tiempo de Respuesta',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+			type:'NumberField',
+			filters:{pfiltro:'rti.tiempo_respuesta',type:'numeric'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
+				name: 'nivel',
+				fieldLabel: 'Nivel',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+			type:'NumberField',
+			filters:{pfiltro:'rti.nivel',type:'numeric'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
 				name: 'fk_tipo_incidente',
-				fieldLabel: 'fk_tipo_incidente',
+				fieldLabel: 'Padre',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -60,51 +105,6 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:false
-		},
-		{
-			config:{
-				name: 'tiempo_respuesta',
-				fieldLabel: 'tiempo_respuesta',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'rti.tiempo_respuesta',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'nivel',
-				fieldLabel: 'nivel',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'rti.nivel',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'nombre_incidente',
-				fieldLabel: 'nombre_incidente',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'rti.nombre_incidente',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
 		},
 		{
 			config:{
