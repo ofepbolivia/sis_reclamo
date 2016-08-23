@@ -64,6 +64,8 @@ select pxp.f_insert_testructura_gui ('MEDRE', 'REC');
 /***********************************F-DAT-EAQ-REC-1-19/08/2016****************************************/
 
 /***********************************I-DAT-MAM-REC-1-23/08/2016****************************************/
+select pxp.f_insert_tgui ('Reclamo', 'Reclamo', 'RECM', 'si', 1, 'sis_reclamo/vista/reclamo/Reclamo.php', 2, '', 'Reclamo', 'REC');
+
 select pxp.f_delete_testructura_gui ('RECR', 'REC');
 select pxp.f_insert_testructura_gui ('RECM', 'REC');
 /***********************************F-DAT-MAM-REC-1-23/08/2016****************************************/
