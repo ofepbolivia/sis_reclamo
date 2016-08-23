@@ -77,3 +77,6 @@ select pxp.f_insert_tgui ('Cliente', 'Cliente Vista', 'CLI', 'si', 1, 'sis_recla
 select pxp.f_insert_tgui ('TipoIncidente', 'TipoIncidente', 'RTI', 'si', 1, 'sis_reclamo/vista/tipo_incidente/TipoIncidente.php', 2, '', 'TipoIncidente', 'REC');
 /***********************************F-DAT-FEA-REC-1-23/08/2016****************************************/
 
+/***********************************I-DAT-MAM-REC-2-23/08/2016****************************************/
+select pxp.f_insert_tgui ('Reclamo', 'Reclamo', 'RECM', 'si', 1, 'sis_reclamo/vista/reclamo/Reclamo.php', 2, '', 'Reclamo', 'REC');
+/***********************************F-DAT-MAM-REC-2-23/08/2016****************************************/
