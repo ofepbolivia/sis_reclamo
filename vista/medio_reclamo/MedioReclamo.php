@@ -48,6 +48,44 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name:'nombre_medio',
+				fieldLabel:'Nombre del Medio',
+				allowBlank:true,
+				emptyText:'Estado...',
+
+				typeAhead: true,
+				triggerAction: 'all',
+				lazyRender:true,
+				mode: 'local',
+				store:['Telefono','Email','Personal','Terceros']
+
+			},
+			type:'ComboBox',
+			id_grupo:0,
+			filters:{
+				type: 'list',
+				options: ['Telefono','Email','Personal','Terceros']
+			},
+			grid:true,
+			form:true
+		},
+		/*{
+			config:{
+				name: 'nombre_medio',
+				fieldLabel: 'Nombre Medio',
+				allowBlank: false,
+				anchor: '50%',
+				gwidth: 100,
+				maxLength:255
+			},
+			type:'TextField',
+			filters:{pfiltro:'mera.nombre_medio',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},*/
+		{
+			config:{
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
@@ -57,24 +95,9 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 			},
 				type:'TextField',
 				filters:{pfiltro:'mera.estado_reg',type:'string'},
-				id_grupo:1,
+				id_grupo:0,
 				grid:true,
 				form:false
-		},
-		{
-			config:{
-				name: 'nombre_medio',
-				fieldLabel: 'Nombre Medio',
-				allowBlank: false,
-				anchor: '50%',
-				gwidth: 100,
-				maxLength:255
-			},
-				type:'TextField',
-				filters:{pfiltro:'mera.nombre_medio',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
 		},
 		{
 			config:{

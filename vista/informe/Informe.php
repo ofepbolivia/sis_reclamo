@@ -245,21 +245,21 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: false,
 						emptyText: 'Elija una opción...',
 						store: new Ext.data.JsonStore({
-							url: '../../sis_/control/Clase/Metodo',
-							id: 'id_',
+							url: '../../sis_reclamo/control/Compensacion/listarCompensacion',
+							id: 'id_compensacion',
 							root: 'datos',
 							sortInfo: {
 								field: 'nombre',
 								direction: 'ASC'
 							},
 							totalProperty: 'total',
-							fields: ['id_', 'nombre', 'codigo'],
+							fields: ['id_compensacion', 'nombre'],
 							remoteSort: true,
 							baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 						}),
-						valueField: 'id_',
+						valueField: 'id_compensacion',
 						displayField: 'nombre',
-						gdisplayField: 'desc_',
+						gdisplayField: 'desc_nombre_compensacion',
 						hiddenName: 'id_reclamo',
 						forceSelection: true,
 						enableMultiSelect:true,
@@ -273,7 +273,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						gwidth: 150,
 						minChars: 2,
 						renderer : function(value, p, record) {
-							return String.format('{0}', record.data['desc_']);
+							return String.format('{0}', record.data['desc_nombre_compensacion']);
 						}
 					},
 					type: 'ComboBox',
