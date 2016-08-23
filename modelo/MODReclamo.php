@@ -58,6 +58,9 @@ class MODReclamo extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
         $this->captura('desc_nombre_medio','varchar');
+        $this->captura('desc_nombre_cliente','varchar');
+        $this->captura('desc_apellido_paterno','varchar');
+        $this->captura('desc_apellido_materno','varchar');
 
 
 		
