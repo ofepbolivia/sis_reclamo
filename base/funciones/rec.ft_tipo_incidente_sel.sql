@@ -3,11 +3,11 @@ CREATE OR REPLACE FUNCTION "rec"."ft_tipo_incidente_sel"(
 RETURNS character varying AS
 $BODY$
 /**************************************************************************
- SISTEMA:		Sistema de Reclamos
+ SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_tipo_incidente_sel
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'rec.ttipo_incidente'
  AUTOR: 		 (admin)
- FECHA:	        10-08-2016 13:52:38
+ FECHA:	        23-08-2016 19:24:46
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -30,34 +30,34 @@ BEGIN
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'REC_INC_SEL'
+ 	#TRANSACCION:  'REC_RTI_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 13:52:38
+ 	#FECHA:		23-08-2016 19:24:46
 	***********************************/
 
-	if(p_transaccion='REC_INC_SEL')then
+	if(p_transaccion='REC_RTI_SEL')then
      				
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-						inc.id_tipo_incidente,
-						inc.estado_reg,
-						inc.nombre_incidente,
-						inc.nivel,
-						inc.fk_tipo_incidente,
-						inc.tiempo_respuesta,
-						inc.fecha_reg,
-						inc.id_usuario_reg,
-						inc.usuario_ai,
-						inc.id_usuario_ai,
-						inc.fecha_mod,
-						inc.id_usuario_mod,
+						rti.id_tipo_incidente,
+						rti.fk_tipo_incidente,
+						rti.estado_reg,
+						rti.tiempo_respuesta,
+						rti.nivel,
+						rti.nombre_incidente,
+						rti.fecha_reg,
+						rti.usuario_ai,
+						rti.id_usuario_reg,
+						rti.id_usuario_ai,
+						rti.id_usuario_mod,
+						rti.fecha_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod	
-						from rec.ttipo_incidente inc
-						inner join segu.tusuario usu1 on usu1.id_usuario = inc.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = inc.id_usuario_mod
+						from rec.ttipo_incidente rti
+						inner join segu.tusuario usu1 on usu1.id_usuario = rti.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rti.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -70,20 +70,20 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'REC_INC_CONT'
+ 	#TRANSACCION:  'REC_RTI_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 13:52:38
+ 	#FECHA:		23-08-2016 19:24:46
 	***********************************/
 
-	elsif(p_transaccion='REC_INC_CONT')then
+	elsif(p_transaccion='REC_RTI_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_tipo_incidente)
-					    from rec.ttipo_incidente inc
-					    inner join segu.tusuario usu1 on usu1.id_usuario = inc.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = inc.id_usuario_mod
+					    from rec.ttipo_incidente rti
+					    inner join segu.tusuario usu1 on usu1.id_usuario = rti.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rti.id_usuario_mod
 					    where ';
 			
 			--Definicion de la respuesta		    

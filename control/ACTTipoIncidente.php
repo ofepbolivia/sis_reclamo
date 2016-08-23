@@ -3,7 +3,7 @@
 *@package pXP
 *@file gen-ACTTipoIncidente.php
 *@author  (admin)
-*@date 10-08-2016 13:52:38
+*@date 23-08-2016 19:24:46
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 
@@ -13,7 +13,6 @@ class ACTTipoIncidente extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_tipo_incidente');
 
 		$this->objParam->defecto('dir_ordenacion','asc');
-		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODTipoIncidente','listarTipoIncidente');

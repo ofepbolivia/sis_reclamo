@@ -11,9 +11,7 @@ select pxp.f_delete_tgui ('SISINF');
 select pxp.f_delete_tgui ('SISINF');
 select pxp.f_delete_tgui ('SISINF');
 select pxp.f_insert_tgui ('Informe', 'Informe', 'SISINF', 'si', 1, 'sis_reclamo/vista/informe/Informe.php', 2, '', 'Informe', 'REC');
-----------------------------------
---COPY LINES TO dependencies.sql FILE
----------------------------------
+
 
 select pxp.f_insert_testructura_gui ('REC', 'SISTEMA');
 select pxp.f_insert_testructura_gui ('SISCOM', 'REC');
@@ -24,11 +22,6 @@ select pxp.f_delete_testructura_gui ('SISINF', 'REC');
 select pxp.f_insert_testructura_gui ('SISINF', 'REC');
 
 /***********************************F-DAT-MAM-REC-1-10/08/2016****************************************/
-
-/***********************************I-DAT-FEA-REC-2-11/08/2016****************************************/
-select pxp.f_insert_tgui ('TipoIncidente', 'TipoIncidente', 'RECTI', 'si', 1, 'sis_reclamo/vista/tipo_incidente/TipoIncidente.php', 2, '', 'TipoIncidente', 'REC');
-select pxp.f_insert_testructura_gui ('RECTI', 'REC');
-/***********************************F-DAT-FEA-REC-2-11/08/2016****************************************/
 
 /***********************************I-DAT-EAQ-REC-1-10/08/2016****************************************/
 select pxp.f_insert_tgui ('medio reclamo', 'medio reclamo', 'MEDRE', 'si', 5, 'sis_reclamo/vista/medio_reclamo/MedioReclamo.php', 2, '', 'MedioReclamo', 'REC');
@@ -58,9 +51,6 @@ select pxp.f_delete_tgui ('recl');
 select pxp.f_delete_tgui ('RED');
 select pxp.f_delete_tgui ('RECR');
 select pxp.f_insert_tgui ('Respuesta Reclamo', 'Respuesta Reclamo', 'RESRE', 'si', 1, 'sis_reclamo/vista/respuesta/RespuestaRecla.php', 2, '', 'RespuestaRecla', 'REC');
-----------------------------------
---COPY LINES TO dependencies.sql FILE
----------------------------------
 
 select pxp.f_delete_testructura_gui ('SISRES', 'REC');
 select pxp.f_delete_testructura_gui ('recl', 'REC');
@@ -77,3 +67,11 @@ select pxp.f_insert_testructura_gui ('MEDRE', 'REC');
 select pxp.f_delete_testructura_gui ('RECR', 'REC');
 select pxp.f_insert_testructura_gui ('RECM', 'REC');
 /***********************************F-DAT-MAM-REC-1-23/08/2016****************************************/
+
+/***********************************I-DAT-FEA-REC-1-23/08/2016****************************************/
+select pxp.f_insert_testructura_gui ('CLI', 'REC');
+select pxp.f_insert_testructura_gui ('RTI', 'REC');
+select pxp.f_insert_tgui ('Cliente', 'Cliente Vista', 'CLI', 'si', 1, 'sis_reclamo/vista/cliente/Cliente.php', 2, '', 'Cliente', 'REC');
+select pxp.f_insert_tgui ('TipoIncidente', 'TipoIncidente', 'RTI', 'si', 1, 'sis_reclamo/vista/tipo_incidente/TipoIncidente.php', 2, '', 'TipoIncidente', 'REC');
+/***********************************F-DAT-FEA-REC-1-23/08/2016****************************************/
+
