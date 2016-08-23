@@ -81,12 +81,14 @@ BEGIN
                         med.nombre_medio as desc_nombre_medio,
                         cli.nombre as desc_nombre_cliente,
                         cli.apellido_paterno as desc_apellido_paterno,
-                        cli.apellido_materno as  desc_apellido_materno
+                        cli.apellido_materno as  desc_apellido_materno,
+                        tip.nombre_incidente as desc_nombre_incidente
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 						join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
                         join rec.tcliente cli on cli.id_cliente = rec.id_cliente
+                        join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
 				        where  ';
 
 			--Definicion de la respuesta
@@ -115,6 +117,7 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 						join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
                         join rec.tcliente cli on cli.id_cliente = rec.id_cliente
+                        join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
 					    where ';
 
 			--Definicion de la respuesta
