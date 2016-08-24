@@ -31,6 +31,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 					name: 'id_cliente'
 			},
 			type:'Field',
+			id_grupo:1,
 			form:true 
 		},
 		{
@@ -40,7 +41,8 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:50
+				maxLength:50,
+				style:'text-transform:uppercase;'
 			},
 			type:'TextField',
 			filters:{pfiltro:'cli.nombre',type:'string'},
@@ -56,11 +58,13 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:30
+				maxLength:30,
+				style:'text-transform:uppercase;'
 			},
 			type:'TextField',
 			filters:{pfiltro:'cli.apellido_paterno',type:'string'},
 			id_grupo:1,
+			bottom_filter:true,
 			grid:true,
 			form:true
 		}
@@ -69,13 +73,15 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				name: 'apellido_materno',
 				fieldLabel: 'Apellido Materno',
 				allowBlank: true,
-				anchor: '90%',
+				anchor: '100%',
 				gwidth: 100,
-				maxLength:30
+				maxLength:30,
+				style:'text-transform:uppercase;'
 			},
 			type:'TextField',
 			filters:{pfiltro:'cli.apellido_materno',type:'string'},
 			id_grupo:1,
+			bottom_filter:true,
 			grid:true,
 			form:true
 		},
@@ -87,7 +93,10 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				anchor: '100%',
 				gwidth: 100,
 				maxLength:10,
-				store:['HOMBRE','MUJER']
+				typeAhead:true,
+				triggerAction:'all',
+				mode:'local',
+				store:['VARON','MUJER']
 			},
 				type:'ComboBox',
 				filters:{pfiltro:'cli.genero',type:'string'},
@@ -107,6 +116,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'cli.ci',type:'string'},
 				id_grupo:1,
+				bottom_filter:true,
 				grid:true,
 				form:true
 		},
@@ -118,8 +128,10 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				anchor: '100%',
 				gwidth: 100,
 				maxLength:10,
+				typeAhead:true,
+				triggerAction:'all',
 				mode: 'local',
-				store:['CBA','SC','LP','BEN','PAN','TAR','OR','POT','CH']
+				store:['CB','SC','LP','BN','CJ','TJ','OR','PT','CH', 'OTRO']
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'cli.lugar_expedicion',type:'string'},
@@ -134,7 +146,8 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:30
+				maxLength:30,
+				style:'text-transform:uppercase;'
 			},
 			type:'TextField',
 			filters:{pfiltro:'cli.nacionalidad',type:'string'},
@@ -154,38 +167,8 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			type:'NumberField',
 			filters:{pfiltro:'cli.celular',type:'numeric'},
 			id_grupo:2,
-			grid:true,
+			grid:false,
 			form:true
-		},
-		{
-			config:{
-				name: 'email',
-				fieldLabel: 'email',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.email',type:'string'},
-				id_grupo:2,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'direccion',
-				fieldLabel: 'Direccion',
-				allowBlank: false,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:100
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.direccion',type:'string'},
-				id_grupo:2,
-				grid:true,
-				form:true
 		},
 		{
 			config:{
@@ -196,10 +179,42 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 100,
 				maxLength:10
 			},
-				type:'NumberField',
-				filters:{pfiltro:'cli.telefono',type:'numeric'},
+			type:'NumberField',
+			filters:{pfiltro:'cli.telefono',type:'numeric'},
+			id_grupo:2,
+			grid:false,
+			form:true
+		},
+		{
+			config:{
+				name: 'email',
+				fieldLabel: 'Email',
+				vtype:'email',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:50
+			},
+				type:'TextField',
+				filters:{pfiltro:'cli.email',type:'string'},
 				id_grupo:2,
-				grid:true,
+				grid:false,
+				form:true
+		},
+		{
+			config:{
+				name: 'direccion',
+				fieldLabel: 'Direccion',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:100,
+				style:'text-transform:uppercase;'
+			},
+				type:'TextArea',
+				filters:{pfiltro:'cli.direccion',type:'string'},
+				id_grupo:2,
+				grid:false,
 				form:true
 		},
 		{
@@ -209,12 +224,13 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:30
+				maxLength:30,
+				style:'text-transform:uppercase;'
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.ciudad_residencia',type:'string'},
 				id_grupo:2,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
@@ -224,27 +240,29 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:30
+				maxLength:30,
+				style:'text-transform:uppercase;'
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.pais_residencia',type:'string'},
 				id_grupo:2,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
 			config:{
 				name: 'barrio_zona',
-				fieldLabel: 'Zona Barrial',
+				fieldLabel: 'Zona/Barrio',
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:50
+				maxLength:50,
+				style:'text-transform:uppercase;'
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.barrio_zona',type:'string'},
 				id_grupo:2,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
@@ -290,13 +308,13 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'DateField',
 				filters:{pfiltro:'cli.fecha_reg',type:'date'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
 			config:{
 				name: 'usuario_ai',
-				fieldLabel: 'Funcionaro AI',
+				fieldLabel: 'Funcionario AI',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -305,7 +323,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'cli.usuario_ai',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -320,7 +338,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'Field',
 				filters:{pfiltro:'usu1.cuenta',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -336,7 +354,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'DateField',
 				filters:{pfiltro:'cli.fecha_mod',type:'date'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -351,10 +369,24 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'Field',
 				filters:{pfiltro:'usu2.cuenta',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		}
 	],
+	rowExpander: new Ext.ux.grid.RowExpander({
+		tpl : new Ext.Template(
+			'<br>','<h1 style="text-align: center">DATOS DE CONTACTO</h1>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Telefono Celular:&nbsp;&nbsp;</b> {celular}, <b>Telefono Fijo:</b> {telefono}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Correo:&nbsp;&nbsp;</b> {email}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Direccion:&nbsp;&nbsp;</b> {direccion}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Ciudad de Residencia:&nbsp;&nbsp;</b> {ciudad_residencia}, <b>Pais de Residencia:</b> {pais_residencia}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Barrio/Zona:&nbsp;&nbsp;</b> {barrio_zona}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha de Registro:&nbsp;&nbsp;</b> {fecha_reg:date("d/m/Y")}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Ult. Modificación:&nbsp;&nbsp;</b> {fecha_mod:date("d/m/Y")}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Creado por:&nbsp;&nbsp;</b> {usr_reg}</p>',
+			'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Modificado por:&nbsp;&nbsp;</b> {usr_mod}</p><br>'
+		)
+	}),
 	Grupos: [
 		{
 			layout: 'column',
@@ -366,7 +398,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				bodyStyle: 'padding-right:5px;',
 				items: [{
 					xtype: 'fieldset',
-					title: 'Datos Importantes',
+					title: 'Datos Personales',
 					autoHeight: true,
 					items: [],
 					id_grupo:1
