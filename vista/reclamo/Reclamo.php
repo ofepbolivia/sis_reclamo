@@ -302,47 +302,59 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			form: true
 		},
 		{
-			config: {
-				name: 'id_funcionario_recepcion',
-				fieldLabel: 'Funcionario Recepcion',
-				allowBlank: false,
-				emptyText: 'Elija una opción...',
+			config:{
+				name:'id_funcionario_recepcion',
+				fieldLabel:'Funcionario',
+				allowBlank:false,
+				emptyText:'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
+					url: '../../sis_seguridad/control/Persona/listarPersona',
+					id: 'id_persona',
 					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
+					sortInfo:{
+						field: 'nombre_completo2',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
+					fields: ['id_persona','nombre_completo2','ci'],
+					// turn on remote sorting
 					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+					baseParams:{par_filtro:'p.nombre_completo2#p.ci'}
 				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
+				valueField: 'id_persona',
+				displayField: 'nombre_completo2',
+				gdisplayField:'desc_person',//mapea al store del grid
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p> </div></tpl>',
 				hiddenName: 'id_funcionario_recepcion',
-				forceSelection: true,
-				typeAhead: false,
+				forceSelection:true,
+				typeAhead: true,
 				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
-				}
+				lazyRender:true,
+				mode:'remote',
+				pageSize:10,
+				queryDelay:1000,
+				width:250,
+				gwidth:280,
+				minChars:2,
+				turl:'../../../sis_seguridad/vista/persona/Persona.php',
+				ttitle:'Personas',
+				// tconfig:{width:1800,height:500},
+				tdata:{},
+				tcls:'persona',
+				pid:this.idContenedor,
+
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_person']);}
 			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
-			grid: true,
-			form: true
+			type:'TrigguerCombo',
+			bottom_filter:true,
+			id_grupo:0,
+			filters:{
+				pfiltro:'nombre_completo2',
+				type:'string'
+			},
+
+			grid:true,
+			form:true
 		},
 
 		{
@@ -385,21 +397,21 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
+					url: '../../sis_organigrama/control/Oficina/listarOficina',
+					id: 'id_oficina',
 					root: 'datos',
 					sortInfo: {
 						field: 'nombre',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
+					fields: ['id_oficina', 'nombre', 'codigo'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 				}),
-				valueField: 'id_',
+				valueField: 'id_oficina',
 				displayField: 'nombre',
-				gdisplayField: 'desc_',
+				gdisplayField: 'desc_nombre_oficina',
 				hiddenName: 'id_oficina_incidente',
 				forceSelection: true,
 				typeAhead: false,
@@ -412,7 +424,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				gwidth: 150,
 				minChars: 2,
 				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
+					return String.format('{0}', record.data['desc_nombre_oficina']);
 				}
 			},
 			type: 'ComboBox',
@@ -428,21 +440,21 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
+					url: '../../sis_organigrama/control/Oficina/listarOficina',
+					id: 'id_oficina',
 					root: 'datos',
 					sortInfo: {
 						field: 'nombre',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
+					fields: ['id_oficina', 'nombre', 'codigo'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 				}),
-				valueField: 'id_',
+				valueField: 'id_oficina',
 				displayField: 'nombre',
-				gdisplayField: 'desc_',
+				gdisplayField: 'desc_nombre_oficina',
 				hiddenName: 'id_oficina_registro_incidente',
 				forceSelection: true,
 				typeAhead: false,
@@ -455,7 +467,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				gwidth: 150,
 				minChars: 2,
 				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
+					return String.format('{0}', record.data['desc_nombre_oficina']);
 				}
 			},
 			type: 'ComboBox',
@@ -561,21 +573,21 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
+					url: '../../sis_seguridad/control/Persona/listarPersona',
+					id: 'id_persona',
 					root: 'datos',
 					sortInfo: {
-						field: 'nombre',
+						field: 'nombre_completo2',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
+					fields: ['id_persona','nombre_completo2','ci'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
+				valueField: 'id_persona',
+				displayField: 'nombre_completo2',
+				gdisplayField: 'desc_person',
 				hiddenName: 'id_funcionario_denunciado',
 				forceSelection: true,
 				typeAhead: false,
@@ -588,7 +600,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				gwidth: 150,
 				minChars: 2,
 				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
+					return String.format('{0}', record.data['desc_person']);
 				}
 			},
 			type: 'ComboBox',
@@ -627,7 +639,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			grid: true,
 			form: true
 		},
-		{
+		/*{
 			config: {
 				labelSeparator: 'id_proceso_wf',
 				inputType: 'hidden',
@@ -644,7 +656,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'Field',
 			form: true
-		},
+		},*/
 		{
 			config: {
 				name: 'estado',
@@ -827,8 +839,8 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 	},
 	bdel: true,
 	bsave: true,
-	fheight: '75%',
-	fwidth: '61%',
+	fheight: '70%',
+	fwidth: '63%',
 
 	Grupos: [
 		{
