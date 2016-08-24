@@ -49,9 +49,9 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name:'nombre_medio',
-				fieldLabel:'Nombre del Medio',
-				allowBlank:true,
-				emptyText:'Estado...',
+				fieldLabel:'Nombre',
+				allowBlank:false,
+				emptyText:'Medio de Reclamo',
 
 				typeAhead: true,
 				triggerAction: 'all',
