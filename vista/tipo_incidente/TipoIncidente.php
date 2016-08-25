@@ -10,16 +10,17 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 
 	constructor:function(config){
+
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
+		//this.load({params:{start:0, limit:this.tam_pag}})
+		//this.root.reload();
 	},
-			
 	Atributos:[
 		{
 			//configuracion del componente
@@ -30,6 +31,16 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'Field',
 			form:true 
+		},
+		{
+			config:{
+				labelSeparator:'',
+				inputType:'hidden',
+				name: 'fk_tipo_incidente'
+
+			},
+			type:'Field',
+			form:true
 		},
 		{
 			config:{
@@ -50,7 +61,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'tiempo_respuesta',
 				fieldLabel: 'Tiempo de Respuesta',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
@@ -65,7 +76,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'nivel',
 				fieldLabel: 'Nivel',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:4
@@ -76,7 +87,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
-		{
+		/*{
 			config:{
 				name: 'fk_tipo_incidente',
 				fieldLabel: 'Padre',
@@ -90,7 +101,8 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:true
-		},
+		}
+		,*/
 		{
 			config:{
 				name: 'estado_reg',
@@ -124,21 +136,6 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'usuario_ai',
-				fieldLabel: 'Funcionaro AI',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:300
-			},
-				type:'TextField',
-				filters:{pfiltro:'rti.usuario_ai',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
-		{
-			config:{
 				name: 'usr_reg',
 				fieldLabel: 'Creado por',
 				allowBlank: true,
@@ -150,21 +147,6 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'usu1.cuenta',type:'string'},
 				id_grupo:1,
 				grid:true,
-				form:false
-		},
-		{
-			config:{
-				name: 'id_usuario_ai',
-				fieldLabel: 'Creado por',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'Field',
-				filters:{pfiltro:'rti.id_usuario_ai',type:'numeric'},
-				id_grupo:1,
-				grid:false,
 				form:false
 		},
 		{
@@ -199,19 +181,26 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 				form:false
 		}
 	],
-	tam_pag:50,	
+	/*tam_pag:50,*/
 	title:'TipoIncidente',
 	ActSave:'../../sis_reclamo/control/TipoIncidente/insertarTipoIncidente',
 	ActDel:'../../sis_reclamo/control/TipoIncidente/eliminarTipoIncidente',
 	ActList:'../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
 	id_store:'id_tipo_incidente',
+	textRoot:'INCIDENTES',
+	id_nodo:'id_tipo_incidente',
+	id_nodo_p:'fk_tipo_incidente',
+
 	fields: [
+		'id',
+		'tipo_meta',
 		{name:'id_tipo_incidente', type: 'numeric'},
 		{name:'fk_tipo_incidente', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
 		{name:'tiempo_respuesta', type: 'numeric'},
 		{name:'nivel', type: 'numeric'},
 		{name:'nombre_incidente', type: 'string'},
+		
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usuario_ai', type: 'string'},
 		{name:'id_usuario_reg', type: 'numeric'},
@@ -227,7 +216,22 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:true,
+	rootVisible:true
+	/*expanded:false*/,
+
+	preparaMenu:function(n){
+		if(n.attributes.tipo_nodo == 'hijo' || n.attributes.tipo_nodo == 'raiz' || n.attributes.id == 'id'){
+			this.tbar.items.get('b-new-'+this.idContenedor).enable()
+		}
+		else {
+			this.tbar.items.get('b-new-'+this.idContenedor).disable()
+		}
+		// llamada funcion clase padre
+		Phx.vista.TipoIncidente.superclass.preparaMenu.call(this,n);
+	}
+
+
 	}
 )
 </script>
