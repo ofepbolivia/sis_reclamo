@@ -81,21 +81,21 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
+					url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+					id: 'fk_tipo_incidente',
 					root: 'datos',
 					sortInfo: {
-						field: 'nombre',
+						field: 'nombre_incidente',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
+					fields: ['fk_tipo_incidente', 'nombre_incidente', 'codigo'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
+				valueField: 'fk_tipo_incidente',
+				displayField: 'nombre_incidente',
+				gdisplayField: 'desc_nombre_incidente',
 				hiddenName: 'id_subtipo_incidente',
 				forceSelection: true,
 				typeAhead: false,
@@ -108,7 +108,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				gwidth: 150,
 				minChars: 2,
 				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_']);
+					return String.format('{0}', record.data['desc_sudnom_incidente']);
 				}
 			},
 			type: 'ComboBox',
