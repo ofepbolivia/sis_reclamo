@@ -155,19 +155,19 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					id: 'id_cliente',
 					root: 'datos',
 					sortInfo:{
-						field: 'nombre',
+						field: 'nombre_completo2',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_cliente','nombre','apellido_paterno','apellido_materno'],
+					fields: ['id_cliente','nombre_completo2','ci'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'p.nombre_completo1#p.apellido_paterno'}
+					baseParams:{par_filtro:'c.nombre#c.ci'}
 				}),
 				valueField: 'id_cliente',
-				displayField: 'nombre',
-				gdisplayField:'desc_nombre_cliente',//mapea al store del grid
-				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre} {apellido_paterno}</p> </div></tpl>',
+				displayField: 'nombre_completo2',
+				gdisplayField:'desc_nom_cliente',//mapea al store del grid
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p> </div></tpl>',
 				hiddenName: 'id_cliente',
 				forceSelection:true,
 				typeAhead: true,
@@ -186,13 +186,13 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				tcls:'Cliente',
 				pid:this.idContenedor,
 
-				renderer:function (value, p, record){return String.format('{0}', record.data['desc_person']);}
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}
 			},
 			type:'TrigguerCombo',
 			bottom_filter:true,
 			id_grupo:1,
 			filters:{
-				pfiltro:'nombre',
+				pfiltro:'nombre_completo2',
 				type:'string'
 			},
 
@@ -639,7 +639,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			grid: true,
 			form: true
 		},
-		/*{
+		{
 			config: {
 				labelSeparator: 'id_proceso_wf',
 				inputType: 'hidden',
@@ -656,7 +656,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'Field',
 			form: true
-		},*/
+		},
 		{
 			config: {
 				name: 'estado',

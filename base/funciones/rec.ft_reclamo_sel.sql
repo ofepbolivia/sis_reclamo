@@ -79,9 +79,7 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
                         med.nombre_medio as desc_nombre_medio,
-                        cli.nombre as desc_nombre_cliente,
-                        cli.apellido_paterno as desc_apellido_paterno,
-                        cli.apellido_materno as  desc_apellido_materno,
+                        cli.nombre_completo2 as desc_nom_cliente,
                         tip.nombre_incidente as desc_nombre_incidente,
                         per.nombre_completo2 as desc_person,
                         of.nombre as desc_nombre_oficina
@@ -89,7 +87,8 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 						join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
-                        join rec.tcliente cli on cli.id_cliente = rec.id_cliente
+                        inner join rec.tcliente cl on cl.id_cliente =rec.id_cliente
+                        inner join rec.vcliente cli on cli.id_cliente = cli.id_cliente
                         join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
                         inner join orga.tfuncionario fun on fun.id_funcionario =rec.id_funcionario_recepcion
                         inner join segu.vpersona per on per.id_persona = fun.id_persona
@@ -117,11 +116,12 @@ BEGIN
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_reclamo)
-					   from rec.treclamo rec
+			   			from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 						join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
-                        join rec.tcliente cli on cli.id_cliente = rec.id_cliente
+                        inner join rec.tcliente cl on cl.id_cliente =rec.id_cliente
+                        inner join rec.vcliente cli on cli.id_cliente = cli.id_cliente
                         join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
                         inner join orga.tfuncionario fun on fun.id_funcionario =rec.id_funcionario_recepcion
                         inner join segu.vpersona per on per.id_persona = fun.id_persona
