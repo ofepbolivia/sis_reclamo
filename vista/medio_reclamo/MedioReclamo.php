@@ -46,7 +46,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 				grid:true,
 				form:true
 		},
-		{
+		/*{
 			config:{
 				name:'nombre_medio',
 				fieldLabel:'Nombre',
@@ -68,8 +68,8 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 			},
 			grid:true,
 			form:true
-		},
-		/*{
+		},*/
+		{
 			config:{
 				name: 'nombre_medio',
 				fieldLabel: 'Nombre Medio',
@@ -83,7 +83,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true
-		},*/
+		},
 		{
 			config:{
 				name: 'estado_reg',

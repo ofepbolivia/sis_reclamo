@@ -43,11 +43,13 @@ header("content-type: text/javascript; charset=UTF-8");
 					},
 					type:'DateField',
 					filters:{pfiltro:'infor.fecha_informe',type:'date'},
-					id_grupo:1,
+					id_grupo:0,
 					grid:true,
 					form:true
 				},
+
 				//Inicia combo uno
+				 /*
 				{
 					config:{
 						name:'id_persona',
@@ -56,6 +58,8 @@ header("content-type: text/javascript; charset=UTF-8");
 						emptyText:'Persona...',
 						store: new Ext.data.JsonStore({
 							url: '../../sis_seguridad/control/Persona/listarPersona',
+							//ActList:'../../sis_organigrama/control/Funcionario/listarFuncionario',
+							//id_funcionario
 							id: 'id_persona',
 							root: 'datos',
 							sortInfo:{
@@ -70,7 +74,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						}),
 						valueField: 'id_persona',
 						displayField: 'nombre_completo1',
-						gdisplayField:'desc_person',//mapea al store del grid
+						gdisplayField:'desc_persona',//mapea al store del grid
 						tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo1}</p><p>CI:{ci}</p> </div></tpl>',
 						hiddenName: 'id_persona',
 						forceSelection:true,
@@ -102,10 +106,33 @@ header("content-type: text/javascript; charset=UTF-8");
 
 					grid:true,
 					form:true
-				},
+				},*/
 				//Finaliza combo uno
-				/*
+
 				{
+					config:{
+						name:'id_funcionario',
+						hiddenName: 'Solicitante',
+						origen:'FUNCIONARIOCAR',
+						fieldLabel:'Funcionario',
+						allowBlank:false,
+						gwidth:200,
+						valueField: 'id_funcionario',
+						gdisplayField: 'desc_funcionario',
+						baseParams: { es_combo_solicitud : 'si' },
+						renderer:function(value, p, record){return String.format('{0}', record.data['desc_funcionario']);}
+					},
+					type:'ComboRec',//ComboRec
+
+					id_grupo:0,
+					filters:{pfiltro:'fun.desc_funcionario1',type:'string'},
+					bottom_filter:true,
+					grid:true,
+					form:true
+				},
+
+
+				/*{
 					config:{
 						name: 'id_usuario_ai',
 						fieldLabel: '',
@@ -121,25 +148,41 @@ header("content-type: text/javascript; charset=UTF-8");
 					form:false
 				},*/
 				{
+					config:{
+						name: 'id_reclamo',
+						fieldLabel: 'Reclamo',
+						allowBlank: true,
+						anchor: '80%',
+						gwidth: 100,
+						maxLength:255
+					},
+					type:'TextField',
+					filters:{pfiltro:'id_reclamo',type:'string'},
+					id_grupo:0,
+					grid:true,
+					form:true
+				},
+
+				/*{
 					config: {
 						name: 'id_reclamo',
-						fieldLabel: 'Id Reclamo',
+						fieldLabel: 'Reclamo',
 						allowBlank: false,
-						emptyText: 'Elija una opción...',
+						emptyText: 'Elija un reclamo...',
 						store: new Ext.data.JsonStore({
-							url: '../../sis_/control/Clase/Metodo',
-							id: 'id_',
+							url: '../../sis_reclamo/control/Reclamo/listarReclamo',
+							id: 'id_reclamo',
 							root: 'datos',
 							sortInfo: {
 								field: 'nombre',
 								direction: 'ASC'
 							},
 							totalProperty: 'total',
-							fields: ['id_', 'nombre', 'codigo'],
+							fields: ['id_reclamo', 'nombre'],
 							remoteSort: true,
-							baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+							baseParams: {par_filtro: 'movtip.nombre'}
 						}),
-						valueField: 'id_',
+						valueField: 'id_reclamo',
 						displayField: 'nombre',
 						gdisplayField: 'desc_',
 						hiddenName: 'id_reclamo',
@@ -162,12 +205,12 @@ header("content-type: text/javascript; charset=UTF-8");
 					filters: {pfiltro: 'movtip.nombre',type: 'string'},
 					grid: true,
 					form: true
-				},
+				},*/
 				{
 					config:{
 						name: 'nro_informe',
 						fieldLabel: 'Nro Informe',
-						allowBlank: false,
+						allowBlank: true,
 						anchor: '80%',
 						gwidth: 100,
 						maxLength:20
@@ -238,7 +281,51 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid:true,
 					form:false
 				},
+
 				{
+					config: {
+						name: 'lista_compensacion',
+						fieldLabel: 'lista compensacion',
+						allowBlank: false,
+						emptyText: 'Seleccion...',
+						store: new Ext.data.JsonStore({
+							url: '../../sis_reclamo/control/Compensacion/listarCompensacion',
+							id: 'id_compensacion',
+							root: 'datos',
+							sortInfo: {
+								field: 'nombre',
+								direction: 'ASC'
+							},
+							totalProperty: 'total',
+							fields: ['id_compensacion', 'nombre'],
+							remoteSort: true,
+							baseParams: {par_filtro: 'movtip.nombre'}
+						}),
+						valueField: 'id_compensacion',
+						displayField: 'nombre',
+						gdisplayField: 'desc_nombre_compensacion',//mapea al store del grid
+						hiddenName: 'id_compensacion',
+						forceSelection: true,
+						typeAhead: true,
+						triggerAction: 'all',
+						lazyRender: true,
+						mode: 'remote',
+						pageSize: 10,
+						queryDelay: 1000,
+						width: 250,
+						gwidth: 200,
+						minChars: 2,
+						enableMultiSelect: true,
+						renderer: function (value, p, record) {
+							return String.format('{0}', record.data['desc_nombre_compensacion']);
+						}
+					},
+					type: 'AwesomeCombo',
+					id_grupo: 0,
+					grid: false,
+					form: true
+				},
+				/*{
 					config:{
 						name: 'lista_compensacion',
 						fieldLabel: 'Lista Compensacion',
@@ -281,7 +368,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					filters: {pfiltro: 'movtip.nombre',type: 'string'},
 					grid: true,
 					form: true
-				},
+				},*/
 				{
 					config:{
 						name: 'conclusion_recomendacion',
@@ -376,7 +463,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			],
 			tam_pag:50,
-			title:'informe',
+			title:'Informe',
 			ActSave:'../../sis_reclamo/control/Informe/insertarInforme',
 			ActDel:'../../sis_reclamo/control/Informe/eliminarInforme',
 			ActList:'../../sis_reclamo/control/Informe/listarInforme',
