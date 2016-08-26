@@ -308,23 +308,23 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank:false,
 				emptyText:'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_seguridad/control/Persona/listarPersona',
-					id: 'id_persona',
+					url: '../../sis_organigrama/control/Funcionario/listarFuncionario',
+					id: 'id_funcionario',
 					root: 'datos',
 					sortInfo:{
-						field: 'nombre_completo2',
+						field: 'id_funcionario',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_persona','nombre_completo2','ci'],
+					fields: ['id_funcionario','desc_person','ci'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'p.nombre_completo2#p.ci'}
+					baseParams:{par_filtro:'fun.ci'}
 				}),
-				valueField: 'id_persona',
-				displayField: 'nombre_completo2',
-				gdisplayField:'desc_person',//mapea al store del grid
-				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p> </div></tpl>',
+				valueField: 'id_funcionario',
+				displayField: 'desc_person',
+				gdisplayField:'desc_nombre_funcionario',//mapea al store del grid
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_person}</p><p>CI:{ci}</p> </div></tpl>',
 				hiddenName: 'id_funcionario_recepcion',
 				forceSelection:true,
 				typeAhead: true,
@@ -343,13 +343,13 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				tcls:'persona',
 				pid:this.idContenedor,
 
-				renderer:function (value, p, record){return String.format('{0}', record.data['desc_person']);}
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_nombre_funcionario']);}
 			},
 			type:'TrigguerCombo',
 			bottom_filter:true,
 			id_grupo:0,
 			filters:{
-				pfiltro:'nombre_completo2',
+				pfiltro:'desc_person',
 				type:'string'
 			},
 
