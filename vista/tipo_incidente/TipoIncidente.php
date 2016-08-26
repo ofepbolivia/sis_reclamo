@@ -10,7 +10,7 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
+Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 
 	constructor:function(config){
 
@@ -18,7 +18,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
 		this.init();
-		//this.load({params:{start:0, limit:this.tam_pag}})
+ 		//this.load({params:{start:0, limit:this.tam_pag}})
 		//this.root.reload();
 	},
 	Atributos:[
@@ -47,9 +47,10 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 				name: 'nombre_incidente',
 				fieldLabel: 'Nombre Incidente',
 				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:50
+				anchor: '100%',
+				gwidth: 200,
+				maxLength:50,
+				style: 'color: red;'
 			},
 			type:'TextField',
 			filters:{pfiltro:'rti.nombre_incidente',type:'string'},
@@ -62,8 +63,8 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 				name: 'tiempo_respuesta',
 				fieldLabel: 'Tiempo de Respuesta',
 				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
+				anchor: '50%',
+				gwidth: 170,
 				maxLength:4
 			},
 			type:'NumberField',
@@ -77,8 +78,8 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 				name: 'nivel',
 				fieldLabel: 'Nivel',
 				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
+				anchor: '50%',
+				gwidth: 50,
 				maxLength:4
 			},
 			type:'NumberField',
@@ -108,7 +109,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:10
 			},
@@ -123,8 +124,8 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 				name: 'fecha_reg',
 				fieldLabel: 'Fecha creación',
 				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
+				anchor: '100%',
+				gwidth: 120,
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
@@ -139,7 +140,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 				name: 'usr_reg',
 				fieldLabel: 'Creado por',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:4
 			},
@@ -181,11 +182,12 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbInterfaz,{
 				form:false
 		}
 	],
+
 	/*tam_pag:50,*/
 	title:'TipoIncidente',
 	ActSave:'../../sis_reclamo/control/TipoIncidente/insertarTipoIncidente',
 	ActDel:'../../sis_reclamo/control/TipoIncidente/eliminarTipoIncidente',
-	ActList:'../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+	ActList:'../../sis_reclamo/control/TipoIncidente/listarTipoIncidenteArb',
 	id_store:'id_tipo_incidente',
 	textRoot:'INCIDENTES',
 	id_nodo:'id_tipo_incidente',

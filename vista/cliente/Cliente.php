@@ -39,6 +39,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				name: 'nombre',
 				fieldLabel: 'Nombres',
 				allowBlank: false,
+				/*emptyText: 'Ingrese nombre del Cliente',*/
 				anchor: '100%',
 				gwidth: 100,
 				maxLength:50,
@@ -54,7 +55,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'apellido_paterno',
-				fieldLabel: 'Apellido Paterno',
+				fieldLabel: 'Primer Apellido ',
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
@@ -71,7 +72,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		,{
 			config:{
 				name: 'apellido_materno',
-				fieldLabel: 'Apellido Materno',
+				fieldLabel: 'Segundo Apellido',
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 100,
@@ -208,8 +209,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:100,
-				style:'text-transform:uppercase;'
+				maxLength:100
 			},
 				type:'TextArea',
 				filters:{pfiltro:'cli.direccion',type:'string'},
