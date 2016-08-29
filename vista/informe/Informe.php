@@ -48,68 +48,50 @@ header("content-type: text/javascript; charset=UTF-8");
 					form:true
 				},
 
-				//Inicia combo uno
-				 /*
 				{
-					config:{
-						name:'id_persona',
-						fieldLabel:'Funcionario',
-						allowBlank:false,
-						emptyText:'Persona...',
+					config: {
+						name: 'id_funcionario',
+						fieldLabel: 'Funcionario',
+						allowBlank: false,
+						emptyText: 'Elija una opción...',
 						store: new Ext.data.JsonStore({
-							url: '../../sis_seguridad/control/Persona/listarPersona',
-							//ActList:'../../sis_organigrama/control/Funcionario/listarFuncionario',
-							//id_funcionario
-							id: 'id_persona',
+							url: '../../sis_organigrama/control/Funcionario/listarFuncionario',
+							id: 'id_funcionario',
 							root: 'datos',
-							sortInfo:{
-								field: 'nombre_completo1',
+							sortInfo: {
+								field: 'desc_person',
 								direction: 'ASC'
 							},
 							totalProperty: 'total',
-							fields: ['id_persona','nombre_completo1','ci'],
-							// turn on remote sorting
+							fields: ['id_funcionario','desc_person','ci'],
 							remoteSort: true,
-							baseParams:{par_filtro:'p.nombre_completo1#p.ci'}
+							baseParams: {par_filtro: ''}
 						}),
-						valueField: 'id_persona',
-						displayField: 'nombre_completo1',
-						gdisplayField:'desc_persona',//mapea al store del grid
-						tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo1}</p><p>CI:{ci}</p> </div></tpl>',
-						hiddenName: 'id_persona',
-						forceSelection:true,
-						typeAhead: true,
+						valueField: 'id_funcionario',
+						displayField: 'desc_person',
+						gdisplayField: 'desc_nombre_fun',
+						//hiddenName: 'id_funcionario_denunciado',
+						forceSelection: true,
+						typeAhead: false,
 						triggerAction: 'all',
-						lazyRender:true,
-						mode:'remote',
-						pageSize:10,
-						queryDelay:1000,
-						width:250,
-						gwidth:280,
-						minChars:2,
-						turl:'../../../sis_seguridad/vista/persona/Persona.php',
-						ttitle:'Personas',
-						// tconfig:{width:1800,height:500},
-						tdata:{},
-						tcls:'persona',
-						pid:this.idContenedor,
-
-						renderer:function (value, p, record){return String.format('{0}', record.data['desc_person']);}
+						lazyRender: true,
+						mode: 'remote',
+						pageSize: 15,
+						queryDelay: 1000,
+						anchor: '100%',
+						gwidth: 150,
+						minChars: 2,
+						renderer: function (value, p, record) {
+							return String.format('{0}', record.data['desc_nombre_fun']);
+						}
 					},
-					type:'TrigguerCombo',
-					bottom_filter:true,
-					id_grupo:0,
-					filters:{
-						pfiltro:'nombre_completo1',
-						type:'string'
-					},
-
-					grid:true,
-					form:true
-				},*/
-				//Finaliza combo uno
-
-				{
+					type: 'ComboBox',
+					id_grupo: 1,
+					filters: {pfiltro: 'desc_person', type: 'string'},
+					grid: true,
+					form: true
+				},
+				/*{
 					config:{
 						name:'id_funcionario',
 						hiddenName: 'Solicitante',
@@ -118,35 +100,21 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank:false,
 						gwidth:200,
 						valueField: 'id_funcionario',
-						gdisplayField: 'desc_funcionario',
+						gdisplayField: 'desc_nombre_funcionario',
 						baseParams: { es_combo_solicitud : 'si' },
-						renderer:function(value, p, record){return String.format('{0}', record.data['desc_funcionario']);}
+						renderer:function(value, p, record){return String.format('{0}', record.data['desc_person']);}
 					},
 					type:'ComboRec',//ComboRec
 
 					id_grupo:0,
-					filters:{pfiltro:'fun.desc_funcionario1',type:'string'},
+					filters:{pfiltro:'desc_person',type:'string'},
 					bottom_filter:true,
 					grid:true,
 					form:true
-				},
-
-
-				/*{
-					config:{
-						name: 'id_usuario_ai',
-						fieldLabel: '',
-						allowBlank: true,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:4
-					},
-					type:'Field',
-					filters:{pfiltro:'infor.id_usuario_ai',type:'numeric'},
-					id_grupo:1,
-					grid:false,
-					form:false
 				},*/
+
+
+
 				{
 					config:{
 						name: 'id_reclamo',
@@ -163,49 +131,6 @@ header("content-type: text/javascript; charset=UTF-8");
 					form:true
 				},
 
-				/*{
-					config: {
-						name: 'id_reclamo',
-						fieldLabel: 'Reclamo',
-						allowBlank: false,
-						emptyText: 'Elija un reclamo...',
-						store: new Ext.data.JsonStore({
-							url: '../../sis_reclamo/control/Reclamo/listarReclamo',
-							id: 'id_reclamo',
-							root: 'datos',
-							sortInfo: {
-								field: 'nombre',
-								direction: 'ASC'
-							},
-							totalProperty: 'total',
-							fields: ['id_reclamo', 'nombre'],
-							remoteSort: true,
-							baseParams: {par_filtro: 'movtip.nombre'}
-						}),
-						valueField: 'id_reclamo',
-						displayField: 'nombre',
-						gdisplayField: 'desc_',
-						hiddenName: 'id_reclamo',
-						forceSelection: true,
-						typeAhead: false,
-						triggerAction: 'all',
-						lazyRender: true,
-						mode: 'remote',
-						pageSize: 15,
-						queryDelay: 1000,
-						anchor: '100%',
-						gwidth: 150,
-						minChars: 2,
-						renderer : function(value, p, record) {
-							return String.format('{0}', record.data['desc_']);
-						}
-					},
-					type: 'ComboBox',
-					id_grupo: 0,
-					filters: {pfiltro: 'movtip.nombre',type: 'string'},
-					grid: true,
-					form: true
-				},*/
 				{
 					config:{
 						name: 'nro_informe',
@@ -325,50 +250,6 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid: false,
 					form: true
 				},
-				/*{
-					config:{
-						name: 'lista_compensacion',
-						fieldLabel: 'Lista Compensacion',
-						allowBlank: false,
-						emptyText: 'Elija una opción...',
-						store: new Ext.data.JsonStore({
-							url: '../../sis_reclamo/control/Compensacion/listarCompensacion',
-							id: 'id_compensacion',
-							root: 'datos',
-							sortInfo: {
-								field: 'nombre',
-								direction: 'ASC'
-							},
-							totalProperty: 'total',
-							fields: ['id_compensacion', 'nombre'],
-							remoteSort: true,
-							baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-						}),
-						valueField: 'id_compensacion',
-						displayField: 'nombre',
-						gdisplayField: 'desc_nombre_compensacion',
-						hiddenName: 'id_reclamo',
-						forceSelection: true,
-						enableMultiSelect:true,
-						typeAhead: false,
-						triggerAction: 'all',
-						lazyRender: true,
-						mode: 'remote',
-						pageSize: 15,
-						queryDelay: 1000,
-						anchor: '100%',
-						gwidth: 150,
-						minChars: 2,
-						renderer : function(value, p, record) {
-							return String.format('{0}', record.data['desc_nombre_compensacion']);
-						}
-					},
-					type: 'ComboBox',
-					id_grupo: 0,
-					filters: {pfiltro: 'movtip.nombre',type: 'string'},
-					grid: true,
-					form: true
-				},*/
 				{
 					config:{
 						name: 'conclusion_recomendacion',
