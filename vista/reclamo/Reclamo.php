@@ -48,7 +48,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['id_tipo_incidente', 'nombre_incidente'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+					baseParams: {par_filtro: ''}
 				}),
 				valueField: 'id_tipo_incidente',
 				displayField: 'nombre_incidente',
@@ -91,11 +91,11 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['fk_tipo_incidente', 'nombre_incidente', 'codigo'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+					baseParams: {par_filtro: ''}
 				}),
 				valueField: 'fk_tipo_incidente',
 				displayField: 'nombre_incidente',
-				gdisplayField: 'desc_nombre_incidente',
+				gdisplayField: 'desc_sudnom_incidente',
 				hiddenName: 'id_subtipo_incidente',
 				forceSelection: true,
 				typeAhead: false,
@@ -317,7 +317,6 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					},
 					totalProperty: 'total',
 					fields: ['id_funcionario','desc_person','ci'],
-					// turn on remote sorting
 					remoteSort: true,
 					baseParams:{par_filtro:'fun.ci'}
 				}),
@@ -573,21 +572,21 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_seguridad/control/Persona/listarPersona',
-					id: 'id_persona',
+					url: '../../sis_organigrama/control/Funcionario/listarFuncionario',
+					id: 'id_funcionario',
 					root: 'datos',
 					sortInfo: {
-						field: 'nombre_completo2',
+						field: 'desc_person',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_persona','nombre_completo2','ci'],
+					fields: ['id_funcionario','desc_person','ci'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 				}),
-				valueField: 'id_persona',
-				displayField: 'nombre_completo2',
-				gdisplayField: 'desc_person',
+				valueField: 'id_funcionario',
+				displayField: 'desc_person',
+				gdisplayField: 'desc_nombre_fun_denun',
 				hiddenName: 'id_funcionario_denunciado',
 				forceSelection: true,
 				typeAhead: false,
@@ -600,7 +599,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				gwidth: 150,
 				minChars: 2,
 				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_person']);
+					return String.format('{0}', record.data['desc_nombre_fun_denun']);
 				}
 			},
 			type: 'ComboBox',
@@ -616,7 +615,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: -5
+				maxLength: 100
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'rec.detalle_incidente', type: 'string'},
@@ -631,7 +630,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: -5
+				maxLength: 100
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'rec.observaciones_incidente', type: 'string'},

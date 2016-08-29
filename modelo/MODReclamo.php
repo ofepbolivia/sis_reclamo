@@ -64,6 +64,7 @@ class MODReclamo extends MODbase{
         $this->captura('desc_nombre_oficina','varchar');
         $this->captura('desc_sudnom_incidente','varchar');
         $this->captura('desc_nombre_funcionario','text');
+        $this->captura('desc_nombre_fun_denun','text');
 
 
 		

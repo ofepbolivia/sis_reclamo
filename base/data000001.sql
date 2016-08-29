@@ -106,3 +106,29 @@ VALUES
   (1, NULL, E'2016-08-26 10:51:05.468', NULL, E'activo', NULL, E'NULL', 38, E'Atencion al Usuario', 1, 10, 1),
   (1, NULL, E'2016-08-26 12:25:06.273', NULL, E'activo', NULL, E'NULL', 39, E'jkhjk', 38, 4, 2);
 /***********************************F-DAT-FEA-REC-1-26/08/2016****************************************/
+
+/***********************************I-DAT-MAM-REC-1-29/08/2016****************************************/
+CREATE VIEW rec.vcliente (
+    id_cliente,
+    ap_paterno,
+    ap_materno,
+    nombre,
+    nombre_completo1,
+    nombre_completo2,
+    ci,
+    email,
+    telefono)
+AS
+SELECT c.id_cliente,
+    c.apellido_paterno AS ap_paterno,
+    c.apellido_materno AS ap_materno,
+    c.nombre,
+    (((COALESCE(c.nombre, ''::character varying)::text || ' '::text) ||
+        COALESCE(c.apellido_paterno, ''::character varying)::text) || ' '::text) || COALESCE(c.apellido_materno, ''::character varying)::text AS nombre_completo1,
+    (((COALESCE(c.apellido_paterno, ''::character varying)::text || ' '::text)
+        || COALESCE(c.apellido_materno, ''::character varying)::text) || ' '::text) || COALESCE(c.nombre, ''::character varying)::text AS nombre_completo2,
+    c.ci,
+    c.email,
+    c.telefono
+FROM rec.tcliente c;
+/***********************************F-DAT-MAM-REC-1-29/08/2016****************************************/
