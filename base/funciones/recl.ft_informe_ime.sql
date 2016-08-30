@@ -105,7 +105,7 @@ BEGIN
 			--Sentencia de la modificacion
 			update rec.tinforme set
 			sugerencia_respuesta = v_parametros.sugerencia_respuesta,
-			id_reclamo = v_parametros.id_reclamo,
+				id_reclamo = v_parametros.id_reclamo,
 			antecedentes_informe = v_parametros.antecedentes_informe,
 			nro_informe = v_parametros.nro_informe,
 			id_funcionario = v_parametros.id_funcionario,
