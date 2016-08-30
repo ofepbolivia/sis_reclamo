@@ -39,7 +39,6 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				name: 'nombre',
 				fieldLabel: 'Nombres',
 				allowBlank: false,
-				/*emptyText: 'Ingrese nombre del Cliente',*/
 				anchor: '100%',
 				gwidth: 100,
 				maxLength:50,
@@ -55,7 +54,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'apellido_paterno',
-				fieldLabel: 'Primer Apellido ',
+				fieldLabel: 'Primer Apellido',
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 100,
@@ -219,6 +218,42 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'pais_residencia',
+				fieldLabel: 'Pais de Residencia',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:30,
+				style:'text-transform:uppercase;',
+				store: ['uno','dos'] /*new Ext.data.JsonStore({
+					url: '../../sis_parametros/control/Lugar/listarLugar',
+					id: 'id_lugar',
+					root: 'datos',
+					sortInfo:{
+						field: 'pais',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_lugar','pais'],
+					remoteSort: true,
+					baseParams:{par_filtro:'lug.id_lugar'}
+				}),
+				valueField: 'id_lugar',
+				displayField: 'pais',
+				triggerAction: 'all',
+				hiddenName: 'id_lugar',
+				forceSelection: true,
+				lazyRender: true,
+				mode: 'remote'*/
+			},
+			type:'ComboBox',
+			filters:{pfiltro:'cli.pais_residencia',type:'string'},
+			id_grupo:2,
+			grid:false,
+			form:true
+		},
+		{
+			config:{
 				name: 'ciudad_residencia',
 				fieldLabel: 'Ciudad de Residencia',
 				allowBlank: false,
@@ -229,22 +264,6 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			},
 				type:'TextField',
 				filters:{pfiltro:'cli.ciudad_residencia',type:'string'},
-				id_grupo:2,
-				grid:false,
-				form:true
-		},
-		{
-			config:{
-				name: 'pais_residencia',
-				fieldLabel: 'Pais de Residencia',
-				allowBlank: false,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:30,
-				style:'text-transform:uppercase;'
-			},
-				type:'TextField',
-				filters:{pfiltro:'cli.pais_residencia',type:'string'},
 				id_grupo:2,
 				grid:false,
 				form:true
@@ -445,7 +464,9 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
+		{name:'usr_mod', type: 'string'}/*,
+		 {name:'id_lugar', type: 'numeric'},
+		 {name:'pais', type: 'string'}*/
 		
 	],
 	sortInfo:{
