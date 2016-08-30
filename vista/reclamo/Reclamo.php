@@ -70,7 +70,6 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
 			grid: true,
 			form: true
 		},
@@ -113,7 +112,6 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
 			grid: true,
 			form: true
 		},
