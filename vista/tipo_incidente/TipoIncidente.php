@@ -50,7 +50,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				anchor: '100%',
 				gwidth: 200,
 				maxLength:50,
-				style: 'color: red;'
+				style: 'color : red;'
 			},
 			type:'TextField',
 			filters:{pfiltro:'rti.nombre_incidente',type:'string'},
@@ -88,22 +88,6 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 			grid:true,
 			form:true
 		},
-		/*{
-			config:{
-				name: 'fk_tipo_incidente',
-				fieldLabel: 'Padre',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'rti.fk_tipo_incidente',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		}
-		,*/
 		{
 			config:{
 				name: 'estado_reg',

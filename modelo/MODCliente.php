@@ -46,6 +46,9 @@ class MODCliente extends MODbase{
 		$this->captura('usr_mod','varchar');
         $this->captura('nombre_completo1','text');
         $this->captura('nombre_completo2','text');
+		/*$this->captura('id_lugar','int4');
+		$this->captura('pais','varchar');*/
+
 
 		
 		//Ejecuta la instruccion
@@ -135,6 +138,20 @@ class MODCliente extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+	
+	/*function listarPais(){
+		$this->procedimiento='rec.ft_cliente_sel';
+		$this->transaccion='REC_CLI_P_SEL';
+		$this->tipo_procedimiento='SEL';
+
+		$this->captura('id_lugar','int4');
+		$this->captura('pais','varchar');
+
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}*/
 }
 ?>

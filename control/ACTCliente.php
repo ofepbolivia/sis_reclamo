@@ -39,7 +39,15 @@ class ACTCliente extends ACTbase{
 		$this->res=$this->objFunc->eliminarCliente($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-			
+	
+	function listarPais(){
+
+		$this->objFunc=$this->create('MODCliente');
+		
+		$this->res=$this->objFunc->listarPais($this->objParam);
+		
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 }
 
 ?>
