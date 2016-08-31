@@ -81,9 +81,10 @@ BEGIN
                         med.nombre_medio as desc_nombre_medio,
                         cli.nombre_completo2 as desc_nom_cliente,
                         tip.nombre_incidente as desc_nombre_incidente,
-                        per.nombre_completo2 as desc_person,
                         of.nombre as desc_nombre_oficina,
-                        t.nombre_incidente as desc_sudnom_incidente
+                        t.nombre_incidente as desc_sudnom_incidente,
+                        fun.desc_funcionario1 as desc_nombre_funcionario,
+                        fu.desc_funcionario1 as desc_nombre_fun_denun
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
@@ -91,10 +92,10 @@ BEGIN
                         inner join rec.tcliente cl on cl.id_cliente =rec.id_cliente
                         inner join rec.vcliente cli on cli.id_cliente = cli.id_cliente
                         join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        inner join orga.tfuncionario fun on fun.id_funcionario =rec.id_funcionario_recepcion
-                        inner join segu.vpersona per on per.id_persona = fun.id_persona
                         inner join orga.toficina of on of.id_oficina = rec.id_oficina_incidente
                         inner join rec.ttipo_incidente t on t.fk_tipo_incidente = rec.id_tipo_incidente
+                        inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
+                        inner join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
 				        where  ';
 
 			--Definicion de la respuesta
@@ -125,10 +126,10 @@ BEGIN
                         inner join rec.tcliente cl on cl.id_cliente =rec.id_cliente
                         inner join rec.vcliente cli on cli.id_cliente = cli.id_cliente
                         join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        inner join orga.tfuncionario fun on fun.id_funcionario =rec.id_funcionario_recepcion
-                        inner join segu.vpersona per on per.id_persona = fun.id_persona
                         inner join orga.toficina of on of.id_oficina = rec.id_oficina_incidente
                         inner join rec.ttipo_incidente t on t.fk_tipo_incidente = rec.id_tipo_incidente
+                        inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
+                        inner join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
 					    where ';
 
 			--Definicion de la respuesta
