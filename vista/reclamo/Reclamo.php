@@ -48,7 +48,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['id_tipo_incidente', 'nombre_incidente'],
 					remoteSort: true,
-					baseParams: {par_filtro: ''}
+					baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'0'}
 				}),
 				valueField: 'id_tipo_incidente',
 				displayField: 'nombre_incidente',

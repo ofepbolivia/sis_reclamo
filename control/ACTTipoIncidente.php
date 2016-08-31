@@ -17,11 +17,13 @@ class ACTTipoIncidente extends ACTbase{
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODTipoIncidente','listarTipoIncidente');
-		} else{
-			$this->objFunc=$this->create('MODTipoIncidente');
-			
-			$this->res=$this->objFunc->listarTipoIncidente($this->objParam);
 		}
+		if ($this->objParam->getParametro('nivel') != '') {
+			$this->objParam->addFiltro("rti.nivel  in (''". $this->objParam->getParametro('nivel') . "'')");
+		}
+
+		$this->objFunc=$this->create('MODTipoIncidente');
+		$this->res=$this->objFunc->listarTipoIncidente($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 	
