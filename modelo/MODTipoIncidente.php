@@ -59,7 +59,7 @@ class MODTipoIncidente extends MODbase{
 		//$id_padre = $this->objParam->getParametro('id_padre');
 
 		$this->setParametro('id_padre','id_padre','varchar');
-
+		$this->setParametro('tipo_nodo','tipo_nodo','varchar');
 
 
 		//$this->setParametro('id_subsistema','id_subsistema','integer');
