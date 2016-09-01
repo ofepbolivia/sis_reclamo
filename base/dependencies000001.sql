@@ -92,3 +92,15 @@ DROP CONSTRAINT tcliente_pkey;
 ALTER TABLE rec.tcliente
 ADD PRIMARY KEY (id_cliente);
 /***********************************F-DEP-FEA-REC-1-12/08/2016****************************************/
+
+
+/***********************************I-DEP-FEA-REC-1-22/08/2016****************************************/
+ALTER TABLE rec.tcliente
+  ALTER COLUMN genero TYPE VARCHAR(10) COLLATE pg_catalog."default";
+
+ALTER TABLE rec.tcliente
+  ALTER COLUMN email TYPE VARCHAR(100) COLLATE pg_catalog."default";
+
+ALTER TABLE rec.tcliente
+  ALTER COLUMN nombre TYPE VARCHAR(100) COLLATE pg_catalog."default";
+/***********************************F-DEP-FEA-REC-1-22/08/2016****************************************/

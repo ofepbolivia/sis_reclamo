@@ -19,28 +19,28 @@ $BODY$
 
 DECLARE
 
-	v_consulta    		varchar;
-	v_parametros  		record;
-	v_nombre_funcion   	text;
-	v_resp				varchar;
+  v_consulta    		varchar;
+  v_parametros  		record;
+  v_nombre_funcion   	text;
+  v_resp				varchar;
 
 BEGIN
 
-	v_nombre_funcion = 'rec.ft_informe_sel';
-    v_parametros = pxp.f_get_record(p_tabla);
+  v_nombre_funcion = 'rec.ft_informe_sel';
+  v_parametros = pxp.f_get_record(p_tabla);
 
-	/*********************************
- 	#TRANSACCION:  'REC_INFOR_SEL'
- 	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		admin
- 	#FECHA:		11-08-2016 01:52:07
-	***********************************/
+  /*********************************
+   #TRANSACCION:  'REC_INFOR_SEL'
+   #DESCRIPCION:	Consulta de datos
+   #AUTOR:		admin
+   #FECHA:		11-08-2016 01:52:07
+  ***********************************/
 
-	if(p_transaccion='REC_INFOR_SEL')then
+  if(p_transaccion='REC_INFOR_SEL')then
 
-    	begin
-    		--Sentencia de la consulta
-			v_consulta:='select
+    begin
+      --Sentencia de la consulta
+      v_consulta:='select
 						infor.id_informe,
 						infor.sugerencia_respuesta,
 						infor.id_reclamo,
@@ -59,60 +59,63 @@ BEGIN
 						infor.fecha_mod,
 						infor.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod
+						usu2.cuenta as usr_mod,
+                        com.nombre as desc_nombre_compensacion
 						from rec.tinforme infor
 						inner join segu.tusuario usu1 on usu1.id_usuario = infor.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = infor.id_usuario_mod
+                        join rec.tcompensacion com on com.id_compensacion = com.id_compensacion
 				        where  ';
 
-			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+      --Definicion de la respuesta
+      v_consulta:=v_consulta||v_parametros.filtro;
+      v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
-			--Devuelve la respuesta
-			return v_consulta;
+      --Devuelve la respuesta
+      return v_consulta;
 
-		end;
+    end;
 
-	/*********************************
- 	#TRANSACCION:  'REC_INFOR_CONT'
- 	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		admin
- 	#FECHA:		11-08-2016 01:52:07
-	***********************************/
+    /*********************************
+     #TRANSACCION:  'REC_INFOR_CONT'
+     #DESCRIPCION:	Conteo de registros
+     #AUTOR:		admin
+     #FECHA:		11-08-2016 01:52:07
+    ***********************************/
 
-	elsif(p_transaccion='REC_INFOR_CONT')then
+  elsif(p_transaccion='REC_INFOR_CONT')then
 
-		begin
-			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_informe)
+    begin
+      --Sentencia de la consulta de conteo de registros
+      v_consulta:='select count(id_informe)
 					    from rec.tinforme infor
-					    inner join segu.tusuario usu1 on usu1.id_usuario = infor.id_usuario_reg
+						inner join segu.tusuario usu1 on usu1.id_usuario = infor.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = infor.id_usuario_mod
+                        join rec.tcompensacion com on com.id_compensacion = com.id_compensacion
 					    where ';
 
-			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
+      --Definicion de la respuesta
+      v_consulta:=v_consulta||v_parametros.filtro;
 
-			--Devuelve la respuesta
-			return v_consulta;
+      --Devuelve la respuesta
+      return v_consulta;
 
-		end;
+    end;
 
-	else
+  else
 
-		raise exception 'Transaccion inexistente';
+    raise exception 'Transaccion inexistente';
 
-	end if;
+  end if;
 
-EXCEPTION
+  EXCEPTION
 
-	WHEN OTHERS THEN
-			v_resp='';
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
-			v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
-			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
-			raise exception '%',v_resp;
+  WHEN OTHERS THEN
+    v_resp='';
+    v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+    v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+    v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+    raise exception '%',v_resp;
 END;
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE

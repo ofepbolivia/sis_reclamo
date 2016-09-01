@@ -21,7 +21,7 @@ class MODCliente extends MODbase{
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_cliente','int4');
-		$this->captura('genero','bpchar');
+		$this->captura('genero','varchar');
 		$this->captura('ci','varchar');
 		$this->captura('email','varchar');
 		$this->captura('direccion','varchar');
@@ -44,6 +44,12 @@ class MODCliente extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+
+        $this->captura('nombre_completo1','text');
+        $this->captura('nombre_completo2','text');
+		
+
+
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -60,7 +66,7 @@ class MODCliente extends MODbase{
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
-		$this->setParametro('genero','genero','bpchar');
+		$this->setParametro('genero','genero','varchar');
 		$this->setParametro('ci','ci','varchar');
 		$this->setParametro('email','email','varchar');
 		$this->setParametro('direccion','direccion','varchar');
@@ -92,7 +98,7 @@ class MODCliente extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_cliente','id_cliente','int4');
-		$this->setParametro('genero','genero','bpchar');
+		$this->setParametro('genero','genero','varchar');
 		$this->setParametro('ci','ci','varchar');
 		$this->setParametro('email','email','varchar');
 		$this->setParametro('direccion','direccion','varchar');
@@ -132,6 +138,20 @@ class MODCliente extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+	
+	/*function listarPais(){
+		$this->procedimiento='rec.ft_cliente_sel';
+		$this->transaccion='REC_CLI_P_SEL';
+		$this->tipo_procedimiento='SEL';
+
+		$this->captura('id_lugar','int4');
+		$this->captura('pais','varchar');
+
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}*/
 }
 ?>

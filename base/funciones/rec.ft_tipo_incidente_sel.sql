@@ -1,20 +1,20 @@
-CREATE OR REPLACE FUNCTION "rec"."ft_tipo_incidente_sel"(	
+CREATE OR REPLACE FUNCTION "rec"."ft_tipo_incidente_sel"(
 				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
 RETURNS character varying AS
 $BODY$
 /**************************************************************************
- SISTEMA:		Sistema de Reclamos
+ SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_tipo_incidente_sel
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'rec.ttipo_incidente'
  AUTOR: 		 (admin)
- FECHA:	        10-08-2016 13:52:38
- COMENTARIOS:	
+ FECHA:	        23-08-2016 19:24:46
+ COMENTARIOS:
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION:	
- AUTOR:			
- FECHA:		
+ DESCRIPCION:
+ AUTOR:
+ FECHA:
 ***************************************************************************/
 
 DECLARE
@@ -23,85 +23,133 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
-			    
+	v_where				varchar;
+  v_join varchar;
+
 BEGIN
 
 	v_nombre_funcion = 'rec.ft_tipo_incidente_sel';
     v_parametros = pxp.f_get_record(p_tabla);
 
-	/*********************************    
- 	#TRANSACCION:  'REC_INC_SEL'
+	/*********************************
+ 	#TRANSACCION:  'REC_RTI_SEL'
  	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 13:52:38
+ 	#AUTOR:		admin
+ 	#FECHA:		23-08-2016 19:24:46
 	***********************************/
+  if(p_transaccion='REC_RTI_SEL')then
 
-	if(p_transaccion='REC_INC_SEL')then
-     				
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-						inc.id_tipo_incidente,
-						inc.estado_reg,
-						inc.nombre_incidente,
-						inc.nivel,
-						inc.fk_tipo_incidente,
-						inc.tiempo_respuesta,
-						inc.fecha_reg,
-						inc.id_usuario_reg,
-						inc.usuario_ai,
-						inc.id_usuario_ai,
-						inc.fecha_mod,
-						inc.id_usuario_mod,
+						rti.id_tipo_incidente,
+						rti.fk_tipo_incidente,
+						rti.estado_reg,
+						rti.tiempo_respuesta,
+						rti.nivel,
+						rti.nombre_incidente,
+						rti.fecha_reg,
+						rti.usuario_ai,
+						rti.id_usuario_reg,
+						rti.id_usuario_ai,
+						rti.id_usuario_mod,
+						rti.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
-						from rec.ttipo_incidente inc
-						inner join segu.tusuario usu1 on usu1.id_usuario = inc.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = inc.id_usuario_mod
+						usu2.cuenta as usr_mod
+						from rec.ttipo_incidente rti
+						inner join segu.tusuario usu1 on usu1.id_usuario = rti.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rti.id_usuario_mod
 				        where  ';
-			
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
+	end;
+	/*********************************
+ 	#TRANSACCION:  'REC_RTI_ARB_SEL'
+ 	#DESCRIPCION:	Consulta de datos
+ 	#AUTOR:		admin
+ 	#FECHA:		23-08-2016 19:24:46
+	***********************************/
+	elseif(p_transaccion='REC_RTI_ARB_SEL')then
+
+    	begin
+    	        if(v_parametros.id_padre = '%') then
+                v_where := ' rti.fk_tipo_incidente is NULL';
+                v_join := 'LEFT';
+              else
+                v_where := ' rti.fk_tipo_incidente = '||v_parametros.id_padre;
+                v_join := 'INNER';
+              end if;
+    		--Sentencia de la consulta
+			v_consulta:='select
+						rti.id_tipo_incidente,
+						rti.fk_tipo_incidente,
+						rti.estado_reg,
+						rti.tiempo_respuesta,
+						rti.nivel,
+						rti.nombre_incidente,
+						rti.fecha_reg,
+						rti.usuario_ai,
+						rti.id_usuario_reg,
+						rti.id_usuario_ai,
+						rti.id_usuario_mod,
+						rti.fecha_mod,
+						usu1.cuenta as usr_reg,
+						case
+              when ( rti.fk_tipo_incidente is null )then
+                ''raiz''::varchar
+              ELSE
+                ''hijo''::varchar
+              END as tipo_nodo
+						from rec.ttipo_incidente rti
+						inner join segu.tusuario usu1 on usu1.id_usuario = rti.id_usuario_reg
+				    where '||v_where||'
+				    ORDER BY rti.id_tipo_incidente';
+
+
+			--Devuelve la respuesta
+			return v_consulta;
+
 		end;
 
-	/*********************************    
- 	#TRANSACCION:  'REC_INC_CONT'
+	/*********************************
+ 	#TRANSACCION:  'REC_RTI_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 13:52:38
+ 	#AUTOR:		admin
+ 	#FECHA:		23-08-2016 19:24:46
 	***********************************/
 
-	elsif(p_transaccion='REC_INC_CONT')then
+	elsif(p_transaccion='REC_RTI_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_tipo_incidente)
-					    from rec.ttipo_incidente inc
-					    inner join segu.tusuario usu1 on usu1.id_usuario = inc.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = inc.id_usuario_mod
+					    from rec.ttipo_incidente rti
+					    inner join segu.tusuario usu1 on usu1.id_usuario = rti.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rti.id_usuario_mod
 					    where ';
-			
-			--Definicion de la respuesta		    
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;
 
 		end;
-					
+
 	else
-					     
+
 		raise exception 'Transaccion inexistente';
-					         
+
 	end if;
-					
+
 EXCEPTION
-					
+
 	WHEN OTHERS THEN
 			v_resp='';
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);

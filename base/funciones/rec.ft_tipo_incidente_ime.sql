@@ -4,11 +4,11 @@ RETURNS character varying AS
 $BODY$
 
 /**************************************************************************
- SISTEMA:		Sistema de Reclamos
+ SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_tipo_incidente_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'rec.ttipo_incidente'
  AUTOR: 		 (admin)
- FECHA:	        10-08-2016 13:52:38
+ FECHA:	        23-08-2016 19:24:46
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -34,37 +34,37 @@ BEGIN
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  'REC_INC_INS'
+ 	#TRANSACCION:  'REC_RTI_INS'
  	#DESCRIPCION:	Insercion de registros
  	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 13:52:38
+ 	#FECHA:		23-08-2016 19:24:46
 	***********************************/
 
-	if(p_transaccion='REC_INC_INS')then
+	if(p_transaccion='REC_RTI_INS')then
 					
         begin
         	--Sentencia de la insercion
         	insert into rec.ttipo_incidente(
-			estado_reg,
-			nombre_incidente,
-			nivel,
 			fk_tipo_incidente,
+			estado_reg,
 			tiempo_respuesta,
+			nivel,
+			nombre_incidente,
 			fecha_reg,
-			id_usuario_reg,
 			usuario_ai,
+			id_usuario_reg,
 			id_usuario_ai,
-			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+			fecha_mod
           	) values(
-			'activo',
-			v_parametros.nombre_incidente,
-			v_parametros.nivel,
 			v_parametros.fk_tipo_incidente,
+			'activo',
 			v_parametros.tiempo_respuesta,
+			v_parametros.nivel,
+			v_parametros.nombre_incidente,
 			now(),
-			p_id_usuario,
 			v_parametros._nombre_usuario_ai,
+			p_id_usuario,
 			v_parametros._id_usuario_ai,
 			null,
 			null
@@ -74,7 +74,7 @@ BEGIN
 			)RETURNING id_tipo_incidente into v_id_tipo_incidente;
 			
 			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','incidente almacenado(a) con exito (id_tipo_incidente'||v_id_tipo_incidente||')'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','TipoIncidente almacenado(a) con exito (id_tipo_incidente'||v_id_tipo_incidente||')'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_tipo_incidente',v_id_tipo_incidente::varchar);
 
             --Devuelve la respuesta
@@ -83,29 +83,29 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'REC_INC_MOD'
+ 	#TRANSACCION:  'REC_RTI_MOD'
  	#DESCRIPCION:	Modificacion de registros
  	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 13:52:38
+ 	#FECHA:		23-08-2016 19:24:46
 	***********************************/
 
-	elsif(p_transaccion='REC_INC_MOD')then
+	elsif(p_transaccion='REC_RTI_MOD')then
 
 		begin
 			--Sentencia de la modificacion
 			update rec.ttipo_incidente set
-			nombre_incidente = v_parametros.nombre_incidente,
-			nivel = v_parametros.nivel,
 			fk_tipo_incidente = v_parametros.fk_tipo_incidente,
 			tiempo_respuesta = v_parametros.tiempo_respuesta,
-			fecha_mod = now(),
+			nivel = v_parametros.nivel,
+			nombre_incidente = v_parametros.nombre_incidente,
 			id_usuario_mod = p_id_usuario,
+			fecha_mod = now(),
 			id_usuario_ai = v_parametros._id_usuario_ai,
 			usuario_ai = v_parametros._nombre_usuario_ai
 			where id_tipo_incidente=v_parametros.id_tipo_incidente;
                
 			--Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','incidente modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','TipoIncidente modificado(a)'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_tipo_incidente',v_parametros.id_tipo_incidente::varchar);
                
             --Devuelve la respuesta
@@ -114,13 +114,13 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  'REC_INC_ELI'
+ 	#TRANSACCION:  'REC_RTI_ELI'
  	#DESCRIPCION:	Eliminacion de registros
  	#AUTOR:		admin	
- 	#FECHA:		10-08-2016 13:52:38
+ 	#FECHA:		23-08-2016 19:24:46
 	***********************************/
 
-	elsif(p_transaccion='REC_INC_ELI')then
+	elsif(p_transaccion='REC_RTI_ELI')then
 
 		begin
 			--Sentencia de la eliminacion
@@ -128,7 +128,7 @@ BEGIN
             where id_tipo_incidente=v_parametros.id_tipo_incidente;
                
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','incidente eliminado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','TipoIncidente eliminado(a)'); 
             v_resp = pxp.f_agrega_clave(v_resp,'id_tipo_incidente',v_parametros.id_tipo_incidente::varchar);
               
             --Devuelve la respuesta

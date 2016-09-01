@@ -39,6 +39,13 @@ class MODInforme extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+        $this->captura('desc_nombre_compensacion','varchar');
+        $this->captura('desc_funcionario1','text');
+       
+
+
+
+
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
