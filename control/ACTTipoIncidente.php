@@ -17,11 +17,13 @@ class ACTTipoIncidente extends ACTbase{
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODTipoIncidente','listarTipoIncidente');
-		} else{
-			$this->objFunc=$this->create('MODTipoIncidente');
-			
-			$this->res=$this->objFunc->listarTipoIncidente($this->objParam);
 		}
+		if ($this->objParam->getParametro('nivel') != '') {
+			$this->objParam->addFiltro("rti.nivel  in (''". $this->objParam->getParametro('nivel') . "'')");
+		}
+
+		$this->objFunc=$this->create('MODTipoIncidente');
+		$this->res=$this->objFunc->listarTipoIncidente($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 	
@@ -85,7 +87,7 @@ class ACTTipoIncidente extends ACTbase{
 			'allowEdit'=>true,
 			'cls'=>'folder',
 			'tipo_nodo'=>'raiz',
-			'icon'=>'../../../lib/imagenes/a_form.png'),
+			'icon'=>'../../../lib/imagenes/comment.png'),
 			$arreglo);
 
 		/*se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
@@ -101,13 +103,13 @@ class ACTTipoIncidente extends ACTbase{
 			$arreglo);
 
 		
-		/*$this->res->addNivelArbol('tipo_nodo','hoja',array(
+		$this->res->addNivelArbol('tipo_nodo','hoja',array(
 			'leaf'=>true,
 			'allowDelete'=>true,
 			'allowEdit'=>true,
 			'tipo_nodo'=>'hoja',
 			'icon'=>'../../../lib/imagenes/a_form.png'),
-			$arreglo);*/
+			$arreglo);
 
 
 		$this->res->imprimirRespuesta($this->res->generarJson());

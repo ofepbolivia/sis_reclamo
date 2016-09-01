@@ -47,8 +47,7 @@ class MODCliente extends MODbase{
 
         $this->captura('nombre_completo1','text');
         $this->captura('nombre_completo2','text');
-		/*$this->captura('id_lugar','int4');
-		$this->captura('pais','varchar');*/
+		
 
 
 		

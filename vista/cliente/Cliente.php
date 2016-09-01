@@ -225,26 +225,33 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 100,
 				maxLength:30,
 				style:'text-transform:uppercase;',
-				store: ['uno','dos'] /*new Ext.data.JsonStore({
+				store: new Ext.data.JsonStore({
 					url: '../../sis_parametros/control/Lugar/listarLugar',
 					id: 'id_lugar',
 					root: 'datos',
 					sortInfo:{
-						field: 'pais',
+						field: 'nombre',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_lugar','pais'],
+					fields: ['nombre'],
 					remoteSort: true,
-					baseParams:{par_filtro:'lug.id_lugar'}
+					baseParams:{par_filtro:'lug.nombre',tipo:'pais'}
 				}),
 				valueField: 'id_lugar',
-				displayField: 'pais',
-				triggerAction: 'all',
+				displayField: 'nombre',
+				gdisplayField: 'desc_nombre_pais',
 				hiddenName: 'id_lugar',
 				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
 				lazyRender: true,
-				mode: 'remote'*/
+				mode: 'remote',
+				pageSize: 20,
+				queryDelay: 1000,
+				renderer: function(value, p, record){
+					return String.format('{0}', record.data['nombre']);
+				}
 			},
 			type:'ComboBox',
 			filters:{pfiltro:'cli.pais_residencia',type:'string'},
@@ -464,9 +471,8 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'}/*,
-		 {name:'id_lugar', type: 'numeric'},
-		 {name:'pais', type: 'string'}*/
+		{name:'usr_mod', type: 'string'}
+
 		
 	],
 	sortInfo:{

@@ -50,7 +50,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				anchor: '100%',
 				gwidth: 200,
 				maxLength:50,
-				style: 'color : red;'
+				style: 'color : green;'
 			},
 			type:'TextField',
 			filters:{pfiltro:'rti.nombre_incidente',type:'string'},
@@ -61,7 +61,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 		{
 			config:{
 				name: 'tiempo_respuesta',
-				fieldLabel: 'Tiempo de Respuesta',
+				fieldLabel: 'Tiempo de Respuesta (en Dias)',
 				allowBlank: false,
 				anchor: '50%',
 				gwidth: 170,
@@ -73,7 +73,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 			grid:true,
 			form:true
 		},
-		{
+		/*{
 			config:{
 				name: 'nivel',
 				fieldLabel: 'Nivel',
@@ -87,7 +87,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:true
-		},
+		},*/
 		{
 			config:{
 				name: 'estado_reg',
