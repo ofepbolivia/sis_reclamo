@@ -122,8 +122,7 @@ CREATE TABLE rec.tinforme (
   analisis_tecnico VARCHAR(100),
   sugerencia_respuesta VARCHAR(100),
   conclusion_recomendacion VARCHAR(100),
-  PRIMARY KEY(tinforme)
+  PRIMARY KEY(id_informe)
 ) INHERITS (pxp.tbase)
-
 WITH (oids = false);
 /***********************************F-SCP-EAQ-REC-1-11/08/2016****************************************/
