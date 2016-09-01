@@ -17,7 +17,12 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		//llama al constructor de la clase padre
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 		this.init();
+		this.store.baseParams.pes_estado = 'otro';
 		this.load({params: {start: 0, limit: this.tam_pag}})
+		this.finCons = true;
+		this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
+		this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
+
 	},
 
 	Atributos: [
@@ -160,7 +165,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					fields: ['id_cliente','nombre_completo2','ci'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'c.nombre#c.ci'}
+					baseParams:{par_filtro:''}
 				}),
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
