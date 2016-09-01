@@ -167,7 +167,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					fields: ['id_cliente','nombre_completo2','ci'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:''}
+					baseParams:{par_filtro:'c.nombre_completo2'}
 				}),
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
@@ -197,7 +197,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			bottom_filter:true,
 			id_grupo:1,
 			filters:{
-				pfiltro:'nombre_completo2',
+				pfiltro:'c.nombre_completo2',
 				type:'string'
 			},
 
