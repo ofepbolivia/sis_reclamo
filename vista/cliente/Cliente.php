@@ -42,14 +42,21 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				anchor: '100%',
 				gwidth: 100,
 				maxLength:50,
-				style:'text-transform:uppercase;'
+				style:'text-transform:uppercase;'/*,
+				turl:'../../../sis_reclamo/vista/cliente/Cliente.php',
+				ttitle:'Clientes',
+				// tconfig:{width:1800,height:500},
+				tdata:{},
+				tcls:'Cliente',
+				pid:this.idContenedor,
+				renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}*/
 			},
 			type:'TextField',
 			filters:{pfiltro:'cli.nombre',type:'string'},
 			id_grupo:1,
 			bottom_filter:true,
 			grid:true,
-			form:true
+			form:true,
 		},
 		{
 			config:{
@@ -162,12 +169,14 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength:8
+				maxLength:8,
+				hideMode: 'offsets'
 			},
 			type:'NumberField',
 			filters:{pfiltro:'cli.celular',type:'numeric'},
 			id_grupo:2,
-			grid:false,
+			grid:true,
+
 			form:true
 		},
 		{
@@ -182,7 +191,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			type:'NumberField',
 			filters:{pfiltro:'cli.telefono',type:'numeric'},
 			id_grupo:2,
-			grid:false,
+			grid:true,
 			form:true
 		},
 		{
@@ -198,7 +207,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'cli.email',type:'string'},
 				id_grupo:2,
-				grid:false,
+				grid:true,
 				form:true
 		},
 		{
@@ -213,7 +222,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'TextArea',
 				filters:{pfiltro:'cli.direccion',type:'string'},
 				id_grupo:2,
-				grid:false,
+				grid:true,
 				form:true
 		},
 		{
@@ -256,7 +265,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			type:'ComboBox',
 			filters:{pfiltro:'cli.pais_residencia',type:'string'},
 			id_grupo:2,
-			grid:false,
+			grid:true,
 			form:true
 		},
 		{
@@ -272,7 +281,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'cli.ciudad_residencia',type:'string'},
 				id_grupo:2,
-				grid:false,
+				grid:true,
 				form:true
 		},
 		{
@@ -288,7 +297,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'cli.barrio_zona',type:'string'},
 				id_grupo:2,
-				grid:false,
+				grid:true,
 				form:true
 		},
 		{
@@ -441,6 +450,10 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 			}]
 		}
 	],
+	arrayDefaultColumHidden:[
+		'celular','telefono','email','direccion',
+		'pais_residencia','ciudad_residencia','barrio_zona'
+	],
 	tam_pag:50,	
 	title:'cliente',
 	ActSave:'../../sis_reclamo/control/Cliente/insertarCliente',
@@ -480,7 +493,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true,
+	bsave:true
 
 
 	}

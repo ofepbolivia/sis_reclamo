@@ -73,21 +73,22 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 			grid:true,
 			form:true
 		},
-		/*{
+		{
 			config:{
 				name: 'nivel',
 				fieldLabel: 'Nivel',
-				allowBlank: false,
+				allowBlank: true,
 				anchor: '50%',
 				gwidth: 50,
-				maxLength:4
+				maxLength:4,
+				inputType:'hidden'
 			},
 			type:'NumberField',
 			filters:{pfiltro:'rti.nivel',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			form:true
-		},*/
+		},
 		{
 			config:{
 				name: 'estado_reg',
@@ -110,7 +111,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 120,
-							format: 'd/m/Y', 
+							format: 'd/m/Y',
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',
@@ -156,7 +157,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-							format: 'd/m/Y', 
+							format: 'd/m/Y',
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',

@@ -30,25 +30,7 @@ class ACTTipoIncidente extends ACTbase{
 	
 	// funcion que me construye el store que va asociado al modelo.
 	function listarTipoIncidenteArb(){
-		//$this->objFunc=$this->create('MODPartida');
 
-/*		$this->objFunc=$this->create('MODTipoIncidente');
-		$this->res=$this->objFunc->listarTipoIncidenteArb();
-		$data = array();
-		while($row = pg_fetch_array( $this->res )){
-			array_push($data,array(
-				"id" => $row["id_tipo_incidente"],
-				"idParent" => $row["fk_tipo_incidente"],
-				"text" => $row["nombre_incidente"],
-				"Nivel" => $row["nivel"],
-				"Respuesta" => $row["tiempo_respuesta"]
-			));
-		}
-		$arbol = new GenerarArbol();
-		for($i=0;$i<count($data);$i++){
-			$category = $data[$i];
-			$arbol->addChild($category,$category["idParent"]);
-		}*/
 		//obtiene el parametro nodo enviado por la vista
 
 		$node = $this->objParam->getParametro('node');
@@ -87,7 +69,7 @@ class ACTTipoIncidente extends ACTbase{
 			'allowEdit'=>true,
 			'cls'=>'folder',
 			'tipo_nodo'=>'raiz',
-			'icon'=>'../../../lib/imagenes/comment.png'),
+			'icon'=>'../../media/incidente.png'),
 			$arreglo);
 
 		/*se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
@@ -99,7 +81,7 @@ class ACTTipoIncidente extends ACTbase{
 			'allowDelete'=>true,
 			'allowEdit'=>true,
 			'tipo_nodo'=>'hijo',
-			'icon'=>'../../../lib/imagenes/a_form.png'),
+			'icon'=>'../../../media/subincidente.gif'),
 			$arreglo);
 
 		
