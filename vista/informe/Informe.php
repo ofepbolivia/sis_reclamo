@@ -69,7 +69,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						}),
 						valueField: 'id_funcionario',
 						displayField: 'desc_person',
-						gdisplayField: 'desc_nombre_fun',
+						gdisplayField: 'desc_funcionario1',
 						//hiddenName: 'id_funcionario_denunciado',
 						forceSelection: true,
 						typeAhead: false,
@@ -82,7 +82,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						gwidth: 150,
 						minChars: 2,
 						renderer: function (value, p, record) {
-							return String.format('{0}', record.data['desc_nombre_fun']);
+							return String.format('{0}', record.data['desc_funcionario1']);
 						}
 					},
 					type: 'ComboBox',
@@ -368,7 +368,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 				{name:'id_usuario_mod', type: 'numeric'},
 				{name:'usr_reg', type: 'string'},
-				{name:'usr_mod', type: 'string'},
+				{name:'desc_funcionario1', type: 'string'},
+
 
 			],
 			sortInfo:{

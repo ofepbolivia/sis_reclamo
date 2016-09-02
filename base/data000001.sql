@@ -93,19 +93,41 @@ VALUES
   (1, NULL, E'2016-08-22 12:40:59.068', NULL, E'activo', NULL, E'NULL', 7, E'45656566', E'CB', E'VANESSA', E'ZEBALLOS', E'CORDOVA', E'MUJER', E'BOLIVIANA', E'zeballos@gmail.com', 72275654, 4564564, E'bolivia', E'cochabamba', E'el jardin', E'calle jordan esquina nataniel aguirre.'),
   (1, 1, E'2016-08-23 16:25:58.699', E'2016-08-26 11:31:06.647', E'activo', NULL, E'NULL', 8, E'4566456', E'CB', E'martha', E'meneces', E'espinoza', E'MUJER', E'BolivianA', E'marta@gmail.com', 78465646, 4565656, E'bolivia', E'cochabamba', E'quillacollo', E'calle oquendo # 56'),
   (1, 1, E'2016-08-23 16:44:02', E'2016-08-26 11:23:42.132', E'activo', NULL, E'NULL', 9, E'4568946', E'CB', E'adriana', E'adriazola', E'enriquez', E'MUJER', E'boliviana', E'adriana@gmail.com', 75462145, 4621312, E'bolivia', E'cochabamba', E'cercado', E'calle sucre esq. san martin');
+/***********************************F-DAT-FEA-REC-1-26/08/2016****************************************/
 
+/***********************************I-DAT-FEA-REC-1-02/09/2016****************************************/
 INSERT INTO rec.ttipo_incidente ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "id_tipo_incidente", "nombre_incidente", "fk_tipo_incidente", "tiempo_respuesta", "nivel")
-VALUES
+VALUES 
   (1, NULL, E'2016-08-25 18:29:08.451', NULL, E'activo', NULL, E'NULL', 1, E'Reclamos', NULL, 7, 0),
   (1, NULL, E'2016-08-25 18:29:34.876', NULL, E'activo', NULL, E'NULL', 2, E'Solicitud', NULL, 5, 0),
-  (1, NULL, E'2016-08-25 18:29:51.360', NULL, E'activo', NULL, E'NULL', 3, E'Comentario', NULL, 5, 0),
+  (1, 1, E'2016-08-25 18:29:51.360', E'2016-09-01 12:54:59.178', E'activo', NULL, E'NULL', 3, E'Comentario', NULL, 7, 0),
   (1, 1, E'2016-08-25 18:31:39.416', E'2016-08-26 10:47:48.302', E'activo', NULL, E'NULL', 4, E'Equipaje', 1, 10, 1),
   (1, NULL, E'2016-08-25 18:32:13.916', NULL, E'activo', NULL, E'NULL', 6, E'Carga/Encomienda', 1, 10, 1),
   (1, NULL, E'2016-08-26 10:47:19.913', NULL, E'activo', NULL, E'NULL', 36, E'Vuelo', 1, 7, 1),
   (1, NULL, E'2016-08-26 10:49:52.246', NULL, E'activo', NULL, E'NULL', 37, E'Pasaje/Boleto', 1, 10, 1),
   (1, NULL, E'2016-08-26 10:51:05.468', NULL, E'activo', NULL, E'NULL', 38, E'Atencion al Usuario', 1, 10, 1),
-  (1, NULL, E'2016-08-26 12:25:06.273', NULL, E'activo', NULL, E'NULL', 39, E'jkhjk', 38, 4, 2);
-/***********************************F-DAT-FEA-REC-1-26/08/2016****************************************/
+  (1, 1, E'2016-08-26 12:25:06.273', E'2016-09-02 11:23:17.057', E'activo', NULL, E'NULL', 39, E'Atencion Deficiente', 38, 10, 2),
+  (1, 1, E'2016-09-02 11:23:36.157', E'2016-09-02 11:25:54.389', E'activo', NULL, E'NULL', 51, E'Informacion Deficiente', 38, 10, 2),
+  (1, 1, E'2016-09-02 11:25:07.293', E'2016-09-02 11:26:31.643', E'activo', NULL, E'NULL', 52, E'Maltrato ', 38, 10, 2),
+  (1, NULL, E'2016-09-02 11:27:00.603', NULL, E'activo', NULL, E'NULL', 53, E'Demorada', 6, 10, 2),
+  (1, NULL, E'2016-09-02 11:27:20.469', NULL, E'activo', NULL, E'NULL', 54, E'Extraviada', 6, 10, 2),
+  (1, NULL, E'2016-09-02 11:27:40.778', NULL, E'activo', NULL, E'NULL', 55, E'Perdida de Contenido', 6, 10, 2),
+  (1, NULL, E'2016-09-02 11:28:10.898', NULL, E'activo', NULL, E'NULL', 56, E'Dañada', 6, 10, 2),
+  (1, NULL, E'2016-09-02 11:28:25.835', NULL, E'activo', NULL, E'NULL', 57, E'Negacion de Trasporte', 6, 10, 2),
+  (1, NULL, E'2016-09-02 11:28:53.715', NULL, E'activo', NULL, E'NULL', 58, E'Demorado', 4, 10, 2),
+  (1, NULL, E'2016-09-02 11:29:05.538', NULL, E'activo', NULL, E'NULL', 59, E'Extraviado', 4, 10, 2),
+  (1, NULL, E'2016-09-02 11:29:17.259', NULL, E'activo', NULL, E'NULL', 60, E'Dañado', 4, 10, 2),
+  (1, NULL, E'2016-09-02 11:29:27.177', NULL, E'activo', NULL, E'NULL', 61, E'Perdida de Contenido', 4, 10, 2),
+  (1, NULL, E'2016-09-02 11:29:59.583', NULL, E'activo', NULL, E'NULL', 62, E'Cancelacion de Reserva', 37, 10, 2),
+  (1, NULL, E'2016-09-02 11:30:33.525', NULL, E'activo', NULL, E'NULL', 63, E'Descuento Ley N° 1886', 37, 10, 2),
+  (1, NULL, E'2016-09-02 11:30:43.247', NULL, E'activo', NULL, E'NULL', 64, E'Cobro Indebido', 37, 10, 2),
+  (1, NULL, E'2016-09-02 11:32:06.112', NULL, E'activo', NULL, E'NULL', 65, E'Cobro por Penalidad, Cambio de Fecha, Nombre', 37, 10, 2),
+  (1, NULL, E'2016-09-02 11:32:22.411', NULL, E'activo', NULL, E'NULL', 66, E'Devolucion de Importe', 37, 10, 2),
+  (1, NULL, E'2016-09-02 11:32:49.048', NULL, E'activo', NULL, E'NULL', 67, E'Negacion de Espacio con Reserva Confirmada', 37, 10, 2),
+  (1, NULL, E'2016-09-02 11:33:32.448', NULL, E'activo', NULL, E'NULL', 68, E'Demorado', 36, 7, 2),
+  (1, NULL, E'2016-09-02 11:33:39.597', NULL, E'activo', NULL, E'NULL', 69, E'Cancelado', 36, 7, 2),
+  (1, NULL, E'2016-09-02 11:33:52.504', NULL, E'activo', NULL, E'NULL', 70, E'Irregular', 36, 7, 2);
+/***********************************F-DAT-FEA-REC-1-02/09/2016****************************************/
 
 /***********************************I-DAT-MAM-REC-1-29/08/2016****************************************/
 CREATE VIEW rec.vcliente (
@@ -134,7 +156,9 @@ FROM rec.tcliente c;
 /***********************************F-DAT-MAM-REC-1-29/08/2016****************************************/
 
 
+
 /***********************************I-DAT-FEA-REC-1-02/09/2016****************************************/
 select pxp.f_delete_tgui ('RTI');
 select pxp.f_delete_testructura_gui ('RTI', 'REC');
 /***********************************F-DAT-FEA-REC-1-02/09/2016****************************************/
+

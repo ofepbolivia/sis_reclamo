@@ -17,7 +17,12 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		//llama al constructor de la clase padre
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 		this.init();
+		this.store.baseParams.pes_estado = 'otro';
 		this.load({params: {start: 0, limit: this.tam_pag}})
+		this.finCons = true;
+		this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
+		this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
+
 	},
 
 	Atributos: [
@@ -91,7 +96,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['fk_tipo_incidente', 'nombre_incidente', 'codigo'],
 					remoteSort: true,
-					baseParams: {par_filtro: ''}
+					baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'0'}
 				}),
 				valueField: 'fk_tipo_incidente',
 				displayField: 'nombre_incidente',
@@ -162,7 +167,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					fields: ['id_cliente','nombre_completo2','ci'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'c.nombre#c.ci'}
+					baseParams:{par_filtro:'c.nombre_completo2'}
 				}),
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
@@ -192,7 +197,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			bottom_filter:true,
 			id_grupo:1,
 			filters:{
-				pfiltro:'nombre_completo2',
+				pfiltro:'c.nombre_completo2',
 				type:'string'
 			},
 
@@ -275,7 +280,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['id_medio_reclamo', 'nombre_medio'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+					baseParams: {par_filtro: 'mera.nombre_medio'}
 				}),
 				valueField: 'id_medio_reclamo',
 				displayField: 'nombre_medio',
@@ -297,63 +302,56 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'ComboBox',
 			id_grupo: 1,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			filters: {pfiltro: 'mera.nombre_medio', type: 'string'},
 			grid: true,
 			form: true
 		},
+
 		{
-			config:{
-				name:'id_funcionario_recepcion',
-				fieldLabel:'Funcionario',
-				allowBlank:false,
-				emptyText:'Elija una opción...',
+			config: {
+				name: 'id_funcionario_recepcion',
+				fieldLabel: 'Funcionario',
+				allowBlank: false,
+				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_organigrama/control/Funcionario/listarFuncionario',
 					id: 'id_funcionario',
 					root: 'datos',
-					sortInfo:{
-						field: 'id_funcionario',
+					sortInfo: {
+						field: 'desc_person',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
 					fields: ['id_funcionario','desc_person','ci'],
 					remoteSort: true,
-					baseParams:{par_filtro:'fun.ci'}
+					baseParams: {par_filtro: 'PERSON.nombre_completo1'}
 				}),
 				valueField: 'id_funcionario',
 				displayField: 'desc_person',
-				gdisplayField:'desc_nombre_funcionario',//mapea al store del grid
-				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_person}</p><p>CI:{ci}</p> </div></tpl>',
+				gdisplayField: 'desc_nombre_funcionario',
 				hiddenName: 'id_funcionario_recepcion',
-				forceSelection:true,
-				typeAhead: true,
+				forceSelection: true,
+				typeAhead: false,
 				triggerAction: 'all',
-				lazyRender:true,
-				mode:'remote',
-				pageSize:10,
-				queryDelay:1000,
-				width:250,
-				gwidth:280,
-				minChars:2,
-				turl:'../../../sis_seguridad/vista/persona/Persona.php',
-				ttitle:'Personas',
-				// tconfig:{width:1800,height:500},
-				tdata:{},
-				tcls:'persona',
-				pid:this.idContenedor,
-
-				renderer:function (value, p, record){return String.format('{0}', record.data['desc_nombre_funcionario']);}
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				renderer: function (value, p, record) {
+					return String.format('{0}', record.data['desc_nombre_funcionario']);
+				}
 			},
-			type:'TrigguerCombo',
-			bottom_filter:true,
-			id_grupo:0,
+			type: 'ComboBox',
+			id_grupo: 0,
 			filters:{
-				pfiltro:'desc_person',
+				pfiltro:'PERSON.nombre_completo1',
 				type:'string'
 			},
-
-			grid:true,
-			form:true
+			grid: true,
+			form: true
 		},
 
 		{
@@ -582,7 +580,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['id_funcionario','desc_person','ci'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+					baseParams: {par_filtro: 'PERSON.nombre_completo1'}
 				}),
 				valueField: 'id_funcionario',
 				displayField: 'desc_person',
@@ -604,7 +602,10 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'ComboBox',
 			id_grupo: 1,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			filters:{
+				pfiltro:'PERSON.nombre_completo1',
+				type:'string'
+			},
 			grid: true,
 			form: true
 		},
