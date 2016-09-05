@@ -18,7 +18,8 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 		this.init();
 		this.store.baseParams.pes_estado = 'otro';
-		this.load({params: {start: 0, limit: this.tam_pag}})
+		this.iniciarEvento();
+		this.load({params: {start: 0, limit: this.tam_pag}});
 		this.finCons = true;
 		this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
 		this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
@@ -174,7 +175,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'ComboBox',
 			id_grupo: 2,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			filters: {pfiltro: 'rti.nombre_incidente', type: 'string'},
 			grid: true,
 			form: true
 		},
@@ -893,8 +894,13 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 
 			]
 		}
-	]
-
+	],
+	iniciarEvento:function(){
+		this.Cmp.id_tipo_incidente.on('select', function(cmb,rec,i){
+			this.Cmp.id_subtipo_incidente.reset();
+			this.Cmp.id_subtipo_incidente.load({params:{listarTipoIncidente:rec.get('fk_tipo_incidente')}});
+		}, this);
+	}
 
 });
 
