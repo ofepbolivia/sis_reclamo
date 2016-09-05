@@ -43,6 +43,9 @@ BEGIN
 	if(p_transaccion='REC_RTI_INS')then
 					
         begin
+        	select tipo.nivel+1 into v_nivel 
+        	from rec.ttipo_incidente tipo
+        	where tipo.id_tipo_incidente = v_parametros.fk_tipo_incidente and v_parametros.fk_tipo_incidente is not null;
         	--Sentencia de la insercion
         	insert into rec.ttipo_incidente(
 			fk_tipo_incidente,
