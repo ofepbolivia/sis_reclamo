@@ -150,9 +150,9 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['fk_tipo_incidente', 'nombre_incidente', 'codigo'],
+					fields: [ 'fk_tipo_incidente','nombre_incidente'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'rti.nombre_incidente'}
+					baseParams: {par_filtro: 'rti.nombre_incidente',nivel:'2'}
 
 				}),
 				valueField: 'fk_tipo_incidente',
@@ -162,6 +162,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				forceSelection: true,
 				typeAhead: false,
 				triggerAction: 'all',
+				handler: this.iniciarEvento,
 				lazyRender: true,
 				mode: 'remote',
 				pageSize: 15,
@@ -896,9 +897,11 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		}
 	],
 	iniciarEvento:function(){
-		this.Cmp.id_tipo_incidente.on('select', function(cmb,rec,i){
+		this.Cmp.id_tipo_incidente.on('select', function(cmb,record){
+			console.log('ver rec',record);
 			this.Cmp.id_subtipo_incidente.reset();
-			this.Cmp.id_subtipo_incidente.load({params:{listarTipoIncidente:rec.get('fk_tipo_incidente')}});
+			this.Cmp.id_subtipo_incidente.modificado = true;
+			this.Cmp.id_subtipo_incidente.store.setBaseParam('nombre_incidente', record.data.id_subtipo_incidente);
 		}, this);
 	}
 
