@@ -181,6 +181,26 @@ class MODReclamo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function listarIncidentes(){
+        //Definicion de variables para ejecucion del procedimiento
+	    $this->procedimiento='rec.ft_reclamo_sel';
+        $this->transaccion='REC_REC_I_SEL';
+        $this->tipo_procedimiento ='SEL';
+        //Define los parametros para la funcion
+        $this->captura('nombre_incidente','varchar');
+        $this->captura('fk_tipo_incidente','int4');
+
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+
+    }
 			
 }
 ?>
