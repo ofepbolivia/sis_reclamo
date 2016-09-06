@@ -16,13 +16,15 @@ class ACTReclamo extends ACTbase{
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODReclamo','listarReclamo');
-		} else{
-			$this->objFunc=$this->create('MODReclamo');
-			
-			$this->res=$this->objFunc->listarReclamo($this->objParam);
 		}
-		$this->res->imprimirRespuesta($this->res->generarJson());
+        if ($this->objParam->getParametro('nombre_incidente') != '') {
+            $this->objParam->addFiltro("t.nombre_incidente  in (''". $this->objParam->getParametro('nombre_incidente') . "'')");
+        }
+			$this->objFunc=$this->create('MODReclamo');
+            $this->res=$this->objFunc->listarReclamo($this->objParam);
+            $this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
 				
 	function insertarReclamo(){
 		$this->objFunc=$this->create('MODReclamo');	
@@ -37,6 +39,11 @@ class ACTReclamo extends ACTbase{
 	function eliminarReclamo(){
 			$this->objFunc=$this->create('MODReclamo');	
 		$this->res=$this->objFunc->eliminarReclamo($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	function listarIncidentes(){
+			$this->objFunc=$this->create('MODReclamo');
+		$this->res=$this->objFunc->listarIncidentes($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 			

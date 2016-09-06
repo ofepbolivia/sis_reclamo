@@ -117,6 +117,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				hiddenName: 'id_tipo_incidente',
 				forceSelection: true,
 				typeAhead: false,
+
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'remote',
@@ -142,7 +143,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+					url: '../../sis_reclamo/control/Reclamo/listarIncidentes',
 					id: 'fk_tipo_incidente',
 					root: 'datos',
 					sortInfo: {
@@ -150,9 +151,9 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: [ 'fk_tipo_incidente','nombre_incidente'],
+					fields: [ 'fk_tipo_incidente', 'nombre_incidente'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'rti.nombre_incidente',nivel:'2'}
+					baseParams: {par_filtro: 'rti.nombre_incidente'}
 
 				}),
 				valueField: 'fk_tipo_incidente',
@@ -162,7 +163,6 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				forceSelection: true,
 				typeAhead: false,
 				triggerAction: 'all',
-				handler: this.iniciarEvento,
 				lazyRender: true,
 				mode: 'remote',
 				pageSize: 15,
@@ -176,7 +176,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'ComboBox',
 			id_grupo: 2,
-			filters: {pfiltro: 'rti.nombre_incidente', type: 'string'},
+			filters: {pfiltro: 'rti.fk_tipo_incidente', type: 'string'},
 			grid: true,
 			form: true
 		},
@@ -897,12 +897,13 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		}
 	],
 	iniciarEvento:function(){
-		this.Cmp.id_tipo_incidente.on('select', function(cmb,record){
-			console.log('ver rec',record);
+		this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
+			console.log('ver rec',record.data.id_tipo_incidente);
 			this.Cmp.id_subtipo_incidente.reset();
 			this.Cmp.id_subtipo_incidente.modificado = true;
-			this.Cmp.id_subtipo_incidente.store.setBaseParam('nombre_incidente', record.data.id_subtipo_incidente);
+			this.Cmp.id_subtipo_incidente.store.setBaseParam('tip.fk_tipo_incidente', record.data.id_tipo_incidente);
 		}, this);
+
 	}
 
 });
