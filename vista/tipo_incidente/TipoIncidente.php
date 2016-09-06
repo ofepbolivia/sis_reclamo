@@ -19,7 +19,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 		Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
 		this.init();
  		//this.load({params:{start:0, limit:this.tam_pag}})
-		//this.root.reload();
+		this.root.reload();
 	},
 	Atributos:[
 		{
@@ -40,6 +40,38 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 
 			},
 			type:'Field',
+			form:true
+		},
+		{
+			config:{
+				name: 'text',
+				fieldLabel: 'Nombre Descriptivo',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 200,
+				maxLength:50,
+				style: 'color : green;'
+			},
+			type:'TextField'/*,
+			filters:{pfiltro:'rti.nombre_incidente',type:'string'}*/,
+			id_grupo:1,
+			grid:true,
+			form:false
+		},
+		{
+			config:{
+				name: 'nivel',
+				fieldLabel: 'Nivel',
+				allowBlank: true,
+				anchor: '50%',
+				gwidth: 50,
+				maxLength:4,
+				inputType:'hidden'
+			},
+			type:'NumberField',
+			filters:{pfiltro:'rti.nivel',type:'numeric'},
+			id_grupo:1,
+			grid:true,
 			form:true
 		},
 		{
@@ -69,22 +101,6 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 			},
 			type:'NumberField',
 			filters:{pfiltro:'rti.tiempo_respuesta',type:'numeric'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-		{
-			config:{
-				name: 'nivel',
-				fieldLabel: 'Nivel',
-				allowBlank: true,
-				anchor: '50%',
-				gwidth: 50,
-				maxLength:4,
-				inputType:'hidden'
-			},
-			type:'NumberField',
-			filters:{pfiltro:'rti.nivel',type:'numeric'},
 			id_grupo:1,
 			grid:true,
 			form:true

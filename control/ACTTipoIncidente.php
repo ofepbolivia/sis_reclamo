@@ -35,9 +35,7 @@ class ACTTipoIncidente extends ACTbase{
 
 		$node = $this->objParam->getParametro('node');
 		$id_tipo_incidente = $this->objParam->getParametro('id_tipo_incidente');
-
-		
-		//$tipo_nodo=$this->objParam->getParametro('tipo_nodo');
+		$tipo_nodo=$this->objParam->getParametro('tipo_nodo');
 
 
 		if($node=='id'){
@@ -59,7 +57,7 @@ class ACTTipoIncidente extends ACTbase{
 		array_push($arreglo,array('nombre'=>'id_p','valor'=>'fk_tipo_incidente'));
 
 
-		array_push($arreglo,array('nombre'=>'text','valores'=>'nombre_incidente'));
+		array_push($arreglo,array('nombre'=>'text','valores'=>'#nombre_incidente#'));
 		array_push($arreglo,array('nombre'=>'cls','valor'=>'nivel'));
 		array_push($arreglo,array('nombre'=>'qtip','valores'=>'<b> #nivel#</b><br><b> #nombre_incidente#</b> '));
 
@@ -69,7 +67,7 @@ class ACTTipoIncidente extends ACTbase{
 			'allowEdit'=>true,
 			'cls'=>'folder',
 			'tipo_nodo'=>'raiz',
-			'icon'=>'../../media/incidente.png'),
+			'icon'=>'../../../sis_reclamo/media/incidente.png'),
 			$arreglo);
 
 		/*se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
@@ -81,7 +79,7 @@ class ACTTipoIncidente extends ACTbase{
 			'allowDelete'=>true,
 			'allowEdit'=>true,
 			'tipo_nodo'=>'hijo',
-			'icon'=>'../../../media/subincidente.gif'),
+			'icon'=>'../../../sis_reclamo/media/subincidente.gif'),
 			$arreglo);
 
 		
@@ -95,7 +93,7 @@ class ACTTipoIncidente extends ACTbase{
 
 
 		$this->res->imprimirRespuesta($this->res->generarJson());
-		//$this->res->imprimirRespuesta($arbol.toJSON());
+		
 	}
 				
 	function insertarTipoIncidente(){

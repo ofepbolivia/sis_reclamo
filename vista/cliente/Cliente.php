@@ -234,6 +234,9 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 100,
 				maxLength:30,
 				style:'text-transform:uppercase;',
+				handler: function(){
+					alert('hola');
+				},
 				store: new Ext.data.JsonStore({
 					url: '../../sis_parametros/control/Lugar/listarLugar',
 					id: 'id_lugar',

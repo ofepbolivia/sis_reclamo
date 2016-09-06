@@ -19,7 +19,7 @@ class MODTipoIncidente extends MODbase{
 		$this-> setCount(false);
 		$this->transaccion='REC_RTI_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-		
+
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_tipo_incidente','int4');
@@ -56,10 +56,10 @@ class MODTipoIncidente extends MODbase{
 		$this->transaccion='REC_RTI_ARB_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
-		//$id_padre = $this->objParam->getParametro('id_padre');
+		$id_padre = $this->objParam->getParametro('id_padre');
 
 		$this->setParametro('id_padre','id_padre','varchar');
-		$this->setParametro('tipo_nodo','tipo_nodo','varchar');
+		//$this->setParametro('tipo_nodo','tipo_nodo','varchar');
 
 
 		//$this->setParametro('id_subsistema','id_subsistema','integer');
@@ -86,7 +86,7 @@ class MODTipoIncidente extends MODbase{
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
-		//$consulta = $this->getConsulta();
+		$consulta = $this->getConsulta();
 		$this->ejecutarConsulta();
 
 		return $this->respuesta;
