@@ -21,6 +21,9 @@ class ACTTipoIncidente extends ACTbase{
 		if ($this->objParam->getParametro('nivel') != '') {
 			$this->objParam->addFiltro("rti.nivel  in (''". $this->objParam->getParametro('nivel') . "'')");
 		}
+		if ($this->objParam->getParametro('fk_tipo_incidente') != '') {
+			$this->objParam->addFiltro("rti.fk_tipo_incidente  in (''". $this->objParam->getParametro('fk_tipo_incidente') . "'')");
+		}
 
 		$this->objFunc=$this->create('MODTipoIncidente');
 		$this->res=$this->objFunc->listarTipoIncidente($this->objParam);
