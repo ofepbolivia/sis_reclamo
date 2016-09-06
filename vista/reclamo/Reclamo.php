@@ -18,7 +18,8 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 		this.init();
 		this.store.baseParams.pes_estado = 'otro';
-		this.load({params: {start: 0, limit: this.tam_pag}})
+		this.iniciarEvento();
+		this.load({params: {start: 0, limit: this.tam_pag}});
 		this.finCons = true;
 		this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
 		this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
@@ -37,119 +38,6 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			form: true
 		},
 		{
-			config: {
-				name: 'id_tipo_incidente',
-				fieldLabel: 'Tipo Incidente',
-				allowBlank: false,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
-					id: 'id_tipo_incidente',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre_incidente',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_tipo_incidente', 'nombre_incidente'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'0'}
-				}),
-				valueField: 'id_tipo_incidente',
-				displayField: 'nombre_incidente',
-				gdisplayField: 'desc_nombre_incidente',
-				hiddenName: 'id_tipo_incidente',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_nombre_incidente']);
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'id_subtipo_incidente',
-				fieldLabel: 'subtipo de Incidente',
-				allowBlank: true,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
-					id: 'fk_tipo_incidente',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre_incidente',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['fk_tipo_incidente', 'nombre_incidente', 'codigo'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'0'}
-				}),
-				valueField: 'fk_tipo_incidente',
-				displayField: 'nombre_incidente',
-				gdisplayField: 'desc_sudnom_incidente',
-				hiddenName: 'id_subtipo_incidente',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_sudnom_incidente']);
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'Fecha Incidente',
-				fieldLabel: 'Fecha Incidente',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				format: 'd/m/Y',
-				renderer: function (value, p, record) {
-					return value ? value.dateFormat('d/m/Y H:i:s') : ''
-				}
-			},
-			type: 'DateField',
-			filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
-			id_grupo: 0,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				labelSeparator: '',
-				inputType: 'hidden',
-				name: 'nro_tramite'
-			},
-			type: 'Field',
-			form: true
-		},
-		{
 			config:{
 				name:'id_cliente',
 				fieldLabel:'Cliente',
@@ -160,19 +48,19 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					id: 'id_cliente',
 					root: 'datos',
 					sortInfo:{
-						field: 'nombre_completo2',
+						field: 'nombre_completo1',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_cliente','nombre_completo2','ci'],
+					fields: ['id_cliente','nombre_completo1','ci'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'c.nombre_completo2'}
+					baseParams:{par_filtro:'c.nombre_completo1'}
 				}),
 				valueField: 'id_cliente',
-				displayField: 'nombre_completo2',
+				displayField: 'nombre_completo1',
 				gdisplayField:'desc_nom_cliente',//mapea al store del grid
-				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p> </div></tpl>',
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo1}</p><p>CI:{ci}</p> </div></tpl>',
 				hiddenName: 'id_cliente',
 				forceSelection:true,
 				typeAhead: true,
@@ -195,14 +83,129 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type:'TrigguerCombo',
 			bottom_filter:true,
-			id_grupo:1,
+			id_grupo:0,
 			filters:{
-				pfiltro:'c.nombre_completo2',
+				pfiltro:'c.nombre_completo1',
 				type:'string'
 			},
 
 			grid:true,
 			form:true
+		},
+		{
+			config: {
+				name: 'id_tipo_incidente',
+				fieldLabel: 'Tipo Incidente',
+				allowBlank: false,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+					id: 'id_tipo_incidente',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre_incidente',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_tipo_incidente', 'nombre_incidente'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'1'}
+				}),
+				valueField: 'id_tipo_incidente',
+				displayField: 'nombre_incidente',
+				gdisplayField: 'desc_nombre_incidente',
+				hiddenName: 'id_tipo_incidente',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				renderer: function (value, p, record) {
+					return String.format('{0}', record.data['desc_nombre_incidente']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 2,
+			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'id_subtipo_incidente',
+				fieldLabel: 'subtipo de Incidente',
+				allowBlank: true,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+					id: 'fk_tipo_incidente',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre_incidente',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: [ 'fk_tipo_incidente','nombre_incidente'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'rti.nombre_incidente',nivel:'2'}
+
+				}),
+				valueField: 'fk_tipo_incidente',
+				displayField: 'nombre_incidente',
+				gdisplayField: 'desc_sudnom_incidente',
+				hiddenName: 'id_subtipo_incidente',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				handler: this.iniciarEvento,
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				renderer: function (value, p, record) {
+					return String.format('{0}', record.data['desc_sudnom_incidente']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 2,
+			filters: {pfiltro: 'rti.nombre_incidente', type: 'string'},
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'Fecha Incidente',
+				fieldLabel: 'Fecha Incidente',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				format: 'd/m/Y',
+				renderer: function (value, p, record) {
+					return value ? value.dateFormat('d/m/Y H:i:s') : ''
+				}
+			},
+			type: 'DateField',
+			filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				labelSeparator: '',
+				inputType: 'hidden',
+				name: 'nro_tramite'
+			},
+			type: 'Field',
+			form: true
 		},
 		{
 			config: {
@@ -301,7 +304,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				}
 			},
 			type: 'ComboBox',
-			id_grupo: 1,
+			id_grupo: 0,
 			filters: {pfiltro: 'mera.nombre_medio', type: 'string'},
 			grid: true,
 			form: true
@@ -310,7 +313,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'id_funcionario_recepcion',
-				fieldLabel: 'Funcionario',
+				fieldLabel: 'Funcionario Recepcion',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -383,7 +386,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.pnr', type: 'numeric'},
-			id_grupo: 1,
+			id_grupo: 0,
 			grid: true,
 			form: true
 		},
@@ -404,7 +407,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['id_oficina', 'nombre', 'codigo'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+					baseParams: {par_filtro: 'ofi.nombre'}
 				}),
 				valueField: 'id_oficina',
 				displayField: 'nombre',
@@ -425,8 +428,8 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				}
 			},
 			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			id_grupo: 2,
+			filters: {pfiltro: 'ofi.nombre', type: 'string'},
 			grid: true,
 			form: true
 		},
@@ -447,7 +450,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					totalProperty: 'total',
 					fields: ['id_oficina', 'nombre', 'codigo'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+					baseParams: {par_filtro: 'ofi.nombre'}
 				}),
 				valueField: 'id_oficina',
 				displayField: 'nombre',
@@ -468,8 +471,8 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				}
 			},
 			type: 'ComboBox',
-			id_grupo: 1,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			id_grupo: 0,
+			filters: {pfiltro: 'ofi.nombre', type: 'string'},
 			grid: true,
 			form: true
 		},
@@ -529,7 +532,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.nro_att_canalizado', type: 'numeric'},
-			id_grupo: 1,
+			id_grupo: 0,
 			grid: true,
 			form: true
 		},
@@ -544,7 +547,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.nro_ripat_att', type: 'numeric'},
-			id_grupo: 1,
+			id_grupo: 0,
 			grid: true,
 			form: true
 		},
@@ -559,7 +562,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.nro_hoja_ruta', type: 'numeric'},
-			id_grupo: 1,
+			id_grupo: 0,
 			grid: true,
 			form: true
 		},
@@ -601,7 +604,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				}
 			},
 			type: 'ComboBox',
-			id_grupo: 1,
+			id_grupo:2,
 			filters:{
 				pfiltro:'PERSON.nombre_completo1',
 				type:'string'
@@ -611,16 +614,31 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
-				name: 'detalle_incidente',
-				fieldLabel: 'Detalle Incidente',
+				name: 'estado',
+				fieldLabel: 'Estado',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength: 100
 			},
 			type: 'TextField',
+			filters: {pfiltro: 'rec.estado', type: 'string'},
+			id_grupo: 2,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'detalle_incidente',
+				fieldLabel: 'Detalle Incidente',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength: 100
+			},
+			type: 'TextArea',
 			filters: {pfiltro: 'rec.detalle_incidente', type: 'string'},
-			id_grupo: 0,
+			id_grupo: 2,
 			grid: true,
 			form: true
 		},
@@ -629,13 +647,13 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				name: 'observaciones_incidente',
 				fieldLabel: 'Observaciones Incidente',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength: 100
 			},
-			type: 'TextField',
+			type: 'TextArea',
 			filters: {pfiltro: 'rec.observaciones_incidente', type: 'string'},
-			id_grupo: 0,
+			id_grupo: 2,
 			grid: true,
 			form: true
 		},
@@ -657,21 +675,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			type: 'Field',
 			form: true
 		},
-		{
-			config: {
-				name: 'estado',
-				fieldLabel: 'Estado',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 100
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.estado', type: 'string'},
-			id_grupo: 0,
-			grid: true,
-			form: true
-		},
+
 
 		{
 			config: {
@@ -839,8 +843,8 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 	},
 	bdel: true,
 	bsave: true,
-	fheight: '70%',
-	fwidth: '63%',
+	fheight: '80%',
+	fwidth: '65%',
 
 	Grupos: [
 		{
@@ -855,27 +859,51 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 					items: [
 						{
 							xtype: 'fieldset',
-							title: 'Datos principales',
+							title: 'DATOS RECEPCION',
 							autoHeight: true,
 							items: [],
 							id_grupo: 0
 						}
 					]
-				}, {
+				},
+				{
+					bodyStyle: 'padding-right:5px;',
+					items: [
+						{
+							xtype: 'fieldset',
+							title: 'DATOS DEL SERVICIO QUE ORIGINA EL RECLAMOS',
+							autoHeight: true,
+							items: [],
+							id_grupo: 1
+						}
+					]
+				},
+				{
 					bodyStyle: 'padding-left:5px;',
-					items: [{
+					items: [
+						{
 						xtype: 'fieldset',
-						title: 'Datos persona',
+						title: 'TIPO DE INCEDENTE',
 						autoHeight: true,
 						items: [],
-						id_grupo: 1
-					}]
+						id_grupo: 2
+					}
+					]
 				}
+
+
 
 			]
 		}
-	]
-
+	],
+	iniciarEvento:function(){
+		this.Cmp.id_tipo_incidente.on('select', function(cmb,record){
+			console.log('ver rec',record);
+			this.Cmp.id_subtipo_incidente.reset();
+			this.Cmp.id_subtipo_incidente.modificado = true;
+			this.Cmp.id_subtipo_incidente.store.setBaseParam('nombre_incidente', record.data.id_subtipo_incidente);
+		}, this);
+	}
 
 });
 
