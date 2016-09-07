@@ -91,43 +91,15 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid: true,
 					form: true
 				},
-				/*{
-					config:{
-						name:'id_funcionario',
-						hiddenName: 'Solicitante',
-						origen:'FUNCIONARIOCAR',
-						fieldLabel:'Funcionario',
-						allowBlank:false,
-						gwidth:200,
-						valueField: 'id_funcionario',
-						gdisplayField: 'desc_nombre_funcionario',
-						baseParams: { es_combo_solicitud : 'si' },
-						renderer:function(value, p, record){return String.format('{0}', record.data['desc_person']);}
-					},
-					type:'ComboRec',//ComboRec
-
-					id_grupo:0,
-					filters:{pfiltro:'desc_person',type:'string'},
-					bottom_filter:true,
-					grid:true,
-					form:true
-				},*/
-
-
 
 				{
+					//configuracion del componente
 					config:{
-						name: 'id_reclamo',
-						fieldLabel: 'Reclamo',
-						allowBlank: true,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:255
+						labelSeparator:'',
+						inputType:'hidden',
+						name: 'id_reclamo'
 					},
-					type:'TextField',
-					filters:{pfiltro:'id_reclamo',type:'string'},
-					id_grupo:0,
-					grid:true,
+					type:'Field',
 					form:true
 				},
 
@@ -376,6 +348,16 @@ header("content-type: text/javascript; charset=UTF-8");
 				field: 'id_informe',
 				direction: 'ASC'
 			},
+		onReloadPage: function (m) {
+			this.maestro = m;
+			this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
+			this.load({params: {start: 0, limit: 50}})
+		},
+		/*loadValoresIniciales: function () {
+		 Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
+		 this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+
+		 }*/
 			bdel:true,
 			bsave:true
 		}

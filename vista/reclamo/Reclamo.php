@@ -896,6 +896,20 @@ header("content-type: text/javascript; charset=UTF-8");
 				]
 			}
 		],
+		tabsouth :[{
+			url:'../../../sis_reclamo/vista/respuesta/Respuesta.php',
+			title:'Respuesta',
+			height:'50%',
+			cls:'Respuesta'
+		},
+			{
+				url:'../../../sis_reclamo/vista/informe/Informe.php',
+				title:'Informe',
+				height:'50%',
+				cls:'Informe'
+			}
+
+		],
 		onButtonNew : function () {
 			Phx.vista.Reclamo.superclass.onButtonNew.call(this);
 			this.Cmp.id_subtipo_incidente.disable();
