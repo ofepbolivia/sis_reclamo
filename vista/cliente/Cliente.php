@@ -230,13 +230,8 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				name: 'pais_residencia',
 				fieldLabel: 'Pais de Residencia',
 				allowBlank: false,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:30,
-				style:'text-transform:uppercase;',
-				handler: function(){
-					alert('hola');
-				},
+				emptyText: 'Elija una opcion...',
+
 				store: new Ext.data.JsonStore({
 					url: '../../sis_parametros/control/Lugar/listarLugar',
 					id: 'id_lugar',
@@ -246,7 +241,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['nombre'],
+					fields: ['id_lugar','nombre'],
 					remoteSort: true,
 					baseParams:{par_filtro:'lug.nombre',tipo:'pais'}
 				}),
@@ -258,14 +253,24 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				typeAhead: false,
 				triggerAction: 'all',
 				lazyRender: true,
-				mode: 'remote',
+				queryMode: 'remote',
 				pageSize: 20,
 				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:30,
+				style:'text-transform:uppercase;',
+				turl:'../../../sis_parametros/vista/lugar/Lugar.php',
+				ttitle:'Lugar',
+				// tconfig:{width:1800,height:500},
+				tdata:{},
+				tcls:'Lugar',
 				renderer: function(value, p, record){
 					return String.format('{0}', record.data['nombre']);
 				}
 			},
-			type:'ComboBox',
+			type:'TrigguerCombo',
+			bottom_filter:false,
 			filters:{pfiltro:'cli.pais_residencia',type:'string'},
 			id_grupo:2,
 			grid:true,

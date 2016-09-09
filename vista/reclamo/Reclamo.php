@@ -139,9 +139,11 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'id_subtipo_incidente',
+				id:'si',
 				fieldLabel: 'subtipo de Incidente',
 				allowBlank: true,
-				emptyText: 'Elija una opción...',
+				emptyText: 'Elija SubIncidente...',
+				disabled: true,
 				store: new Ext.data.JsonStore({
 					url: '../../sis_reclamo/control/Reclamo/listarIncidentes',
 					id: 'fk_tipo_incidente',
@@ -898,10 +900,12 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 	],
 	iniciarEvento:function(){
 		this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
-			console.log('ver rec',record.data.id_tipo_incidente);
+			console.log('ver rec',this.record.data.id_tipo_incidente);
+			
+			this.Cmp.si.enable();
 			this.Cmp.id_subtipo_incidente.reset();
-			this.Cmp.id_subtipo_incidente.modificado = true;
-			this.Cmp.id_subtipo_incidente.store.setBaseParam('tip.fk_tipo_incidente', record.data.id_tipo_incidente);
+			//this.Cmp.id_subtipo_incidente.modificado = true;
+			this.Cmp.id_subtipo_incidente.store.setBaseParam('tipo.fk_tipo_incidente', record.data.id_tipo_incidente);
 		}, this);
 
 	}

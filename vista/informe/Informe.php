@@ -14,10 +14,12 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			constructor:function(config){
 				this.maestro=config.maestro;
+				this.fwidth = '55%';
+				this.fheight = '90%';
 				//llama al constructor de la clase padre
 				Phx.vista.Informe.superclass.constructor.call(this,config);
 				this.init();
-				this.load({params:{start:0, limit:this.tam_pag}})
+				this.load({params:{start:0, limit:this.tam_pag}});
 			},
 
 			Atributos:[
@@ -33,10 +35,25 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				{
 					config:{
+						name: 'nro_informe',
+						fieldLabel: 'Nro. Informe',
+						allowBlank: true,
+						anchor: '50%',
+						gwidth: 100,
+						maxLength:20
+					},
+					type:'TextField',
+					filters:{pfiltro:'infor.nro_informe',type:'string'},
+					id_grupo:1,
+					grid:true,
+					form:true
+				},
+				{
+					config:{
 						name: 'fecha_informe',
 						fieldLabel: 'Fecha Informe',
 						allowBlank: false,
-						anchor: '80%',
+						anchor: '40%',
 						gwidth: 100,
 						format: 'd/m/Y',
 						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -47,7 +64,85 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid:true,
 					form:true
 				},
+				{
+					config: {
+						name: 'lista_compensacion',
+						fieldLabel: 'Lista Compensacion',
+						allowBlank: false,
+						emptyText: 'Seleccion...',
+						store: new Ext.data.JsonStore({
+							url: '../../sis_reclamo/control/Compensacion/listarCompensacion',
+							id: 'id_compensacion',
+							root: 'datos',
+							sortInfo: {
+								field: 'nombre',
+								direction: 'ASC'
+							},
+							totalProperty: 'total',
+							fields: ['id_compensacion', 'nombre'],
+							remoteSort: true,
+							baseParams: {par_filtro: 'movtip.nombre'}
+						}),
+						valueField: 'id_compensacion',
+						displayField: 'nombre',
+						gdisplayField: 'desc_nombre_compensacion',//mapea al store del grid
+						hiddenName: 'id_compensacion',
+						forceSelection: true,
+						typeAhead: true,
+						triggerAction: 'all',
+						lazyRender: true,
+						mode: 'remote',
+						pageSize: 10,
+						queryDelay: 1000,
+						anchor: '50%',
+						gwidth: 200,
+						minChars: 2,
+						enableMultiSelect: true,
+						renderer: function (value, p, record) {
+							return String.format('{0}', record.data['desc_nombre_compensacion']);
+						}
+					},
+					type: 'AwesomeCombo',
+					id_grupo: 0,
+					grid: true,
+					form: true
+				},
+				/*{
+					config:{
+						name:'id_funcionario',
+						hiddenName: 'Solicitante',
+						origen:'FUNCIONARIOCAR',
+						fieldLabel:'Funcionario',
+						allowBlank:false,
+						gwidth:200,
+						valueField: 'id_funcionario',
+						gdisplayField: 'desc_nombre_funcionario',
+						baseParams: { es_combo_solicitud : 'si' },
+						renderer:function(value, p, record){return String.format('{0}', record.data['desc_person']);}
+					},
+					type:'ComboRec',//ComboRec
 
+					id_grupo:0,
+					filters:{pfiltro:'desc_person',type:'string'},
+					bottom_filter:true,
+					grid:true,
+					form:true
+				},
+				{
+					config:{
+						name: 'id_reclamo',
+						fieldLabel: 'Reclamo',
+						allowBlank: true,
+						anchor: '50%',
+						gwidth: 100,
+						maxLength:255
+					},
+					type:'TextField',
+					filters:{pfiltro:'id_reclamo',type:'string'},
+					id_grupo:0,
+					grid:true,
+					form:true
+				},*/
 				{
 					config: {
 						name: 'id_funcionario',
@@ -78,8 +173,8 @@ header("content-type: text/javascript; charset=UTF-8");
 						mode: 'remote',
 						pageSize: 15,
 						queryDelay: 1000,
-						anchor: '100%',
-						gwidth: 150,
+						anchor: '50%',
+						gwidth: 100,
 						minChars: 2,
 						renderer: function (value, p, record) {
 							return String.format('{0}', record.data['desc_funcionario1']);
@@ -91,67 +186,13 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid: true,
 					form: true
 				},
-				/*{
-					config:{
-						name:'id_funcionario',
-						hiddenName: 'Solicitante',
-						origen:'FUNCIONARIOCAR',
-						fieldLabel:'Funcionario',
-						allowBlank:false,
-						gwidth:200,
-						valueField: 'id_funcionario',
-						gdisplayField: 'desc_nombre_funcionario',
-						baseParams: { es_combo_solicitud : 'si' },
-						renderer:function(value, p, record){return String.format('{0}', record.data['desc_person']);}
-					},
-					type:'ComboRec',//ComboRec
-
-					id_grupo:0,
-					filters:{pfiltro:'desc_person',type:'string'},
-					bottom_filter:true,
-					grid:true,
-					form:true
-				},*/
-
-
-
-				{
-					config:{
-						name: 'id_reclamo',
-						fieldLabel: 'Reclamo',
-						allowBlank: true,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:255
-					},
-					type:'TextField',
-					filters:{pfiltro:'id_reclamo',type:'string'},
-					id_grupo:0,
-					grid:true,
-					form:true
-				},
-
-				{
-					config:{
-						name: 'nro_informe',
-						fieldLabel: 'Nro Informe',
-						allowBlank: true,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:20
-					},
-					type:'TextField',
-					filters:{pfiltro:'infor.nro_informe',type:'string'},
-					id_grupo:1,
-					grid:true,
-					form:true
-				},
 				{
 					config:{
 						name: 'antecedentes_informe',
-						fieldLabel: 'Antecedentes Informe',
+						fieldLabel: 'Antecedentes',
 						allowBlank: true,
 						anchor: '80%',
+						height: 80,
 						gwidth: 100,
 						maxLength:255
 					},
@@ -167,6 +208,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						fieldLabel: 'Analisis Tecnico',
 						allowBlank: true,
 						anchor: '80%',
+						height: 80,
 						gwidth: 100,
 						maxLength:255
 					},
@@ -178,10 +220,27 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				{
 					config:{
+						name: 'conclusion_recomendacion',
+						fieldLabel: 'Conclusion Recomendacion',
+						allowBlank: true,
+						anchor: '80%',
+						height: 80,
+						gwidth: 100,
+						maxLength:255
+					},
+					type:'TextArea',
+					filters:{pfiltro:'infor.conclusion_recomendacion',type:'string'},
+					id_grupo:1,
+					grid:true,
+					form:true
+				},
+				{
+					config:{
 						name: 'sugerencia_respuesta',
 						fieldLabel: 'Sugerencia Respuesta',
 						allowBlank: true,
 						anchor: '80%',
+						height: 80,
 						gwidth: 100,
 						maxLength:255
 					},
@@ -191,7 +250,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid:true,
 					form:true
 				},
-								{
+				{
 					config:{
 						name: 'estado_reg',
 						fieldLabel: 'Estado Reg.',
@@ -205,65 +264,6 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_grupo:1,
 					grid:true,
 					form:false
-				},
-
-				{
-					config: {
-						name: 'lista_compensacion',
-						fieldLabel: 'lista compensacion',
-						allowBlank: false,
-						emptyText: 'Seleccion...',
-						store: new Ext.data.JsonStore({
-							url: '../../sis_reclamo/control/Compensacion/listarCompensacion',
-							id: 'id_compensacion',
-							root: 'datos',
-							sortInfo: {
-								field: 'nombre',
-								direction: 'ASC'
-							},
-							totalProperty: 'total',
-							fields: ['id_compensacion', 'nombre'],
-							remoteSort: true,
-							baseParams: {par_filtro: 'movtip.nombre'}
-						}),
-						valueField: 'id_compensacion',
-						displayField: 'nombre',
-						gdisplayField: 'desc_nombre_compensacion',//mapea al store del grid
-						hiddenName: 'id_compensacion',
-						forceSelection: true,
-						typeAhead: true,
-						triggerAction: 'all',
-						lazyRender: true,
-						mode: 'remote',
-						pageSize: 10,
-						queryDelay: 1000,
-						width: 250,
-						gwidth: 200,
-						minChars: 2,
-						enableMultiSelect: true,
-						renderer: function (value, p, record) {
-							return String.format('{0}', record.data['desc_nombre_compensacion']);
-						}
-					},
-					type: 'AwesomeCombo',
-					id_grupo: 0,
-					grid: false,
-					form: true
-				},
-				{
-					config:{
-						name: 'conclusion_recomendacion',
-						fieldLabel: 'Conclusion Recomendacion',
-						allowBlank: true,
-						anchor: '80%',
-						gwidth: 100,
-						maxLength:255
-					},
-					type:'TextArea',
-					filters:{pfiltro:'infor.conclusion_recomendacion',type:'string'},
-					id_grupo:1,
-					grid:true,
-					form:true
 				},
 				{
 					config:{
