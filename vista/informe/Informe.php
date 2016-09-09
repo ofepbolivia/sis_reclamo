@@ -107,6 +107,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid: true,
 					form: true
 				},
+
 				/*{
 					config:{
 						name:'id_funcionario',
@@ -128,19 +129,26 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid:true,
 					form:true
 				},
+=======
+
+>>>>>>> 98724af44b63fe09a7ac61ba902f58648a907cfd
 				{
+					//configuracion del componente
 					config:{
+<<<<<<< HEAD
 						name: 'id_reclamo',
 						fieldLabel: 'Reclamo',
 						allowBlank: true,
 						anchor: '50%',
 						gwidth: 100,
 						maxLength:255
+=======
+						labelSeparator:'',
+						inputType:'hidden',
+						name: 'id_reclamo'
+>>>>>>> 98724af44b63fe09a7ac61ba902f58648a907cfd
 					},
-					type:'TextField',
-					filters:{pfiltro:'id_reclamo',type:'string'},
-					id_grupo:0,
-					grid:true,
+					type:'Field',
 					form:true
 				},*/
 				{
@@ -376,6 +384,16 @@ header("content-type: text/javascript; charset=UTF-8");
 				field: 'id_informe',
 				direction: 'ASC'
 			},
+		onReloadPage: function (m) {
+			this.maestro = m;
+			this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
+			this.load({params: {start: 0, limit: 50}})
+		},
+		/*loadValoresIniciales: function () {
+		 Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
+		 this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+
+		 }*/
 			bdel:true,
 			bsave:true
 		}

@@ -17,11 +17,14 @@ class ACTReclamo extends ACTbase{
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODReclamo','listarReclamo');
 		}
-        if ($this->objParam->getParametro('nombre_incidente') != '') {
-            $this->objParam->addFiltro("t.nombre_incidente  in (''". $this->objParam->getParametro('nombre_incidente') . "'')");
+        if($this->objParam->getParametro('id_reclamo' != '')){
+            $this->objParam->addFiltro("rec.id_reclamo = ". $this->objParam->getParametro('nombre_incidente'));
         }
-			$this->objFunc=$this->create('MODReclamo');
-            $this->res=$this->objFunc->listarReclamo($this->objParam);
+		else {
+
+            $this->objFunc = $this->create('MODReclamo');
+            $this->res = $this->objFunc->listarReclamo($this->objParam);
+        }
             $this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
@@ -41,6 +44,7 @@ class ACTReclamo extends ACTbase{
 		$this->res=$this->objFunc->eliminarReclamo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
 	function listarIncidentes(){
 			$this->objFunc=$this->create('MODReclamo');
 		$this->res=$this->objFunc->listarIncidentes($this->objParam);

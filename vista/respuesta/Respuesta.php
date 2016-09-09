@@ -292,11 +292,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
 		this.load({params: {start: 0, limit: 50}})
 	},
-	loadValoresIniciales: function () {
+	/*loadValoresIniciales: function () {
 		Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
 		this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
 
-	}
+	}*/
 
 });
 
