@@ -80,9 +80,9 @@ class ACTTipoIncidente extends ACTbase{
     function listarTipoIncidente(){
 
         $this->objParam->defecto('ordenacion','id_tipo_incidente');
-        if($this->objParam->getParametro('fk_tipo_incidente') != '' && $this->objParam->getParametro('fk_tipo_incidente')==$this->objParam->getParametro('id_tipo_incidente')){
 
-            $this->objParam->addFiltro("rti.fk_tipo_incidente = ". $this->objParam->getParametro('fk_tipo_incidente'));
+        if($this->objParam->getParametro('fk_tipo_incidente') != '' and '') {
+            $this->objParam->addFiltro("rti.fk_tipo_incidente = " .$this->objParam->getParametro('id_tipo_incidente'));
         }
         if ($this->objParam->getParametro('nivel') != '') {
             $this->objParam->addFiltro("rti.nivel  in (''". $this->objParam->getParametro('nivel') . "'')");

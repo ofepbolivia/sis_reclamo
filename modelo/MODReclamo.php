@@ -30,6 +30,7 @@ class MODReclamo extends MODbase{
 		$this->captura('id_oficina_registro_incidente','int4');
 		$this->captura('id_proceso_wf','int4');
 		$this->captura('id_estado_wf','int4');
+       // $this->captura('id_proceso_macro','int4');
 		$this->captura('id_cliente','int4');
 		$this->captura('estado','varchar');
 		$this->captura('fecha_hora_incidente','timestamp');
@@ -92,6 +93,7 @@ class MODReclamo extends MODbase{
 		$this->setParametro('id_oficina_registro_incidente','id_oficina_registro_incidente','int4');
 		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
 		$this->setParametro('id_estado_wf','id_estado_wf','int4');
+        $this->setParametro('id_proceso_macro','id_proceso_macro','int4');
 		$this->setParametro('id_cliente','id_cliente','int4');
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('fecha_hora_incidente','fecha_hora_incidente','timestamp');
@@ -137,6 +139,7 @@ class MODReclamo extends MODbase{
 		$this->setParametro('id_oficina_registro_incidente','id_oficina_registro_incidente','int4');
 		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
 		$this->setParametro('id_estado_wf','id_estado_wf','int4');
+        $this->setParametro('id_proceso_macro','id_proceso_macro','int4');
 		$this->setParametro('id_cliente','id_cliente','int4');
 		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('fecha_hora_incidente','fecha_hora_incidente','timestamp');
