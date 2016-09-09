@@ -16,7 +16,7 @@ class MODTipoIncidente extends MODbase{
     function listarTipoIncidente(){
         //Definicion de variables para ejecucion del procedimientp
         $this->procedimiento='rec.ft_tipo_incidente_sel';
-        $this-> setCount(false);
+
         $this->transaccion='REC_RTI_SEL';
         $this->tipo_procedimiento='SEL';//tipo de transaccion
 
@@ -43,7 +43,8 @@ class MODTipoIncidente extends MODbase{
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
-
+        //echo $this->consulta;
+        //exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }

@@ -21,8 +21,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.iniciarEvento();
 			this.load({params: {start: 0, limit: this.tam_pag}});
 			this.finCons = true;
-			this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:false,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
-			this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:false,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
+			this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
+			this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
 
 		},
 
@@ -79,75 +79,6 @@ header("content-type: text/javascript; charset=UTF-8");
 					tcls:'Cliente',
 					pid:this.idContenedor,
 
-<<<<<<< HEAD
-			grid:true,
-			form:true
-		},
-		{
-			config: {
-				name: 'id_tipo_incidente',
-				fieldLabel: 'Tipo Incidente',
-				allowBlank: false,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
-					id: 'id_tipo_incidente',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre_incidente',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_tipo_incidente', 'nombre_incidente'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'rti.nombre_incidente', fk_tipo_incidente:'1'}
-				}),
-				valueField: 'id_tipo_incidente',
-				displayField: 'nombre_incidente',
-				gdisplayField: 'desc_nombre_incidente',
-				hiddenName: 'id_tipo_incidente',
-				forceSelection: true,
-				typeAhead: false,
-
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer: function (value, p, record) {
-					return String.format('{0}', record.data['desc_nombre_incidente']);
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 2,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'id_subtipo_incidente',
-				id:'si',
-				fieldLabel: 'subtipo de Incidente',
-				allowBlank: true,
-				emptyText: 'Elija SubIncidente...',
-				disabled: true,
-				store: new Ext.data.JsonStore({
-					url: '../../sis_reclamo/control/Reclamo/listarIncidentes',
-					id: 'fk_tipo_incidente',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre_incidente',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: [ 'fk_tipo_incidente', 'nombre_incidente'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'rti.nombre_incidente'}
-=======
 					renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}
 				},
 				type:'TrigguerCombo',
@@ -186,12 +117,11 @@ header("content-type: text/javascript; charset=UTF-8");
 					hiddenName: 'id_tipo_incidente',
 					forceSelection: true,
 					typeAhead: false,
->>>>>>> 98724af44b63fe09a7ac61ba902f58648a907cfd
 
 					triggerAction: 'all',
 					lazyRender: true,
 					mode: 'remote',
-					pageSize: 15,
+					pageSize: 30,
 					queryDelay: 1000,
 					anchor: '100%',
 					gwidth: 150,
@@ -208,13 +138,13 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			{
 				config: {
-					name: 'id_subtipo_incidente',
-					fieldLabel: 'subtipo de Incidente',
+					name: 'fk_tipo_incidente',
+					fieldLabel: 'Subtipo Incidente',
 					allowBlank: true,
 					emptyText: 'Elija una opción...',
 					store: new Ext.data.JsonStore({
 						url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
-						id: 'fk_tipo_incidente',
+						id: 'id_tipo_incidente',
 						root: 'datos',
 						sortInfo: {
 							field: 'nombre_incidente',
@@ -223,7 +153,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						totalProperty: 'total',
 						fields: ['id_tipo_incidente', 'nombre_incidente'],
 						remoteSort: true,
-						baseParams: {par_filtro: 'rti.nombre_incidente' }
+						//baseParams: {par_filtro: 'rti.nombre_incidente', fk_tipo_incidente: 'rti.fk_tipo_incidente'}
 
 					}),
 					valueField: 'id_tipo_incidente',
@@ -249,7 +179,52 @@ header("content-type: text/javascript; charset=UTF-8");
 				filters: {pfiltro: 'rti.fk_tipo_incidente', type: 'string'},
 				grid: true,
 				form: true
-			},
+			}/*,
+			 {
+			 config:{
+			 name: 'fk_tipo_incidente',
+			 fieldLabel: 'Subtipo Incidente',
+			 allowBlank: false,
+			 style:'text-transform:uppercase;',
+			 store: new Ext.data.JsonStore({
+			 url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+			 id: 'fk_tipo_incidente',
+			 root: 'datos',
+			 sortInfo: {
+			 field: 'nombre_incidente',
+			 direction: 'ASC'
+			 },
+			 totalProperty: 'total',
+			 fields: ['id_tipo_incidente', 'nombre_incidente'],
+			 remoteSort: true,
+			 baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'2', fk_tipo_incidente: 'rti.fk_tipo_incidente'}
+
+			 }),
+			 valueField: 'id_tipo_incidente',
+			 displayField: 'nombre_incidente',
+			 gdisplayField: 'desc_nombre_incidente',
+			 hiddenName: 'id_tipo_incidente',
+			 forceSelection: true,
+			 typeAhead: false,
+			 triggerAction: 'all',
+			 lazyRender: true,
+			 mode: 'remote',
+			 pageSize: 20,
+			 anchor: '100%',
+			 gwidth: 100,
+			 maxLength:30,
+			 queryDelay: 1000,
+			 renderer: function(value, p, record){
+			 console.log(record.data['nombre_incidente']);
+			 return String.format('{0}', record.data['nombre_incidente']);
+			 }
+			 },
+			 type:'ComboBox',
+			 filters:{pfiltro:'rti.nombre_incidente',type:'string'},
+			 id_grupo:2,
+			 grid:true,
+			 form:true
+			 }*/,
 			{
 				config: {
 					name: 'Fecha Incidente',
@@ -963,20 +938,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
 
-<<<<<<< HEAD
-			]
-		}
-	],
-	iniciarEvento:function(){
-		this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
-			console.log('ver rec',this.record.data.id_tipo_incidente);
-			
-			this.Cmp.si.enable();
-			this.Cmp.id_subtipo_incidente.reset();
-			//this.Cmp.id_subtipo_incidente.modificado = true;
-			this.Cmp.id_subtipo_incidente.store.setBaseParam('tipo.fk_tipo_incidente', record.data.id_tipo_incidente);
-		}, this);
-=======
 				]
 			}
 		],
@@ -992,71 +953,27 @@ header("content-type: text/javascript; charset=UTF-8");
 				height:'50%',
 				cls:'Informe'
 			}
-
 		],
 		onButtonNew : function () {
 			Phx.vista.Reclamo.superclass.onButtonNew.call(this);
-			this.Cmp.id_subtipo_incidente.disable();
+			//this.Cmp.fk_tipo_incidente.disable();
 
 		},
 		iniciarEvento:function(){
 			this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
 				console.log('ver rec',record.data.id_tipo_incidente);
-				this.Cmp.id_subtipo_incidente.reset();
-				this.Cmp.id_subtipo_incidente.modificado = true;
-				this.Cmp.id_subtipo_incidente.setDisabled(false);
-				this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
+				console.log('ver rec',record.data.fk_tipo_incidente);
+				console.log(record.data);
+				this.Cmp.fk_tipo_incidente.reset();
+				this.Cmp.fk_tipo_incidente.modificado = true;
+				this.Cmp.fk_tipo_incidente.setDisabled(false);
+				this.Cmp.fk_tipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
+				this.Cmp.fk_tipo_incidente.store.setBaseParam('nivel', '2');
+
+				console.log(this.Cmp.fk_tipo_incidente.store.baseParams);
 			}, this);
->>>>>>> 98724af44b63fe09a7ac61ba902f58648a907cfd
 
-		},
-		antEstado:function(){
-			var rec=this.sm.getSelected();
-			Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
-				'Estado de Wf',
-				{
-					modal:true,
-					width:450,
-					height:250
-				}, {data:rec.data}, this.idContenedor,'AntFormEstadoWf',
-				{
-					config:[{
-						event:'beforesave',
-						delegate: this.onAntEstado,
-					}
-					],
-					scope:this
-				})
-		},
-
-		sigEstado:function(){
-		var rec=this.sm.getSelected();
-		this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
-			'Estado de Wf',
-			{
-				modal:true,
-				width:700,
-				height:450
-			}, {data:{
-				id_estado_wf:rec.data.id_estado_wf,
-				id_proceso_wf:rec.data.id_proceso_wf,
-				fecha_ini:rec.data.fecha_tentativa
-
-
-
-
-			}}, this.idContenedor,'FormEstadoWf',
-			{
-				config:[{
-					event:'beforesave',
-					delegate: this.onSaveWizard,
-
-				}],
-
-				scope:this
-			});
-
-	}
+		}
 
 	});
 
