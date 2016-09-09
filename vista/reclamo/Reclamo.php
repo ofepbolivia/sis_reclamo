@@ -21,8 +21,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.iniciarEvento();
 			this.load({params: {start: 0, limit: this.tam_pag}});
 			this.finCons = true;
-			this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
-			this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
+			this.addButton('ant_estado',{grupo:[0],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:false,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
+			this.addButton('sig_estado',{grupo:[0],text:'Siguiente',iconCls: 'badelante',disabled:false,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>'});
 
 		},
 
@@ -153,7 +153,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						totalProperty: 'total',
 						fields: ['id_tipo_incidente', 'nombre_incidente'],
 						remoteSort: true,
-						baseParams: {par_filtro: 'rti.nombre_incidente'}
+						baseParams: {par_filtro: 'rti.nombre_incidente' }
 
 					}),
 					valueField: 'id_tipo_incidente',
@@ -924,7 +924,54 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
 			}, this);
 
-		}
+		},
+		antEstado:function(){
+			var rec=this.sm.getSelected();
+			Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+				'Estado de Wf',
+				{
+					modal:true,
+					width:450,
+					height:250
+				}, {data:rec.data}, this.idContenedor,'AntFormEstadoWf',
+				{
+					config:[{
+						event:'beforesave',
+						delegate: this.onAntEstado,
+					}
+					],
+					scope:this
+				})
+		},
+
+		sigEstado:function(){
+		var rec=this.sm.getSelected();
+		this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+			'Estado de Wf',
+			{
+				modal:true,
+				width:700,
+				height:450
+			}, {data:{
+				id_estado_wf:rec.data.id_estado_wf,
+				id_proceso_wf:rec.data.id_proceso_wf,
+				fecha_ini:rec.data.fecha_tentativa
+
+
+
+
+			}}, this.idContenedor,'FormEstadoWf',
+			{
+				config:[{
+					event:'beforesave',
+					delegate: this.onSaveWizard,
+
+				}],
+
+				scope:this
+			});
+
+	}
 
 	});
 
