@@ -1,8 +1,3 @@
-CREATE OR REPLACE FUNCTION "rec"."ft_informe_ime" (
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
-
 /**************************************************************************
  SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_informe_ime
@@ -26,7 +21,13 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_informe	integer;
+	v_id_informe	        integer;
+  v_listado             varchar;
+  v_compensacion 			  varchar[];
+  cont 					        integer;
+  v_valores 				    varchar = '';
+  v_valor					      varchar;
+  v_tam					        integer;
 
 BEGIN
 
@@ -43,6 +44,22 @@ BEGIN
 	if(p_transaccion='REC_INFOR_INS')then
 
         begin
+        	--Convertir los indices del combo en sus correspondientes valores de cadena.
+            v_compensacion = string_to_array(v_parametros.lista_compensacion,',')::varchar[];
+            v_tam = array_length(v_compensacion,1);
+        	if (v_tam>0)then
+            	for cont in 1..v_tam loop
+                    select com.nombre  into  v_valor
+                    from rec.tcompensacion com
+                    where com.id_compensacion = v_compensacion[cont]::integer;
+                    if (cont < v_tam) then
+                    	v_valores = v_valores || v_valor || ',';
+                    else
+                    	v_valores = v_valores || v_valor;
+                    end if;
+                end loop;
+            end if;
+            raise exception '%', v_valores;
         	--Sentencia de la insercion
         	insert into rec.tinforme(
 			sugerencia_respuesta,
@@ -167,7 +184,3 @@ EXCEPTION
 		raise exception '%',v_resp;
 
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
-COST 100;
-ALTER FUNCTION "rec"."ft_informe_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

@@ -40,7 +40,7 @@ class MODInforme extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
         $this->captura('desc_nombre_compensacion','varchar');
-        $this->captura('desc_funcionario1','text');
+        //$this->captura('desc_funcionario1','varchar');
        
 
 

@@ -11,6 +11,9 @@ class ACTReclamo extends ACTbase{
 			
 	function listarReclamo(){
 		$this->objParam->defecto('ordenacion','id_reclamo');
+        if($this->objParam->getParametro('id_reclamo') != '') {
+            $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+        }
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){

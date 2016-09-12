@@ -10,8 +10,10 @@
 class ACTInforme extends ACTbase{
 
 	function listarInforme(){
+		
 		$this->objParam->defecto('ordenacion','id_informe');
-        if($this->objParam->getParametro('id_reclamo') != '') {
+        
+		if($this->objParam->getParametro('id_reclamo') != '') {
             $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
         }
         $this->objParam->defecto('dir_ordenacion','asc');

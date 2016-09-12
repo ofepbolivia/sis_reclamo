@@ -25,5 +25,6 @@ header("content-type: text/javascript; charset=UTF-8");
         bnew:false,
         bdel:false,
         bsave:false
+        
     };
 </script>

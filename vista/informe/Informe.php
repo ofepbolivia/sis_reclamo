@@ -96,10 +96,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '50%',
 						gwidth: 200,
 						minChars: 2,
-						enableMultiSelect: true,/*
-						selected: function(combo, record, index){
-							console.log(record.data);
-						},*/
+						enableMultiSelect: true,
 						renderer: function (value, p, record) {
 							return String.format('{0}', record.data['desc_nombre_compensacion']);
 						}
@@ -164,7 +161,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							totalProperty: 'total',
 							fields: ['id_funcionario','desc_person','ci'],
 							remoteSort: true,
-							baseParams: {par_filtro: ''}
+							baseParams: {par_filtro: 'desc_person'}
 						}),
 						valueField: 'id_funcionario',
 						displayField: 'desc_person',
@@ -371,8 +368,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 				{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 				{name:'id_usuario_mod', type: 'numeric'},
-				{name:'usr_reg', type: 'string'},
-				{name:'desc_funcionario1', type: 'string'},
+				{name:'usr_reg', type: 'string'}/*,
+				{name:'desc_funcionario1', type: 'string'}*/
 
 
 			],
@@ -381,7 +378,17 @@ header("content-type: text/javascript; charset=UTF-8");
 				direction: 'ASC'
 			},
 			bdel:true,
-			bsave:true
+			bsave:true/*,
+		onReloadPage: function (m) {
+			this.maestro = m;
+			this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
+			this.load({params: {start: 0, limit: 50}})
+		},
+		loadValoresIniciales: function () {
+			Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
+			//this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+
+		}*/
 		}
 	)
 </script>

@@ -33,6 +33,21 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'nombre_medio',
+				fieldLabel: 'Nombre Medio',
+				allowBlank: false,
+				anchor: '50%',
+				gwidth: 100,
+				maxLength:255
+			},
+			type:'TextField',
+			filters:{pfiltro:'mera.nombre_medio',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
 				name: 'codigo',
 				fieldLabel: 'Codigo',
 				allowBlank: false,
@@ -45,7 +60,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:true
-		},
+		}
 		/*{
 			config:{
 				name:'nombre_medio',
@@ -69,21 +84,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},*/
-		{
-			config:{
-				name: 'nombre_medio',
-				fieldLabel: 'Nombre Medio',
-				allowBlank: false,
-				anchor: '50%',
-				gwidth: 100,
-				maxLength:255
-			},
-			type:'TextField',
-			filters:{pfiltro:'mera.nombre_medio',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
+		,
 		{
 			config:{
 				name: 'estado_reg',
