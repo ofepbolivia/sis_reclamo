@@ -230,13 +230,7 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				name: 'pais_residencia',
 				fieldLabel: 'Pais de Residencia',
 				allowBlank: false,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:30,
 				style:'text-transform:uppercase;',
-				handler: function(){
-					alert('hola');
-				},
 				store: new Ext.data.JsonStore({
 					url: '../../sis_parametros/control/Lugar/listarLugar',
 					id: 'id_lugar',
@@ -260,8 +254,12 @@ Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
 				lazyRender: true,
 				mode: 'remote',
 				pageSize: 20,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:30,
 				queryDelay: 1000,
 				renderer: function(value, p, record){
+					console.log(record.data['nombre']);
 					return String.format('{0}', record.data['nombre']);
 				}
 			},

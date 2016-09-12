@@ -107,7 +107,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_tipo_incidente', 'nombre_incidente'],
+					fields: ['id_tipo_incidente', 'nombre_incidente','fk_tipo_incidente'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'1'}
 				}),
@@ -132,7 +132,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'ComboBox',
 			id_grupo: 2,
-			filters: {pfiltro: 'movtip.nombre', type: 'string'},
+			filters: {pfiltro: 'tri.nombre_incidente', type: 'string'},
 			grid: true,
 			form: true
 		},
@@ -143,20 +143,20 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_reclamo/control/Reclamo/listarIncidentes',
-					id: 'fk_tipo_incidente',
+                    url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+					id: 'id_tipo_incidente',
 					root: 'datos',
 					sortInfo: {
 						field: 'nombre_incidente',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: [ 'fk_tipo_incidente', 'nombre_incidente'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'rti.nombre_incidente'}
+                    fields: ['id_tipo_incidente', 'nombre_incidente'],
+					remoteSort: true
+					//baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'2'}
 
 				}),
-				valueField: 'fk_tipo_incidente',
+				valueField: 'id_tipo_incidente',
 				displayField: 'nombre_incidente',
 				gdisplayField: 'desc_sudnom_incidente',
 				hiddenName: 'id_subtipo_incidente',
@@ -896,12 +896,33 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			]
 		}
 	],
+	tabsouth :[{
+		url:'../../../sis_reclamo/vista/respuesta/Respuesta.php',
+		title:'Respuesta',
+		height:'50%',
+		cls:'Respuesta'
+	},
+		{
+			url:'../../../sis_reclamo/vista/informe/Informe.php',
+			title:'Informe',
+			height:'50%',
+			cls:'Informe'
+		}
+	],
+    onButtonNew : function () {
+        Phx.vista.Reclamo.superclass.onButtonNew.call(this);
+        this.Cmp.id_subtipo_incidente.disable();
+
+    },
 	iniciarEvento:function(){
 		this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
 			console.log('ver rec',record.data.id_tipo_incidente);
+			console.log(record.data);
 			this.Cmp.id_subtipo_incidente.reset();
 			this.Cmp.id_subtipo_incidente.modificado = true;
-			this.Cmp.id_subtipo_incidente.store.setBaseParam('tip.fk_tipo_incidente', record.data.id_tipo_incidente);
+            this.Cmp.id_subtipo_incidente.setDisabled(false);
+			this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente',record.data.id_tipo_incidente);
+			console.log(this.Cmp.id_subtipo_incidente.store.baseParams);
 		}, this);
 
 	}
