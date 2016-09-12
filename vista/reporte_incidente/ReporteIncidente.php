@@ -4,14 +4,14 @@
  *@file    ItemEntRec.php
  *@author  admin
  *@date    12/09/2016
- *@description Reporte Material Entregado/Recibido
+ *@description Reporte de incidente
  */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
     Phx.vista.ReporteIncidente = Ext.extend(Phx.frmInterfaz,{
 
-        atributos :[
+        Atributos :[
             {
                 config:{
                     name:'id_uo',
@@ -64,7 +64,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 15,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '50%',
                     minChars: 1
                 },
                 type: 'ComboBox',
@@ -96,11 +96,14 @@ header("content-type: text/javascript; charset=UTF-8");
         labelSubmit : 'Imprimir',
         tooltipSubmit : '<b>Generar Reporte</b>',
         constructor : function(config) {
+
             Phx.vista.ReporteIncidente.superclass.constructor.call(this, config);
             this.init();
+
         },
         tipo : 'reporte',
         clsSubmit : 'bprint'
+
 
 
     })
