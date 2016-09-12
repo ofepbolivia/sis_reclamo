@@ -34,7 +34,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'nombre_medio',
-				fieldLabel: 'Nombre Medio',
+				fieldLabel: 'Nombre Medio Reclamo',
 				allowBlank: false,
 				anchor: '50%',
 				gwidth: 100,

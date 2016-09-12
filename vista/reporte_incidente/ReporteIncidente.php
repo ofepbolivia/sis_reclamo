@@ -2,7 +2,7 @@
 /**
  *@package pXP
  *@file    ItemEntRec.php
- *@author  MAM
+ *@author  admin
  *@date    12/09/2016
  *@description Reporte Material Entregado/Recibido
  */
@@ -33,7 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     type:'string'
                 },
                 grid:true,
-                form:false
+                form:true
             },
             {
                 config: {
@@ -100,13 +100,9 @@ header("content-type: text/javascript; charset=UTF-8");
             this.init();
         },
         tipo : 'reporte',
-        clsSubmit : 'bprint',
+        clsSubmit : 'bprint'
 
-        agregarArgsExtraSubmit: function() {
-            this.argumentExtraSubmit.uo = this.Cmp.id_uo.getRawValue();
-            this.argumentExtraSubmit.tipo_contrato = this.Cmp.id_tipo_contrato.getRawValue();
 
-        }
     })
 
 </script>
