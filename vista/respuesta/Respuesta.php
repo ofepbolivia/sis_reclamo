@@ -285,6 +285,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 	bdel: true,
 	bsave: true,
+	fwidth: '65%',
 
 	
 	onReloadPage: function (m) {
@@ -294,7 +295,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 	loadValoresIniciales: function () {
 		Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
-		//this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+		this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
 
 	}
 

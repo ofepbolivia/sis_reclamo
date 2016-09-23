@@ -43,6 +43,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					},
 					type:'TextField',
 					filters:{pfiltro:'infor.nro_informe',type:'string'},
+					bottom_filter:true,
 					id_grupo:1,
 					grid:true,
 					form:true
@@ -84,7 +85,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						}),
 						valueField: 'id_compensacion',
 						displayField: 'nombre',
-						gdisplayField: 'desc_nombre_compensacion',//mapea al store del grid
+						gdisplayField: 'lista_compensacion',//mapea al store del grid
 						hiddenName: 'id_compensacion',
 						forceSelection: true,
 						typeAhead: true,
@@ -94,11 +95,11 @@ header("content-type: text/javascript; charset=UTF-8");
 						pageSize: 10,
 						queryDelay: 1000,
 						anchor: '50%',
-						gwidth: 200,
+						gwidth: 500,
 						minChars: 2,
 						enableMultiSelect: true,
 						renderer: function (value, p, record) {
-							return String.format('{0}', record.data['desc_nombre_compensacion']);
+							return String.format('{0}', record.data['lista']);
 						}
 					},
 					type: 'AwesomeCombo',
@@ -106,27 +107,6 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid: true,
 					form: true
 				},
-				/*{
-				 config:{
-				 name:'id_funcionario',
-				 hiddenName: 'Solicitante',
-				 origen:'FUNCIONARIOCAR',
-				 fieldLabel:'Funcionario',
-				 allowBlank:false,
-				 gwidth:200,
-				 valueField: 'id_funcionario',
-				 gdisplayField: 'desc_nombre_funcionario',
-				 baseParams: { es_combo_solicitud : 'si' },
-				 renderer:function(value, p, record){return String.format('{0}', record.data['desc_person']);}
-				 },
-				 type:'ComboRec',//ComboRec
-
-				 id_grupo:0,
-				 filters:{pfiltro:'desc_person',type:'string'},
-				 bottom_filter:true,
-				 grid:true,
-				 form:true
-				 },*/
 				 {
 				 config:{
 				 name: 'id_reclamo',
@@ -134,18 +114,18 @@ header("content-type: text/javascript; charset=UTF-8");
 				 allowBlank: true,
 				 anchor: '50%',
 				 gwidth: 100,
-				 maxLength:255
+				 /*inputType:'hidden',*/
+				 maxLength:100
 				 },
 				 type:'TextField',
 				 filters:{pfiltro:'id_reclamo',type:'string'},
 				 id_grupo:0,
-				 grid:true,
+				 grid:false,
 				 form:true
 				 },
 				{
 					config: {
 						name: 'id_funcionario',
-						tipo: 'All',
 						fieldLabel: 'Funcionario',
 						allowBlank: false,
 						emptyText: 'Elija una opción...',
@@ -161,7 +141,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							totalProperty: 'total',
 							fields: ['id_funcionario','desc_person','ci'],
 							remoteSort: true,
-							baseParams: {par_filtro: 'desc_person'}
+							baseParams: {par_filtro: 'PERSON.nombre_completo1'}
 						}),
 						valueField: 'id_funcionario',
 						displayField: 'desc_person',
@@ -175,7 +155,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						pageSize: 15,
 						queryDelay: 1000,
 						anchor: '50%',
-						gwidth: 100,
+						gwidth: 200,
 						minChars: 2,
 						renderer: function (value, p, record) {
 							return String.format('{0}', record.data['desc_funcionario1']);
@@ -183,7 +163,8 @@ header("content-type: text/javascript; charset=UTF-8");
 					},
 					type: 'ComboBox',
 					id_grupo: 1,
-					filters: {pfiltro: 'desc_person', type: 'string'},
+					filters: {pfiltro: 'PERSON.nombre_completo1', type: 'string'},
+					bottom_filter:true,
 					grid: true,
 					form: true
 				},
@@ -194,7 +175,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '80%',
 						height: 80,
-						gwidth: 100,
+						gwidth: 200,
 						maxLength:255
 					},
 					type:'TextArea',
@@ -210,11 +191,12 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '80%',
 						height: 80,
-						gwidth: 100,
+						gwidth: 200,
 						maxLength:255
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.analisis_tecnico',type:'string'},
+					bottom_filter:true,
 					id_grupo:1,
 					grid:true,
 					form:true
@@ -226,7 +208,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '80%',
 						height: 80,
-						gwidth: 100,
+						gwidth: 200,
 						maxLength:255
 					},
 					type:'TextArea',
@@ -242,7 +224,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '80%',
 						height: 80,
-						gwidth: 100,
+						gwidth: 200,
 						maxLength:255
 					},
 					type:'TextArea',
@@ -368,8 +350,11 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 				{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 				{name:'id_usuario_mod', type: 'numeric'},
-				{name:'usr_reg', type: 'string'}/*,
-				{name:'desc_funcionario1', type: 'string'}*/
+				{name:'usr_reg', type: 'string'},
+				{name:'desc_nombre_compensacion', type: 'string'},
+				{name:'desc_funcionario1', type: 'string'},
+				{name:'lista', type: 'string'},
+
 
 
 			],

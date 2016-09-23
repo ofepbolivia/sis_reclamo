@@ -45,7 +45,7 @@ class MODReclamo extends MODbase{
 		$this->captura('nro_pir','int4');
 		$this->captura('nro_frsa','int4');
 		$this->captura('nro_att_canalizado','int4');
-		$this->captura('nro_tramite','int4');
+		$this->captura('nro_tramite','varchar');
 		$this->captura('detalle_incidente','text');
 		$this->captura('pnr','int4');
 		$this->captura('nro_vuelo','varchar');
@@ -62,6 +62,7 @@ class MODReclamo extends MODbase{
         $this->captura('desc_nom_cliente','text');
         $this->captura('desc_nombre_incidente','varchar');
         $this->captura('desc_nombre_oficina','varchar');
+		$this->captura('desc_oficina_registro_incidente','varchar');
         $this->captura('desc_sudnom_incidente','varchar');
         $this->captura('desc_nombre_funcionario','text');
         $this->captura('desc_nombre_fun_denun','text');
@@ -107,7 +108,7 @@ class MODReclamo extends MODbase{
 		$this->setParametro('nro_pir','nro_pir','int4');
 		$this->setParametro('nro_frsa','nro_frsa','int4');
 		$this->setParametro('nro_att_canalizado','nro_att_canalizado','int4');
-		$this->setParametro('nro_tramite','nro_tramite','int4');
+		$this->setParametro('nro_tramite','nro_tramite','varchar');
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
 		$this->setParametro('pnr','pnr','int4');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
@@ -152,7 +153,7 @@ class MODReclamo extends MODbase{
 		$this->setParametro('nro_pir','nro_pir','int4');
 		$this->setParametro('nro_frsa','nro_frsa','int4');
 		$this->setParametro('nro_att_canalizado','nro_att_canalizado','int4');
-		$this->setParametro('nro_tramite','nro_tramite','int4');
+		$this->setParametro('nro_tramite','nro_tramite','varchar');
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
 		$this->setParametro('pnr','pnr','int4');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
@@ -182,25 +183,53 @@ class MODReclamo extends MODbase{
 		return $this->respuesta;
 	}
 
-	function listarIncidentes(){
-        //Definicion de variables para ejecucion del procedimiento
-	    $this->procedimiento='rec.ft_reclamo_sel';
-        $this->transaccion='REC_REC_I_SEL';
-        $this->tipo_procedimiento ='SEL';
-        //Define los parametros para la funcion
-        $this->captura('nombre_incidente','varchar');
-        $this->captura('fk_tipo_incidente','int4');
+	function siguienteEstadoReclamo(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='rec.ft_reclamo_ime';
+		$this->transaccion='REC_SIGEREC_IME';
+		$this->tipo_procedimiento='IME';
 
+		//Define los parametros para la funcion
+		$this->setParametro('id_proceso_wf_act','id_proceso_wf_act','int4');
+		$this->setParametro('id_estado_wf_act','id_estado_wf_act','int4');
+		$this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+		$this->setParametro('id_tipo_estado','id_tipo_estado','int4');
+		$this->setParametro('id_funcionario_wf','id_funcionario_wf','int4');
+		$this->setParametro('id_depto_wf','id_depto_wf','int4');
+		$this->setParametro('obs','obs','text');
+		$this->setParametro('json_procesos','json_procesos','text');
 
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
 
-        //Ejecuta la instruccion
-        $this->armarConsulta();
-        $this->ejecutarConsulta();
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 
-        //Devuelve la respuesta
-        return $this->respuesta;
+	function anteriorEstadoReclamo(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='rec.ft_reclamo_ime';
+		$this->transaccion='PLA_ANTEREC_IME';
+		$this->tipo_procedimiento='IME';
 
-    }
-			
+		//Define los parametros para la funcion
+		$this->setParametro('id_plan_pago','id_plan_pago','int4');
+		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+		$this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+		$this->setParametro('operacion','operacion','varchar');
+
+		$this->setParametro('id_funcionario','id_funcionario','int4');
+		$this->setParametro('id_tipo_estado','id_tipo_estado','int4');
+		$this->setParametro('id_estado_wf','id_estado_wf','int4');
+		$this->setParametro('obs','obs','text');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 }
 ?>

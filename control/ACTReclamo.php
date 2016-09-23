@@ -44,9 +44,20 @@ class ACTReclamo extends ACTbase{
 		$this->res=$this->objFunc->eliminarReclamo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-	function listarIncidentes(){
-			$this->objFunc=$this->create('MODReclamo');
-		$this->res=$this->objFunc->listarIncidentes($this->objParam);
+
+	function siguienteEstadoReclamo(){
+		$this->objFunc=$this->create('MODReclamo');
+
+		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["id_usuario_reg"]);
+
+		$this->res=$this->objFunc->siguienteEstadoReclamo($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function anteriorEstadoReclamo(){
+		$this->objFunc=$this->create('MODReclamo');
+		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["id_usuario_reg"]);
+		$this->res=$this->objFunc->anteriorEstadoReclamo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 			
