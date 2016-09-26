@@ -20,7 +20,11 @@ class ACTInforme extends ACTbase{
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODInforme','listarInforme');
-		} else{
+		}
+        if($this->objParam->getParametro('id_reclamo') != '') {
+            $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+        }
+		else{
 			$this->objFunc=$this->create('MODInforme');
 
 			$this->res=$this->objFunc->listarInforme($this->objParam);

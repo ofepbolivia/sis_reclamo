@@ -1,33 +1,29 @@
 <?php
-/**
-*@package pXP
-*@file gen-ACTTipoIncidente.php
-*@author  (admin)
-*@date 23-08-2016 19:24:46
-*@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
-*/
+
 //require_once 'GenerarArbol.php';
 class ACTTipoIncidente extends ACTbase{
+
 
 	function listarTipoIncidente(){
 
 		$this->objParam->defecto('ordenacion','id_tipo_incidente');
         $this->objParam->defecto('dir_ordenacion','asc');
 
-        if ($this->objParam->getParametro('fk_tipo_incidente') != '') {
-            $this->objParam->addFiltro("rti.fk_tipo_incidente  = ". $this->objParam->getParametro('fk_tipo_incidente'));
-		}
 
         if ($this->objParam->getParametro('nivel') != '') {
             $this->objParam->addFiltro("rti.nivel  = ". $this->objParam->getParametro('nivel'));
         }
 
-		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+        if ($this->objParam->getParametro('fk_tipo_incidente') != '') {
+            $this->objParam->addFiltro("rti.fk_tipo_incidente  = ". $this->objParam->getParametro('fk_tipo_incidente'));
+        }
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODTipoIncidente','listarTipoIncidente');
 		}
-
-
+        
 		$this->objFunc=$this->create('MODTipoIncidente');
 		$this->res=$this->objFunc->listarTipoIncidente($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
@@ -75,49 +71,45 @@ class ACTTipoIncidente extends ACTbase{
 			'tipo_nodo'=>'raiz',
 			'icon'=>'../../../sis_reclamo/media/incidente.png'),
 			$arreglo);
-
-		/*se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
-          es importante que entre los resultados devueltos por la base exista la variable\
-          tipo_dato que tenga el valor en texto = 'hoja'*/ 
-
-		$this->res->addNivelArbol('tipo_nodo','hijo',array(
-			'leaf'=>false,
-			'allowDelete'=>true,
-			'allowEdit'=>true,
-			'tipo_nodo'=>'hijo',
-			'icon'=>'../../../sis_reclamo/media/subincidente.gif'),
-			$arreglo);
-
-		
-		$this->res->addNivelArbol('tipo_nodo','hoja',array(
-			'leaf'=>true,
-			'allowDelete'=>true,
-			'allowEdit'=>true,
-			'tipo_nodo'=>'hoja',
-			'icon'=>'../../../lib/imagenes/a_form.png'),
-			$arreglo);
+        
+        $this->res->addNivelArbol('tipo_nodo','hijo',array(
+            'leaf'=>false,
+            'allowDelete'=>true,
+            'allowEdit'=>true,
+            'tipo_nodo'=>'hijo',
+            'icon'=>'../../../sis_reclamo/media/subincidente.gif'),
+            $arreglo);
 
 
-		$this->res->imprimirRespuesta($this->res->generarJson());
-		
-	}
-				
-	function insertarTipoIncidente(){
-		$this->objFunc=$this->create('MODTipoIncidente');	
-		if($this->objParam->insertar('id_tipo_incidente')){
-			$this->res=$this->objFunc->insertarTipoIncidente($this->objParam);			
-		} else{			
-			$this->res=$this->objFunc->modificarTipoIncidente($this->objParam);
-		}
-		$this->res->imprimirRespuesta($this->res->generarJson());
-	}
-						
-	function eliminarTipoIncidente(){
-			$this->objFunc=$this->create('MODTipoIncidente');	
-		$this->res=$this->objFunc->eliminarTipoIncidente($this->objParam);
-		$this->res->imprimirRespuesta($this->res->generarJson());
-	}
-			
+        $this->res->addNivelArbol('tipo_nodo','hoja',array(
+            'leaf'=>true,
+            'allowDelete'=>true,
+            'allowEdit'=>true,
+            'tipo_nodo'=>'hoja',
+            'icon'=>'../../../lib/imagenes/a_form.png'),
+            $arreglo);
+
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+
+    }
+
+    function insertarTipoIncidente(){
+        $this->objFunc=$this->create('MODTipoIncidente');
+        if($this->objParam->insertar('id_tipo_incidente')){
+            $this->res=$this->objFunc->insertarTipoIncidente($this->objParam);
+        } else{
+            $this->res=$this->objFunc->modificarTipoIncidente($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function eliminarTipoIncidente(){
+        $this->objFunc=$this->create('MODTipoIncidente');
+        $this->res=$this->objFunc->eliminarTipoIncidente($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
 }
 
 ?>

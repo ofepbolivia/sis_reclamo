@@ -14,11 +14,14 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			constructor:function(config){
 				this.maestro=config.maestro;
-				this.fheight='90%';
+
+				this.fwidth = '55%';
+				this.fheight = '90%';
+
 				//llama al constructor de la clase padre
 				Phx.vista.Informe.superclass.constructor.call(this,config);
 				this.init();
-				this.load({params:{start:0, limit:this.tam_pag}})
+				this.load({params:{start:0, limit:this.tam_pag}});
 			},
 
 			Atributos:[
@@ -64,6 +67,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid:true,
 					form:true
 				},
+
 				{
 					config: {
 						name: 'lista_compensacion',
@@ -108,28 +112,27 @@ header("content-type: text/javascript; charset=UTF-8");
 					form: true
 				},
 				 {
-				 config:{
-				 name: 'id_reclamo',
-				 fieldLabel: 'Reclamo',
-				 allowBlank: true,
-				 anchor: '50%',
-				 gwidth: 100,
-				 /*inputType:'hidden',*/
-				 maxLength:100
+				 	config:{
+						 name: 'id_reclamo',
+						 fieldLabel: 'Reclamo',
+						 allowBlank: true,
+						 anchor: '50%',
+						 gwidth: 100,
+						 inputType:'hidden',
+						 maxLength:100
+					 },
+					 type:'TextField',
+					 filters:{pfiltro:'id_reclamo',type:'string'},
+					 id_grupo:0,
+					 grid:false,
+					 form:true
 				 },
-				 type:'TextField',
-				 filters:{pfiltro:'id_reclamo',type:'string'},
-				 id_grupo:0,
-				 grid:false,
-				 form:true
-				 },
-				{
+				 {
 					config: {
 						name: 'id_funcionario',
 						fieldLabel: 'Funcionario',
 						allowBlank: false,
 						emptyText: 'Elija una opción...',
-						listWidth: 300,
 						store: new Ext.data.JsonStore({
 							url: '../../sis_organigrama/control/Funcionario/listarFuncionario',
 							id: 'id_funcionario',
@@ -141,7 +144,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							totalProperty: 'total',
 							fields: ['id_funcionario','desc_person','ci'],
 							remoteSort: true,
-							baseParams: {par_filtro: 'PERSON.nombre_completo1'}
+							baseParams: {par_filtro: ''}
 						}),
 						valueField: 'id_funcionario',
 						displayField: 'desc_person',
@@ -155,7 +158,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						pageSize: 15,
 						queryDelay: 1000,
 						anchor: '50%',
-						gwidth: 200,
+						gwidth: 100,
 						minChars: 2,
 						renderer: function (value, p, record) {
 							return String.format('{0}', record.data['desc_funcionario1']);
@@ -163,8 +166,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					},
 					type: 'ComboBox',
 					id_grupo: 1,
-					filters: {pfiltro: 'PERSON.nombre_completo1', type: 'string'},
-					bottom_filter:true,
+					filters: {pfiltro: 'desc_person', type: 'string'},
 					grid: true,
 					form: true
 				},
@@ -175,7 +177,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '80%',
 						height: 80,
-						gwidth: 200,
+						gwidth: 100,
 						maxLength:255
 					},
 					type:'TextArea',
@@ -192,6 +194,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '80%',
 						height: 80,
 						gwidth: 200,
+
 						maxLength:255
 					},
 					type:'TextArea',
@@ -353,27 +356,14 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'usr_reg', type: 'string'},
 				{name:'desc_nombre_compensacion', type: 'string'},
 				{name:'desc_funcionario1', type: 'string'},
-				{name:'lista', type: 'string'},
-
-
-
+				{name:'lista', type: 'string'}
 			],
 			sortInfo:{
 				field: 'id_informe',
 				direction: 'ASC'
 			},
 			bdel:true,
-			bsave:true/*,
-		onReloadPage: function (m) {
-			this.maestro = m;
-			this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
-			this.load({params: {start: 0, limit: 50}})
-		},
-		loadValoresIniciales: function () {
-			Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
-			//this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
-
-		}*/
+			bsave:true
 		}
 	)
 </script>

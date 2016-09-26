@@ -21,7 +21,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.init();
 				this.load({params:{start:0, limit:this.tam_pag}})
 			},
-
+		
 			Atributos:[
 				{
 					//configuracion del componente
@@ -176,7 +176,6 @@ header("content-type: text/javascript; charset=UTF-8");
 					filters:{pfiltro:'cli.celular',type:'numeric'},
 					id_grupo:2,
 					grid:true,
-
 					form:true
 				},
 				{
@@ -416,6 +415,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					form:false
 				}
 			],
+		
 			rowExpander: new Ext.ux.grid.RowExpander({
 				tpl : new Ext.Template(
 					'<br>','<h1 style="text-align: center">DATOS DE CONTACTO</h1>',

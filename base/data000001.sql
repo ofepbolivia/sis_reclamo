@@ -158,7 +158,7 @@ FROM rec.tcliente c;
 
 
 /***********************************I-DAT-FEA-REC-1-02/09/2016****************************************/
-select pxp.f_delete_tgui ('RTI');
-select pxp.f_delete_testructura_gui ('RTI', 'REC');
+select pxp.f_insert_tgui ('TipoIncidente', 'TipoIncidente', 'RTI', 'si', 1, 'sis_reclamo/vista/tipo_incidente/TipoIncidente.php', 2, '', 'TipoIncidente', 'REC');
+select pxp.f_insert_testructura_gui ('RTI', 'REC');
 /***********************************F-DAT-FEA-REC-1-02/09/2016****************************************/
 

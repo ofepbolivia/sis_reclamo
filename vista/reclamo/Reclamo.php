@@ -1,16 +1,17 @@
 <?php
 /**
-*@package pXP
-*@file gen-Reclamo.php
-*@author  (admin)
-*@date 10-08-2016 18:32:59
-*@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
-*/
+ *@package pXP
+ *@file gen-Reclamo.php
+ *@author  (admin)
+ *@date 10-08-2016 18:32:59
+ *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
+ */
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
+	Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
+
 
 	constructor: function (config) {
 		this.maestro = config.maestro;
@@ -775,7 +776,7 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'rec.estado_reg', type: 'string'},
-			id_grupo: 3,
+			id_grupo: 1,
 			grid: true,
 			form: false
 		},
@@ -877,7 +878,6 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
 			form: false
 		}
 	],
-
 	tam_pag: 50,
 	title: 'Reclamo',
 	ActSave: '../../sis_reclamo/control/Reclamo/insertarReclamo',
@@ -1150,23 +1150,42 @@ Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
         this.Cmp.id_subtipo_incidente.disable();
 
     },
-	iniciarEvento:function(){
-		this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
-			console.log('ver rec',record.data.id_tipo_incidente);
+	iniciarEvento:function() {
+		this.Cmp.id_tipo_incidente.on('select', function (cmb, record, index) {
+			console.log('ver rec', record.data.id_tipo_incidente);
 			console.log(record.data);
 			this.Cmp.id_subtipo_incidente.reset();
 			this.Cmp.id_subtipo_incidente.modificado = true;
-            this.Cmp.id_subtipo_incidente.setDisabled(false);
-			this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente',record.data.id_tipo_incidente);
+			this.Cmp.id_subtipo_incidente.setDisabled(false);
+			this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
 			console.log(this.Cmp.id_subtipo_incidente.store.baseParams);
+		}, this);
+	},
+
+	onButtonNew : function () {
+		Phx.vista.Reclamo.superclass.onButtonNew.call(this);
+			//this.Cmp.fk_tipo_incidente.disable();
+	},
+
+	iniciarEvento:function(){
+		this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
+		console.log('ver rec',record.data.id_tipo_incidente);
+		console.log('ver rec',record.data.fk_tipo_incidente);
+		console.log(record.data);
+		this.Cmp.fk_tipo_incidente.reset();
+		this.Cmp.fk_tipo_incidente.modificado = true;
+		this.Cmp.fk_tipo_incidente.setDisabled(false);
+		this.Cmp.fk_tipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
+		this.Cmp.fk_tipo_incidente.store.setBaseParam('nivel', '2');
+
+		console.log(this.Cmp.fk_tipo_incidente.store.baseParams);
 		}, this);
 
 	}
 
-});
+	});
 
 
 
 </script>
-		
-		
+

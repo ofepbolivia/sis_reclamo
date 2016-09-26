@@ -20,11 +20,14 @@ class ACTReclamo extends ACTbase{
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODReclamo','listarReclamo');
 		}
-        if ($this->objParam->getParametro('nombre_incidente') != '') {
-            $this->objParam->addFiltro("t.nombre_incidente  in (''". $this->objParam->getParametro('nombre_incidente') . "'')");
+        if($this->objParam->getParametro('id_reclamo' != '')){
+            $this->objParam->addFiltro("rec.id_reclamo = ". $this->objParam->getParametro('nombre_incidente'));
         }
-			$this->objFunc=$this->create('MODReclamo');
-            $this->res=$this->objFunc->listarReclamo($this->objParam);
+		else {
+
+            $this->objFunc = $this->create('MODReclamo');
+            $this->res = $this->objFunc->listarReclamo($this->objParam);
+        }
             $this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
@@ -45,6 +48,7 @@ class ACTReclamo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
+
 	function siguienteEstadoReclamo(){
 		$this->objFunc=$this->create('MODReclamo');
 
@@ -58,6 +62,7 @@ class ACTReclamo extends ACTbase{
 		$this->objFunc=$this->create('MODReclamo');
 		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["id_usuario_reg"]);
 		$this->res=$this->objFunc->anteriorEstadoReclamo($this->objParam);
+
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 			
