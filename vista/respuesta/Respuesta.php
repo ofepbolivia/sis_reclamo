@@ -17,7 +17,10 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		//llama al constructor de la clase padre
 		Phx.vista.Respuesta.superclass.constructor.call(this, config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
+		
+		this.load({params:{start:0, limit:this.tam_pag}});
+		//this.bloquearMenus();
+		//this.iniciarEventos();
 
 	},
 
@@ -43,48 +46,17 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			type: 'Field',
 			form: true
 		},
-
-		{
-			config: {
-				name: 'recomendaciones',
-				fieldLabel: 'Recomendaciones',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 100,
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'res.recomendaciones', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
 		{
 			config: {
 				name: 'nro_cite',
 				fieldLabel: 'Nro cite',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '50%',
 				gwidth: 100,
 				maxLength: 4
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'res.nro_cite', type: 'numeric'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'respuesta',
-				fieldLabel: 'Respuesta',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 100
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'res.respuesta', type: 'string'},
 			id_grupo: 1,
 			grid: true,
 			form: true
@@ -110,6 +82,21 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
+				name: 'respuesta',
+				fieldLabel: 'Respuesta',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 100
+			},
+			type: 'TextArea',
+			filters: {pfiltro: 'res.respuesta', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
@@ -125,15 +112,16 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
-				name: 'procedimiento',
-				fieldLabel: 'Procedimiento',
+				name: 'procedente',
+				fieldLabel: 'Procedente',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 100
+				maxLength: 100,
+				gdisplayField: 'procedente'
 			},
-			type: 'TextField',
-			filters: {pfiltro: 'res.procedimiento', type: 'string'},
+			type: 'Checkbox',
+			filters: {pfiltro: 'res.procedente', type: 'boolean'},
 			id_grupo: 1,
 			grid: true,
 			form: true
@@ -152,6 +140,21 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'DateField',
 			filters: {pfiltro: 'res.fecha_notificacion', type: 'date'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'recomendaciones',
+				fieldLabel: 'Recomendación',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 100,
+			},
+			type: 'TextArea',
+			filters: {pfiltro: 'res.recomendaciones', type: 'string'},
 			id_grupo: 1,
 			grid: true,
 			form: true
@@ -267,7 +270,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'respuesta', type: 'string'},
 		{name: 'fecha_respuesta', type: 'date', dateFormat: 'Y-m-d'},
 		{name: 'estado_reg', type: 'string'},
-		{name: 'procedimiento', type: 'string'},
+		{name: 'procedente', type: 'boolean'},
 		{name: 'fecha_notificacion', type: 'date', dateFormat: 'Y-m-d'},
 		{name: 'id_usuario_ai', type: 'numeric'},
 		{name: 'id_usuario_reg', type: 'numeric'},
@@ -285,19 +288,21 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 	bdel: true,
 	bsave: true,
-	fwidth: '65%',
+	fwidth: '50%',
+	fheight: '75%',
 
-	
+
 	onReloadPage: function (m) {
 		this.maestro = m;
 		this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
-		this.load({params: {start: 0, limit: 50}})
+		this.load({params: {start: 0, limit: 50}});
+		//this.Cmp.id_subtipo_incidente.store.setBaseParam
 	},
-	/*loadValoresIniciales: function () {
-		Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
+	
+	loadValoresIniciales: function () {
 		this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
-
-	}*/
+		Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
+	}
 
 });
 

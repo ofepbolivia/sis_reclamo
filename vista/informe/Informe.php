@@ -14,14 +14,12 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			constructor:function(config){
 				this.maestro=config.maestro;
-
-				this.fwidth = '55%';
-				this.fheight = '90%';
-
 				//llama al constructor de la clase padre
 				Phx.vista.Informe.superclass.constructor.call(this,config);
 				this.init();
 				this.load({params:{start:0, limit:this.tam_pag}});
+				//this.bloquearMenus();
+				//this.iniciarEventos();
 			},
 
 			Atributos:[
@@ -31,6 +29,16 @@ header("content-type: text/javascript; charset=UTF-8");
 						labelSeparator:'',
 						inputType:'hidden',
 						name: 'id_informe'
+					},
+					type:'Field',
+					form:true
+				},
+				{
+					config:{
+						labelSeparator: '',
+						name: 'id_reclamo',
+						inputType:'hidden',
+
 					},
 					type:'Field',
 					form:true
@@ -111,23 +119,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid: true,
 					form: true
 				},
-				 {
-				 	config:{
-						 name: 'id_reclamo',
-						 fieldLabel: 'Reclamo',
-						 allowBlank: true,
-						 anchor: '50%',
-						 gwidth: 100,
-						 inputType:'hidden',
-						 maxLength:100
-					 },
-					 type:'TextField',
-					 filters:{pfiltro:'id_reclamo',type:'string'},
-					 id_grupo:0,
-					 grid:false,
-					 form:true
-				 },
-				 {
+				{
 					config: {
 						name: 'id_funcionario',
 						fieldLabel: 'Funcionario',
@@ -144,12 +136,12 @@ header("content-type: text/javascript; charset=UTF-8");
 							totalProperty: 'total',
 							fields: ['id_funcionario','desc_person','ci'],
 							remoteSort: true,
-							baseParams: {par_filtro: ''}
+							baseParams: {par_filtro: 'PERSON.nombre_completo1'}
 						}),
 						valueField: 'id_funcionario',
 						displayField: 'desc_person',
-						gdisplayField: 'desc_funcionario1',
-						//hiddenName: 'id_funcionario_denunciado',
+						gdisplayField: 'desc_fun',
+						hiddenName: 'id_funcionario',
 						forceSelection: true,
 						typeAhead: false,
 						triggerAction: 'all',
@@ -161,12 +153,12 @@ header("content-type: text/javascript; charset=UTF-8");
 						gwidth: 100,
 						minChars: 2,
 						renderer: function (value, p, record) {
-							return String.format('{0}', record.data['desc_funcionario1']);
+							return String.format('{0}', record.data['desc_fun']);
 						}
 					},
 					type: 'ComboBox',
 					id_grupo: 1,
-					filters: {pfiltro: 'desc_person', type: 'string'},
+					filters: {pfiltro: 'PERSON.nombre_completo1', type: 'string'},
 					grid: true,
 					form: true
 				},
@@ -354,8 +346,9 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 				{name:'id_usuario_mod', type: 'numeric'},
 				{name:'usr_reg', type: 'string'},
+				
 				{name:'desc_nombre_compensacion', type: 'string'},
-				{name:'desc_funcionario1', type: 'string'},
+				{name:'desc_fun', type: 'string'},
 				{name:'lista', type: 'string'}
 			],
 			sortInfo:{
@@ -363,7 +356,20 @@ header("content-type: text/javascript; charset=UTF-8");
 				direction: 'ASC'
 			},
 			bdel:true,
-			bsave:true
+			bsave:true,
+			fwidth: '55%',
+			fheight: '90%',
+
+			onReloadPage: function(m){
+				this.maestro = m;
+				this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
+				this.load({params:{start: 0, limit: 50}});
+			},
+
+			loadValoresIniciales: function(){
+				Phx.vista.Informe.superclass.loadValoresIniciales.call(this);
+				this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+			}
 		}
 	)
 </script>

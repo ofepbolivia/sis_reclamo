@@ -18,6 +18,11 @@ class ACTTipoIncidente extends ACTbase{
             $this->objParam->addFiltro("rti.fk_tipo_incidente  = ". $this->objParam->getParametro('fk_tipo_incidente'));
         }
 
+		/*if ($this->objParam->getParametro('fk_tipo_incidente') != '' && $this->objParam->getParametro('nivel') != '') {
+
+			$this->objParam->addFiltro("rti.fk_tipo_incidente  = ". $this->objParam->getParametro('fk_tipo_incidente') ." and  rti.nivel = ".$this->objParam->getParametro('nivel'));
+		}*/
+
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 
 			$this->objReporte = new Reporte($this->objParam,$this);

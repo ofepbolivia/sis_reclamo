@@ -16,7 +16,7 @@ class MODRespuesta extends MODbase{
 	function listarRespuesta(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='rec.ft_respuesta_sel';
-		$this->transaccion='REC_Res_SEL';
+		$this->transaccion='REC_RES_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 				
 		//Definicion de la lista del resultado del query
@@ -27,7 +27,7 @@ class MODRespuesta extends MODbase{
 		$this->captura('respuesta','varchar');
 		$this->captura('fecha_respuesta','date');
 		$this->captura('estado_reg','varchar');
-		$this->captura('procedimiento','varchar');
+		$this->captura('procedente','bool');
 		$this->captura('fecha_notificacion','date');
 		$this->captura('id_usuario_ai','int4');
 		$this->captura('id_usuario_reg','int4');
@@ -49,7 +49,7 @@ class MODRespuesta extends MODbase{
 	function insertarRespuesta(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='rec.ft_respuesta_ime';
-		$this->transaccion='REC_Res_INS';
+		$this->transaccion='REC_RES_INS';
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
@@ -59,7 +59,7 @@ class MODRespuesta extends MODbase{
 		$this->setParametro('respuesta','respuesta','varchar');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('procedimiento','procedimiento','varchar');
+		$this->setParametro('procedente','procedente','bool');
 		$this->setParametro('fecha_notificacion','fecha_notificacion','date');
 
 		//Ejecuta la instruccion
@@ -73,7 +73,7 @@ class MODRespuesta extends MODbase{
 	function modificarRespuesta(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='rec.ft_respuesta_ime';
-		$this->transaccion='REC_Res_MOD';
+		$this->transaccion='REC_RES_MOD';
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
@@ -84,7 +84,7 @@ class MODRespuesta extends MODbase{
 		$this->setParametro('respuesta','respuesta','varchar');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('procedimiento','procedimiento','varchar');
+		$this->setParametro('procedente','procedente','bool');
 		$this->setParametro('fecha_notificacion','fecha_notificacion','date');
 
 		//Ejecuta la instruccion
@@ -98,7 +98,7 @@ class MODRespuesta extends MODbase{
 	function eliminarRespuesta(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='rec.ft_respuesta_ime';
-		$this->transaccion='REC_Res_ELI';
+		$this->transaccion='REC_RES_ELI';
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion

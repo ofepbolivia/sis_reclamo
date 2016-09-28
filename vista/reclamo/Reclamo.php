@@ -2,7 +2,7 @@
 /**
  *@package pXP
  *@file gen-Reclamo.php
- *@author  (admin)
+ *@author  Franklin Espinoza Alvarez
  *@date 10-08-2016 18:32:59
  *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
  */
@@ -206,6 +206,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				hiddenName: 'id_medio_reclamo',
 				forceSelection: true,
 				typeAhead: false,
+				editable: false,
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'remote',
@@ -407,7 +408,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				hiddenName: 'id_tipo_incidente',
 				forceSelection: true,
 				typeAhead: false,
-
+				editable: false,
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'remote',
@@ -446,8 +447,8 @@ header("content-type: text/javascript; charset=UTF-8");
 					},
 					totalProperty: 'total',
 					fields: ['id_tipo_incidente', 'nombre_incidente'],
-					remoteSort: true
-					//baseParams: {par_filtro: 'rti.nombre_incidente', nivel:'2'}
+					remoteSort: true/*,
+					baseParams: {par_filtro: 'rti.nombre_incidente',  fk_tipo_incidente:'id_tipo_incidente'}*/
 
 				}),
 				valueField: 'id_tipo_incidente',
@@ -456,6 +457,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				hiddenName: 'id_subtipo_incidente',
 				forceSelection: true,
 				typeAhead: false,
+				editable: false,
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'remote',
@@ -1009,8 +1011,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		//MANEJO DEL BOTON DE GESTION DE HORAS
 		/*if (rec.data.calculo_horas == 'si') {
 			this.getBoton('btnHoras').enable();
-		}*/
-		/*this.getBoton('btnColumnas').enable();
+		}
+		this.getBoton('btnColumnas').enable();
 		if (rec.data.estado== 'calculo_columnas') {
 			this.getBoton('btnColumnas').menu.items.items[0].enable();
 			this.getBoton('btnColumnas').menu.items.items[1].enable();
@@ -1057,7 +1059,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	liberaMenu:function()
 	{
 		this.desactivarMenu();
-		Phx.vista.Planilla.superclass.liberaMenu.call(this);
+		Phx.vista.Reclamo.superclass.liberaMenu.call(this);
 	},
 
 	desactivarMenu:function() {
@@ -1152,40 +1154,26 @@ header("content-type: text/javascript; charset=UTF-8");
     },
 	iniciarEvento:function() {
 		this.Cmp.id_tipo_incidente.on('select', function (cmb, record, index) {
-			console.log('ver rec', record.data.id_tipo_incidente);
-			console.log(record.data);
+			//console.log('ver rec', record.data.id_tipo_incidente);
+			//console.log(record.data);
 			this.Cmp.id_subtipo_incidente.reset();
 			this.Cmp.id_subtipo_incidente.modificado = true;
 			this.Cmp.id_subtipo_incidente.setDisabled(false);
 			this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
-			console.log(this.Cmp.id_subtipo_incidente.store.baseParams);
+			//this.Cmp.id_subtipo_incidente.store.setBaseParam('nivel', '2');
+
 		}, this);
 	},
 
-	onButtonNew : function () {
-		Phx.vista.Reclamo.superclass.onButtonNew.call(this);
-			//this.Cmp.fk_tipo_incidente.disable();
-	},
 
-	iniciarEvento:function(){
-		this.Cmp.id_tipo_incidente.on('select', function(cmb,record,index){
-		console.log('ver rec',record.data.id_tipo_incidente);
-		console.log('ver rec',record.data.fk_tipo_incidente);
-		console.log(record.data);
-		this.Cmp.fk_tipo_incidente.reset();
-		this.Cmp.fk_tipo_incidente.modificado = true;
-		this.Cmp.fk_tipo_incidente.setDisabled(false);
-		this.Cmp.fk_tipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
-		this.Cmp.fk_tipo_incidente.store.setBaseParam('nivel', '2');
-
-		console.log(this.Cmp.fk_tipo_incidente.store.baseParams);
-		}, this);
-
+	onButtonEdit: function() {
+		Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
+		var rec = this.sm.getSelected();
+		this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', rec.data.id_tipo_incidente);
+		console.log('puriskiri: '+rec.data);
+		//console.log('ver rec',rec.data.id_tipo_incidente);
+		//this.Cmp.id_subtipo_incidente.store.setBaseParam('nivel', '2');
 	}
-
 	});
-
-
-
 </script>
 
