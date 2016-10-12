@@ -31,7 +31,7 @@ class MODCliente extends MODbase{
 		$this->captura('apellido_paterno','varchar');
 		$this->captura('telefono','int4');
 		$this->captura('ciudad_residencia','varchar');
-		$this->captura('pais_residencia','varchar');
+		$this->captura('id_pais_residencia','int4');
 		$this->captura('nacionalidad','varchar');
 		$this->captura('barrio_zona','varchar');
 		$this->captura('estado_reg','varchar');
@@ -47,6 +47,7 @@ class MODCliente extends MODbase{
 
         $this->captura('nombre_completo1','text');
         $this->captura('nombre_completo2','text');
+		$this->captura('pais_residencia','varchar');
 		
 
 
@@ -76,7 +77,7 @@ class MODCliente extends MODbase{
 		$this->setParametro('apellido_paterno','apellido_paterno','varchar');
 		$this->setParametro('telefono','telefono','int4');
 		$this->setParametro('ciudad_residencia','ciudad_residencia','varchar');
-		$this->setParametro('pais_residencia','pais_residencia','varchar');
+		$this->setParametro('id_pais_residencia','id_pais_residencia','int4');
 		$this->setParametro('nacionalidad','nacionalidad','varchar');
 		$this->setParametro('barrio_zona','barrio_zona','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
@@ -108,7 +109,7 @@ class MODCliente extends MODbase{
 		$this->setParametro('apellido_paterno','apellido_paterno','varchar');
 		$this->setParametro('telefono','telefono','int4');
 		$this->setParametro('ciudad_residencia','ciudad_residencia','varchar');
-		$this->setParametro('pais_residencia','pais_residencia','varchar');
+		$this->setParametro('id_pais_residencia','id_pais_residencia','int4');
 		$this->setParametro('nacionalidad','nacionalidad','varchar');
 		$this->setParametro('barrio_zona','barrio_zona','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');

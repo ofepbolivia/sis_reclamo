@@ -99,8 +99,8 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				gwidth: 170,
 				maxLength:4
 			},
-			type:'NumberField',
-			filters:{pfiltro:'rti.tiempo_respuesta',type:'numeric'},
+			type:'TextField',
+			filters:{pfiltro:'rti.tiempo_respuesta',type:'string'},
 			id_grupo:1,
 			grid:true,
 			form:true
@@ -200,7 +200,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 		{name:'id_tipo_incidente', type: 'numeric'},
 		{name:'fk_tipo_incidente', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
-		{name:'tiempo_respuesta', type: 'numeric'},
+		{name:'tiempo_respuesta', type: 'string'},
 		{name:'nivel', type: 'numeric'},
 		{name:'nombre_incidente', type: 'string'},
 		
@@ -219,7 +219,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true,
+	bsave:false,
 	rootVisible:true
 	/*expanded:false*/,
 

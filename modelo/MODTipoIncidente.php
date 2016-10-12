@@ -25,7 +25,7 @@ class MODTipoIncidente extends MODbase{
 		$this->captura('id_tipo_incidente','int4');
 		$this->captura('fk_tipo_incidente','int4');
 		$this->captura('estado_reg','varchar');
-		$this->captura('tiempo_respuesta','int4');
+		$this->captura('tiempo_respuesta','varchar');
 		$this->captura('nivel','int4');
 		$this->captura('nombre_incidente','varchar');
 		$this->captura('fecha_reg','timestamp');
@@ -69,7 +69,7 @@ class MODTipoIncidente extends MODbase{
 		$this->captura('id_tipo_incidente','int4');
 		$this->captura('fk_tipo_incidente','int4');
 		$this->captura('estado_reg','varchar');
-		$this->captura('tiempo_respuesta','int4');
+		$this->captura('tiempo_respuesta','varchar');
 		$this->captura('nivel','int4');
 		$this->captura('nombre_incidente','varchar');
 
@@ -102,7 +102,7 @@ class MODTipoIncidente extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('fk_tipo_incidente','fk_tipo_incidente','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('tiempo_respuesta','tiempo_respuesta','int4');
+		$this->setParametro('tiempo_respuesta','tiempo_respuesta','varchar');
 		$this->setParametro('nivel','nivel','int4');
 		$this->setParametro('nombre_incidente','nombre_incidente','varchar');
 
@@ -124,7 +124,7 @@ class MODTipoIncidente extends MODbase{
 		$this->setParametro('id_tipo_incidente','id_tipo_incidente','int4');
 		$this->setParametro('fk_tipo_incidente','fk_tipo_incidente','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('tiempo_respuesta','tiempo_respuesta','int4');
+		$this->setParametro('tiempo_respuesta','tiempo_respuesta','varchar');
 		$this->setParametro('nivel','nivel','int4');
 		$this->setParametro('nombre_incidente','nombre_incidente','varchar');
 

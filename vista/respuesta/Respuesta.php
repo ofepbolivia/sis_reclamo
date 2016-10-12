@@ -17,9 +17,10 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		//llama al constructor de la clase padre
 		Phx.vista.Respuesta.superclass.constructor.call(this, config);
 		this.init();
-		
-		this.load({params:{start:0, limit:this.tam_pag}});
-		//this.bloquearMenus();
+		/*this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
+		this.load({params:{start:0, limit: 50}});*/
+		//this.onReloadPage();
+		this.bloquearMenus();
 		//this.iniciarEventos();
 
 	},
@@ -49,18 +50,19 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'nro_cite',
-				fieldLabel: 'Nro cite',
+				fieldLabel: 'Nro. de Cite',
 				allowBlank: false,
 				anchor: '50%',
-				gwidth: 100,
-				maxLength: 4
+				gwidth: 150,
+				maxLength: 50
 			},
-			type: 'NumberField',
-			filters: {pfiltro: 'res.nro_cite', type: 'numeric'},
+			type: 'TextField',
+			filters: {pfiltro: 'res.nro_cite', type: 'string'},
 			id_grupo: 1,
 			grid: true,
 			form: true
 		},
+
 		{
 			config: {
 				name: 'fecha_respuesta',
@@ -86,11 +88,45 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				fieldLabel: 'Respuesta',
 				allowBlank: false,
 				anchor: '80%',
-				gwidth: 100,
-				maxLength: 100
+				gwidth: 200,
+				maxLength: 1000
 			},
 			type: 'TextArea',
 			filters: {pfiltro: 'res.respuesta', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'recomendaciones',
+				fieldLabel: 'Recomendación',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 200,
+				maxLength: 1000
+			},
+			type: 'TextArea',
+			filters: {pfiltro: 'res.recomendaciones', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'procedente',
+				fieldLabel: 'Procedente',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 100,
+				gdisplayField: 'procedente',
+				renderer: function (value, p, record) {
+					return value ? 'SI' : 'NO';
+				}
+			},
+			type: 'Checkbox',
+			filters: {pfiltro: 'res.procedente', type: 'boolean'},
 			id_grupo: 1,
 			grid: true,
 			form: true
@@ -112,27 +148,12 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
-				name: 'procedente',
-				fieldLabel: 'Procedente',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 100,
-				gdisplayField: 'procedente'
-			},
-			type: 'Checkbox',
-			filters: {pfiltro: 'res.procedente', type: 'boolean'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
 				name: 'fecha_notificacion',
 				fieldLabel: 'Fecha Notificacion',
-				allowBlank: false,
+				allowBlank: true,
 				anchor: '50%',
 				gwidth: 100,
+				/*inputType:'hidden',*/
 				format: 'd/m/Y',
 				renderer: function (value, p, record) {
 					return value ? value.dateFormat('d/m/Y') : ''
@@ -140,21 +161,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			},
 			type: 'DateField',
 			filters: {pfiltro: 'res.fecha_notificacion', type: 'date'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'recomendaciones',
-				fieldLabel: 'Recomendación',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 100,
-			},
-			type: 'TextArea',
-			filters: {pfiltro: 'res.recomendaciones', type: 'string'},
 			id_grupo: 1,
 			grid: true,
 			form: true
@@ -266,7 +272,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'id_respuesta', type: 'numeric'},
 		{name: 'id_reclamo', type: 'numeric'},
 		{name: 'recomendaciones', type: 'string'},
-		{name: 'nro_cite', type: 'numeric'},
+		{name: 'nro_cite', type: 'string'},
 		{name: 'respuesta', type: 'string'},
 		{name: 'fecha_respuesta', type: 'date', dateFormat: 'Y-m-d'},
 		{name: 'estado_reg', type: 'string'},
@@ -287,16 +293,23 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		direction: 'ASC'
 	},
 	bdel: true,
-	bsave: true,
+	bsave: false,
 	fwidth: '50%',
-	fheight: '75%',
+	fheight: '60%',
 
+	onButtonEdit: function() {
+		Phx.vista.Respuesta.superclass.onButtonEdit.call(this);
+		var rec = this.sm.getSelected();
+	},
 
 	onReloadPage: function (m) {
 		this.maestro = m;
 		this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
 		this.load({params: {start: 0, limit: 50}});
-		//this.Cmp.id_subtipo_incidente.store.setBaseParam
+	},
+
+	saludo: function(){
+		alert('hola');
 	},
 	
 	loadValoresIniciales: function () {

@@ -17,8 +17,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				//llama al constructor de la clase padre
 				Phx.vista.Informe.superclass.constructor.call(this,config);
 				this.init();
-				this.load({params:{start:0, limit:this.tam_pag}});
-				//this.bloquearMenus();
+				//this.load({params:{start:0, limit: 0}});
+				this.bloquearMenus();
 				//this.iniciarEventos();
 			},
 
@@ -46,7 +46,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'nro_informe',
-						fieldLabel: 'Nro. Informe',
+						fieldLabel: 'Nro. de Informe',
 						allowBlank: true,
 						anchor: '50%',
 						gwidth: 100,
@@ -79,7 +79,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config: {
 						name: 'lista_compensacion',
-						fieldLabel: 'Lista Compensacion',
+						fieldLabel: 'Lista de Compensaciones',
 						allowBlank: false,
 						emptyText: 'Seleccion...',
 						store: new Ext.data.JsonStore({
@@ -87,7 +87,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							id: 'id_compensacion',
 							root: 'datos',
 							sortInfo: {
-								field: 'nombre',
+								field: 'orden',
 								direction: 'ASC'
 							},
 							totalProperty: 'total',
@@ -104,7 +104,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						triggerAction: 'all',
 						lazyRender: true,
 						mode: 'remote',
-						pageSize: 10,
+						pageSize: 15,
 						queryDelay: 1000,
 						anchor: '50%',
 						gwidth: 500,
@@ -122,7 +122,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config: {
 						name: 'id_funcionario',
-						fieldLabel: 'Funcionario',
+						fieldLabel: 'Funcionario Informe',
 						allowBlank: false,
 						emptyText: 'Elija una opción...',
 						store: new Ext.data.JsonStore({
@@ -170,7 +170,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '80%',
 						height: 80,
 						gwidth: 100,
-						maxLength:255
+						maxLength:1000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.antecedentes_informe',type:'string'},
@@ -186,8 +186,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '80%',
 						height: 80,
 						gwidth: 200,
-
-						maxLength:255
+						maxLength:1000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.analisis_tecnico',type:'string'},
@@ -199,12 +198,12 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'conclusion_recomendacion',
-						fieldLabel: 'Conclusion Recomendacion',
+						fieldLabel: 'Conclusiones y Recomendaciones',
 						allowBlank: true,
 						anchor: '80%',
 						height: 80,
 						gwidth: 200,
-						maxLength:255
+						maxLength:1000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.conclusion_recomendacion',type:'string'},
@@ -215,12 +214,12 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'sugerencia_respuesta',
-						fieldLabel: 'Sugerencia Respuesta',
+						fieldLabel: 'Sugerencia de Respuesta',
 						allowBlank: true,
 						anchor: '80%',
 						height: 80,
 						gwidth: 200,
-						maxLength:255
+						maxLength:1000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.sugerencia_respuesta',type:'string'},
@@ -356,19 +355,21 @@ header("content-type: text/javascript; charset=UTF-8");
 				direction: 'ASC'
 			},
 			bdel:true,
-			bsave:true,
+			bsave:false,
 			fwidth: '55%',
 			fheight: '90%',
-
+			requireclase: 'Phx.vista.Respuesta',
 			onReloadPage: function(m){
 				this.maestro = m;
 				this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
 				this.load({params:{start: 0, limit: 50}});
+				/*Phx.vista.Respuesta.saludo();
+				Phx.vista.Respuesta.onReloadPage(m);*/
 			},
 
 			loadValoresIniciales: function(){
-				Phx.vista.Informe.superclass.loadValoresIniciales.call(this);
 				this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+				Phx.vista.Informe.superclass.loadValoresIniciales.call(this);
 			}
 		}
 	)

@@ -30,7 +30,6 @@ class MODReclamo extends MODbase{
 		$this->captura('id_oficina_registro_incidente','int4');
 		$this->captura('id_proceso_wf','int4');
 		$this->captura('id_estado_wf','int4');
-       // $this->captura('id_proceso_macro','int4');
 		$this->captura('id_cliente','int4');
 		$this->captura('estado','varchar');
 		$this->captura('fecha_hora_incidente','timestamp');
@@ -38,9 +37,11 @@ class MODReclamo extends MODbase{
 		$this->captura('nro_hoja_ruta','int4');
 		$this->captura('fecha_hora_recepcion','timestamp');
 		$this->captura('estado_reg','varchar');
-		$this->captura('hora_vuelo','time');
+		$this->captura('fecha_hora_vuelo','timestamp');
 		$this->captura('origen','varchar');
-		$this->captura('nro_frd','int4');
+		$this->captura('nro_frd','varchar');
+		$this->captura('correlativo_preimpreso_frd','int4');
+		$this->captura('fecha_limite_respuesta','date');
 		$this->captura('observaciones_incidente','text');
 		$this->captura('destino','varchar');
 		$this->captura('nro_pir','int4');
@@ -48,7 +49,7 @@ class MODReclamo extends MODbase{
 		$this->captura('nro_att_canalizado','int4');
 		$this->captura('nro_tramite','varchar');
 		$this->captura('detalle_incidente','text');
-		$this->captura('pnr','int4');
+		$this->captura('pnr','varchar');
 		$this->captura('nro_vuelo','varchar');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_reg','timestamp');
@@ -58,6 +59,10 @@ class MODReclamo extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+
+		//$this->captura('id_gestion','int4');
+		//$this->captura('id_motivo_anulado','int4');
+
 
         $this->captura('desc_nombre_medio','varchar');
         $this->captura('desc_nom_cliente','text');
@@ -103,9 +108,11 @@ class MODReclamo extends MODbase{
 		$this->setParametro('nro_hoja_ruta','nro_hoja_ruta','int4');
 		$this->setParametro('fecha_hora_recepcion','fecha_hora_recepcion','timestamp');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('hora_vuelo','hora_vuelo','time');
+		$this->setParametro('fecha_hora_vuelo','fecha_hora_vuelo','timestamp');
 		$this->setParametro('origen','origen','varchar');
-		$this->setParametro('nro_frd','nro_frd','int4');
+		$this->setParametro('nro_frd','nro_frd','varchar');
+		$this->setParametro('correlativo_preimpreso_frd','correlativo_preimpreso_frd','int4');
+		$this->setParametro('fecha_limite_respuesta','fecha_limite_respuesta','date');
 		$this->setParametro('observaciones_incidente','observaciones_incidente','text');
 		$this->setParametro('destino','destino','varchar');
 		$this->setParametro('nro_pir','nro_pir','int4');
@@ -113,9 +120,11 @@ class MODReclamo extends MODbase{
 		$this->setParametro('nro_att_canalizado','nro_att_canalizado','int4');
 		$this->setParametro('nro_tramite','nro_tramite','varchar');
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
-		$this->setParametro('pnr','pnr','int4');
+		$this->setParametro('pnr','pnr','varchar');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
 
+
+		//$this->setParametro('correlativo','correlativo',  'int4');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -149,9 +158,11 @@ class MODReclamo extends MODbase{
 		$this->setParametro('nro_hoja_ruta','nro_hoja_ruta','int4');
 		$this->setParametro('fecha_hora_recepcion','fecha_hora_recepcion','timestamp');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('hora_vuelo','hora_vuelo','time');
+		$this->setParametro('fecha_hora_vuelo','fecha_hora_vuelo','timestamp');
 		$this->setParametro('origen','origen','varchar');
-		$this->setParametro('nro_frd','nro_frd','int4');
+		$this->setParametro('nro_frd','nro_frd','varchar');
+		$this->setParametro('correlativo_preimpreso_frd','correlativo_preimpreso_frd','int4');
+		$this->setParametro('fecha_limite_respuesta','fecha_limite_respuesta','date');
 		$this->setParametro('observaciones_incidente','observaciones_incidente','text');
 		$this->setParametro('destino','destino','varchar');
 		$this->setParametro('nro_pir','nro_pir','int4');
@@ -159,14 +170,12 @@ class MODReclamo extends MODbase{
 		$this->setParametro('nro_att_canalizado','nro_att_canalizado','int4');
 		$this->setParametro('nro_tramite','nro_tramite','varchar');
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
-		$this->setParametro('pnr','pnr','int4');
+		$this->setParametro('pnr','pnr','varchar');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		var_dump ($this->respuesta);
-		exit;
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}

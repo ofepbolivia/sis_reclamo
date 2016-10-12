@@ -31,7 +31,8 @@ class MODCompensacion extends MODbase{
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
-		$this->captura('usr_mod','varchar');
+        $this->captura('usr_mod','varchar');
+        $this->captura('orden','numeric');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -51,6 +52,7 @@ class MODCompensacion extends MODbase{
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('codigo','codigo','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
+        $this->setParametro('orden','orden','numeric');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -71,6 +73,7 @@ class MODCompensacion extends MODbase{
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('codigo','codigo','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
+        $this->setParametro('orden','orden','numeric');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

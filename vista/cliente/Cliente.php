@@ -40,7 +40,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						fieldLabel: 'Nombres',
 						allowBlank: false,
 						anchor: '100%',
-						gwidth: 100,
+						gwidth: 150,
 						maxLength:50,
 						style:'text-transform:uppercase;'/*,
 						 turl:'../../../sis_reclamo/vista/cliente/Cliente.php',
@@ -64,7 +64,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						fieldLabel: 'Primer Apellido',
 						allowBlank: false,
 						anchor: '100%',
-						gwidth: 100,
+						gwidth: 150,
 						maxLength:30,
 						style:'text-transform:uppercase;'
 					},
@@ -114,7 +114,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'ci',
-						fieldLabel: 'Doc. Identificacion',
+						fieldLabel: 'Nro. Doc. Identificación',
 						allowBlank: false,
 						anchor: '100%',
 						gwidth: 100,
@@ -130,7 +130,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'lugar_expedicion',
-						fieldLabel: 'Lugar Expedicion',
+						fieldLabel: 'Lugar de Expedición',
 						allowBlank: false,
 						anchor: '100%',
 						gwidth: 100,
@@ -169,8 +169,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '100%',
 						gwidth: 100,
-						maxLength:8,
-						hideMode: 'offsets'
+						maxLength:8
 					},
 					type:'NumberField',
 					filters:{pfiltro:'cli.celular',type:'numeric'},
@@ -226,7 +225,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				{
 					config:{
-						name: 'pais_residencia',
+						name: 'id_pais_residencia',
 						fieldLabel: 'Pais de Residencia',
 						allowBlank: false,
 						emptyText: 'Elija una opcion...',
@@ -247,14 +246,14 @@ header("content-type: text/javascript; charset=UTF-8");
 						valueField: 'id_lugar',
 						displayField: 'nombre',
 						gdisplayField: 'pais_residencia',
-						hiddenName: 'id_lugar',
+						hiddenName: 'id_pais_residencia',
 						forceSelection: true,
 						typeAhead: false,
 						triggerAction: 'all',
 						lazyRender: true,
 						queryMode: 'remote',
 						pageSize: 20,
-						queryDelay: 1000,
+						queryDelay: 250,
 						anchor: '100%',
 						gwidth: 100,
 						maxLength:30,
@@ -270,7 +269,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					},
 					type:'TrigguerCombo',
 					bottom_filter:false,
-					filters:{pfiltro:'cli.pais_residencia',type:'string'},
+					filters:{pfiltro:'cli.id_pais_residencia',type:'string'},
 					id_grupo:2,
 					grid:true,
 					form:true
@@ -422,7 +421,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Telefono Celular:&nbsp;&nbsp;</b> {celular}, <b>Telefono Fijo:</b> {telefono}</p>',
 					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Correo:&nbsp;&nbsp;</b> {email}</p>',
 					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Direccion:&nbsp;&nbsp;</b> {direccion}</p>',
-					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Ciudad de Residencia:&nbsp;&nbsp;</b> {ciudad_residencia}, <b>Pais de Residencia:</b> {pais_residencia}</p>',
+					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Ciudad de Residencia:&nbsp;&nbsp;</b> {ciudad_residencia}, <b>Pais de Residencia:</b> {id_pais_residencia}</p>',
 					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Barrio/Zona:&nbsp;&nbsp;</b> {barrio_zona}</p>',
 					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha de Registro:&nbsp;&nbsp;</b> {fecha_reg:date("d/m/Y")}</p>',
 					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Ult. Modificación:&nbsp;&nbsp;</b> {fecha_mod:date("d/m/Y")}</p>',
@@ -460,7 +459,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			],
 			arrayDefaultColumHidden:[
 				'celular','telefono','email','direccion',
-				'pais_residencia','ciudad_residencia','barrio_zona'
+				'id_pais_residencia','ciudad_residencia','barrio_zona'
 			],
 			tam_pag:50,
 			title:'cliente',
@@ -480,7 +479,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'apellido_paterno', type: 'string'},
 				{name:'telefono', type: 'numeric'},
 				{name:'ciudad_residencia', type: 'string'},
-				{name:'pais_residencia', type: 'string'},
+				{name:'id_pais_residencia', type: 'numeric'},
 				{name:'nacionalidad', type: 'string'},
 				{name:'barrio_zona', type: 'string'},
 				{name:'estado_reg', type: 'string'},
@@ -492,7 +491,9 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 				{name:'id_usuario_mod', type: 'numeric'},
 				{name:'usr_reg', type: 'string'},
-				{name:'usr_mod', type: 'string'}
+				{name:'usr_mod', type: 'string'},
+
+				{name:'pais_residencia', type: 'string'}
 
 
 			],
@@ -501,7 +502,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				direction: 'ASC'
 			},
 			bdel:true,
-			bsave:true
+			bsave:false
 
 
 		}

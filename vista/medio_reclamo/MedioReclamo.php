@@ -33,34 +33,56 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'nombre_medio',
-				fieldLabel: 'Nombre Medio Reclamo',
-				allowBlank: false,
-				anchor: '50%',
-				gwidth: 100,
-				maxLength:255
-			},
-			type:'TextField',
-			filters:{pfiltro:'mera.nombre_medio',type:'string'},
-			id_grupo:1,
-			grid:true,
-			form:true
-		},
-		{
-			config:{
 				name: 'codigo',
-				fieldLabel: 'Codigo',
+				fieldLabel: 'Código',
 				allowBlank: false,
 				anchor: '50%',
 				gwidth: 100,
 				maxLength:5
 			},
-				type:'TextField',
-				filters:{pfiltro:'mera.codigo',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		}
+			type:'TextField',
+			filters:{pfiltro:'mera.codigo',type:'string'},
+			id_grupo:1,
+			grid:true,
+			egrid: true,
+			form:true
+		},
+		{
+			config:{
+				name: 'nombre_medio',
+				fieldLabel: 'Nombre Medio de Reclamo',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 200,
+				maxLength:255
+			},
+			type:'TextField',
+			filters:{pfiltro:'mera.nombre_medio',type:'string'},
+			id_grupo:1,
+			egrid: true,
+			grid:true,
+			form:true
+		},
+
+		{
+			config:{
+				name: 'orden',
+				fieldLabel: 'Orden',
+				qtip: 'Posición en la Ordenación ',
+				allowBlank: false,
+				allowDecimals: true,
+				anchor: '80%',
+				gwidth: 70
+			},
+			type:'NumberField',
+			filters: { pfiltro:'tipdw.ordenacion', type:'numeric' },
+			valorInicial: 1.00,
+			id_grupo:0,
+			egrid: true,
+			grid:true,
+			form:true
+		},
+
 		/*{
 			config:{
 				name:'nombre_medio',
@@ -84,7 +106,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},*/
-		,
+		
 		{
 			config:{
 				name: 'estado_reg',
@@ -210,12 +232,12 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_ai', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
-		{name:'usr_reg', type: 'string'},
+		{name:'usr_reg', type: 'string'},'orden',
 		{name:'usr_mod', type: 'string'},
 		
 	],
 	sortInfo:{
-		field: 'id_medio_reclamo',
+		field: 'orden',
 		direction: 'ASC'
 	},
 	bdel:true,

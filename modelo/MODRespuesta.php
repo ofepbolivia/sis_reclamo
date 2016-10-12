@@ -23,11 +23,11 @@ class MODRespuesta extends MODbase{
 		$this->captura('id_respuesta','int4');
 		$this->captura('id_reclamo','int4');
 		$this->captura('recomendaciones','varchar');
-		$this->captura('nro_cite','int4');
+		$this->captura('nro_cite','varchar');
 		$this->captura('respuesta','varchar');
 		$this->captura('fecha_respuesta','date');
 		$this->captura('estado_reg','varchar');
-		$this->captura('procedente','bool');
+		$this->captura('procedente','boolean');
 		$this->captura('fecha_notificacion','date');
 		$this->captura('id_usuario_ai','int4');
 		$this->captura('id_usuario_reg','int4');
@@ -55,11 +55,11 @@ class MODRespuesta extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_reclamo','id_reclamo','int4');
 		$this->setParametro('recomendaciones','recomendaciones','varchar');
-		$this->setParametro('nro_cite','nro_cite','int4');
+		$this->setParametro('nro_cite','nro_cite','varchar');
 		$this->setParametro('respuesta','respuesta','varchar');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('procedente','procedente','bool');
+		$this->setParametro('procedente','procedente','boolean');
 		$this->setParametro('fecha_notificacion','fecha_notificacion','date');
 
 		//Ejecuta la instruccion
@@ -80,11 +80,11 @@ class MODRespuesta extends MODbase{
 		$this->setParametro('id_respuesta','id_respuesta','int4');
 		$this->setParametro('id_reclamo','id_reclamo','int4');
 		$this->setParametro('recomendaciones','recomendaciones','varchar');
-		$this->setParametro('nro_cite','nro_cite','int4');
+		$this->setParametro('nro_cite','nro_cite','varchar');
 		$this->setParametro('respuesta','respuesta','varchar');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('procedente','procedente','bool');
+		$this->setParametro('procedente','procedente','boolean');
 		$this->setParametro('fecha_notificacion','fecha_notificacion','date');
 
 		//Ejecuta la instruccion
