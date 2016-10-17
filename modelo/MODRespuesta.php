@@ -111,6 +111,47 @@ class MODRespuesta extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	function reportesRespuesta(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_respuesta_sel';
+        $this->transaccion='REC_REPORDOC_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        //Definicion de la lista del resultado del query
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+        $this->captura('id_respuesta','int4');
+        $this->captura('id_reclamo','int4');
+        $this->captura('id_proceso_wf','int4');
+        $this->captura('id_estado_wf','int4');
+        $this->captura('desc_funcionario','text');
+        $this->captura('nombre_completo1','text');
+        $this->captura('recomendaciones','varchar');
+        $this->captura('nro_cite','varchar');
+        $this->captura('respuesta','varchar');
+        $this->captura('id_funcionario_recepcion','int4');
+        $this->captura('fecha_respuesta','date');
+        $this->captura('estado_reg','varchar');
+        $this->captura('procedente','boolean');
+        $this->captura('fecha_notificacion','date');
+        $this->captura('id_usuario_ai','int4');
+        $this->captura('id_usuario_reg','int4');
+        $this->captura('usuario_ai','varchar');
+        $this->captura('fecha_reg','timestamp');
+        $this->captura('fecha_mod','timestamp');
+        $this->captura('id_usuario_mod','int4');
+        $this->captura('usr_reg','varchar');
+        $this->captura('usr_mod','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+
+
+
+    }
 			
 }
 ?>

@@ -15,11 +15,11 @@ header("content-type: text/javascript; charset=UTF-8");
 	nombreVista: 'Reclamo',
 	constructor: function (config) {
 
-		this.maestro = config.maestro;
+		/*this.maestro = config.maestro;
 		this.tbarItems = ['-',
 			this.cmbGestion
 
-		];
+		];*/
 		//llama al constructor de la clase padre
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 		this.init();
@@ -37,9 +37,22 @@ header("content-type: text/javascript; charset=UTF-8");
 				text: 'Anterior',
 				iconCls: 'batras',
 				disabled: true,
+				hidden:true,
 				handler: this.antEstado,
 				tooltip: '<b>Pasar al Anterior Estado</b>'
 		});
+
+		this.addButton('reportes',{
+			grupo: [0,1],
+			argument: {estado: 'reportes'},
+			text: 'Reportes',
+			iconCls: 'blist',
+			/*disabled: true,*/
+			hidden:true,
+			handler: this.reportes,
+			tooltip: '<b>Generar Reporte</b>'
+		});
+
 
 		this.addButton('sig_estado',{
 			grupo:[0,1],
@@ -61,7 +74,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		this.addButton('btnObs',{
 			grupo:[0,1,2],
-			text :'Obs Wf',
+			text :'Obs Wf.',
 			iconCls : 'bchecklist',
 			disabled: true,
 			handler : this.onOpenObs,
@@ -90,10 +103,11 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 		}
 	},
-    capturarEventos:function(combo, record, index){
-		this.load.baseParams={id_gestion:this.cmbGestion.getValue()};
-		this.reload();
-	},
+    /*capturarEventos:function(combo, record, index){
+		this.gestion = this.cmbGestion.getValue();
+		this.store.baseParams = {id_gestion:this.gestion};
+		this.load({params:{start:0, limit:50}});
+	},*/
 	gruposBarraTareas:[{name:'borrador',title:'<H1 align="center"><i class="fa fa-eye"></i> En Borrador</h1>',grupo:0,height:0},
 		{name:'proceso',title:'<H1 align="center"><i class="fa fa-eye"></i> En Proceso</h1>',grupo:1,height:0},
 		{name:'finalizado',title:'<H1 align="center"><i class="fa fa-eye"></i> Finalizados</h1>',grupo:2,height:0}
@@ -999,6 +1013,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'usr_reg', type: 'string'},
 		{name: 'usr_mod', type: 'string'},
 
+
 		/*{name: 'correlativo', type: 'numeric'},*/
 
 		{name: 'desc_nom_cliente', type: 'string'},
@@ -1008,7 +1023,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'desc_nombre_funcionario', type: 'string'},
 		{name: 'desc_nombre_fun_denun', type: 'string'},
 		{name: 'desc_nombre_oficina', type: 'string'},
-		{name: 'desc_oficina_registro_incidente', type: 'string'}
+		{name: 'desc_oficina_registro_incidente', type: 'string'},
+		{name: 'id_gestion', type: 'int4'}
 	],
 	sortInfo: {
 		field: 'id_reclamo',
@@ -1148,19 +1164,32 @@ header("content-type: text/javascript; charset=UTF-8");
 	{	var rec = this.getSelectedData();
 		var tb =this.tbar;
 		//this.desactivarMenu();
+
+		//this.getBoton('btnChequeoDocumentos').setDisabled(false);
+		this.getBoton('btnChequeoDocumentosWf').setDisabled(false);
 		Phx.vista.Reclamo.superclass.preparaMenu.call(this,n);
+		//this.getBoton('btnReporte').setDisabled(false);
+		this.getBoton('diagrama_gantt').enable();
+		this.getBoton('btnObs').enable();
 
 
+		/*if (rec['estado'] == 'borrador') {
 
-		if (rec['estado'] == 'borrador') {
-			this.getBoton('ant_estado').disable();
 			this.getBoton('sig_estado').enable();
 			this.getBoton('btnChequeoDocumentosWf').enable();
 			this.getBoton('btnObs').enable();
 
 
-		}else if(rec['estado'] == 'pendiente_ripat'){
-			this.getBoton('ant_estado').disable();
+		}else if(rec['estado'] == 'pendiente_revision'){
+			this.getBoton('ant_estado').setVisible(true);
+			this.getBoton('ant_estado').enable();
+			this.getBoton('sig_estado').enable();
+			this.getBoton('btnChequeoDocumentosWf').enable();
+			this.getBoton('btnObs').enable();
+
+		}else if(rec['estado'] == 'pendiente_informacion'){
+			this.getBoton('ant_estado').setVisible(true);
+			this.getBoton('ant_estado').enable();
 			this.getBoton('sig_estado').enable();
 			this.getBoton('btnChequeoDocumentosWf').enable();
 			this.getBoton('btnObs').enable();
@@ -1175,17 +1204,32 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.getBoton('sig_estado').enable();
 			this.getBoton('btnChequeoDocumentosWf').enable();
 			this.getBoton('btnObs').enable();
-		}
+		}*/
 
 		//this.getBoton('btnChequeoDocumentosWf').enable();
-		this.getBoton('diagrama_gantt').enable();
+		//this.getBoton('diagrama_gantt').enable();
+		return tb;
 	},
+	liberaMenu:function(){
+		var tb = Phx.vista.Reclamo.superclass.liberaMenu.call(this);
+		if(tb){
 
-	liberaMenu:function()
+			//this.getBoton('btnReporte').setDisabled(true);
+			//this.getBoton('btnChequeoDocumentos').setDisabled(true);
+			this.getBoton('ant_estado').disable();
+			this.getBoton('sig_estado').disable();
+			this.getBoton('btnChequeoDocumentosWf').setDisabled(true);
+			this.getBoton('diagrama_gantt').disable();
+			this.getBoton('btnObs').disable();
+
+		}
+		return tb
+	},
+	/*liberaMenu:function()
 	{
 		this.desactivarMenu();
 		Phx.vista.Reclamo.superclass.liberaMenu.call(this);
-	},
+	},*/
 
 	desactivarMenu:function() {
 
@@ -1215,6 +1259,50 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.idContenedor,
 			'DocumentoWf'
 		)
+	},
+
+	antEstado:function(res){
+		//alert('anterior');
+		var rec=this.sm.getSelected();
+		Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+			'Estado de Wf',
+			{
+				modal:true,
+				width:450,
+				height:250
+			}, { data:rec.data, estado_destino: res.argument.estado }, this.idContenedor,'AntFormEstadoWf',
+			{
+				config:[{
+					event:'beforesave',
+					delegate: this.onAntEstado,
+				}
+				],
+				scope:this
+			})
+	},
+
+	onAntEstado: function(wizard,resp){
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Reclamo/anteriorEstadoReclamo',
+			params:{
+				id_proceso_wf: resp.id_proceso_wf,
+				id_estado_wf:  resp.id_estado_wf,
+				obs: resp.obs,
+				estado_destino: resp.estado_destino
+			},
+			argument:{wizard:wizard},
+			success:this.successEstadoSinc,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
+	},
+
+	successEstadoSinc:function(resp){
+		Phx.CP.loadingHide();
+		resp.argument.wizard.panel.destroy()
+		this.reload();
 	},
 
 	sigEstado: function(){

@@ -13,12 +13,20 @@ class ACTReclamo extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_reclamo');
 		$this->objParam->defecto('dir_ordenacion','asc');
 
-        if($this->objParam->getParametro('id_reclamo') != '') {
+        if($this->objParam->getParametro('id_reclamo') != '' ) {
             $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
         }
 
+		if ($this->objParam->getParametro('id_gestion') != '') {
+			
+			$this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
+
+		}
+
 		if ($this->objParam->getParametro('pes_estado') == 'borrador') {
-			$this->objParam->addFiltro("rec.estado not in (''pendiente_ripat'',''registrado_ripat'',''pendiente_inf'',''anulado'')");
+			$this->objParam->addFiltro("rec.estado not in (''pendiente_revision'',''registrado_ripat'',''pendiente_informacion'',''anulado'')");
+		}else if ($this->objParam->getParametro('pes_estado') == 'pendiente_informacion') {
+			$this->objParam->addFiltro("rec.estado not in (''borrador'',''registrado_ripat'',''pendiente_revision'',''anulado'')");
 		} else if ($this->objParam->getParametro('pes_estado') == 'proceso') {
 			$this->objParam->addFiltro("rec.estado  in (''pendiente_ripat'',''registrado_ripat'',''pendiente_inf'')");
 		} else if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
@@ -65,7 +73,7 @@ class ACTReclamo extends ACTbase{
 
 	function anteriorEstadoReclamo(){
 		$this->objFunc=$this->create('MODReclamo');
-		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["id_usuario_reg"]);
+		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
 		$this->res=$this->objFunc->anteriorEstadoReclamo($this->objParam);
 
 		$this->res->imprimirRespuesta($this->res->generarJson());

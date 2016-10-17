@@ -6,6 +6,7 @@
  *@date 11-08-2016 16:01:08
  *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
  */
+require_once(dirname(__FILE__).'/../reportes/RRespuesta.php');
 
 class ACTRespuesta extends ACTbase{
 
@@ -42,6 +43,24 @@ class ACTRespuesta extends ACTbase{
         $this->objFunc=$this->create('MODRespuesta');
         $this->res=$this->objFunc->eliminarRespuesta($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function reporteRespuesta(){
+
+        $dataSource = $this->reportesRespuesta();
+        $nombreArchivo = uniqid(md5(session_id()).'MemoAsignación').'.docx';
+        $reporte = new RMemoAsignacion($this->objParam);
+
+
+        $reporte->datosHeader($dataSource->getDatos());
+
+        $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
     }
 
 }

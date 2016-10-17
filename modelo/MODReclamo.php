@@ -59,10 +59,8 @@ class MODReclamo extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
-
-		//$this->captura('id_gestion','int4');
+			$this->captura('id_gestion','int4');
 		//$this->captura('id_motivo_anulado','int4');
-
 
         $this->captura('desc_nombre_medio','varchar');
         $this->captura('desc_nom_cliente','text');
@@ -80,7 +78,8 @@ class MODReclamo extends MODbase{
 		$this->ejecutarConsulta();
 		
 		//Devuelve la respuesta
-
+			/*var_dump($this->respuesta);
+		exit;*/
 		return $this->respuesta;
 	}
 
@@ -122,7 +121,7 @@ class MODReclamo extends MODbase{
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
 		$this->setParametro('pnr','pnr','varchar');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
-
+			$this->captura('id_gestion','id_gestion','int4');
 
 		//$this->setParametro('correlativo','correlativo',  'int4');
 		//Ejecuta la instruccion
@@ -172,6 +171,7 @@ class MODReclamo extends MODbase{
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
 		$this->setParametro('pnr','pnr','varchar');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
+			$this->captura('id_gestion','id_gestion','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -225,11 +225,11 @@ class MODReclamo extends MODbase{
 	function anteriorEstadoReclamo(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='rec.ft_reclamo_ime';
-		$this->transaccion='PLA_ANTEREC_IME';
+		$this->transaccion='REC_ANTEREC_IME';
 		$this->tipo_procedimiento='IME';
 
 		//Define los parametros para la funcion
-		$this->setParametro('id_plan_pago','id_plan_pago','int4');
+		$this->setParametro('id_reclamo','id_reclamo','int4');
 		$this->setParametro('id_proceso_wf','id_proceso_wf','int4');
 		$this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
 		$this->setParametro('operacion','operacion','varchar');

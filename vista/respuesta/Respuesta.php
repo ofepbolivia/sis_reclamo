@@ -47,21 +47,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			type: 'Field',
 			form: true
 		},
-		{
-			config: {
-				name: 'nro_cite',
-				fieldLabel: 'Nro. de Cite',
-				allowBlank: false,
-				anchor: '50%',
-				gwidth: 150,
-				maxLength: 50
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'res.nro_cite', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},
+
 
 		{
 			config: {
@@ -84,12 +70,42 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		},
 		{
 			config: {
-				name: 'respuesta',
-				fieldLabel: 'Respuesta',
+				name: 'nro_cite',
+				fieldLabel: 'Nro. de Cite',
+				allowBlank: false,
+				anchor: '50%',
+				gwidth: 150,
+				maxLength: 50
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'res.nro_cite', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'asunto',
+				fieldLabel: 'Referencia / Asunto',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 200,
-				maxLength: 1000
+				maxLength: 300
+			},
+			type: 'TextArea',
+			filters: {pfiltro: 'res.asunto', type: 'string'},
+			id_grupo: 1,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'respuesta',
+				fieldLabel: 'Contenido de la Respuesta',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 200,
+				maxLength: 1000000
 			},
 			type: 'TextArea',
 			filters: {pfiltro: 'res.respuesta', type: 'string'},
@@ -100,7 +116,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{
 			config: {
 				name: 'recomendaciones',
-				fieldLabel: 'Recomendación',
+				fieldLabel: 'Recomendación para Evitar Futuros Reclamos',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 200,
@@ -272,7 +288,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'id_respuesta', type: 'numeric'},
 		{name: 'id_reclamo', type: 'numeric'},
 		{name: 'recomendaciones', type: 'string'},
-		{name: 'nro_cite', type: 'string'},
+		{name: 'nro_cite', type: 'string'},'asunto',
 		{name: 'respuesta', type: 'string'},
 		{name: 'fecha_respuesta', type: 'date', dateFormat: 'Y-m-d'},
 		{name: 'estado_reg', type: 'string'},
