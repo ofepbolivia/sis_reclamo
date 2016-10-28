@@ -17,29 +17,26 @@ Class RRespuesta {
         setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
 
 
-        $document->setValue('NOMBRE_SOLICITANTE', $this->dataSource[0]['desc_funcionario']); // On section/content
-        $document->setValue('CARGO_SOLICITANTE', $this->dataSource[0]['cargo_funcionario']); // On section/content
-        $document->setValue('ASUNTO', $this->dataSource[0]['motivo']); // On section/content
-        $document->setValue('FECHA', strftime("%d de %B de %Y", strtotime($this->dataSource[0]['fecha']))); // On section/content
 
-        $document->setValue('NRO_TRAMITE', $this->dataSource[0]['nro_tramite']); // On section/content
-        $document->setValue('IMPORTE', $this->dataSource[0]['importe']); // On section/content
-        $document->setValue('CODIGO_MONEDA', $this->dataSource[0]['desc_moneda']); // On section/content
+        $document->setValue('FECHA', strftime("%d de %B de %Y", strtotime($this->dataSource[0]['fecha_respuesta']))); // On section/content
+        $document->setValue('NRO_TRAMITE', $this->dataSource[0]['nro_cite']); // On section/content
+        $document->setValue('GENERO', $this->dataSource[0]['genero']);
+        $document->setValue('APRECIA', $this->dataSource[0]['genero_apre']); // On section/content
 
-        $document->setValue('IMPORTE_LITERAL', $this->dataSource[0]['importe_literal']); // On section/content
-        $document->setValue('NUMDOC', $this->dataSource[0]['nro_tramite']); // On section/content
-        $document->setValue('NOMBRE_GERENTE', $this->dataSource[0]['aprobador']); // On section/content
-        $document->setValue('CARGO_GERENTE', $this->dataSource[0]['cargo_aprobador']); // On section/content
+        $document->setValue('NOMBRE_CLIENTE', $this->dataSource[0]['nombre_completo1']); // On section/content
+        $document->setValue('REFERENCIA', $this->dataSource[0]['asunto']); // On section/content
+        $document->setValue('NOMBRE', $this->dataSource[0]['nombre']); // On section/content
 
-        $document->setValue('NRO_DOC', $this->dataSource[0]['num_memo']); // On section/content
-        $document->setValue('NUM_CBTE', $this->dataSource[0]['nro_cbte']); // On section/content		$document->setValue('NUM_CBTE', $this->dataSource[0]['nro_cbte']); // On section/content
-        $document->setValue('NUM_CHEQUE', $this->dataSource[0]['nro_cheque']); // On section/content
+        $document->setValue('RESPUESTA', $this->dataSource[0]['respuesta']); // On section/content
+        $document->setValue('RECOM', $this->dataSource[0]['recomendaciones']); // On section/content
+
+
+        $document->setValue('FUNCIONARIO_APRO', $this->dataSource[0]['aprobador']); // On section/content
+        $document->setValue('GERENCIA', $this->dataSource[0]['nombre_unidad']); // On section/content
 
 
 
         $document->saveAs($fileName);
-
-
 
     }
 

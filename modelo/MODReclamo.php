@@ -71,6 +71,9 @@ class MODReclamo extends MODbase{
         $this->captura('desc_nombre_funcionario','text');
         $this->captura('desc_nombre_fun_denun','text');
 
+			$this->captura('tiempo_respuesta','varchar');
+
+
 
 		
 		//Ejecuta la instruccion
@@ -121,7 +124,7 @@ class MODReclamo extends MODbase{
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
 		$this->setParametro('pnr','pnr','varchar');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
-			$this->captura('id_gestion','id_gestion','int4');
+			$this->setParametro('id_gestion','id_gestion','int4');
 
 		//$this->setParametro('correlativo','correlativo',  'int4');
 		//Ejecuta la instruccion
@@ -246,5 +249,52 @@ class MODReclamo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function reportesReclamo(){
+        $this->procedimiento='rec.ft_reclamo_sel';
+        $this->transaccion='REC_REPOR_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        $this->setCount(false);
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+
+        $this->captura('id_reclamo','int4');
+        $this->captura('id_proceso_wf','int4');
+        $this->captura('id_estado_wf','int4');
+        $this->captura('estado','varchar');
+        $this->captura('fecha_hora_incidente','timestamp');
+        $this->captura('fecha_hora_recepcion','timestamp');
+        $this->captura('estado_reg','varchar');
+        $this->captura('fecha_hora_vuelo','timestamp');
+        $this->captura('origen','varchar');
+        $this->captura('nro_frd','varchar');
+        $this->captura('correlativo_preimpreso_frd','int4');
+        $this->captura('fecha_limite_respuesta','date');
+        $this->captura('observaciones_incidente','text');
+        $this->captura('destino','varchar');
+        $this->captura('nro_att_canalizado','int4');
+        $this->captura('nro_tramite','varchar');
+        $this->captura('detalle_incidente','text');
+        $this->captura('nro_vuelo','varchar');
+        $this->captura('usr_reg','varchar');
+        $this->captura('usr_mod','varchar');
+        $this->captura('desc_nombre_medio','varchar');
+        $this->captura('desc_nom_cliente','text');
+        $this->captura('desc_incidente','varchar');
+        $this->captura('desc_sudnom_incidente','varchar');
+        $this->captura('desc_oficina','varchar');
+        $this->captura('desc_oficina_registro_incidente','varchar');
+        $this->captura('desc_nombre_funcionario','text');
+        $this->captura('desc_nombre_fun_denun','text');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+
+
+    }
 }
 ?>

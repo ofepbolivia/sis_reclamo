@@ -17,6 +17,12 @@ class ACTRespuesta extends ACTbase{
         if($this->objParam->getParametro('id_reclamo') != '') {
             $this->objParam->addFiltro(" res.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
         }
+
+        if($this->objParam->getParametro('pes_estado')=='revision_legal'){
+            $this->objParam->addFiltro("res.estado in (''revision_legal'')");
+        }else if($this->objParam->getParametro('pes_estado')=='vobo_respuesta'){
+            $this->objParam->addFiltro("res.estado in (''vobo_respuesta'')");
+        }
         
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);
@@ -44,17 +50,39 @@ class ACTRespuesta extends ACTbase{
         $this->res=$this->objFunc->eliminarRespuesta($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function getDiasRespuesta(){
+        $this->objFunc=$this->create('MODRespuesta');
+        $this->res=$this->objFunc->getDiasRespuesta($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function siguienteEstadoRespuesta(){
+        $this->objFunc=$this->create('MODRespuesta');
+
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["id_usuario_reg"]);
+
+        $this->res=$this->objFunc->siguienteEstadoRespuesta($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function anteriorEstadoRespuesta(){
+        $this->objFunc=$this->create('MODRespuesta');
+        $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
+        $this->res=$this->objFunc->anteriorEstadoRespuesta($this->objParam);
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
     function reporteRespuesta(){
 
-        $dataSource = $this->reportesRespuesta();
-        $nombreArchivo = uniqid(md5(session_id()).'MemoAsignación').'.docx';
-        $reporte = new RMemoAsignacion($this->objParam);
-
+        $this->objFunc=$this->create('MODRespuesta');
+        $dataSource = $this->objFunc->reportesRespuesta();
+        $nombreArchivo = uniqid(md5(session_id()).'RRespuesta').'.docx';
+        $reporte = new RRespuesta($this->objParam);
 
         $reporte->datosHeader($dataSource->getDatos());
-
         $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
+
 
         $this->mensajeExito=new Mensaje();
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');

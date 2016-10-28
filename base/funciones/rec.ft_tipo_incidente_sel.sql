@@ -1,7 +1,11 @@
-CREATE OR REPLACE FUNCTION "rec"."ft_tipo_incidente_sel"(
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+CREATE OR REPLACE FUNCTION rec.ft_tipo_incidente_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_tipo_incidente_sel
@@ -111,7 +115,6 @@ BEGIN
 				    where '||v_where||'
 				    ORDER BY rti.id_tipo_incidente';
 
-
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -157,7 +160,9 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "rec"."ft_tipo_incidente_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

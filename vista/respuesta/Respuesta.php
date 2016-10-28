@@ -12,20 +12,75 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
+	nombreVista: 'Respuesta',
 	constructor: function (config) {
 		this.maestro = config.maestro;
 		//llama al constructor de la clase padre
 		Phx.vista.Respuesta.superclass.constructor.call(this, config);
 		this.init();
-		/*this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
-		this.load({params:{start:0, limit: 50}});*/
-		//this.onReloadPage();
-		this.bloquearMenus();
-		//this.iniciarEventos();
+		this.store.baseParams.pes_estado = 'elaboracion_respuesta';
+		
+		this.addButton('ant_estado',{
+			grupo: [0,1,2,3],
+			argument: {estado: 'anterior'},
+			text: 'Anterior',
+			iconCls: 'batras',
+			disabled: true,
+			hidden: true,
+			handler: this.antEstado,
+			tooltip: '<b>Volver al Anterior Estado</b>'
+		});
+		this.addButton('sig_estado',{
+			grupo:[0,1,2],
+			text:'Siguiente',
+			iconCls: 'badelante',
+			disabled:true,
+			hidden:true,
+			handler:this.sigEstado,
+			tooltip: '<b>Pasar al Siguiente Estado</b>'
+		});
+
+		this.addButton('btnChequeoDocumentosWf',{
+			text: 'Documentos',
+			grupo: [0,1,2,3],
+			iconCls: 'bchecklist',
+			disabled: true,
+			handler: this.loadCheckDocumentosRecWf,
+			tooltip: '<b>Documentos de la Respuesta</b><br/>Subir los documetos requeridos en la solicitud seleccionada.'
+		});
+
+		this.addButton('btnObs',{
+			grupo:[0,1,2,3],
+			text :'Obs Wf.',
+			iconCls : 'bchecklist',
+			disabled: true,
+			handler : this.onOpenObs,
+			tooltip : '<b>Observaciones</b><br/><b>Observaciones del WF</b>'
+		});
+
+		this.addButton('diagrama_gantt',{
+			grupo:[0,1,2,3],
+			text:'Gant',
+			iconCls: 'bgantt',
+			disabled:true,
+			handler:diagramGantt,
+			tooltip: '<b>Diagrama Gantt de proceso macro</b>'
+		});
+		
+		function diagramGantt(){
+			var data=this.sm.getSelected().data.id_proceso_wf;
+			Phx.CP.loadingShow();
+			Ext.Ajax.request({
+				url:'../../sis_workflow/control/ProcesoWf/diagramaGanttTramite',
+				params:{'id_proceso_wf':data},
+				success:this.successExport,
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});
+		};
 
 	},
-
-
 	Atributos: [
 		{
 			//configuracion del componente
@@ -47,8 +102,37 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			type: 'Field',
 			form: true
 		},
-
-
+		{
+			config:{
+				name: 'nro_respuesta',
+				fieldLabel: 'No. Respuesta',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 200,
+				maxLength:100
+			},
+			type:'TextField',
+			filters:{pfiltro:'res.nro_respuesta',type:'string'},
+			/*id_grupo:1,*/
+			grid:true,
+			form:false,
+			bottom_filter : true
+		},
+		{
+			config: {
+				name: 'estado',
+				fieldLabel: 'Estado',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 150,
+				maxLength: 100
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'res.estado', type: 'string'},
+			/*id_grupo: 1,*/
+			grid: true,
+			form: false
+		},
 		{
 			config: {
 				name: 'fecha_respuesta',
@@ -57,6 +141,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				anchor: '50%',
 				gwidth: 100,
 
+				disabled: true,
 				format: 'd/m/Y',
 				renderer: function (value, p, record) {
 					return value ? value.dateFormat('d/m/Y') : ''
@@ -73,9 +158,12 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				name: 'nro_cite',
 				fieldLabel: 'Nro. de Cite',
 				allowBlank: false,
+				/*regex: '/[A-Z]/',
+				regexText: "<b>Error</b></br>Invalid Number entered.",*/
 				anchor: '50%',
 				gwidth: 150,
-				maxLength: 50
+				maxLength: 50,
+				style:'text-transform:uppercase;'
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'res.nro_cite', type: 'string'},
@@ -90,7 +178,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 200,
-				maxLength: 300
+				maxLength: 100000
 			},
 			type: 'TextArea',
 			filters: {pfiltro: 'res.asunto', type: 'string'},
@@ -120,7 +208,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 200,
-				maxLength: 1000
+				maxLength: 1000000
 			},
 			type: 'TextArea',
 			filters: {pfiltro: 'res.recomendaciones', type: 'string'},
@@ -146,6 +234,25 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			id_grupo: 1,
 			grid: true,
 			form: true
+		},
+		{
+			config: {
+				name: 'tipo_respuesta',
+				fieldLabel: 'Tipo Respuesta',
+				allowBlank: false,
+				anchor: '80%',
+				maxLength: 300,
+				gwidth: 100,
+				typeAhead:true,
+				triggerAction:'all',
+				mode:'local',
+				store:['respuesta_final','respuesta_parcial']
+			},
+			type:'ComboBox',
+			filters: {pfiltro: 'res.asunto', type: 'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
 		},
 		{
 			config: {
@@ -288,7 +395,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'id_respuesta', type: 'numeric'},
 		{name: 'id_reclamo', type: 'numeric'},
 		{name: 'recomendaciones', type: 'string'},
-		{name: 'nro_cite', type: 'string'},'asunto',
+		{name: 'nro_cite', type: 'string'},
 		{name: 'respuesta', type: 'string'},
 		{name: 'fecha_respuesta', type: 'date', dateFormat: 'Y-m-d'},
 		{name: 'estado_reg', type: 'string'},
@@ -302,6 +409,12 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'id_usuario_mod', type: 'numeric'},
 		{name: 'usr_reg', type: 'string'},
 		{name: 'usr_mod', type: 'string'},
+		'tipo_respuesta',
+		'asunto',
+		{name: 'id_proceso_wf', type: 'numeric'},
+		{name: 'id_estado_wf', type: 'numeric'},
+		{name: 'estado', type: 'string'},
+		{name: 'nro_respuesta', type: 'numeric'}
 
 	],
 	sortInfo: {
@@ -310,33 +423,231 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 	bdel: true,
 	bsave: false,
+	btest: false,
 	fwidth: '50%',
-	fheight: '60%',
+	fheight: '80%',
+	collapsible:true,
+	onOpenObs: function() {
+		var rec=this.sm.getSelected();
+		var data = {
+			id_proceso_wf: rec.data.id_proceso_wf,
+			id_estado_wf: rec.data.id_estado_wf,
+			num_tramite: rec.data.nro_tramite
+		}
+
+		Phx.CP.loadWindows('../../../sis_workflow/vista/obs/Obs.php',
+			'Observaciones del WF',
+			{
+				width:'80%',
+				height:'70%'
+			},
+			data,
+			this.idContenedor,
+			'Obs'
+		)
+	},
+
+	loadCheckDocumentosRecWf:function() {
+		var rec=this.sm.getSelected();
+		rec.data.nombreVista = this.nombreVista;
+		Phx.CP.loadWindows('../../../sis_workflow/vista/documento_wf/DocumentoWf.php',
+			'Chequear documento del WF',
+			{
+				width:'90%',
+				height:500
+			},
+			rec.data,
+			this.idContenedor,
+			'DocumentoWf'
+		)
+	},
+
+	antEstado:function(res){
+		var rec=this.sm.getSelected();
+		Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
+			'Estado de Wf',
+			{
+				modal:true,
+				width:450,
+				height:250
+			}, { data:rec.data, estado_destino: res.argument.estado }, this.idContenedor,'AntFormEstadoWf',
+			{
+				config:[{
+					event:'beforesave',
+					delegate: this.onAntEstado,
+				}
+				],
+				scope:this
+			})
+	},
+
+	onAntEstado: function(wizard,resp){
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Respuesta/anteriorEstadoRespuesta',
+			params:{
+				id_proceso_wf: resp.id_proceso_wf,
+				id_estado_wf:  resp.id_estado_wf,
+				obs: resp.obs,
+				estado_destino: resp.estado_destino
+			},
+			argument:{wizard:wizard},
+			success:this.successEstadoSinc,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
+	},
+
+	successEstadoSinc:function(resp){
+		Phx.CP.loadingHide();
+		resp.argument.wizard.panel.destroy()
+		this.reload();
+	},
+
+	sigEstado: function(){
+
+		var rec = this.sm.getSelected();
+		this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+			'Estado de Wf',
+			{
+				modal:true,
+				width:700,
+				height:450
+			},
+			{
+				data:{
+					id_estado_wf:rec.data.id_estado_wf,
+					id_proceso_wf:rec.data.id_proceso_wf
+				}
+			}, this.idContenedor,'FormEstadoWf',
+			{
+				config:[{
+					event:'beforesave',
+					delegate: this.onSaveWizard,
+				}],
+				scope:this
+			});
+
+	},
+
+	onSaveWizard:function(wizard,resp){
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Respuesta/siguienteEstadoRespuesta',
+			params:{
+
+				id_proceso_wf_act:  resp.id_proceso_wf_act,
+				id_estado_wf_act:   resp.id_estado_wf_act,
+				id_tipo_estado:     resp.id_tipo_estado,
+				id_funcionario_wf:  resp.id_funcionario_wf,
+				id_depto_wf:        resp.id_depto_wf,
+				obs:                resp.obs,
+				json_procesos:      Ext.util.JSON.encode(resp.procesos)
+			},
+			success:this.successWizard,
+			failure: this.conexionFailure,
+			argument:{wizard:wizard},
+			timeout:this.timeout,
+			scope:this
+		});
+	},
+
+	successWizard:function(resp){
+		Phx.CP.loadingHide();
+		resp.argument.wizard.panel.destroy();
+		this.reload();
+	},
+
+	onButtonNew : function () {
+
+		Phx.vista.Respuesta.superclass.onButtonNew.call(this);
+		//Phx.CP.loadingShow();
+		var fecha = this.sumarDias(new Date(),parseInt(this.maestro.tiempo_respuesta));
+		this.Cmp.fecha_respuesta.setValue(fecha);
+
+		/*Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Respuesta/getDiasRespuesta',
+			params:{id_tipo_incidente:this.store.baseParams.id_tipo_incidente},
+			success:this.successTI,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});*/
+	},
+	onButtonDel: function(){
+		Phx.vista.Respuesta.superclass.onButtonDel.call(this);
+
+		this.argumentExtraSubmit.id_reclamo = this.maestro.id_reclamo;
+	},
+
+	/*successTI:function(resp){
+		//Phx.CP.loadingHide();
+		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+		var fecha = this.sumarDias(new Date(),parseInt(reg.ROOT.datos.tiempo_respuesta));
+		this.Cmp.fecha_respuesta.setValue(fecha);
+	},*/
+	sumarDias: function (fecha, dias){
+		fecha.setDate(fecha.getDate() + dias);
+		return fecha;
+	},
 
 	onButtonEdit: function() {
 		Phx.vista.Respuesta.superclass.onButtonEdit.call(this);
-		var rec = this.sm.getSelected();
+		//var rec = this.sm.getSelected();
 	},
 
-	onReloadPage: function (m) {
+	/*onReloadPage: function (m) {
 		this.maestro = m;
-		this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
+		this.store.baseParams = {id_reclamo: this.maestro.id_reclamo ,tipo_interfaz:this.nombreVista};
 		this.load({params: {start: 0, limit: 50}});
-	},
+	},*/
 
-	saludo: function(){
-		alert('hola');
-	},
-	
-	loadValoresIniciales: function () {
+	/*loadValoresIniciales: function () {
 		this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
 		Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
+
+	},*/
+
+	preparaMenu: function(n){
+
+		var data = this.getSelectedData();
+		var tb =this.tbar;
+		Phx.vista.Respuesta.superclass.preparaMenu.call(this,n);
+		
+		this.getBoton('sig_estado').setVisible(true);
+		this.getBoton('ant_estado').setVisible(true);
+		if (data['estado'] == 'elaboracion_respuesta'){
+			this.getBoton('sig_estado').setVisible(true);
+			this.getBoton('ant_estado').setVisible(false);
+			this.getBoton('sig_estado').enable();
+			this.getBoton('diagrama_gantt').enable();
+			this.getBoton('btnObs').enable();
+		}else if(data['estado'] == 'revision_legal' || data['estado'] == 'vobo_respuesta' || data['estado'] == 'respuesta_aprobada'){
+			this.getBoton('sig_estado').enable();
+			this.getBoton('ant_estado').setVisible(true);
+			this.getBoton('diagrama_gantt').enable();
+			this.getBoton('btnObs').enable();
+		}else if(data['estado'] == 'respuesta_enviada'){
+			this.getBoton('sig_estado').setVisible(false);
+		}
+
+		return tb;
+	},
+
+	liberaMenu: function(){
+		var tb = Phx.vista.Respuesta.superclass.liberaMenu.call(this);
+		if(tb){
+			this.getBoton('diagrama_gantt').disable();
+			this.getBoton('sig_estado').disable();
+			this.getBoton('btnObs').disable();
+		}
+		return tb;
 	}
 
+
+
 });
-
-
-
 </script>
 		
 		

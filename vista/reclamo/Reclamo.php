@@ -1,10 +1,10 @@
 <?php
 /**
  *@package pXP
- *@file gen-Reclamo.php
+ *@file gReclamo.php
  *@author  Franklin Espinoza Alvarez
- *@date 10-08-2016 18:32:59
- *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
+ *@date 10-08-2016 17:32:59
+ *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema Reclamos
  */
 
 header("content-type: text/javascript; charset=UTF-8");
@@ -15,11 +15,8 @@ header("content-type: text/javascript; charset=UTF-8");
 	nombreVista: 'Reclamo',
 	constructor: function (config) {
 
-		/*this.maestro = config.maestro;
-		this.tbarItems = ['-',
-			this.cmbGestion
+		this.maestro = config.maestro;
 
-		];*/
 		//llama al constructor de la clase padre
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 		this.init();
@@ -29,33 +26,21 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.load({params: {start: 0, limit: this.tam_pag}});
 		this.finCons = true;
 
-		this.cmbGestion.on('select',this.capturarEventos, this);
+
 
 		this.addButton('ant_estado',{
-				grupo: [1],
+				grupo: [0,1,2,3],
 				argument: {estado: 'anterior'},
 				text: 'Anterior',
 				iconCls: 'batras',
 				disabled: true,
 				hidden:true,
 				handler: this.antEstado,
-				tooltip: '<b>Pasar al Anterior Estado</b>'
+				tooltip: '<b>Volver al Anterior Estado</b>'
 		});
-
-		this.addButton('reportes',{
-			grupo: [0,1],
-			argument: {estado: 'reportes'},
-			text: 'Reportes',
-			iconCls: 'blist',
-			/*disabled: true,*/
-			hidden:true,
-			handler: this.reportes,
-			tooltip: '<b>Generar Reporte</b>'
-		});
-
 
 		this.addButton('sig_estado',{
-			grupo:[0,1],
+			grupo:[0,1,2],
 			text:'Siguiente',
 			iconCls: 'badelante',
 			disabled:true,
@@ -65,7 +50,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		this.addButton('btnChequeoDocumentosWf',{
 				text: 'Documentos',
-				grupo: [0,1,2],
+				grupo: [0,1,2,3],
 				iconCls: 'bchecklist',
 				disabled: true,
 				handler: this.loadCheckDocumentosRecWf,
@@ -73,7 +58,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		});
 
 		this.addButton('btnObs',{
-			grupo:[0,1,2],
+			grupo:[0,1,2,3],
 			text :'Obs Wf.',
 			iconCls : 'bchecklist',
 			disabled: true,
@@ -82,13 +67,24 @@ header("content-type: text/javascript; charset=UTF-8");
 		});
 
 		this.addButton('diagrama_gantt',{
-				grupo:[0,1,2],
+				grupo:[0,1,2,3],
 				text:'Gant',
 				iconCls: 'bgantt',
 				disabled:true,
 				handler:diagramGantt,
 				tooltip: '<b>Diagrama Gantt de proceso macro</b>'
 		});
+
+		this.addButton('reportes',{
+			grupo: [0,1,2,3],
+			argument: {estado: 'reportes'},
+			text: 'Reportes',
+			iconCls: 'blist',
+			disabled: true,
+			handler: this.reportes,
+			tooltip: '<b>Generar Reporte</b>'
+		});
+
 
 		function diagramGantt(){
 			var data=this.sm.getSelected().data.id_proceso_wf;
@@ -103,30 +99,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 		}
 	},
-    /*capturarEventos:function(combo, record, index){
-		this.gestion = this.cmbGestion.getValue();
-		this.store.baseParams = {id_gestion:this.gestion};
-		this.load({params:{start:0, limit:50}});
-	},*/
-	gruposBarraTareas:[{name:'borrador',title:'<H1 align="center"><i class="fa fa-eye"></i> En Borrador</h1>',grupo:0,height:0},
-		{name:'proceso',title:'<H1 align="center"><i class="fa fa-eye"></i> En Proceso</h1>',grupo:1,height:0},
-		{name:'finalizado',title:'<H1 align="center"><i class="fa fa-eye"></i> Finalizados</h1>',grupo:2,height:0}
-
-	],
-
-	actualizarSegunTab: function(name, indice){
-		if(this.finCons) {
-			this.store.baseParams.pes_estado = name;
-			this.load({params:{start:0, limit:this.tam_pag}});
-		}
-	},
-
-	beditGroups: [0],
-	bdelGroups:  [0],
-	bactGroups:  [0,1,2],
-	btestGroups: [0],
-	bexcelGroups: [0,1,2],
-
+		
 	Atributos: [
 		{
 			//configuracion del componente
@@ -161,7 +134,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'Estado',
 				allowBlank: true,
 				anchor: '100%',
-				gwidth: 100,
+				gwidth: 150,
 				maxLength: 100
 			},
 			type: 'TextField',
@@ -193,7 +166,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 8
+				maxLength: 25
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.correlativo_preimpreso_frd', type: 'numeric'},
@@ -311,7 +284,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					fields: ['id_cliente','nombre_completo2','ci','email'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'cli.nombre_completo2'}
+					baseParams:{par_filtro:'c.nombre_completo2'}
 				}),
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
@@ -341,7 +314,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			bottom_filter:true,
 			id_grupo:1,
 			filters:{
-				pfiltro:'cli.nombre_completo2',
+				pfiltro:'c.nombre_completo2',
 				type:'string'
 			},
 
@@ -403,7 +376,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				format: 'd/m/Y H:i A',
+				format: 'd/m/Y H:i',
 				renderer: function (value, p, record) {
 					return value ? value.dateFormat('d/m/Y H:i A') : ''
 				}
@@ -532,9 +505,9 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				format: 'd/m/Y H:i A',
+				format: 'd/m/Y H:i',
 				renderer: function (value, p, record) {
-					return value ? value.dateFormat('d/m/Y H:i') : ''
+					return value ? value.dateFormat('d/m/Y H:i A') : ''
 				}
 			},
 			type: 'DateField',
@@ -638,7 +611,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					totalProperty: 'total',
 					fields: ['id_funcionario','desc_funcionario1','email_empresa','nombre_cargo','lugar_nombre','oficina_nombre'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'rec.id_funcionario_denunciado'}
+					baseParams: {par_filtro: 'FUNCAR.desc_funcionario1'}
 				}),
 				valueField: 'id_funcionario',
 				displayField: 'desc_funcionario1',
@@ -662,10 +635,10 @@ header("content-type: text/javascript; charset=UTF-8");
 					return String.format('{0}', record.data['desc_nombre_fun_denun']);
 				}
 			},
-			type: 'ComboBox',
+			type: 'TrigguerCombo',
 			id_grupo:3,
 			filters:{
-				pfiltro:'rec.id_funcionario_denunciado',
+				pfiltro:'FUNCAR.desc_funcionario1',
 				type:'string'
 			},
 			bottom_filter:true,
@@ -726,9 +699,9 @@ header("content-type: text/javascript; charset=UTF-8");
 				gwidth: 100,
 				/*disabled: true,*/
 				gdisplayField: 'fecha_hora_recepcion',
-				format: 'd/m/Y T H:i A',
+				format: 'd/m/Y H:i',
 				renderer: function (value, p, record) {
-					return value ? value.dateFormat('d/m/Y H:i') : ''
+					return value ? value.dateFormat('d/m/Y H:i A') : ''
 				}
 			},
 			type: 'DateField',
@@ -754,7 +727,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					totalProperty: 'total',
 					fields: ['id_funcionario','desc_funcionario1','email_empresa','nombre_cargo','lugar_nombre','oficina_nombre'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'rec.id_funcionario_recepcion'}
+					baseParams: {par_filtro: 'FUNCAR.desc_funcionario1'}
 				}),
 				valueField: 'id_funcionario',
 				displayField: 'desc_funcionario1',
@@ -782,7 +755,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			bottom_filter:true,
 			id_grupo: 4,
 			filters:{
-				pfiltro:'rec.id_funcionario_recepcion',
+				pfiltro:'FUNCAR.desc_funcionario1',
 				type:'string'
 			},
 			grid: true,
@@ -990,7 +963,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'nro_hoja_ruta', type: 'numeric'},
 		{name: 'fecha_hora_recepcion', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'estado_reg', type: 'string'},
-		{name: 'fecha_hora_vuelo', type: 'date', dateFormat: 'Y-m-d H:i:s V'},
+		{name: 'fecha_hora_vuelo', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'origen', type: 'string'},
 		{name: 'nro_frd', type: 'string'},
 		{name: 'correlativo_preimpreso_frd', type: 'numeric'},
@@ -1024,7 +997,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'desc_nombre_fun_denun', type: 'string'},
 		{name: 'desc_nombre_oficina', type: 'string'},
 		{name: 'desc_oficina_registro_incidente', type: 'string'},
-		{name: 'id_gestion', type: 'int4'}
+		{name: 'id_gestion', type: 'int4'},
+		{name: 'tiempo_respuesta', type: 'string'}
 	],
 	sortInfo: {
 		field: 'id_reclamo',
@@ -1120,58 +1094,22 @@ header("content-type: text/javascript; charset=UTF-8");
 			cls:'Informe'
 		},
 		{
-			url:'../../../sis_reclamo/vista/respuesta/Respuesta.php',
-			title:'Respuesta',
+			url:'../../../sis_reclamo/vista/respuesta/RespuestaDetalle.php',
+			title:'RespuestaDetalle',
 			height:'50%',
-			cls:'Respuesta'
+			cls:'RespuestaDetalle'
 		}
 	],
-		cmbGestion: new Ext.form.ComboBox({
-			name: 'gestion',
-			id: 'gestion',
-			fieldLabel: 'Gestion',
-			allowBlank: true,
-			emptyText:'Gestion...',
-			blankText: 'Año',
-			store:new Ext.data.JsonStore(
-				{
-					url: '../../sis_parametros/control/Gestion/listarGestion',
-					id: 'id_gestion',
-					root: 'datos',
-					sortInfo:{
-						field: 'gestion',
-						direction: 'DESC'
-					},
-					totalProperty: 'total',
-					fields: ['id_gestion','gestion'],
-					// turn on remote sorting
-					remoteSort: true,
-					baseParams:{par_filtro:'gestion'}
-				}),
-			valueField: 'id_gestion',
-			triggerAction: 'all',
-			displayField: 'gestion',
-			hiddenName: 'id_gestion',
-			mode:'remote',
-			pageSize:50,
-			queryDelay:500,
-			listWidth:'280',
-			width:80
-		})
-		,
-
-	preparaMenu:function(n)
+		
+	preparaMenu: function(n)
 	{	var rec = this.getSelectedData();
 		var tb =this.tbar;
-		//this.desactivarMenu();
-
-		//this.getBoton('btnChequeoDocumentos').setDisabled(false);
+		
 		this.getBoton('btnChequeoDocumentosWf').setDisabled(false);
 		Phx.vista.Reclamo.superclass.preparaMenu.call(this,n);
-		//this.getBoton('btnReporte').setDisabled(false);
 		this.getBoton('diagrama_gantt').enable();
 		this.getBoton('btnObs').enable();
-
+		this.getBoton('reportes').enable();
 
 		/*if (rec['estado'] == 'borrador') {
 
@@ -1208,42 +1146,20 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		//this.getBoton('btnChequeoDocumentosWf').enable();
 		//this.getBoton('diagrama_gantt').enable();
-		return tb;
+		//return tb;
 	},
+
 	liberaMenu:function(){
 		var tb = Phx.vista.Reclamo.superclass.liberaMenu.call(this);
 		if(tb){
-
-			//this.getBoton('btnReporte').setDisabled(true);
-			//this.getBoton('btnChequeoDocumentos').setDisabled(true);
 			this.getBoton('ant_estado').disable();
 			this.getBoton('sig_estado').disable();
 			this.getBoton('btnChequeoDocumentosWf').setDisabled(true);
 			this.getBoton('diagrama_gantt').disable();
 			this.getBoton('btnObs').disable();
-
+			this.getBoton('reportes').disable();
 		}
 		return tb
-	},
-	/*liberaMenu:function()
-	{
-		this.desactivarMenu();
-		Phx.vista.Reclamo.superclass.liberaMenu.call(this);
-	},*/
-
-	desactivarMenu:function() {
-
-		this.getBoton('del').disable();
-		/*this.getBoton('btnHoras').disable();
-		this.getBoton('btnColumnas').disable();
-		this.getBoton('btnPresupuestos').disable();
-		this.getBoton('btnObligaciones').disable();*/
-		this.getBoton('diagrama_gantt').disable();
-		this.getBoton('ant_estado').disable();
-		this.getBoton('sig_estado').disable();
-		this.getBoton('btnChequeoDocumentosWf').disable();
-		//this.getBoton('btnPresupuestos').disable();
-
 	},
 
 	loadCheckDocumentosRecWf:function() {
@@ -1317,18 +1233,14 @@ header("content-type: text/javascript; charset=UTF-8");
 			{
 				data:{
 					id_estado_wf:rec.data.id_estado_wf,
-					id_proceso_wf:rec.data.id_proceso_wf/*,
-					fecha_ini:rec.data.fecha_tentativa*/
-					//url_verificacion:'../../sis_tesoreria/control/PlanPago/siguienteEstadoPlanPago'
+					id_proceso_wf:rec.data.id_proceso_wf
 				}
 			}, this.idContenedor,'FormEstadoWf',
 			{
 				config:[{
 					event:'beforesave',
 					delegate: this.onSaveWizard,
-
 				}],
-
 				scope:this
 			});
 
@@ -1420,12 +1332,14 @@ header("content-type: text/javascript; charset=UTF-8");
 	},
 
 	saveCampos: function(resp){
-		this.Cmp.id_subtipo_incidente.disable();
+
 		Phx.CP.loadingHide();
 		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
 		Phx.vista.Reclamo.superclass.onButtonNew.call(this);
+
 		this.armarFormularioFromArray(objRes.datos);
+		this.Cmp.id_subtipo_incidente.disable();
 	},
 
 	onButtonEdit: function() {
@@ -1452,6 +1366,25 @@ header("content-type: text/javascript; charset=UTF-8");
 		console.log(objRes);
 		Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
 		this.armarFormularioFromArray(objRes.datos);
+	},
+		
+	reportes: function(){
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Reclamo/generarReporte',
+			params:{
+				codigo_proceso:  'REC',
+				proceso_macro:   'REC'
+			},
+			success:this.guardarReporte,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});	
+	},
+	guardarReporte: function(resp){
+		Phx.CP.loadingHide();
+		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 	}
 	});
 </script>

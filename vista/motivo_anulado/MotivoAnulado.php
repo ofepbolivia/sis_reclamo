@@ -51,15 +51,15 @@ Phx.vista.MotivoAnulado=Ext.extend(Phx.gridInterfaz,{
 				name: 'orden',
 				fieldLabel: 'Orden',
 				qtip: 'Posición en la Ordenación ',
-				allowBlank: true,
+				allowBlank: false,
 				allowDecimals: true,
 				anchor: '80%',
-				gwidth: 50
+				gwidth: 70
 			},
 			type:'NumberField',
 			filters: { pfiltro:'tipdw.ordenacion', type:'numeric' },
 			valorInicial: 1.00,
-			id_grupo:1,
+			id_grupo:0,
 			egrid: true,
 			grid:true,
 			form:true
@@ -194,7 +194,7 @@ Phx.vista.MotivoAnulado=Ext.extend(Phx.gridInterfaz,{
 		
 	],
 	sortInfo:{
-		field: 'id_motivo_anulado',
+		field: 'orden',
 		direction: 'ASC'
 	},
 	bdel:true,

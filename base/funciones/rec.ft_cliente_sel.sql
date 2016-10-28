@@ -1,7 +1,3 @@
-CREATE OR REPLACE FUNCTION "rec"."ft_cliente_sel"(	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
 /**************************************************************************
  SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_cliente_sel
@@ -52,7 +48,7 @@ BEGIN
 						cli.apellido_paterno,
 						cli.telefono,
 						cli.ciudad_residencia,
-						cli.pais_residencia,
+                        cli.id_pais_residencia,
 						cli.nacionalidad,
 						cli.barrio_zona,
 						cli.estado_reg,
@@ -66,11 +62,13 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
                         c.nombre_completo1,
-                        c.nombre_completo2
+                        c.nombre_completo2,
+                        lug.nombre as pais_residencia
 						from rec.tcliente cli
 						inner join segu.tusuario usu1 on usu1.id_usuario = cli.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = cli.id_usuario_mod
                         left join rec.vcliente c on c.id_cliente = cli.id_cliente
+                        inner join param.tlugar lug on lug.id_lugar = cli.id_pais_residencia::integer
 				        where  ';
 
 			--Definicion de la respuesta
@@ -98,6 +96,7 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = cli.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = cli.id_usuario_mod
                         left join rec.vcliente c on c.id_cliente = cli.id_cliente
+                        inner join param.tlugar lug on lug.id_lugar = cli.id_pais_residencia::integer
 					    where ';
 
 			--Definicion de la respuesta
@@ -123,7 +122,3 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
-COST 100;
-ALTER FUNCTION "rec"."ft_cliente_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

@@ -16,12 +16,13 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.maestro=config.maestro;
 				//llama al constructor de la clase padre
 				Phx.vista.Informe.superclass.constructor.call(this,config);
+				//this.grid.getTopToolbar().disable();
+				//this.grid.getBottomToolbar().disable();
 				this.init();
 				//this.load({params:{start:0, limit: 0}});
-				this.bloquearMenus();
+				//this.bloquearMenus();
 				//this.iniciarEventos();
 			},
-
 			Atributos:[
 				{
 					//configuracion del componente
@@ -356,6 +357,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			bdel:true,
 			bsave:false,
+			btest: false,
 			fwidth: '55%',
 			fheight: '90%',
 			requireclase: 'Phx.vista.Respuesta',
@@ -363,16 +365,67 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.maestro = m;
 				this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
 				this.load({params:{start: 0, limit: 50}});
-				/*Phx.vista.Respuesta.saludo();
-				Phx.vista.Respuesta.onReloadPage(m);*/
+
 			},
 
 			loadValoresIniciales: function(){
 				this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
 				Phx.vista.Informe.superclass.loadValoresIniciales.call(this);
+			},
+
+		preparaMenu:function(n){
+			Phx.vista.Informe.superclass.preparaMenu.call(this,n);
+			
+			/*var padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
+
+			if(this.maestro.estado ==  'borrador' || (padre == 'ObligacionPagoVb' && this.maestro.estado ==  'vbpresupuestos')){
+				alert(padre);
+				this.getBoton('edit').enable();
+				this.getBoton('new').enable();
+				this.getBoton('del').enable();
+
+				this.getBoton('btnProrrateo').enable();
+
+
 			}
+			else{
+				alert(padre);
+				this.getBoton('edit').disable();
+				this.getBoton('new').disable();
+				this.getBoton('del').disable();
+				this.getBoton('btnProrrateo').disable();
+
+
+			}
+			if(this.maestro&&(this.maestro.estado ==  'borrador' && this.maestro.tipo_obligacion=='adquisiciones' )){
+
+				this.getBoton('edit').enable();
+				this.getBoton('new').disable();
+				this.getBoton('del').disable();
+				this.getBoton('btnProrrateo').disable();
+			}*/
+		},
+
+		liberaMenu: function() {
+			Phx.vista.Informe.superclass.liberaMenu.call(this);
+			/*this.getBoton('btnProrrateo').enable();
+			if(this.maestro&&(this.maestro.estado !=  'borrador')){
+
+				this.getBoton('edit').disable();
+				this.getBoton('new').disable();
+				this.getBoton('del').disable();
+				this.getBoton('btnProrrateo').disable();
+			}
+			if(this.maestro&&(this.maestro.estado ==  'borrador' && this.maestro.tipo_obligacion=='adquisiciones')){
+
+				this.getBoton('edit').disable();
+				this.getBoton('new').disable();
+				this.getBoton('del').disable();
+				this.getBoton('btnProrrateo').disable();
+			}*/
+
 		}
-	)
+	});
 </script>
 
 		

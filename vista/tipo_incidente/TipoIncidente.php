@@ -18,7 +18,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.TipoIncidente.superclass.constructor.call(this,config);
 		this.init();
- 		//this.load({params:{start:0, limit:this.tam_pag}})
+		this.loaderTree.baseParams={start:0, limit:this.tam_pag};
 		this.root.reload();
 	},
 	Atributos:[
@@ -99,7 +99,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 				gwidth: 170,
 				maxLength:4
 			},
-			type:'TextField',
+			type:'NumberField',
 			filters:{pfiltro:'rti.tiempo_respuesta',type:'string'},
 			id_grupo:1,
 			grid:true,
@@ -184,7 +184,7 @@ Phx.vista.TipoIncidente=Ext.extend(Phx.arbGridInterfaz,{
 		}
 	],
 
-	/*tam_pag:50,*/
+	tam_pag:50,
 	title:'TipoIncidente',
 	ActSave:'../../sis_reclamo/control/TipoIncidente/insertarTipoIncidente',
 	ActDel:'../../sis_reclamo/control/TipoIncidente/eliminarTipoIncidente',

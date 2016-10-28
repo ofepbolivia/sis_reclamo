@@ -48,7 +48,13 @@ DECLARE
     v_codigo_llave		varchar;
     v_funcionario   	integer;
     v_gestion 			varchar;
+    v_registros_rec		record;
 
+
+    v_id_funcionario    integer;
+    v_id_usuario_reg	integer;
+    v_id_estado_wf_ant  integer;
+    v_operacion			varchar;
 BEGIN
 
     v_nombre_funcion = 'rec.ft_reclamo_ime';
@@ -98,7 +104,7 @@ BEGIN
                  'Reclamaciones',
                  'Rec-9-2016'
             );
-
+            --raise exception 'datos: %', v_parametros;
         	--Sentencia de la insercion
         	insert into rec.treclamo(
 			id_tipo_incidente,
@@ -121,6 +127,7 @@ BEGIN
 			origen,
 			nro_frd,
             correlativo_preimpreso_frd,
+            --correlativo,
             fecha_limite_respuesta,
 			observaciones_incidente,
 			destino,
@@ -158,6 +165,7 @@ BEGIN
 			v_parametros.origen,
 			v_parametros.nro_frd,
             v_parametros.correlativo_preimpreso_frd,
+            --v_parametros.correlativo,
             v_parametros.fecha_limite_respuesta,
 			v_parametros.observaciones_incidente,
 			v_parametros.destino,
@@ -332,6 +340,130 @@ BEGIN
             return v_resp;
 
 		end;
+    /*********************************
+ 	#TRANSACCION:  'REC_ANTEREC_IME'
+ 	#DESCRIPCION:	Siguiente estado de un Reclamo
+ 	#AUTOR:		admin
+ 	#FECHA:		21-09-2016 11:32:59
+	***********************************/
+    elseif(p_transaccion='REC_ANTEREC_IME') then
+    	begin
+        v_operacion = 'anterior';
+
+        IF  pxp.f_existe_parametro(p_tabla , 'estado_destino')  THEN
+           v_operacion = v_parametros.estado_destino;
+        END IF;
+
+        --recueprar datos del reclamo
+        --raise exception 'id_funcionario_usu: %', v_parametros.id_funcionario_usu;
+        --obtenermos datos basicos
+        select
+            rec.id_reclamo,
+            rec.id_proceso_wf,
+            rec.estado,
+            pwf.id_tipo_proceso
+        into
+            v_registros_rec
+
+        from rec.treclamo  rec
+        inner  join wf.tproceso_wf pwf  on  pwf.id_proceso_wf = rec.id_proceso_wf
+        where rec.id_proceso_wf  = v_parametros.id_proceso_wf;
+
+        v_id_proceso_wf = v_registros_rec.id_proceso_wf;
+
+        IF  v_operacion = 'anterior' THEN
+            --------------------------------------------------
+            --Retrocede al estado inmediatamente anterior
+            -------------------------------------------------
+           --recuperaq estado anterior segun Log del WF
+           	--raise exception 'v_parametros.id_estado_wf: %',v_parametros.id_estado_wf;
+              SELECT
+
+                 ps_id_tipo_estado,
+                 ps_id_funcionario,
+                 ps_id_usuario_reg,
+                 ps_id_depto,
+                 ps_codigo_estado,
+                 ps_id_estado_wf_ant
+              into
+                 v_id_tipo_estado,
+                 v_id_funcionario,
+                 v_id_usuario_reg,
+                 v_id_depto,
+                 v_codigo_estado,
+                 v_id_estado_wf_ant
+              FROM wf.f_obtener_estado_ant_log_wf(v_parametros.id_estado_wf);
+
+              --raise exception 'v_id_tipo_estado: % + v_id_funcionario: % + v_id_usuario_reg: % + v_id_depto: % +v_codigo_estado: % +v_id_estado_wf_ant: % ', v_id_tipo_estado, v_id_funcionario,v_id_usuario_reg,v_id_depto, v_codigo_estado, v_id_estado_wf_ant;
+
+              select
+              	ew.id_proceso_wf
+              into
+                v_id_proceso_wf
+          	  from wf.testado_wf ew
+         	  where ew.id_estado_wf= v_id_estado_wf_ant;
+        END IF;
+
+
+
+         --configurar acceso directo para la alarma
+             v_acceso_directo = '';
+             v_clase = '';
+             v_parametros_ad = '';
+             v_tipo_noti = 'notificacion';
+             v_titulo  = 'Visto Bueno';
+
+
+           IF   v_codigo_estado_siguiente not in('borrador','pendiente_revision','pendiente_respuesta','derivado','anulado')   THEN
+                  v_acceso_directo = '../../../sis_reclamo/vista/Reclamo/RegistroReclamos.php';
+                 v_clase = 'RegistroReclamos';
+                 v_parametros_ad = '{filtro_directo:{campo:"rec.id_proceso_wf",valor:"'||v_id_proceso_wf::varchar||'"}}';
+                 v_tipo_noti = 'notificacion';
+                 v_titulo  = 'Visto Bueno';
+
+           END IF;
+
+
+          -- registra nuevo estado
+
+          v_id_estado_actual = wf.f_registra_estado_wf(
+              v_id_tipo_estado,                --  id_tipo_estado al que retrocede
+              v_id_funcionario,                --  funcionario del estado anterior
+              v_parametros.id_estado_wf,       --  estado actual ...
+              v_id_proceso_wf,                 --  id del proceso actual
+              p_id_usuario,                    -- usuario que registra
+              v_parametros._id_usuario_ai,
+              v_parametros._nombre_usuario_ai,
+              v_id_depto,                       --depto del estado anterior
+              '[RETROCESO] '|| v_parametros.obs,
+              v_acceso_directo,
+              v_clase,
+              v_parametros_ad,
+              v_tipo_noti,
+              v_titulo);
+
+            IF  not rec.f_fun_regreso_reclamo_wf(p_id_usuario,
+                                                   v_parametros._id_usuario_ai,
+                                                   v_parametros._nombre_usuario_ai,
+                                                   v_id_estado_actual,
+                                                   v_parametros.id_proceso_wf,
+                                                   v_codigo_estado) THEN
+
+               raise exception 'Error al retroceder estado';
+
+            END IF;
+
+
+         -- si hay mas de un estado disponible  preguntamos al usuario
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado)');
+            v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
+
+
+          --Devuelve la respuesta
+            return v_resp;
+
+        end;
+
     /*********************************
  	#TRANSACCION:  'REC_SIGEREC_IME'
  	#DESCRIPCION:	Siguiente estado de un Reclamo

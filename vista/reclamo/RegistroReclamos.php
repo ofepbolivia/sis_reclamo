@@ -17,8 +17,8 @@ header("content-type: text/javascript; charset=UTF-8");
         //layoutType: 'wizard',
 
         gruposBarraTareas:[
-            {name:'borrador',title:'<H1 align="center"><i class="fa fa-thumbs-o-down"></i> Borradores</h1>',grupo:0,height:0, width: 100},
-            {name:'pendiente_informacion',title:'<H1 align="center"><i class="fa fa-eye"></i> Pendientes Inf.</h1>',grupo:1,height:0}
+            {name:'borrador',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borradores</h1>',grupo:0,height:0, width: 100},
+            {name:'pendiente_informacion',title:'<H1 align="center"><i class="fa fa-files-o"></i> Pendientes Inf.</h1>',grupo:1,height:0}
         ],
 
         actualizarSegunTab: function(name, indice){
@@ -33,12 +33,12 @@ header("content-type: text/javascript; charset=UTF-8");
         bexcelGroups: [0,1],
 
         constructor: function(config) {
-            
+
             Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
 
             
         },
-        fin_registro:function(paneldoc)
+        /*fin_registro:function(paneldoc)
         {
             var d= this.sm.getSelected().data;
 
@@ -76,12 +76,12 @@ header("content-type: text/javascript; charset=UTF-8");
             }
 
 
-        },
+        },*/
         
         preparaMenu:function(n){
             var data = this.getSelectedData();
             var tb =this.tbar;
-            console.log('valor: '+n.data);
+
             Phx.vista.RegistroReclamos.superclass.preparaMenu.call(this,n);
             //habilitar reporte de colicitud de comrpa y preorden de compra
 
@@ -94,7 +94,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ant_estado').enable();
 
             }
-            
+
             return tb
         },
         liberaMenu:function(){
@@ -102,9 +102,8 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
-
             }
-
+            
             return tb
         }
 

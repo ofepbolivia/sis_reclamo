@@ -44,13 +44,7 @@ class MODInforme extends MODbase{
         $this->captura('desc_fun','text');
 		$this->captura('lista','varchar');
 
-       
-
-
-
-
-
-		//Ejecuta la instruccion
+       //Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
@@ -127,6 +121,61 @@ class MODInforme extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+    function reporteInformeDoc(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_informe_sel';
+        $this->transaccion='REC_INFORREP_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        //Definicion de la lista del resultado del query
+        $this->setCount(false);
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+
+        $this->captura('id_informe','int4');
+        $this->captura('sugerencia_respuesta','varchar');
+        $this->captura('id_reclamo','int4');
+        $this->captura('antecedentes_informe','varchar');
+        $this->captura('nro_informe','varchar');
+        $this->captura('id_funcionario','int4');
+        $this->captura('conclusion_recomendacion','varchar');
+        $this->captura('fecha_informe','date');
+        $this->captura('estado_reg','varchar');
+        $this->captura('lista_compensacion','varchar');
+        $this->captura('analisis_tecnico','varchar');
+        $this->captura('id_usuario_ai','int4');
+        $this->captura('id_usuario_reg','int4');
+        $this->captura('usuario_ai','varchar');
+        $this->captura('fecha_reg','timestamp');
+        $this->captura('fecha_mod','timestamp');
+        $this->captura('id_usuario_mod','int4');
+        $this->captura('usr_reg','varchar');
+        $this->captura('usr_mod','varchar');
+        $this->captura('desc_nombre_compensacion','varchar');
+        $this->captura('desc_fun','text');
+        $this->captura('lista','varchar');
+        $this->captura('id_proceso_wf','int4');
+        $this->captura('id_estado_wf','int4');
+        $this->captura('nro_frd','varchar');
+        $this->captura('correlativo_preimpreso_frd','int4');
+        $this->captura('nro_vuelo','varchar');
+        $this->captura('fecha_hora_incidente','timestamp');
+        $this->captura('nombre','varchar');
+        $this->captura('origen','varchar');
+        $this->captura('destino','varchar');
+        $this->captura('nombre_completo1','text');
+        $this->captura('email','varchar');
+        $this->captura('celular','int4');
+        $this->captura('detalle_incidente','text');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 
 }
+
+
 ?>

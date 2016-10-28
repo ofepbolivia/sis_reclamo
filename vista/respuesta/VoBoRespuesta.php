@@ -9,19 +9,19 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-    Phx.vista.PendienteRespuesta = {
-        require:'../../../sis_reclamo/vista/reclamo/Reclamo.php',
-        requireclase:'Phx.vista.Reclamo',
-        title:'Reclamo',
-        nombreVista: 'PendienteRespuesta',
+    Phx.vista.VoBoRespuesta = {
+        require:'../../../sis_reclamo/vista/respuesta/Respuesta.php',
+        requireclase:'Phx.vista.Respuesta',
+        title:'Respuesta',
+        nombreVista: 'VoBoRespuesta',
         //layoutType: 'wizard',
         bnew:false,
         bdel:false,
         gruposBarraTareas:[
 
-            {name:'pendiente_respuesta',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Pendientes Resp.</h1>',grupo:0,height:0},
-            {name:'archivo_con_respuesta',title:'<H1 align="center"><i class="fa fa-sitemap"></i>Archivo con Resp.</h1>',grupo:1,height:0},
-            {name:'archivado_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Archivado/Concl.</h1>',grupo:2,height:0}
+            {name:'revision_legal',title:'<H1 align="center"><i class="fa fa-legal"></i> Revision Legal</h1>',grupo:0,height:0},
+            {name:'vobo_respuesta',title:'<H1 align="center"><i class="fa fa-thumbs-o-up"></i>VoBo. Respuesta</h1>',grupo:1,height:0}
+
         ],
 
         actualizarSegunTab: function(name, indice){
@@ -30,19 +30,19 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
-        beditGroups: [0],
-        bdelGroups:  [0],
-        bactGroups:  [0,1,2],
-        btestGroups: [0],
-        bexcelGroups: [0,1,2],
+        beditGroups: [0,1],
+        bdelGroups:  [0,1],
+        bactGroups:  [0,1],
+        btestGroups: [],
+        bexcelGroups: [0,1],
 
         constructor: function(config) {
-            this.maestro=config.maestro;
-            Phx.vista.PendienteRespuesta.superclass.constructor.call(this,config);
-            this.getBoton('ant_estado').setVisible(true);
+
+            Phx.vista.VoBoRespuesta.superclass.constructor.call(this,config);
+            //this.getBoton('ant_estado').setVisible(true);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             //primera carga
-            this.store.baseParams.pes_estado = 'pendiente_respuesta';
+            this.store.baseParams.pes_estado = 'revision_legal';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
 
@@ -88,45 +88,40 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
 
-        enableTabRespuesta:function(){
-            if(this.TabPanelSouth.get(1)){
-                this.TabPanelSouth.get(1).enable();
-                this.TabPanelSouth.setActiveTab(1)
-            }
-        },
-
-        disableTabRespuesta:function(){
-            if(this.TabPanelSouth.get(1)){
-                this.TabPanelSouth.get(1).disable();
-                this.TabPanelSouth.setActiveTab(0)
-            }
-        },
-
         preparaMenu:function(n){
             var data = this.getSelectedData();
             var tb =this.tbar;
-            Phx.vista.PendienteRespuesta.superclass.preparaMenu.call(this,n);
+            Phx.vista.VoBoRespuesta.superclass.preparaMenu.call(this,n);
 
-            if(data.estado =='pendiente_respuesta' || data.estado =='archivo_con_respuesta' || data.estado == 'archivado_concluido' ){
+            this.getBoton('sig_estado').enable();
+            this.getBoton('ant_estado').enable();
+            //this.getBoton('ant_estado').setVisible(true);
+            if(data.estado =='revision_legal' || data.estado =='vobo_respuesta' ){
 
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('diagrama_gantt').enable();
+                this.getBoton('btnObs').enable();
+                this.getBoton('btnChequeoDocumentosWf').enable();
             }
-            this.enableTabRespuesta();
+            //this.enableTabRespuesta(1);
             return tb
         },
         liberaMenu:function(){
-            var tb = Phx.vista.PendienteRespuesta.superclass.liberaMenu.call(this);
+            var tb = Phx.vista.VoBoRespuesta.superclass.liberaMenu.call(this);
             if(tb){
                 this.getBoton('ant_estado').disable();
                 this.getBoton('sig_estado').disable();
+                this.getBoton('diagrama_gantt').disable();
+                this.getBoton('btnObs').disable();
+                this.getBoton('btnChequeoDocumentosWf').disable();
 
             }
-            this.disableTabRespuesta();
+            
             return tb
         },
         onButtonEdit: function() {
-            Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
+            Phx.vista.Respuesta.superclass.onButtonEdit.call(this);
         }
 
     };

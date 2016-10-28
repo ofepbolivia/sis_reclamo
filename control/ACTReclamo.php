@@ -6,7 +6,7 @@
 *@date 10-08-2016 18:32:59
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
-
+require_once(dirname(__FILE__).'/../reportes/RReclamoDoc.php');
 class ACTReclamo extends ACTbase{    
 			
 	function listarReclamo(){
@@ -23,14 +23,41 @@ class ACTReclamo extends ACTbase{
 
 		}
 
-		if ($this->objParam->getParametro('pes_estado') == 'borrador') {
-			$this->objParam->addFiltro("rec.estado not in (''pendiente_revision'',''registrado_ripat'',''pendiente_informacion'',''anulado'')");
-		}else if ($this->objParam->getParametro('pes_estado') == 'pendiente_informacion') {
-			$this->objParam->addFiltro("rec.estado not in (''borrador'',''registrado_ripat'',''pendiente_revision'',''anulado'')");
-		} else if ($this->objParam->getParametro('pes_estado') == 'proceso') {
-			$this->objParam->addFiltro("rec.estado  in (''pendiente_ripat'',''registrado_ripat'',''pendiente_inf'')");
-		} else if ($this->objParam->getParametro('pes_estado') == 'finalizado') {
-			$this->objParam->addFiltro("rec.estado  in (''anulado'')");
+		switch($this->objParam->getParametro('pes_estado')){
+			case 'borrador':
+				$this->objParam->addFiltro("rec.estado in (''borrador'')");
+				break;
+			case 'pendiente_informacion':
+				$this->objParam->addFiltro("rec.estado in (''pendiente_informacion'')");
+				break;
+			case 'pendiente_revision':
+				$this->objParam->addFiltro("rec.estado in (''pendiente_revision'')");
+				break;
+			case 'registrado_ripat':
+				$this->objParam->addFiltro("rec.estado in (''registrado_ripat'')");
+				break;
+			case 'derivado':
+				$this->objParam->addFiltro("rec.estado in (''derivado'')");
+				break;
+			case 'anulado':
+				$this->objParam->addFiltro("rec.estado in (''anulado'')");
+				break;
+			case 'pendiente_respuesta':
+				$this->objParam->addFiltro("rec.estado in (''pendiente_respuesta'')");
+				break;
+			case 'archivo_con_respuesta':
+				$this->objParam->addFiltro("rec.estado in (''archivo_con_respuesta'')");
+				break;
+			case 'archivado_concluido':
+				$this->objParam->addFiltro("rec.estado in (''archivado_concluido'')");
+				break;
+			case 'revision_legal':
+				$this->objParam->addFiltro("rec.estado in (''revision_legal'')");
+				break;
+			case 'vobo_respuesta':
+				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				break;
+
 		}
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -78,6 +105,26 @@ class ACTReclamo extends ACTbase{
 
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+	function reporteReclamoDoc (){
+
+        $this->objFunc=$this->create('MODReclamo');
+        $dataSource = $this->objFunc->reportesReclamo();
+        $nombreArchivo = uniqid(md5(session_id()).'RReclamoDoc').'.docx';
+        $reporte = new RReclamoDoc($this->objParam);
+
+        $reporte->datosHeader($dataSource->getDatos());
+        $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
+    }
+
+	
 			
 }
 
