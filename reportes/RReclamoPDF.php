@@ -1,4 +1,21 @@
 <?php
+require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDFFormulario.php';
+require_once dirname(__FILE__).'/../../pxp/pxpReport/Report.php';
+class CustomReport extends ReportePDFFormulario
+{
+
+    private $dataSource;
+
+    public function setDataSource(DataSource $dataSource)
+    {
+        $this->dataSource = $dataSource;
+    }
+
+    public function getDataSource()
+    {
+        return $this->dataSource;
+    }
+}
 class RReclamoPDF extends  ReportePDF{
     var $datos;
     var $ancho_hoja;

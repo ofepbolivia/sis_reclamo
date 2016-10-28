@@ -6,8 +6,9 @@
 *@date 10-08-2016 18:32:59
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
-require_once(dirname(__FILE__).'/../reportes/RReclamoDoc.php');
-class ACTReclamo extends ACTbase{    
+require_once(dirname(__FILE__).'/../reportes/RReclamoPDF.php');
+
+class ACTReclamo extends ACTbase{
 			
 	function listarReclamo(){
 		$this->objParam->defecto('ordenacion','id_reclamo');
@@ -110,10 +111,14 @@ class ACTReclamo extends ACTbase{
 
         $this->objFunc=$this->create('MODReclamo');
         $dataSource = $this->objFunc->reportesReclamo();
-        $nombreArchivo = uniqid(md5(session_id()).'RReclamoDoc').'.docx';
-        $reporte = new RReclamoDoc($this->objParam);
-
-        $reporte->datosHeader($dataSource->getDatos());
+        $nombreArchivo = uniqid(md5(session_id()).'RReclamoPDF').'.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('titulo_archivo','INFORME');
+        //$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        $reporte = new RReclamoPDF($this->objParam);
+        $reporte->setDataSource($dataSource);
+        //$reporte->datosHeader($dataSource->getDatos());
         $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
 
 
@@ -124,7 +129,7 @@ class ACTReclamo extends ACTbase{
 
     }
 
-	
+
 			
 }
 
