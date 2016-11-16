@@ -60,6 +60,7 @@ class MODReclamo extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 			$this->captura('id_gestion','int4');
+
 		//$this->captura('id_motivo_anulado','int4');
 
         $this->captura('desc_nombre_medio','varchar');
@@ -72,6 +73,9 @@ class MODReclamo extends MODbase{
         $this->captura('desc_nombre_fun_denun','text');
 
 			$this->captura('tiempo_respuesta','varchar');
+			$this->captura('revisado','varchar');
+
+        $this->setParametro('id_usuario','id_usuario','int4');
 
 
 
@@ -217,6 +221,24 @@ class MODReclamo extends MODbase{
 		$this->setParametro('obs','obs','text');
 		$this->setParametro('json_procesos','json_procesos','text');
 
+		$this->setParametro('f_actual','f_actual','timestamp');
+		$this->setParametro('nombreVista','nombreVista','varchar');
+
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+	function verificarDias(){
+		$this->procedimiento='rec.ft_reclamo_ime';
+		$this->transaccion='REC_VERDIAS_GET';
+		$this->tipo_procedimiento='IME';
+
+		$this->setParametro('f_actual','f_actual','date');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -241,6 +263,37 @@ class MODReclamo extends MODbase{
 		$this->setParametro('id_tipo_estado','id_tipo_estado','int4');
 		$this->setParametro('id_estado_wf','id_estado_wf','int4');
 		$this->setParametro('obs','obs','text');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+	function getNombreFun(){
+		$this->procedimiento='rec.ft_reclamo_ime';
+		$this->transaccion='RH_FUNNOM_GET';
+		$this->tipo_procedimiento='IME';
+
+		$this->setParametro('id_funcionario','id_funcionario','int4');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+	function marcarRevisado(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='rec.ft_reclamo_ime';
+		$this->transaccion='REC_REV_IME';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+		$this->setParametro('id_reclamo','id_reclamo','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -286,6 +339,18 @@ class MODReclamo extends MODbase{
         $this->captura('desc_oficina_registro_incidente','varchar');
         $this->captura('desc_nombre_funcionario','text');
         $this->captura('desc_nombre_fun_denun','text');
+
+        $this->captura('nombre_cliente','varchar');
+        $this->captura('apellidos','text');
+        $this->captura('ci','varchar');
+        $this->captura('celular','int4');
+        $this->captura('email','varchar');
+        $this->captura('pais','varchar');
+        $this->captura('ciudad','varchar');
+        $this->captura('direccion','varchar');
+        $this->captura('barrio_zona','varchar');
+        $this->captura('lugar_expedicion','varchar');
+        $this->captura('fecha_reg','date');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

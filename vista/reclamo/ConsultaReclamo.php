@@ -26,9 +26,8 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.ConsultaReclamo.superclass.constructor.call(this,config);
             this.getBoton('btnObs').setVisible(false);
             this.getBoton('btnChequeoDocumentosWf').setVisible(false);
-            
             this.getBoton('sig_estado').setVisible(false);
-            //this.getCmp('gestion').setVisible(true);
+            this.getBoton('ant_estado').setVisible(false);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             //primera carga
             this.store.baseParams.pes_estado = '';
@@ -70,6 +69,10 @@ header("content-type: text/javascript; charset=UTF-8");
             hidden:false,
             width:80
         }),
+
+        capturarEventos: function () {
+            this.store.baseParams.pes_estado = 'borrador';
+        },
 
         preparaMenu:function(n){
             var data = this.getSelectedData();

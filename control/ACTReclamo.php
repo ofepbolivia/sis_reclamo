@@ -23,10 +23,11 @@ class ACTReclamo extends ACTbase{
 			$this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
 
 		}
-
+		/*var_dump($this->objParam->getParametro('func_estado'));
+		exit();*/
 		switch($this->objParam->getParametro('pes_estado')){
 			case 'borrador':
-				$this->objParam->addFiltro("rec.estado in (''borrador'')");
+				$this->objParam->addFiltro("rec.estado = "."''borrador''");
 				break;
 			case 'pendiente_informacion':
 				$this->objParam->addFiltro("rec.estado in (''pendiente_informacion'')");
@@ -58,7 +59,24 @@ class ACTReclamo extends ACTbase{
 			case 'vobo_respuesta':
 				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
 				break;
-
+			case 'en_avenimiento':
+				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				break;
+			case 'formulacion_cargos':
+				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				break;
+			case 'resolucion_administrativa':
+				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				break;
+			case 'recurso_revocatorio':
+				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				break;
+			case 'recurso_jerarquico':
+				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				break;
+			case 'contencioso_administrativo':
+				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				break;
 		}
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -72,19 +90,19 @@ class ACTReclamo extends ACTbase{
             $this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
-				
+
 	function insertarReclamo(){
-		$this->objFunc=$this->create('MODReclamo');	
+		$this->objFunc=$this->create('MODReclamo');
 		if($this->objParam->insertar('id_reclamo')){
-			$this->res=$this->objFunc->insertarReclamo($this->objParam);			
-		} else{			
+			$this->res=$this->objFunc->insertarReclamo($this->objParam);
+		} else{
 			$this->res=$this->objFunc->modificarReclamo($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-						
+
 	function eliminarReclamo(){
-			$this->objFunc=$this->create('MODReclamo');	
+			$this->objFunc=$this->create('MODReclamo');
 		$this->res=$this->objFunc->eliminarReclamo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
@@ -107,30 +125,53 @@ class ACTReclamo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
+	function verificarDias(){
+		$this->objFunc=$this->create('MODReclamo');
+		$this->res=$this->objFunc->verificarDias($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function getNombreFun(){
+		$this->objFunc=$this->create('MODReclamo');
+		$this->res=$this->objFunc->getNombreFun($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function marcarRevisado(){
+		$this->objFunc=$this->create('MODReclamo');
+		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
+		$this->res=$this->objFunc->marcarRevisado($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
 	function reporteReclamoDoc (){
 
+
         $this->objFunc=$this->create('MODReclamo');
-        $dataSource = $this->objFunc->reportesReclamo();
-        $nombreArchivo = uniqid(md5(session_id()).'RReclamoPDF').'.pdf';
+        $this->res=$this->objFunc->reportesReclamo($this->objParam);
+        //obtener titulo del reporte
+        $titulo = 'Informe de Reclamo';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+        $nombreArchivo.='.pdf';
         $this->objParam->addParametro('orientacion','P');
         $this->objParam->addParametro('tamano','LETTER');
-        $this->objParam->addParametro('titulo_archivo','INFORME');
-        //$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
-        $reporte = new RReclamoPDF($this->objParam);
-        $reporte->setDataSource($dataSource);
-        //$reporte->datosHeader($dataSource->getDatos());
-        $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //Instancia la clase de pdf
+
+        $this->objReporteFormato=new RReclamoPDF($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos);
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 
 
         $this->mensajeExito=new Mensaje();
-        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
-
     }
 
-
-			
 }
 
 ?>

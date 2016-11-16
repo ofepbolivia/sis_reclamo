@@ -44,7 +44,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             //primera carga
             this.store.baseParams.pes_estado = 'pendiente_revision';
-            this.load({params:{start:0, limit:50}});
+            this.load({params:{start:0, limit:60}});
             this.finCons = true;
 
         },
@@ -70,7 +70,7 @@ header("content-type: text/javascript; charset=UTF-8");
         enableTabRespuesta:function(){
             if(this.TabPanelSouth.get(1)){
                 this.TabPanelSouth.get(1).enable();
-                this.TabPanelSouth.setActiveTab(1)
+                this.TabPanelSouth.setActiveTab(1);
             }
         },
 
@@ -90,12 +90,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.disableTabRespuesta();
             }
             else{
                 this.getBoton('sig_estado').setVisible(false);
                 this.getBoton('ant_estado').enable();
+                this.disableTabRespuesta();
             }
-            this.enableTabRespuesta();
+            //this.enableTabRespuesta();
 
             return tb
         },
@@ -110,9 +112,30 @@ header("content-type: text/javascript; charset=UTF-8");
             return tb
         },
         onButtonEdit: function() {
-            Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
+            var rec = this.sm.getSelected();
+            //this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', rec.data.id_tipo_incidente);
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_workflow/control/TipoColumna/listarColumnasFormulario',
+                params:{
+
+                    id_estado_wf: rec.data['id_estado_wf']
+                },
+                success:this.editCampos,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+            //alert(rec.data['id_estado_wf']);
+            Phx.vista.RevisionReclamo.superclass.onButtonEdit.call(this);
+        },
+
+        editCampos: function(resp){
+            Phx.CP.loadingHide();
+            var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            //console.log('campos Edit: '+objRes);
+            //Phx.vista.RevisionReclamo.superclass.onButtonEdit.call(this);
+            this.armarFormularioFromArray(objRes.datos);
         }
-        
-        
     };
 </script>

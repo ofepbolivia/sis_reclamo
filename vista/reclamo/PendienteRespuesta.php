@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  *@package pXP
  *@file PendienteRespuesta.php
@@ -38,6 +38,26 @@ header("content-type: text/javascript; charset=UTF-8");
 
         constructor: function(config) {
             this.maestro=config.maestro;
+            this.Atributos.unshift({
+                config:{
+                    name: 'revisado',
+                    fieldLabel: 'Revisado',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 60,
+                    renderer:function (value, p, record){
+                        if(record.data['revisado'] == 'si')
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
+                        else
+                            return  String.format('{0}',"<div style='text-align:center'><img title='No revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_white.png' align='center' width='24' height='24'/></div>");
+                    }
+                },
+                type:'Checkbox',
+                filters:{pfiltro:'rec.revisado',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:false
+            });
             Phx.vista.PendienteRespuesta.superclass.constructor.call(this,config);
             this.getBoton('ant_estado').setVisible(true);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
@@ -46,8 +66,103 @@ header("content-type: text/javascript; charset=UTF-8");
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
 
+            /*Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/siguienteEstadoReclamo',
+                params: { f_actual : new Date(), nombreVista: 'PendienteRespuesta'},
+                success: this.successDias,
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });*/
+            this.addButton('reportes',{
+                grupo: [0,1,2,3],
+                argument: {estado: 'reportes'},
+                text: 'Reportes',
+                iconCls: 'blist',
+                disabled: true,
+                hidden: true,
+                handler: this.reportes,
+                tooltip: '<b>Generar Reporte</b>'
+            });
+
+            this.addButton('btnRev', {
+                grupo: [0,1],
+                text : 'Revisado',
+                iconCls : 'bball_green',
+                disabled : true,
+                handler : this.cambiarRev,
+                tooltip : '<b>Revisado</b><br/>Sirve como un indicador de que la documentacion fue revisada por el asistente'
+            });
+        },
+        cambiarRev:function(){
+            Phx.CP.loadingShow();
+            var d = this.sm.getSelected().data;
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/marcarRevisado',
+                params:{id_reclamo:d.id_reclamo},
+                success:this.successRev,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
 
         },
+        successRev:function(resp){
+            Phx.CP.loadingHide();
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            if(!reg.ROOT.error){
+                this.reload();
+            }
+        },
+
+        /*Atributos:[
+            {
+                config:{
+                    name: 'revisado',
+                    fieldLabel: 'Revisado',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 50,
+                    renderer:function (value, p, record){
+                        if(record.data['revisado'] == 'si')
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
+                        else
+                            return  String.format('{0}',"<div style='text-align:center'><img title='No revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_white.png' align='center' width='24' height='24'/></div>");
+                    },
+                },
+                type:'Checkbox',
+                filters:{pfiltro:'rec.revisado',type:'string'},
+                id_grupo:1,
+                grid:false,
+                form:false
+            }
+        ],*/
+
+        reportes: function(){
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/generarReporte',
+                params:{
+                    codigo_proceso:  'REC',
+                    proceso_macro:   'REC'
+                },
+                success:this.guardarReporte,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+
+        guardarReporte: function(resp){
+            Phx.CP.loadingHide();
+            var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+        },
+
+        successDias:function(resp){
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            console.log('Transaccion Exitosa...'+reg.ROOT.datos);
+        },
+
         fin_registro:function(paneldoc)
         {
             var d= this.sm.getSelected().data;
@@ -112,6 +227,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
             }
+            if(data['revisado_asistente']== 'si'){
+                this.getBoton('btnRev').setIconClass('bball_white')
+            }
+            else{
+                this.getBoton('btnRev').setIconClass('bball_green')
+            }
+            this.getBoton('btnRev').setVisible(true);
+            this.getBoton('btnRev').enable();
             this.enableTabRespuesta();
             return tb
         },
@@ -122,6 +245,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
 
             }
+            this.getBoton('btnRev').disable();
             this.disableTabRespuesta();
             return tb
         },

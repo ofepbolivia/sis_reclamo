@@ -26,7 +26,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			text: 'Anterior',
 			iconCls: 'batras',
 			disabled: true,
-			hidden: true,
+			/*hidden: true,*/
 			handler: this.antEstado,
 			tooltip: '<b>Volver al Anterior Estado</b>'
 		});
@@ -35,7 +35,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			text:'Siguiente',
 			iconCls: 'badelante',
 			disabled:true,
-			hidden:true,
+			/*hidden:true,*/
 			handler:this.sigEstado,
 			tooltip: '<b>Pasar al Siguiente Estado</b>'
 		});
@@ -141,7 +141,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				anchor: '50%',
 				gwidth: 100,
 
-				disabled: true,
+
 				format: 'd/m/Y',
 				renderer: function (value, p, record) {
 					return value ? value.dateFormat('d/m/Y') : ''
@@ -225,12 +225,13 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				gwidth: 100,
 				maxLength: 100,
 				gdisplayField: 'procedente',
-				renderer: function (value, p, record) {
-					return value ? 'SI' : 'NO';
-				}
+				typeAhead:true,
+				triggerAction:'all',
+				mode:'local',
+				store:['SI','NO','NINGUNO']
 			},
-			type: 'Checkbox',
-			filters: {pfiltro: 'res.procedente', type: 'boolean'},
+			type: 'ComboBox',
+			filters: {pfiltro: 'res.procedente', type: 'string'},
 			id_grupo: 1,
 			grid: true,
 			form: true
@@ -286,7 +287,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			filters: {pfiltro: 'res.fecha_notificacion', type: 'date'},
 			id_grupo: 1,
 			grid: true,
-			form: true
+			form: false
 		},
 		{
 			config: {
@@ -399,7 +400,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'respuesta', type: 'string'},
 		{name: 'fecha_respuesta', type: 'date', dateFormat: 'Y-m-d'},
 		{name: 'estado_reg', type: 'string'},
-		{name: 'procedente', type: 'boolean'},
+		{name: 'procedente', type: 'string'},
 		{name: 'fecha_notificacion', type: 'date', dateFormat: 'Y-m-d'},
 		{name: 'id_usuario_ai', type: 'numeric'},
 		{name: 'id_usuario_reg', type: 'numeric'},
@@ -527,12 +528,14 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 					delegate: this.onSaveWizard,
 				}],
 				scope:this
-			});
+			}
+		);
 
 	},
 
 	onSaveWizard:function(wizard,resp){
 		Phx.CP.loadingShow();
+		
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Respuesta/siguienteEstadoRespuesta',
 			params:{
@@ -560,12 +563,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 
 	onButtonNew : function () {
-
 		Phx.vista.Respuesta.superclass.onButtonNew.call(this);
-		//Phx.CP.loadingShow();
+
 		var fecha = this.sumarDias(new Date(),parseInt(this.maestro.tiempo_respuesta));
 		this.Cmp.fecha_respuesta.setValue(fecha);
-
+		this.Cmp.nro_cite.setValue(1234567);
 		/*Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Respuesta/getDiasRespuesta',
 			params:{id_tipo_incidente:this.store.baseParams.id_tipo_incidente},
@@ -577,10 +579,9 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 	onButtonDel: function(){
 		Phx.vista.Respuesta.superclass.onButtonDel.call(this);
-
 		this.argumentExtraSubmit.id_reclamo = this.maestro.id_reclamo;
 	},
-
+	dia: ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'],
 	/*successTI:function(resp){
 		//Phx.CP.loadingHide();
 		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
@@ -588,28 +589,31 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		this.Cmp.fecha_respuesta.setValue(fecha);
 	},*/
 	sumarDias: function (fecha, dias){
-		fecha.setDate(fecha.getDate() + dias);
+		//var dia = ;
+		console.log(dias+' DIA '+this.dia[fecha.getDay()]);
+		if(this.dia[fecha.getDay()]=='lunes' && this.maestro.tiempo_respuesta==10) {
+			fecha.setDate(fecha.getDate() + dias + 1);
+
+		}
+		else if((this.dia[fecha.getDay()]=='martes' || this.dia[fecha.getDay()]=='miercoles' || this.dia[fecha.getDay()]=='jueves' || this.dia[fecha.getDay()]=='viernes') && this.maestro.tiempo_respuesta==10){
+			fecha.setDate(fecha.getDate() + dias + 3);
+
+		}else if(this.dia[fecha.getDay()]=='viernes' && this.maestro.tiempo_respuesta==7){
+			fecha.setDate(fecha.getDate() + dias + 3);
+
+		}else{
+			fecha.setDate(fecha.getDate() + dias + 1);
+
+		}
 		return fecha;
+
 	},
 
 	onButtonEdit: function() {
 		Phx.vista.Respuesta.superclass.onButtonEdit.call(this);
-		//var rec = this.sm.getSelected();
-	},
 
-	/*onReloadPage: function (m) {
-		this.maestro = m;
-		this.store.baseParams = {id_reclamo: this.maestro.id_reclamo ,tipo_interfaz:this.nombreVista};
-		this.load({params: {start: 0, limit: 50}});
-	},*/
-
-	/*loadValoresIniciales: function () {
-		this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
-		Phx.vista.Respuesta.superclass.loadValoresIniciales.call(this);
-
-	},*/
-
-	preparaMenu: function(n){
+	}
+	/*preparaMenu: function(n){
 
 		var data = this.getSelectedData();
 		var tb =this.tbar;
@@ -634,7 +638,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 		return tb;
 	},
-
 	liberaMenu: function(){
 		var tb = Phx.vista.Respuesta.superclass.liberaMenu.call(this);
 		if(tb){
@@ -643,10 +646,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			this.getBoton('btnObs').disable();
 		}
 		return tb;
-	}
-
-
-
+	}*/
 });
 </script>
 		

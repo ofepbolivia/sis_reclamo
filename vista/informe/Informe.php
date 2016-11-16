@@ -51,7 +51,11 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '50%',
 						gwidth: 100,
-						maxLength:20
+						maxLength:20,
+						readOnly:true,
+						renderer: function(value,p,record) {
+							return String.format('<b><font color="green">{0}</font></b>', value);
+						}
 					},
 					type:'TextField',
 					filters:{pfiltro:'infor.nro_informe',type:'string'},
@@ -76,52 +80,9 @@ header("content-type: text/javascript; charset=UTF-8");
 					grid:true,
 					form:true
 				},
-
 				{
 					config: {
-						name: 'lista_compensacion',
-						fieldLabel: 'Lista de Compensaciones',
-						allowBlank: false,
-						emptyText: 'Seleccion...',
-						store: new Ext.data.JsonStore({
-							url: '../../sis_reclamo/control/Compensacion/listarCompensacion',
-							id: 'id_compensacion',
-							root: 'datos',
-							sortInfo: {
-								field: 'orden',
-								direction: 'ASC'
-							},
-							totalProperty: 'total',
-							fields: ['id_compensacion', 'nombre'],
-							remoteSort: true,
-							baseParams: {par_filtro: 'com.nombre'}
-						}),
-						valueField: 'id_compensacion',
-						displayField: 'nombre',
-						gdisplayField: 'lista_compensacion',//mapea al store del grid
-						hiddenName: 'id_compensacion',
-						forceSelection: true,
-						typeAhead: true,
-						triggerAction: 'all',
-						lazyRender: true,
-						mode: 'remote',
-						pageSize: 15,
-						queryDelay: 1000,
-						anchor: '50%',
-						gwidth: 500,
-						minChars: 2,
-						enableMultiSelect: true,
-						renderer: function (value, p, record) {
-							return String.format('{0}', record.data['lista']);
-						}
-					},
-					type: 'AwesomeCombo',
-					id_grupo: 0,
-					grid: true,
-					form: true
-				},
-				{
-					config: {
+						id: 'id_funcionario',
 						name: 'id_funcionario',
 						fieldLabel: 'Funcionario Informe',
 						allowBlank: false,
@@ -160,6 +121,49 @@ header("content-type: text/javascript; charset=UTF-8");
 					type: 'ComboBox',
 					id_grupo: 1,
 					filters: {pfiltro: 'PERSON.nombre_completo1', type: 'string'},
+					grid: true,
+					form: true
+				},
+				{
+					config: {
+						name: 'lista_compensacion',
+						fieldLabel: 'Lista de Compensaciones',
+						allowBlank: true,
+						emptyText: 'Seleccion...',
+						store: new Ext.data.JsonStore({
+							url: '../../sis_reclamo/control/Compensacion/listarCompensacion',
+							id: 'id_compensacion',
+							root: 'datos',
+							sortInfo: {
+								field: 'orden',
+								direction: 'ASC'
+							},
+							totalProperty: 'total',
+							fields: ['id_compensacion', 'nombre'],
+							remoteSort: true,
+							baseParams: {par_filtro: 'com.nombre'}
+						}),
+						valueField: 'id_compensacion',
+						displayField: 'nombre',
+						gdisplayField: 'lista_compensacion',//mapea al store del grid
+						hiddenName: 'id_compensacion',
+						forceSelection: true,
+						typeAhead: true,
+						triggerAction: 'all',
+						lazyRender: true,
+						mode: 'remote',
+						pageSize: 15,
+						queryDelay: 1000,
+						anchor: '50%',
+						gwidth: 500,
+						minChars: 2,
+						enableMultiSelect: true,
+						renderer: function (value, p, record) {
+							return String.format('{0}', record.data['lista']);
+						}
+					},
+					type: 'AwesomeCombo',
+					id_grupo: 0,
 					grid: true,
 					form: true
 				},
@@ -361,6 +365,31 @@ header("content-type: text/javascript; charset=UTF-8");
 			fwidth: '55%',
 			fheight: '90%',
 			requireclase: 'Phx.vista.Respuesta',
+
+			onButtonNew: function () {
+				Phx.vista.Informe.superclass.onButtonNew.call(this);
+				this.Cmp.nro_informe.setValue(this.maestro.nro_tramite);
+				this.Cmp.fecha_informe.setValue(new Date());
+				Ext.Ajax.request({
+					url:'../../sis_reclamo/control/Reclamo/getNombreFun',
+					params:{id_funcionario:this.maestro.id_funcionario_recepcion},
+					success:function(resp){
+						var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+						var fun = reg.ROOT.datos.id_funcionario;
+						console.log('funcionario: '+fun);
+						console.log('id_funcionario: '+this.maestro.id_funcionario_recepcion);
+
+
+						Ext.getCmp('id_funcionario').setValue(this.maestro.id_funcionario_recepcion);
+						Ext.getCmp('id_funcionario').setRawValue(fun);
+					},
+					failure: this.conexionFailure,
+					timeout:this.timeout,
+					scope:this
+				});
+				//this.Cmp.id_funcionario.setValue(this.maestro.id_funcionario_recepcion);
+			},
+
 			onReloadPage: function(m){
 				this.maestro = m;
 				this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};

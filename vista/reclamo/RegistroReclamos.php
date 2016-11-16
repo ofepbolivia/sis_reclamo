@@ -15,9 +15,13 @@ header("content-type: text/javascript; charset=UTF-8");
         title:'Reclamo',
         nombreVista: 'RegistroReclamos',
         //layoutType: 'wizard',
-
+        constructor: function(config) {
+            Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
+            //this.store.baseParams.func_estado = 'oficina';
+        },
         gruposBarraTareas:[
             {name:'borrador',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borradores</h1>',grupo:0,height:0, width: 100},
+            {name:'pendiente_revision',title:'<H1 align="center"><i class="fa fa-list-ul"></i>Adjuntar Informe</h1>',grupo:2,height:0, width: 100},
             {name:'pendiente_informacion',title:'<H1 align="center"><i class="fa fa-files-o"></i> Pendientes Inf.</h1>',grupo:1,height:0}
         ],
 
@@ -29,55 +33,31 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         beditGroups: [0],
         bdelGroups:  [0],
-        bactGroups:  [0,1],
-        bexcelGroups: [0,1],
-
-        constructor: function(config) {
-
-            Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
-
-            
-        },
-        /*fin_registro:function(paneldoc)
-        {
-            var d= this.sm.getSelected().data;
-
-            Phx.CP.loadingShow();
-            this.cmbRPC.reset();
-
-            this.cmbRPC.store.baseParams.id_uo=d.id_uo;
-            this.cmbRPC.store.baseParams.fecha=d.fecha_soli;
-            this.cmbRPC.store.baseParams.id_proceso_macro=d.id_proceso_macro;
-            Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
-                url:'../../sis_adquisiciones/control/Solicitud/finalizarSolicitud',
-                params: { id_solicitud: d.id_solicitud, operacion:'verificar', id_estado_wf: d.id_estado_wf },
-                argument: { paneldoc: paneldoc},
-                success: this.successSinc,
-                failure: this.conexionFailure,
-                timeout: this.timeout,
-                scope: this
-            });
-        },
-        
-        successSinc:function(resp){
-
-            Phx.CP.loadingHide();
-            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            if(!reg.ROOT.error){
-
-                if(resp.argument.paneldoc.panel){
-                    resp.argument.paneldoc.panel.destroy();
-                }
-                this.reload();
-            }else{
-
-                alert('ocurrio un error durante el proceso')
+        bactGroups:  [0,1,2],
+        bexcelGroups: [0,1,2],
+        tabsouth :[
+            {
+                url:'../../../sis_reclamo/vista/informe/Informe.php',
+                title:'Informe',
+                height:'50%',
+                cls:'Informe'
             }
+        ],
 
+        enableTabRespuesta:function(){
+            if(this.TabPanelSouth.get(0)){
+                this.TabPanelSouth.get(0).enable();
+                this.TabPanelSouth.setActiveTab(0);
+            }
+        },
 
-        },*/
-        
+        disableTabRespuesta:function(){
+            if(this.TabPanelSouth.get(0)){
+
+                this.TabPanelSouth.get(0).disable();
+                //this.TabPanelSouth.setActiveTab(0)
+            }
+        },
         preparaMenu:function(n){
             var data = this.getSelectedData();
             var tb =this.tbar;
@@ -87,15 +67,21 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(data['estado']==  'borrador'){
                 this.getBoton('sig_estado').enable();
+                this.disableTabRespuesta();
 
+            }else if(data['estado']==  'pendiente_revision'){
+                this.getBoton('sig_estado').disable();
+                this.getBoton('ant_estado').disable();
+                this.enableTabRespuesta();
             }
             else {
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.disableTabRespuesta();
 
             }
 
-            return tb
+            return tb;
         },
         liberaMenu:function(){
             var tb = Phx.vista.RegistroReclamos.superclass.liberaMenu.call(this);
@@ -103,8 +89,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
             }
-            
-            return tb
+            this.disableTabRespuesta();
+            return tb;
+        },
+        onButtonEdit: function() {
+            Phx.vista.RegistroReclamos.superclass.onButtonEdit.call(this);
         }
 
     };

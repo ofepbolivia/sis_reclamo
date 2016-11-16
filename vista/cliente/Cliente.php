@@ -101,6 +101,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						gwidth: 100,
 						maxLength:10,
 						typeAhead:true,
+						forceSelection: true,
 						triggerAction:'all',
 						mode:'local',
 						store:['VARON','MUJER']
@@ -136,6 +137,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						gwidth: 100,
 						maxLength:10,
 						typeAhead:true,
+						forceSelection: true,
 						triggerAction:'all',
 						mode: 'local',
 						store:['CB','SC','LP','BN','CJ','TJ','OR','PT','CH', 'OTRO']
@@ -169,7 +171,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '100%',
 						gwidth: 100,
-						maxLength:8
+						maxLength:20
 					},
 					type:'NumberField',
 					filters:{pfiltro:'cli.celular',type:'numeric'},
@@ -184,10 +186,10 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '100%',
 						gwidth: 100,
-						maxLength:10
+						maxLength:20
 					},
-					type:'NumberField',
-					filters:{pfiltro:'cli.telefono',type:'numeric'},
+					type:'TextField',
+					filters:{pfiltro:'cli.telefono',type:'string'},
 					id_grupo:2,
 					grid:true,
 					form:true
@@ -211,11 +213,11 @@ header("content-type: text/javascript; charset=UTF-8");
 				{
 					config:{
 						name: 'direccion',
-						fieldLabel: 'Direccion',
+						fieldLabel: 'Direccion,   (Calle/Av./No.)',
 						allowBlank: false,
 						anchor: '100%',
 						gwidth: 100,
-						maxLength:100
+						maxLength:200
 					},
 					type:'TextArea',
 					filters:{pfiltro:'cli.direccion',type:'string'},
@@ -297,7 +299,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '100%',
 						gwidth: 100,
-						maxLength:50,
+						maxLength:200,
 						style:'text-transform:uppercase;'
 					},
 					type:'TextField',
@@ -477,7 +479,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'nombre', type: 'string'},
 				{name:'lugar_expedicion', type: 'string'},
 				{name:'apellido_paterno', type: 'string'},
-				{name:'telefono', type: 'numeric'},
+				{name:'telefono', type: 'string'},
 				{name:'ciudad_residencia', type: 'string'},
 				{name:'id_pais_residencia', type: 'numeric'},
 				{name:'nacionalidad', type: 'string'},

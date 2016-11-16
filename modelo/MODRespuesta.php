@@ -27,7 +27,7 @@ class MODRespuesta extends MODbase{
 		$this->captura('respuesta','varchar');
 		$this->captura('fecha_respuesta','date');
 		$this->captura('estado_reg','varchar');
-		$this->captura('procedente','boolean');
+		$this->captura('procedente','varchar');
 		$this->captura('fecha_notificacion','date');
 		$this->captura('id_usuario_ai','int4');
 		$this->captura('id_usuario_reg','int4');
@@ -68,7 +68,7 @@ class MODRespuesta extends MODbase{
 		$this->setParametro('respuesta','respuesta','varchar');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('procedente','procedente','boolean');
+		$this->setParametro('procedente','procedente','varchar');
 		$this->setParametro('fecha_notificacion','fecha_notificacion','date');
 
 		$this->setParametro('tipo_respuesta','tipo_respuesta','varchar');
@@ -95,7 +95,7 @@ class MODRespuesta extends MODbase{
 		$this->setParametro('respuesta','respuesta','varchar');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-		$this->setParametro('procedente','procedente','boolean');
+		$this->setParametro('procedente','procedente','varchar');
 		$this->setParametro('fecha_notificacion','fecha_notificacion','date');
 
 		$this->setParametro('tipo_respuesta','tipo_respuesta','varchar');
@@ -206,14 +206,7 @@ class MODRespuesta extends MODbase{
         $this->captura('respuesta','varchar');
         $this->captura('fecha_respuesta','date');
         $this->captura('estado_reg','varchar');
-        $this->captura('procedente','boolean');
         $this->captura('fecha_notificacion','date');
-        $this->captura('id_usuario_ai','int4');
-        $this->captura('id_usuario_reg','int4');
-        $this->captura('usuario_ai','varchar');
-        $this->captura('fecha_reg','timestamp');
-        $this->captura('fecha_mod','timestamp');
-        $this->captura('id_usuario_mod','int4');
         $this->captura('usr_reg','varchar');
         $this->captura('usr_mod','varchar');
         $this->captura('tipo_respuesta','varchar');
@@ -223,13 +216,13 @@ class MODRespuesta extends MODbase{
         $this->captura('id_estado_wf','int4');
         $this->captura('estado','varchar');
         $this->captura('nombre_completo1','text');
-        $this->captura('nombre','varchar');
+
         $this->captura('aprobador','text');
         $this->captura('cargo_aprobador','text');
-        $this->captura('desc_funcionario','text');
-        $this->captura('nombre_unidad','varchar');
+
         $this->captura('genero','varchar');
-        $this->captura('genero_apre','varchar');
+        $this->captura('gestion','int4');
+        $this->captura('prodedente','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -243,4 +236,3 @@ class MODRespuesta extends MODbase{
     }
 			
 }
-?>

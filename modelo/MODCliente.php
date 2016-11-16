@@ -29,7 +29,7 @@ class MODCliente extends MODbase{
 		$this->captura('nombre','varchar');
 		$this->captura('lugar_expedicion','varchar');
 		$this->captura('apellido_paterno','varchar');
-		$this->captura('telefono','int4');
+		$this->captura('telefono','varchar');
 		$this->captura('ciudad_residencia','varchar');
 		$this->captura('id_pais_residencia','int4');
 		$this->captura('nacionalidad','varchar');
@@ -154,5 +154,54 @@ class MODCliente extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}*/
+    // libro de reclamos
+
+	function getNombreCliente(){
+		$this->procedimiento='rec.ft_cliente_ime';
+		$this->transaccion='REC_NOMCLI_GET';
+		$this->tipo_procedimiento='IME';
+
+		$this->setParametro('id_cliente','id_cliente','int4');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+    function listarClienteLibro()
+    {
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_cliente_sel';
+        $this->transaccion='REC_RELIBRO_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        $this->setParametro('id_oficina_registro_incidente','id_oficina_registro_incidente','integer');
+        $this->setParametro('fecha_ini','fecha_ini','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setCount(false);
+
+        $this->captura('id_reclamo','int4');
+        $this->captura('nro_frd','varchar');
+        $this->captura('correlativo_preimpreso_frd','int4');
+        $this->captura('fecha_hora_incidente','timestamp');
+        $this->captura('fecha_hora_recepcion','timestamp');
+        $this->captura('fecha_hora_recepcion_sac','date');
+        $this->captura('detalle_incidente','text');
+        $this->captura('nombre','text');
+        $this->captura('celular','int4');
+        $this->captura('telefono','varchar');
+        $this->captura('nombre_incidente','varchar');
+        $this->captura('sub_incidente','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+
+
+    }
 }
 ?>

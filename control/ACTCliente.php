@@ -6,7 +6,7 @@
 *@date 12-08-2016 14:29:16
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
-
+require_once(dirname(__FILE__).'/../reportes/RLibroReclamoPDF.php');
 class ACTCliente extends ACTbase{    
 			
 	function listarCliente(){
@@ -50,6 +50,47 @@ class ACTCliente extends ACTbase{
 		
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+	function getNombreCliente(){
+		$this->objFunc=$this->create('MODCliente');
+		$this->res=$this->objFunc->getNombreCliente($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+    function libroReclamo(){
+
+       if ($this->objParam->getParametro('id_oficina_registro_incidente') == '') {
+            $this->objParam->addParametro('id_oficina_registro_incidente','-1');
+            //$this->objParam->addParametro('id_oficina_registro_incidente','TODOS');
+        }
+        $this->objParam->getParametro('fecha_ini');
+        $this->objParam->getParametro('fecha_fin');
+
+        $this->objFunc=$this->create('MODCliente');
+        $this->res=$this->objFunc->listarClienteLibro($this->objParam);
+        //obtener titulo del reporte
+
+        $titulo = 'Libro De Reclamo';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+        $nombreArchivo.='.pdf';
+        $this->objParam->addParametro('orientacion','L');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //Instancia la clase de pdf
+
+        $this->objReporteFormato=new RLibroReclamoPDF ($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos);
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
 }
 
 ?>

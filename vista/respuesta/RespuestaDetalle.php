@@ -38,7 +38,6 @@ header("content-type: text/javascript; charset=UTF-8");
             //this.load({params:{start:0, limit: 50}});
             this.finCons = true;
             //this.cmbGestion.on('select',this.capturarEventos, this);
-
             var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
             if(dataPadre){
                 this.onEnablePanel(this, dataPadre);
@@ -47,6 +46,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 this.bloquearMenus();
             }
+
+
         },/*
 
         cmbGestion: new Ext.form.ComboBox({
@@ -90,6 +91,7 @@ header("content-type: text/javascript; charset=UTF-8");
         
     loadValoresIniciales: function () {
         this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+        console.log('maestro: '+this.maestro.id_reclamo);
         Phx.vista.RespuestaDetalle.superclass.loadValoresIniciales.call(this);
 
     },
@@ -98,25 +100,28 @@ header("content-type: text/javascript; charset=UTF-8");
 
         var data = this.getSelectedData();
         var tb =this.tbar;
-
         Phx.vista.RespuestaDetalle.superclass.preparaMenu.call(this,n);
         this.getBoton('sig_estado').disable();
         this.getBoton('ant_estado').disable();
-        if (data['estado'] == 'elaboracion_respuesta'){
+
+        if (data['estado'] == 'elaboracion_respuesta' /*&& this.maestro.nombreVista!='RegistroReclamos'*/){
             this.getBoton('ant_estado').disable();
             this.getBoton('sig_estado').enable();
             this.getBoton('diagrama_gantt').enable();
             this.getBoton('btnObs').enable();
             this.getBoton('btnChequeoDocumentosWf').enable();
+            this.getBoton('del').enable();
         }else if(data['estado'] == 'revision_legal' || data['estado'] == 'vobo_respuesta' || data['estado'] == 'respuesta_aprobada'){
             this.getBoton('sig_estado').enable();
             this.getBoton('ant_estado').enable();
             this.getBoton('diagrama_gantt').enable();
             this.getBoton('btnObs').enable();
             this.getBoton('btnChequeoDocumentosWf').enable();
+            this.getBoton('del').disable();
         }else if(data['estado'] == 'respuesta_enviada'){
             this.getBoton('sig_estado').disable();
             this.getBoton('ant_estado').enable();
+            this.getBoton('del').disable();
         }
 
         return tb;
@@ -127,6 +132,7 @@ header("content-type: text/javascript; charset=UTF-8");
         if(tb){
             this.getBoton('diagrama_gantt').disable();
             this.getBoton('sig_estado').disable();
+            this.getBoton('ant_estado').disable();
             
             this.getBoton('btnObs').disable();
             this.getBoton('btnChequeoDocumentosWf').disable();
