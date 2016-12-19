@@ -14,6 +14,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			constructor:function(config){
 				this.maestro=config.maestro;
+				console.log('informe: '+config);
 				//llama al constructor de la clase padre
 				Phx.vista.Informe.superclass.constructor.call(this,config);
 				//this.grid.getTopToolbar().disable();
@@ -50,7 +51,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						fieldLabel: 'Nro. de Informe',
 						allowBlank: true,
 						anchor: '50%',
-						gwidth: 100,
+						gwidth: 150,
 						maxLength:20,
 						readOnly:true,
 						renderer: function(value,p,record) {
@@ -82,7 +83,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				{
 					config: {
-						id: 'id_funcionario',
+
 						name: 'id_funcionario',
 						fieldLabel: 'Funcionario Informe',
 						allowBlank: false,
@@ -112,7 +113,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						pageSize: 15,
 						queryDelay: 1000,
 						anchor: '50%',
-						gwidth: 100,
+						gwidth: 200,
 						minChars: 2,
 						renderer: function (value, p, record) {
 							return String.format('{0}', record.data['desc_fun']);
@@ -155,7 +156,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						pageSize: 15,
 						queryDelay: 1000,
 						anchor: '50%',
-						gwidth: 500,
+						gwidth: 300,
 						minChars: 2,
 						enableMultiSelect: true,
 						renderer: function (value, p, record) {
@@ -351,7 +352,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'id_usuario_mod', type: 'numeric'},
 				{name:'usr_reg', type: 'string'},
 				
-				{name:'desc_nombre_compensacion', type: 'string'},
+				//{name:'desc_nombre_compensacion', type: 'string'},
 				{name:'desc_fun', type: 'string'},
 				{name:'lista', type: 'string'}
 			],
@@ -370,18 +371,15 @@ header("content-type: text/javascript; charset=UTF-8");
 				Phx.vista.Informe.superclass.onButtonNew.call(this);
 				this.Cmp.nro_informe.setValue(this.maestro.nro_tramite);
 				this.Cmp.fecha_informe.setValue(new Date());
+
 				Ext.Ajax.request({
-					url:'../../sis_reclamo/control/Reclamo/getNombreFun',
-					params:{id_funcionario:this.maestro.id_funcionario_recepcion},
+					url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
+					params:{id_usuario: 0},
 					success:function(resp){
 						var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-						var fun = reg.ROOT.datos.id_funcionario;
-						console.log('funcionario: '+fun);
-						console.log('id_funcionario: '+this.maestro.id_funcionario_recepcion);
 
-
-						Ext.getCmp('id_funcionario').setValue(this.maestro.id_funcionario_recepcion);
-						Ext.getCmp('id_funcionario').setRawValue(fun);
+						this.Cmp.id_funcionario.setValue(reg.ROOT.datos.id_funcionario);;
+						this.Cmp.id_funcionario.setRawValue(reg.ROOT.datos.desc_funcionario1);
 					},
 					failure: this.conexionFailure,
 					timeout:this.timeout,
@@ -403,8 +401,16 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 
 		preparaMenu:function(n){
+			//console.log('preparaMenu');
 			Phx.vista.Informe.superclass.preparaMenu.call(this,n);
-			
+			if(this.maestro.estado ==  'pendiente_revision'||this.maestro.estado == 'registrado_ripat'||this.maestro.estado ==  'derivado'){
+				this.getBoton('del').disable();
+			}else if(this.maestro.estado ==  'anulado'){
+				this.getBoton('new').disable();
+				this.getBoton('edit').disable();
+				this.getBoton('del').disable();
+			}
+
 			/*var padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
 
 			if(this.maestro.estado ==  'borrador' || (padre == 'ObligacionPagoVb' && this.maestro.estado ==  'vbpresupuestos')){
@@ -436,6 +442,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 
 		liberaMenu: function() {
+			//console.log('libera Menu');
 			Phx.vista.Informe.superclass.liberaMenu.call(this);
 			/*this.getBoton('btnProrrateo').enable();
 			if(this.maestro&&(this.maestro.estado !=  'borrador')){

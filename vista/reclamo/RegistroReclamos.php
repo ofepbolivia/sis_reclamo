@@ -16,8 +16,14 @@ header("content-type: text/javascript; charset=UTF-8");
         nombreVista: 'RegistroReclamos',
         //layoutType: 'wizard',
         constructor: function(config) {
+            this.maestro=config.maestro;
+            this.mycls = config.mycls;
+            this.Atributos.splice(3,1);
             Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
             //this.store.baseParams.func_estado = 'oficina';
+            console.log('padre: '+this.mycls);
+            console.log('maestro: '+JSON.stringify(config));
+            //this.padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
         },
         gruposBarraTareas:[
             {name:'borrador',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borradores</h1>',grupo:0,height:0, width: 100},
@@ -46,6 +52,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         enableTabRespuesta:function(){
             if(this.TabPanelSouth.get(0)){
+                //console.debug('uno: '+this.TabPanelSouth.get(0));
                 this.TabPanelSouth.get(0).enable();
                 this.TabPanelSouth.setActiveTab(0);
             }
@@ -53,7 +60,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         disableTabRespuesta:function(){
             if(this.TabPanelSouth.get(0)){
-
+                //console.log('dos: '+Ext.util.JSON.decode(this.TabPanelSouth.get(0)));
                 this.TabPanelSouth.get(0).disable();
                 //this.TabPanelSouth.setActiveTab(0)
             }
@@ -61,15 +68,19 @@ header("content-type: text/javascript; charset=UTF-8");
         preparaMenu:function(n){
             var data = this.getSelectedData();
             var tb =this.tbar;
-
+            console.log('registro_1:'+data);
+            console.log('registro_2:'+JSON.stringify(data));
             Phx.vista.RegistroReclamos.superclass.preparaMenu.call(this,n);
             //habilitar reporte de colicitud de comrpa y preorden de compra
+            //var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
 
+
+            //console.log('papa: '+this.padre);
             if(data['estado']==  'borrador'){
                 this.getBoton('sig_estado').enable();
                 this.disableTabRespuesta();
 
-            }else if(data['estado']==  'pendiente_revision'){
+            }else if(data['estado']==  'pendiente_revision' /*&& this.mycls == 'RegistroReclamos'*/){
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').disable();
                 this.enableTabRespuesta();

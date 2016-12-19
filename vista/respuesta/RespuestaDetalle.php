@@ -118,9 +118,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('btnObs').enable();
             this.getBoton('btnChequeoDocumentosWf').enable();
             this.getBoton('del').disable();
-        }else if(data['estado'] == 'respuesta_enviada'){
+        }else if(data['estado'] == 'respuesta_enviada' ){
             this.getBoton('sig_estado').disable();
-            this.getBoton('ant_estado').enable();
+            if(this.maestro.estado == 'archivo_con_respuesta') {
+                this.getBoton('ant_estado').disable();
+                this.getBoton('edit').disable();
+                this.getBoton('new').disable();
+            }else{
+                this.getBoton('ant_estado').enable();
+            }
             this.getBoton('del').disable();
         }
 
@@ -133,7 +139,9 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('diagrama_gantt').disable();
             this.getBoton('sig_estado').disable();
             this.getBoton('ant_estado').disable();
-            
+            if(this.maestro.estado == 'archivo_con_respuesta') {
+                this.getBoton('new').disable();
+            }
             this.getBoton('btnObs').disable();
             this.getBoton('btnChequeoDocumentosWf').disable();
         }

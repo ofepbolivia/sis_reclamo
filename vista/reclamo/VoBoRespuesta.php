@@ -92,6 +92,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             var tb =this.tbar;
             Phx.vista.VoBoRespuesta.superclass.preparaMenu.call(this,n);
+            
 
             if(data.estado =='revision_legal' || data.estado =='vobo_respuesta' ){
 

@@ -23,8 +23,35 @@ class ACTReclamo extends ACTbase{
 			$this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
 
 		}
-		/*var_dump($this->objParam->getParametro('func_estado'));
-		exit();*/
+
+		/*if($this->objParam->getParametro('estado')!=''){
+			$this->objParam->addFiltro("rec.estado = " . $this->objParam->getParametro('estado'));
+		}*/
+		//crmg
+		if($this->objParam->getParametro('nro_tramite')!=''){
+			$this->objParam->addFiltro("rec.nro_tramite ilike ''%".$this->objParam->getParametro('nro_tramite')."%''");
+		}
+
+		if($this->objParam->getParametro('desde')!='' && $this->objParam->getParametro('hasta')!=''){
+			$this->objParam->addFiltro("(rec.fecha_reg::date  BETWEEN ''%".$this->objParam->getParametro('desde')."%''::date  and ''%".$this->objParam->getParametro('hasta')."%''::date)");
+		}
+
+		if($this->objParam->getParametro('desde')!='' && $this->objParam->getParametro('hasta')==''){
+			$this->objParam->addFiltro("(rec.fecha_reg::date  >= ''%".$this->objParam->getParametro('desde')."%''::date)");
+		}
+
+		if($this->objParam->getParametro('desde')=='' && $this->objParam->getParametro('hasta')!=''){
+			$this->objParam->addFiltro("(rec.fecha_reg::date  <= ''%".$this->objParam->getParametro('hasta')."%''::date)");
+		}
+
+		if($this->objParam->getParametro('id_tipo_incidente')!=''){
+			$this->objParam->addFiltro("rec.id_tipo_incidente = ". $this->objParam->getParametro('id_tipo_incidente'));
+		}
+		if($this->objParam->getParametro('id_subtipo_incidente')!=''){
+			$this->objParam->addFiltro("rec.id_subtipo_incidente = ". $this->objParam->getParametro('id_subtipo_incidente'));
+		}
+		//crmg
+
 		switch($this->objParam->getParametro('pes_estado')){
 			case 'borrador':
 				$this->objParam->addFiltro("rec.estado = "."''borrador''");
@@ -44,6 +71,9 @@ class ACTReclamo extends ACTbase{
 			case 'anulado':
 				$this->objParam->addFiltro("rec.estado in (''anulado'')");
 				break;
+			case 'pendiente_asignacion':
+				$this->objParam->addFiltro("rec.estado in (''pendiente_asignacion'')");
+				break;
 			case 'pendiente_respuesta':
 				$this->objParam->addFiltro("rec.estado in (''pendiente_respuesta'')");
 				break;
@@ -60,22 +90,22 @@ class ACTReclamo extends ACTbase{
 				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
 				break;
 			case 'en_avenimiento':
-				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				$this->objParam->addFiltro("rec.estado in (''en_avenimiento'')");
 				break;
 			case 'formulacion_cargos':
-				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				$this->objParam->addFiltro("rec.estado in (''formulacion_cargos'')");
 				break;
 			case 'resolucion_administrativa':
-				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				$this->objParam->addFiltro("rec.estado in (''resolucion_administrativa'')");
 				break;
 			case 'recurso_revocatorio':
-				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				$this->objParam->addFiltro("rec.estado in (''recurso_revocatorio'')");
 				break;
 			case 'recurso_jerarquico':
-				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				$this->objParam->addFiltro("rec.estado in (''recurso_jerarquico'')");
 				break;
 			case 'contencioso_administrativo':
-				$this->objParam->addFiltro("rec.estado in (''vobo_respuesta'')");
+				$this->objParam->addFiltro("rec.estado in (''contencioso_administrativo'')");
 				break;
 		}
 
@@ -90,6 +120,45 @@ class ACTReclamo extends ACTbase{
             $this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
+	function listarCRMGlobal(){
+		$this->objParam->defecto('ordenacion','id_reclamo');
+		$this->objParam->defecto('dir_ordenacion','asc');
+
+		if($this->objParam->getParametro('id_reclamo') != '' ) {
+			$this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+		}
+
+		if ($this->objParam->getParametro('id_gestion') != '') {
+
+			$this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
+
+		}
+
+		if($this->objParam->getParametro('nro_tramite')!=''){
+			$this->objParam->addFiltro("rec.nro_tramite ilike ''%".$this->objParam->getParametro('nro_tramite')."%''");
+		}
+
+		if($this->objParam->getParametro('desde')!='' && $this->objParam->getParametro('hasta')!=''){
+			$this->objParam->addFiltro("(rec.fecha_reg::date  BETWEEN ''%".$this->objParam->getParametro('desde')."%''::date  and ''%".$this->objParam->getParametro('hasta')."%''::date)");
+		}
+
+		if($this->objParam->getParametro('desde')!='' && $this->objParam->getParametro('hasta')==''){
+			$this->objParam->addFiltro("(rec.fecha_reg::date  >= ''%".$this->objParam->getParametro('desde')."%''::date)");
+		}
+
+		if($this->objParam->getParametro('desde')=='' && $this->objParam->getParametro('hasta')!=''){
+			$this->objParam->addFiltro("(rec.fecha_reg::date  <= ''%".$this->objParam->getParametro('hasta')."%''::date)");
+		}
+		
+		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODReclamo','listarCRMGlobal');
+		}else {
+			$this->objFunc = $this->create('MODReclamo');
+			$this->res = $this->objFunc->listarCRMGlobal($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 
 	function insertarReclamo(){
 		$this->objFunc=$this->create('MODReclamo');
@@ -134,6 +203,12 @@ class ACTReclamo extends ACTbase{
 	function getNombreFun(){
 		$this->objFunc=$this->create('MODReclamo');
 		$this->res=$this->objFunc->getNombreFun($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function getDatosOficina(){
+		$this->objFunc=$this->create('MODReclamo');
+		$this->res=$this->objFunc->getDatosOficina($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 

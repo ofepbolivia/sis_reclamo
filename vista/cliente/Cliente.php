@@ -42,14 +42,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '100%',
 						gwidth: 150,
 						maxLength:50,
-						style:'text-transform:uppercase;'/*,
-						 turl:'../../../sis_reclamo/vista/cliente/Cliente.php',
-						 ttitle:'Clientes',
-						 // tconfig:{width:1800,height:500},
-						 tdata:{},
-						 tcls:'Cliente',
-						 pid:this.idContenedor,
-						 renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}*/
+						style:'text-transform:uppercase;'
 					},
 					type:'TextField',
 					filters:{pfiltro:'cli.nombre',type:'string'},

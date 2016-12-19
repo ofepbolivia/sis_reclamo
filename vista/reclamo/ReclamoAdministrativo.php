@@ -88,7 +88,9 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb =this.tbar;
             Phx.vista.ReclamoAdministrativo.superclass.preparaMenu.call(this,n);
 
-            if(data.estado =='pendiente_revision' || data.estado =='registrado_ripat' || data.estado =='derivado'){
+            if(data.estado == 'en_avenimiento' || data.estado == 'formulacion_cargos'
+                || data.estado == 'resolucion_administrativa' || data.estado == 'recurso_revocatorio'
+                || data.estado == 'recurso_jerarquico' || data.estado == 'contencioso_administrativo'){
 
                 this.getBoton('ant_estado').enable();
                 this.getBoton('sig_estado').enable();

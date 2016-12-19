@@ -1,5 +1,4 @@
 <?php
-
 class RReclamoPDF extends  ReportePDF{
     var $datos ;
     var $ancho_hoja;
@@ -180,7 +179,7 @@ class RReclamoPDF extends  ReportePDF{
         $this->SetFontSize(9);
         $this->SetFont( '','');;
         //$this->Cell($width3, $height, $this->datos[0]["detalle_incidente"],'B',1,'L');
-        $this->MultiCell($width4*2, $height, $this->datos[0]["detalle_incidente"],"\n",'l', 0, '' ,'');
+        $this->MultiCell($width4*2, $height, $this->datos[0]["detalle_incidente"]."\n",'l', 0, '' ,'');
         $this->Ln();
         $this->SetFontSize(11);
         $this->SetFont('', 'B');
@@ -191,7 +190,7 @@ class RReclamoPDF extends  ReportePDF{
         $this->SetFontSize(9);
         $this->SetFont('', '');
         //$this->Cell($width3, $height, $this->datos[0]["observaciones_incidente"],'B',1,'L');
-        $this->MultiCell($width4*2, $height, $this->datos[0]["observaciones_incidente"],"\n",'l', 0, '' ,'');
+        $this->MultiCell($width4*2, $height, $this->datos[0]["observaciones_incidente"]."\n",'l', 0, '' ,'');
         $this->Ln();
 
         $this->SetFontSize(11);
@@ -236,6 +235,8 @@ class RReclamoPDF extends  ReportePDF{
         $this->Cell($width3+$width2-10, $height, $this->datos[0]["desc_nombre_medio"], $white, 0, 'L', false, '', 0, false, 'T', 'C');
         $this->SetFont('', 'B');
         $this->ln();
+
+
 
     }
 

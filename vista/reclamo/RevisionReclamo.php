@@ -31,14 +31,79 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
-        beditGroups: [0],
+        beditGroups: [0,1],
         bdelGroups:  [0],
         bactGroups:  [0,1,2,3],
         btestGroups: [0],
         bexcelGroups: [0,1,2,3],
 
         constructor: function(config) {
+            this.Atributos.splice(5,1);
+            /*this.Atributos.splice(this.Atributos.length,0,{
+                config: {
+                    name: 'id_motivo_anulado',
+                    fieldLabel: 'Motivo Anulado',
+                    allowBlank: false,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_reclamo/control/MotivoAnulado/listarMotivoAnulado',
+                        id: 'id_motivo_anulado',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'motivo',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_motivo_anulado','motivo'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 'ma.motivo'}
+                    }),
+                    valueField: 'id_motivo_anulado',
+                    displayField: 'motivo',
+                    gdisplayField: 'motivo_anulado',
+                    hiddenName: 'id_motivo_anulado',
+                    forceSelection: true,
+                    typeAhead: false,
+                    editable: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    anchor: '100%',
+                    gwidth: 150,
+                    minChars: 2,
+                    resizable:true,
+                    listWidth:'240',
+                    
+                    renderer: function (value, p, record) {
+                        return String.format('{0}', record.data['motivo_anulado']);
+                    }
+                },
+                type: 'ComboBox',
+                id_grupo: 5,
+                filters: {pfiltro: 'ma.motivo', type: 'string'},
+                grid: true,
+                form: true
+            });
+            this.fields.push({name: 'motivo', type: 'string'});
+            this.fields.push({name: 'motivo_anulado', type: 'string'});
+            this.fields.push({name: 'id_motivo_anulado', type: 'numeric'});*/
+            this.Grupos.push({
+                bodyStyle: 'padding-right:10px;',
+                items: [
+                    {
 
+                        xtype: 'fieldset',
+                        title: 'MOTIVO DE ANULACIÓN',
+                        autoHeight: true,
+                        items: [],
+                        id_grupo: 5
+                    }
+                ]
+            });
+            this.fwidth= '65%',
+            this.fheight = '99%',
             Phx.vista.RevisionReclamo.superclass.constructor.call(this,config);
             this.getBoton('ant_estado').setVisible(true);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
@@ -48,7 +113,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.finCons = true;
 
         },
-        
         onCloseDocuments: function(paneldoc, data, directo){
             var newrec = this.store.getById(data.id_solicitud);
             if(newrec){

@@ -175,12 +175,12 @@ class MODRespuesta extends MODbase{
 		return $this->respuesta;
 	}
 
-	function getDiasRespuesta(){
+	function getCite(){
 		$this->procedimiento='rec.ft_respuesta_ime';
-		$this->transaccion='REC_DIASRES_GET';
+		$this->transaccion='REC_CITE_GET';
 		$this->tipo_procedimiento='IME';
 
-		$this->setParametro('id_tipo_incidente','id_tipo_incidente','int4');
+		$this->setParametro('num_cite','num_cite','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -202,27 +202,45 @@ class MODRespuesta extends MODbase{
         $this->captura('id_respuesta','int4');
         $this->captura('id_reclamo','int4');
         $this->captura('recomendaciones','varchar');
-        $this->captura('nro_cite','varchar');
+        $this->captura('num_cite','text');
         $this->captura('respuesta','varchar');
-        $this->captura('fecha_respuesta','date');
-        $this->captura('estado_reg','varchar');
+        $this->captura('fecha_respuesta','text');
         $this->captura('fecha_notificacion','date');
-        $this->captura('usr_reg','varchar');
-        $this->captura('usr_mod','varchar');
         $this->captura('tipo_respuesta','varchar');
         $this->captura('asunto','varchar');
         $this->captura('nro_tramite','varchar');
-        $this->captura('id_proceso_wf','int4');
-        $this->captura('id_estado_wf','int4');
         $this->captura('estado','varchar');
         $this->captura('nombre_completo1','text');
-
-        $this->captura('aprobador','text');
-        $this->captura('cargo_aprobador','text');
-
         $this->captura('genero','varchar');
-        $this->captura('gestion','int4');
+        // $this->captura('gestion','int4');
         $this->captura('prodedente','varchar');
+        $this->captura('nombre_estado','varchar');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+
+    }
+    function listarDatosQRRespuesta(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_respuesta_sel';
+        $this->transaccion='REC_RES_QR_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        //Definicion de la lista del resultado del query
+        $this->setCount(false);
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+
+        $this->captura('id_proceso_wf','int4');
+        $this->captura('id_respuesta','int4');
+        $this->captura('num_cite','text');
+        $this->captura('nro_frd','varchar');
+        $this->captura('oficina','varchar');
+        $this->captura('estado','varchar');
+        $this->captura('iniciales_fun_reg','text');
+        $this->captura('iniciales_fun_vis','text');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

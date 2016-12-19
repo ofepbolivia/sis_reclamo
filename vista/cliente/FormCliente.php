@@ -15,12 +15,11 @@ header("content-type: text/javascript; charset=UTF-8");
         layout: 'fit',
         breset: false,
         bcancel: true,
+        dedo: 'dedo',
         autoScroll: false,
         labelSubmit: '<i class="fa fa-check"></i> Guardar',
         constructor:function(config){
-
-            this.addEvents('beforesave');
-            this.addEvents('successsave');
+            console.log(config);
             Phx.vista.FormCliente.superclass.constructor.call(this,config);
             this.init();
             this.loadValoresIniciales();
@@ -46,14 +45,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '100%',
                     gwidth: 150,
                     maxLength:50,
-                    style:'text-transform:uppercase;'/*,
-                     turl:'../../../sis_reclamo/vista/cliente/Cliente.php',
-                     ttitle:'Clientes',
-                     // tconfig:{width:1800,height:500},
-                     tdata:{},
-                     tcls:'Cliente',
-                     pid:this.idContenedor,
-                     renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}*/
+                    style:'text-transform:uppercase; white-space: pre-line;',
+                    /*regex:/^\s+|\s+$/g,
+                    maskRe: /\s/g*/
                 },
                 type:'TextField',
                 filters:{pfiltro:'cli.nombre',type:'string'},
@@ -70,7 +64,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '100%',
                     gwidth: 150,
                     maxLength:30,
-                    style:'text-transform:uppercase;'
+                    style:'text-transform:uppercase; white-space: pre-line;',
+                    /*regex:/^\s+|\s+$/g,
+                    maskRe: /\s/g*/
                 },
                 type:'TextField',
                 filters:{pfiltro:'cli.apellido_paterno',type:'string'},
@@ -87,7 +83,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '100%',
                     gwidth: 100,
                     maxLength:30,
-                    style:'text-transform:uppercase;'
+                    style:'text-transform:uppercase; white-space: pre-line;',
+                    /*regex:/^\s+|\s+$/g,
+                    maskRe: /\s/g*/
                 },
                 type:'TextField',
                 filters:{pfiltro:'cli.apellido_materno',type:'string'},
@@ -136,7 +134,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'lugar_expedicion',
                     fieldLabel: 'Lugar de Expedición',
-                    allowBlank: false,
+                    allowBlank: true,
                     anchor: '100%',
                     gwidth: 100,
                     maxLength:10,
@@ -156,7 +154,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'nacionalidad',
                     fieldLabel: 'Nacionalidad',
-                    allowBlank: false,
+                    allowBlank: true,
                     anchor: '100%',
                     gwidth: 100,
                     maxLength:30,
@@ -218,7 +216,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'direccion',
                     fieldLabel: 'Direccion,   (Calle/Av./No.)',
-                    allowBlank: false,
+                    allowBlank: true,
                     anchor: '100%',
                     gwidth: 100,
                     maxLength:200
@@ -318,7 +316,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'estado_reg',
                     fieldLabel: 'Estado Reg.',
                     allowBlank: true,
-                    anchor: '80%',
+                    anchor: '100%',
                     gwidth: 100,
                     maxLength:10
                 },
@@ -422,16 +420,22 @@ header("content-type: text/javascript; charset=UTF-8");
             }
         ],
         title:'Clientes',
-        
+
         /*loadValoresIniciales:function()
         {
             Phx.vista.FormCliente.superclass.loadValoresIniciales.call(this);
         },*/
         onSubmit:function(o){
             //TODO passar los datos obtenidos del wizard y pasar  el evento save
-            if (this.form.getForm().isValid()) {
+            
+            
+            /*if (this.form.getForm().isValid()) {
                 this.fireEvent('beforesave', this, this.getValues());
-            }
+            }*/
+
+            this.Cmp.nombre.setValue((this.Cmp.nombre.getValue()).trim());
+            this.Cmp.apellido_paterno.setValue((this.Cmp.apellido_paterno.getValue()).trim());
+            this.Cmp.apellido_materno.setValue((this.Cmp.apellido_materno.getValue()).trim());
             Phx.vista.FormCliente.superclass.onSubmit.call(this,o);
         },
 
@@ -439,37 +443,34 @@ header("content-type: text/javascript; charset=UTF-8");
         successSave:function(resp)
         {
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            //alert(reg.ROOT.datos.completo);
-            /*console.log('1: '+reg.ROOT.datos.id_cliente);
-            console.log('1: '+reg.ROOT.datos.nombre);
-            console.log('1: '+reg.ROOT.apellido_paterno);
-            console.log('1: '+reg.ROOT.datos.apellido_materno);
-            console.log('1: '+reg.ROOT.datos.id_pais_residencia);
-            console.log('1: '+reg.ROOT.datos.genero);*/
-            Ext.getCmp('id_cliente').setValue(reg.ROOT.datos.id_cliente);
-            Ext.Ajax.request({
+            Phx.CP.getPagina(this.idContenedorPadre).cargarCliente(reg.ROOT.datos.id_cliente, this.Cmp.apellido_paterno.getValue() +
+                                                                    ' ' + this.Cmp.apellido_materno.getValue() +
+                                                                    ' ' + this.Cmp.nombre.getValue());
+            /*Ext.Ajax.request({
                 url:'../../sis_reclamo/control/Cliente/getNombreCliente',
                 params:{id_cliente: reg.ROOT.datos.id_cliente},
                 success:this.successName,
                 failure: this.conexionFailure,
                 timeout:this.timeout,
                 scope:this
-            });
+            });*/
 
-            /*console.log('papa: '+Phx.CP.getPagina(this.idContenedorPadre));
-            (Phx.CP.getPagina(this.idContenedorPadre)).Cmp.id_cliente.setValue(reg.ROOT.datos.id_cliente);*/
+
             Phx.CP.loadingHide();
             //Phx.CP.getPagina(this.idContenedorPadre).reload();
             this.close();
             this.onDestroy();
+
+
         },
 
         successName: function(resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             console.log('nombre: '+reg.ROOT.datos.nombre_completo1);
 
-            Ext.getCmp('id_cliente').setRawValue(reg.ROOT.datos.nombre_completo1);
+            //Ext.getCmp('id_cliente').setRawValue(reg.ROOT.datos.nombre_completo1);
         },
+
         getValues:function(){
             var resp = {
                 nombre: this.Cmp.nombre.getValue(),
@@ -486,7 +487,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_pais_residencia: this.Cmp.id_pais_residencia.getValue(),
                 ciudad_residencia: this.Cmp.ciudad_residencia.getValue(),
                 barrio_zona: this.Cmp.barrio_zona.getValue()
-
             };
             return resp;
         }

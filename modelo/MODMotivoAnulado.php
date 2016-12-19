@@ -21,7 +21,7 @@ class MODMotivoAnulado extends MODbase{
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_motivo_anulado','int4');
-		$this->captura('descripcion_motivo','varchar');
+		$this->captura('motivo','varchar');
 		$this->captura('orden','numeric');
 		$this->captura('estado_reg','varchar');
 		$this->captura('fecha_reg','timestamp');
@@ -49,7 +49,7 @@ class MODMotivoAnulado extends MODbase{
 		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
-		$this->setParametro('descripcion_motivo','descripcion_motivo','varchar');
+		$this->setParametro('motivo','motivo','varchar');
 		$this->setParametro('orden','orden','numeric');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 
@@ -69,7 +69,7 @@ class MODMotivoAnulado extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_motivo_anulado','id_motivo_anulado','int4');
-		$this->setParametro('descripcion_motivo','descripcion_motivo','varchar');
+		$this->setParametro('motivo','motivo','varchar');
 		$this->setParametro('orden','orden','numeric');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 

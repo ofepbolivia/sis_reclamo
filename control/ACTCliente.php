@@ -7,6 +7,7 @@
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 require_once(dirname(__FILE__).'/../reportes/RLibroReclamoPDF.php');
+
 class ACTCliente extends ACTbase{    
 			
 	function listarCliente(){

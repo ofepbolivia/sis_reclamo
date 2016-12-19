@@ -19,9 +19,10 @@ header("content-type: text/javascript; charset=UTF-8");
         bdel:false,
         gruposBarraTareas:[
 
-            {name:'pendiente_respuesta',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Pendientes Resp.</h1>',grupo:0,height:0},
-            {name:'archivo_con_respuesta',title:'<H1 align="center"><i class="fa fa-sitemap"></i>Archivo con Resp.</h1>',grupo:1,height:0},
-            {name:'archivado_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Archivado/Concl.</h1>',grupo:2,height:0}
+            {name:'pendiente_asignacion',title:'<H1 align="center"><i class="fa fa-list-ol"></i> Pendientes Asig.</h1>',grupo:0,height:0},
+            {name:'pendiente_respuesta',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Pendientes Resp.</h1>',grupo:1,height:0},
+            {name:'archivo_con_respuesta',title:'<H1 align="center"><i class="fa fa-sitemap"></i>Archivo con Resp.</h1>',grupo:2,height:0},
+            {name:'archivado_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Archivado/Concl.</h1>',grupo:3,height:0}
         ],
 
         actualizarSegunTab: function(name, indice){
@@ -30,21 +31,26 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
-        beditGroups: [0],
-        bdelGroups:  [0],
-        bactGroups:  [0,1,2],
-        btestGroups: [0],
-        bexcelGroups: [0,1,2],
+        beditGroups: [0,1],
+        bdelGroups:  [0,1],
+        bactGroups:  [0,1,2,3],
+        btestGroups: [0,1],
+        bexcelGroups: [0,1,2,3],
 
         constructor: function(config) {
             this.maestro=config.maestro;
+           
+
+            this.Atributos.splice(5,1);
+            //this.Atributos.splice(3,0,);
+
             this.Atributos.unshift({
                 config:{
                     name: 'revisado',
-                    fieldLabel: 'Revisado',
+                    fieldLabel: 'Con Respuesta',
                     allowBlank: true,
                     anchor: '80%',
-                    gwidth: 60,
+                    gwidth: 100,
                     renderer:function (value, p, record){
                         if(record.data['revisado'] == 'si')
                             return  String.format('{0}',"<div style='text-align:center'><img title='Revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
@@ -62,8 +68,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('ant_estado').setVisible(true);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             //primera carga
-            this.store.baseParams.pes_estado = 'pendiente_respuesta';
-            this.load({params:{start:0, limit:this.tam_pag}});
+            this.store.baseParams.pes_estado = 'pendiente_asignacion';
+            this.load({params:{start:0, limit:50}});
             this.finCons = true;
 
             /*Ext.Ajax.request({
@@ -85,16 +91,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Generar Reporte</b>'
             });
 
-            this.addButton('btnRev', {
-                grupo: [0,1],
+            /*this.addButton('btnRev', {
+                grupo: [0],
                 text : 'Revisado',
                 iconCls : 'bball_green',
                 disabled : true,
                 handler : this.cambiarRev,
                 tooltip : '<b>Revisado</b><br/>Sirve como un indicador de que la documentacion fue revisada por el asistente'
-            });
+            });*/
         },
-        cambiarRev:function(){
+        /*cambiarRev:function(){
             Phx.CP.loadingShow();
             var d = this.sm.getSelected().data;
             Ext.Ajax.request({
@@ -113,31 +119,8 @@ header("content-type: text/javascript; charset=UTF-8");
             if(!reg.ROOT.error){
                 this.reload();
             }
-        },
-
-        /*Atributos:[
-            {
-                config:{
-                    name: 'revisado',
-                    fieldLabel: 'Revisado',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 50,
-                    renderer:function (value, p, record){
-                        if(record.data['revisado'] == 'si')
-                            return  String.format('{0}',"<div style='text-align:center'><img title='Revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
-                        else
-                            return  String.format('{0}',"<div style='text-align:center'><img title='No revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_white.png' align='center' width='24' height='24'/></div>");
-                    },
-                },
-                type:'Checkbox',
-                filters:{pfiltro:'rec.revisado',type:'string'},
-                id_grupo:1,
-                grid:false,
-                form:false
-            }
-        ],*/
-
+        },*/
+        
         reportes: function(){
             Phx.CP.loadingShow();
             Ext.Ajax.request({
@@ -163,7 +146,7 @@ header("content-type: text/javascript; charset=UTF-8");
             console.log('Transaccion Exitosa...'+reg.ROOT.datos);
         },
 
-        fin_registro:function(paneldoc)
+        /*fin_registro:function(paneldoc)
         {
             var d= this.sm.getSelected().data;
 
@@ -184,7 +167,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope: this
             });
         },
-
         successSinc:function(resp){
 
             Phx.CP.loadingHide();
@@ -201,7 +183,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
 
 
-        },
+        },*/
 
         enableTabRespuesta:function(){
             if(this.TabPanelSouth.get(1)){
@@ -222,20 +204,33 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb =this.tbar;
             Phx.vista.PendienteRespuesta.superclass.preparaMenu.call(this,n);
 
-            if(data.estado =='pendiente_respuesta' || data.estado =='archivo_con_respuesta' || data.estado == 'archivado_concluido' ){
-
+            if(data.estado =='pendiente_asignacion'){
+                this.disableTabRespuesta();
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+            }else if(data.estado =='pendiente_respuesta'){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ant_estado').disable();
+                this.enableTabRespuesta();
             }
-            if(data['revisado_asistente']== 'si'){
+            else if(data.estado =='archivo_con_respuesta' ){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ant_estado').disable();
+                this.enableTabRespuesta();
+            }else if(data.estado == 'archivado_concluido'){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ant_estado').disable();
+                this.enableTabRespuesta();
+            }
+            /*if(data['revisado_asistente']== 'si'){
                 this.getBoton('btnRev').setIconClass('bball_white')
             }
             else{
                 this.getBoton('btnRev').setIconClass('bball_green')
-            }
-            this.getBoton('btnRev').setVisible(true);
-            this.getBoton('btnRev').enable();
-            this.enableTabRespuesta();
+            }*/
+            //this.getBoton('btnRev').setVisible(true);
+            //this.getBoton('btnRev').enable();
+
             return tb
         },
         liberaMenu:function(){
@@ -245,7 +240,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('sig_estado').disable();
 
             }
-            this.getBoton('btnRev').disable();
+            //this.getBoton('btnRev').disable();
             this.disableTabRespuesta();
             return tb
         },

@@ -15,11 +15,14 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	nombreVista: 'Respuesta',
 	constructor: function (config) {
 		this.maestro = config.maestro;
+		console.log('contenedor: '+this.idContenedorPadre);
 		//llama al constructor de la clase padre
 		Phx.vista.Respuesta.superclass.constructor.call(this, config);
+		//this.setAutoScroll(false);
+
 		this.init();
 		this.store.baseParams.pes_estado = 'elaboracion_respuesta';
-		
+		this.iniciarEventos();
 		this.addButton('ant_estado',{
 			grupo: [0,1,2,3],
 			argument: {estado: 'anterior'},
@@ -109,7 +112,10 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 200,
-				maxLength:100
+				maxLength:100,
+				renderer: function(value,p,record) {
+					return String.format('<b><font color="green">{0}</font></b>', value);
+				}
 			},
 			type:'TextField',
 			filters:{pfiltro:'res.nro_respuesta',type:'string'},
@@ -138,7 +144,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				name: 'fecha_respuesta',
 				fieldLabel: 'Fecha Respuesta',
 				allowBlank: false,
-				anchor: '50%',
+				anchor: '40%',
 				gwidth: 100,
 
 
@@ -160,10 +166,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				/*regex: '/[A-Z]/',
 				regexText: "<b>Error</b></br>Invalid Number entered.",*/
-				anchor: '50%',
+				anchor: '40%',
 				gwidth: 150,
 				maxLength: 50,
 				style:'text-transform:uppercase;'
+
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'res.nro_cite', type: 'string'},
@@ -176,7 +183,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				name: 'asunto',
 				fieldLabel: 'Referencia / Asunto',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 200,
 				maxLength: 100000
 			},
@@ -187,6 +194,26 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			form: true
 		},
 		{
+			config:{
+				name: 'respuesta',
+				fieldLabel: 'Contenido de la Respuesta',
+				allowBlank: false,
+				anchor: '100%',
+				qtip:'Definimos una Respuesta Formateada',
+				gwidth: 100,
+				enableColors: true,
+				enableAlignments: true,
+				enableLists: true,
+				enableSourceEdit: true,
+				labelSeparator: ''
+			},
+			type:'HtmlEditor',
+			filters: {pfiltro: 'res.respuesta', type: 'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		/*{
 			config: {
 				name: 'respuesta',
 				fieldLabel: 'Contenido de la Respuesta',
@@ -200,13 +227,13 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			id_grupo: 1,
 			grid: true,
 			form: true
-		},
+		},*/
 		{
 			config: {
 				name: 'recomendaciones',
 				fieldLabel: 'Recomendación para Evitar Futuros Reclamos',
-				allowBlank: false,
-				anchor: '80%',
+				allowBlank: true,
+				anchor: '100%',
 				gwidth: 200,
 				maxLength: 1000000
 			},
@@ -221,11 +248,12 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				name: 'procedente',
 				fieldLabel: 'Procedente',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '40%',
 				gwidth: 100,
 				maxLength: 100,
 				gdisplayField: 'procedente',
 				typeAhead:true,
+				forceSelection: true,
 				triggerAction:'all',
 				mode:'local',
 				store:['SI','NO','NINGUNO']
@@ -241,10 +269,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				name: 'tipo_respuesta',
 				fieldLabel: 'Tipo Respuesta',
 				allowBlank: false,
-				anchor: '80%',
+				anchor: '40%',
 				maxLength: 300,
 				gwidth: 100,
 				typeAhead:true,
+				forceSelection: true,
 				triggerAction:'all',
 				mode:'local',
 				store:['respuesta_final','respuesta_parcial']
@@ -426,8 +455,13 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	bsave: false,
 	btest: false,
 	fwidth: '50%',
-	fheight: '80%',
+	fheight: '100%',
 	collapsible:true,
+	iniciarEventos : function() {
+		this.Cmp.nro_cite.on('blur', function(field) {
+			this.generarCite();
+		},this);
+	},
 	onOpenObs: function() {
 		var rec=this.sm.getSelected();
 		var data = {
@@ -564,10 +598,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 	onButtonNew : function () {
 		Phx.vista.Respuesta.superclass.onButtonNew.call(this);
-
+	
 		var fecha = this.sumarDias(new Date(),parseInt(this.maestro.tiempo_respuesta));
-		this.Cmp.fecha_respuesta.setValue(fecha);
-		this.Cmp.nro_cite.setValue(1234567);
+		this.Cmp.fecha_respuesta.setValue(new Date());
+		this.Cmp.asunto.setValue('Respuesta Reclamo');
+		this.generarCite();
 		/*Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Respuesta/getDiasRespuesta',
 			params:{id_tipo_incidente:this.store.baseParams.id_tipo_incidente},
@@ -577,6 +612,26 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			scope:this
 		});*/
 	},
+
+	generarCite: function (){
+		///^([0-9])+(\/)+(\-)?(\.)?([0-9a-zA-Z])+$/
+		if(/^([0-9])+[(\/)(\-)(\.)]([0-9a-zA-Z])+$/.test(this.Cmp.nro_cite.getValue())){
+			this.Cmp.nro_cite.setValue(this.Cmp.nro_cite.getValue());
+		}else{
+			Ext.Ajax.request({
+				url:'../../sis_reclamo/control/Respuesta/getCite',
+				params:{num_cite:this.Cmp.nro_cite.getValue()},
+				success: function(resp){
+					var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+					this.Cmp.nro_cite.setValue(reg.ROOT.datos.v_cite);
+				},
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});
+		}
+	},
+
 	onButtonDel: function(){
 		Phx.vista.Respuesta.superclass.onButtonDel.call(this);
 		this.argumentExtraSubmit.id_reclamo = this.maestro.id_reclamo;
@@ -591,18 +646,17 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	sumarDias: function (fecha, dias){
 		//var dia = ;
 		console.log(dias+' DIA '+this.dia[fecha.getDay()]);
-		if(this.dia[fecha.getDay()]=='lunes' && this.maestro.tiempo_respuesta==10) {
-			fecha.setDate(fecha.getDate() + dias + 1);
-
+		if(/*this.dia[fecha.getDay()]=='lunes' &&*/ this.maestro.tiempo_respuesta==10) {
+			fecha.setDate(fecha.getDate() + dias + 4);
 		}
-		else if((this.dia[fecha.getDay()]=='martes' || this.dia[fecha.getDay()]=='miercoles' || this.dia[fecha.getDay()]=='jueves' || this.dia[fecha.getDay()]=='viernes') && this.maestro.tiempo_respuesta==10){
+		/*else if((this.dia[fecha.getDay()]=='martes' || this.dia[fecha.getDay()]=='miercoles' || this.dia[fecha.getDay()]=='jueves' || this.dia[fecha.getDay()]=='viernes') && this.maestro.tiempo_respuesta==10){
 			fecha.setDate(fecha.getDate() + dias + 3);
 
-		}else if(this.dia[fecha.getDay()]=='viernes' && this.maestro.tiempo_respuesta==7){
-			fecha.setDate(fecha.getDate() + dias + 3);
-
-		}else{
-			fecha.setDate(fecha.getDate() + dias + 1);
+		}*/
+		else if((this.dia[fecha.getDay()]=='lunes'||this.dia[fecha.getDay()]=='martes'||this.dia[fecha.getDay()]=='miercoles') && this.maestro.tiempo_respuesta==7){
+			fecha.setDate(fecha.getDate() + dias + 2);
+		}else if((this.dia[fecha.getDay()]=='jueves'||this.dia[fecha.getDay()]=='viernes') && this.maestro.tiempo_respuesta==7){
+			fecha.setDate(fecha.getDate() + dias + 4);
 
 		}
 		return fecha;

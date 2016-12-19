@@ -14,12 +14,16 @@ header("content-type: text/javascript; charset=UTF-8");
 
 	nombreVista: 'Reclamo',
 	constructor: function (config) {
-
+		this.idContenedor = config.idContenedor;
+		console.log('maestro_reclamo: '+this.idContenedor);
 		this.maestro = config.maestro;
-
+		console.log(config);
 		//llama al constructor de la clase padre
+
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
+
 		this.init();
+		this.Cmp.id_cliente.pid = this.idContenedor;
 		this.iniciarEvento();
 		this.store.baseParams = {tipo_interfaz:this.nombreVista};
 		this.store.baseParams.pes_estado = 'borrador';
@@ -55,7 +59,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				iconCls: 'bchecklist',
 				disabled: true,
 				handler: this.loadCheckDocumentosRecWf,
-				tooltip: '<b>Documentos de la Solicitud</b><br/>Subir los documetos requeridos en la solicitud seleccionada.'
+				tooltip: '<b>Documentos del Reclamo</b><br/>Subir los documetos requeridos en el Reclamo seleccionado.'
 		});
 
 		this.addButton('btnObs',{
@@ -88,6 +92,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				scope:this
 			});
 		}
+
 	},
 	compositeFields : function(){  //step 1
 		return{
@@ -144,7 +149,39 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 200,
-				maxLength:100
+				maxLength:100,
+				renderer: function(value, p, record) {
+					var fecha_actual = new Date();
+					var dias = record.data.dias_respuesta;
+					var diasDif = record.data.fecha_limite_respuesta - fecha_actual;
+					diasDif = Math.round(diasDif / (1000 * 60 * 60 * 24));
+
+					var ids = new Array(4, 6, 37, 38, 48, 50);
+					var id_tipo = parseInt(record.data.id_tipo_incidente);
+					if(ids.indexOf(id_tipo) >= 0) {
+						if (dias >= 7 && dias <= 10) {
+							return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value);
+						}
+						else if(dias >=3  && dias <= 6){
+							return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value);
+						}else if(dias>=0 && dias<=2) {
+							return String.format('<div ext:qtip="Malo"><b><font color="red">{0}</font></b><br></div>', value);
+						}else if(dias = -1){
+							return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">{0}</font></b><br></div>', value);
+						}
+					}else if(record.data.id_tipo_incidente==36){
+						if (dias >=5  && dias <= 7) {
+							return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value);
+						}
+						else if(dias >=2  && dias <= 4){
+							return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value);
+						}else if(dias>=0 && dias<=1) {
+							return String.format('<div ext:qtip="Malo"><b><font color="red">{0}</font></b><br></div>', value);
+						}else if(dias = -1){
+							return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">{0}</font></b><br></div>', value);
+						}
+					}
+				}
 			},
 			type:'TextField',
 			filters:{pfiltro:'rec.nro_tramite',type:'string'},
@@ -152,6 +189,101 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid:true,
 			form:false,
 			bottom_filter : true
+		},{
+			config: {
+				name: 'dias_respuesta',
+				fieldLabel: 'Dias Para Responder',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 150,
+				maxLength: 100,
+				renderer: function(value, p, record) {
+					var dias = record.data.dias_respuesta;
+					var ids = new Array(4, 6, 37, 38, 48, 50);
+					var id_tipo = parseInt(record.data.id_tipo_incidente);
+					if(ids.indexOf(id_tipo) >= 0) {
+						if (dias >= 7 && dias <= 10) {
+							return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+						}
+						else if(dias >=3  && dias <= 6){
+							return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
+						}else if(dias>=0 && dias<=2) {
+							if(dias == 1)
+								return String.format('<div ext:qtip="Malo"><b><font color="red">Falta {0} Día</font></b><br></div>', value);
+							else if(dias == 0 || dias ==2)
+								return String.format('<div ext:qtip="Malo"><b><font color="red">Faltan {0} Días</font></b><br></div>', value);
+						}else if(dias = -1){
+							return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">Con Respuesta o Vencido</font></b><br></div>', value);
+						}
+					}else if(record.data.id_tipo_incidente==36){
+						if (dias >=5  && dias <= 7) {
+							return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+						}
+						else if(dias >=2  && dias <= 4){
+							return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
+						}else if(dias>=0 && dias<=1) {
+							if(dias == 1)
+								return String.format('<div ext:qtip="Malo"><b><font color="red">Falta {0} Día</font></b><br></div>', value);
+							else if(dias == 0)
+								return String.format('<div ext:qtip="Malo"><b><font color="red">Faltan {0} Días</font></b><br></div>', value);
+						}else if(dias = -1){
+							return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">Con Respuesta o Vencido</font></b><br></div>', value);
+						}
+					}
+				}
+			},
+			type: 'TextField',
+			/*filters: {pfiltro: 'rec.estado', type: 'string'},*/
+			/*id_grupo: 1,*/
+			grid: true,
+			form: false
+		},
+		{
+			config: {
+				name: 'fecha_limite_respuesta',
+				fieldLabel: 'Fecha Limite de Respuesta',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 150,
+				maxLength: 15,
+				format: 'd/m/Y',
+				renderer:function (value,p,record){
+					return value?value.dateFormat('d/m/Y'):''
+				}
+			},
+			type: 'DateField',
+			filters: {pfiltro: 'rec.fecha_limite_respuesta', type: 'date'},
+			id_grupo: 4,
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'dias_informe',
+				fieldLabel: 'Dias Para Adjuntar Inf.',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 300,
+				maxLength: 100,
+				renderer: function(value, p, record) {
+					var dias = record.data.dias_informe;
+					console.log('dias: '+record.data.dias_informe);
+					//console.log('dias_informe: '+JSON.stringify(record.data));
+					if (dias == 2) {
+						return String.format('<div ext:qtip="Bueno"><b><font color="green">Le Quedan 48 Horas</font></b><br></div>', value);
+					}
+					else if(dias>=0 && dias<=1){
+						return String.format('<div ext:qtip="Malo"><b><font color="orange">Le Quedan 24 Horas</font></b><br></div>', value);
+					}else if(dias = -1){
+						return String.format('<div ext:qtip="Vencido"><b><font color="blue">Vencido</font></b><br></div>', value);
+					}
+				}
+			},
+			type: 'TextField',
+			/*filters: {pfiltro: 'rec.estado', type: 'string'},*/
+			/*id_grupo: 1,*/
+			grid: true,
+			form: false
 		},
 		{
 			config: {
@@ -159,7 +291,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'Estado',
 				allowBlank: true,
 				anchor: '100%',
-				gwidth: 150,
+				gwidth: 200,
 				maxLength: 100
 			},
 			type: 'TextField',
@@ -293,11 +425,12 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		{
 			config:{
-				id: 'id_cliente',
+
 				name:'id_cliente',
 				fieldLabel:'Cliente',
 				allowBlank:false,
 				emptyText:'Elija una opción...',
+				dato: 'reclamo',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_reclamo/control/Cliente/listarCliente',
 					id: 'id_cliente',
@@ -325,11 +458,11 @@ header("content-type: text/javascript; charset=UTF-8");
 				pageSize:10,
 				queryDelay:1000,
 				width:250,
-				gwidth:280,
+				gwidth:320,
 				minChars:1,
 				turl:'../../../sis_reclamo/vista/cliente/FormCliente.php',
-				ttitle:'FormCliente',
-				// tconfig:{width:1800,height:500},
+				ttitle:'Clientes',
+				tconfig:{width: '35%' ,height:'95%'},
 				tdata:{},
 				tcls:'FormCliente',
 				pid:this.idContenedor,
@@ -376,6 +509,21 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'rec.origen', type: 'string'},
+			id_grupo: 2,
+			grid: true,
+			form: true
+		},{
+			config: {
+				name: 'transito',
+				fieldLabel: 'TTO',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 25,
+				style:'text-transform:uppercase;'
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.transito', type: 'string'},
 			id_grupo: 2,
 			grid: true,
 			form: true
@@ -446,7 +594,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					totalProperty: 'total',
 					fields: ['id_tipo_incidente', 'nombre_incidente','fk_tipo_incidente'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'tip.nombre_incidente', nivel:'1'}
+					baseParams: {par_filtro: 'tip.nombre_incidente', nivel:'1', fk_tipo_incidente:'1'}
 				}),
 				valueField: 'id_tipo_incidente',
 				displayField: 'nombre_incidente',
@@ -546,7 +694,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{
 			config: {
 				name: 'id_oficina_incidente',
-				fieldLabel: 'Oficina Incidente',
+				fieldLabel: 'Ambiente del Incidente',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -558,9 +706,9 @@ header("content-type: text/javascript; charset=UTF-8");
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_oficina', 'nombre', 'codigo'],
+					fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'ofi.nombre'}
+					baseParams: {par_filtro: 'ofi.nombre#ofi.codigo#lug.nombre'}
 				}),
 				valueField: 'id_oficina',
 				displayField: 'nombre',
@@ -585,7 +733,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type: 'ComboBox',
 			id_grupo: 3,
-			filters: {pfiltro: 'ofi.nombre', type: 'string'},
+			filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
 			grid: true,
 			form: true
 		},
@@ -665,7 +813,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			type: 'TrigguerCombo',
 			id_grupo:3,
 			filters:{
-				pfiltro:'fu.desc_funcionario1',
+				pfiltro:'fu.desc_funcionario1#fu.nombre_cargo',
 				type:'string'
 			},
 			bottom_filter:true,
@@ -721,7 +869,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			config: {
 				name: 'fecha_hora_recepcion',
 				fieldLabel: 'Fecha, Hora de Recepcion',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				/*disabled: true,*/
@@ -782,7 +930,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			bottom_filter:true,
 			id_grupo: 4,
 			filters:{
-				pfiltro:'fun.desc_funcionario1#FUNCAR.nombre_cargo',
+				pfiltro:'fun.desc_funcionario1#fun.nombre_cargo',
 				type:'string'
 			},
 			grid: true,
@@ -833,27 +981,53 @@ header("content-type: text/javascript; charset=UTF-8");
 			filters: {pfiltro: 'mera.nombre_medio', type: 'string'},
 			grid: true,
 			form: true
-		},
-		{
+		},{
 			config: {
-				name: 'fecha_limite_respuesta',
-				fieldLabel: 'Fecha Limite de Respuesta',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength: 15,
-				format: 'd/m/Y',
-				renderer:function (value,p,record){
-					return value?value.dateFormat('d/m/Y'):''
+				name: 'id_motivo_anulado',
+				fieldLabel: 'Motivo Anulado',
+				allowBlank: false,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_reclamo/control/MotivoAnulado/listarMotivoAnulado',
+					id: 'id_motivo_anulado',
+					root: 'datos',
+					sortInfo: {
+						field: 'motivo',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_motivo_anulado','motivo'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'ma.motivo'}
+				}),
+				valueField: 'id_motivo_anulado',
+				displayField: 'motivo',
+				gdisplayField: 'motivo_anulado',
+				hiddenName: 'id_motivo_anulado',
+				forceSelection: true,
+				typeAhead: false,
+				editable: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				resizable:true,
+				listWidth:'240',
+
+				renderer: function (value, p, record) {
+					return String.format('{0}', record.data['motivo_anulado']);
 				}
 			},
-			type: 'DateField',
-			filters: {pfiltro: 'rec.fecha_limite_respuesta', type: 'date'},
-			id_grupo: 4,
+			type: 'ComboBox',
+			id_grupo: 5,
+			filters: {pfiltro: 'ma.motivo', type: 'string'},
 			grid: true,
 			form: true
-		},
-		{
+		},{
 			config: {
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
@@ -1028,12 +1202,21 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'tiempo_respuesta', type: 'string'},
 		{name: 'revisado', type: 'string'},/*,
 		{name: 'desc_funcionario1', type: 'string'},*/
-		{name: 'nombre_completo2', type: 'string'}
+		{name: 'nombre_completo2', type: 'string'},
+		{name: 'transito', type: 'string'},
+		{name: 'dias_respuesta', type: 'string'},
+		{name: 'dias_informe', type: 'string'},
+		{name: 'motivo', type: 'string'},
+		{name: 'motivo_anulado', type: 'string'},
+		{name: 'id_motivo_anulado', type: 'numeric'},
+		{name: 'nombre_cargo', type: 'string'}/*,
+		{name: 'cargo', type: 'string'}*/
+
 
 	],
 	sortInfo: {
-		field: 'id_reclamo',
-		direction: 'DESC'
+		field: 'fecha_limite_respuesta',
+		direction: 'ASC'
 	},
 	bdel: true,
 	bedit: true,
@@ -1208,6 +1391,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
 	sigEstado: function(){
 		var rec = this.sm.getSelected();
+
+		console.log('funcion--> estado:'+rec.data.id_estado_wf+'proceso:'+rec.data.id_proceso_wf);
 		this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
 			'Estado de Wf',
 			{
@@ -1228,16 +1413,18 @@ header("content-type: text/javascript; charset=UTF-8");
 				}],
 				scope:this
 			});
-		var dias = ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
-		var fecha =  new Date();
-		if(rec.data.estado=='borrador' && dias[fecha.getDay()]){
-			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
-		}
 	},
 
 	onSaveWizard:function(wizard,resp){
+		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+		//console.log('wizard: %'+JSON.stringify(wizard));
+		/*console.log('json: %'+JSON.stringify(reg));
+		console.log('json: %'+JSON.stringify(resp));
+		console.log('resp.id_proceso_wf_act: %'+resp.id_proceso_wf_act);
+		console.log('resp.id_estado_wf_act: %'+resp.id_estado_wf_act);
+		console.log('resp.id_tipo_estado: %'+resp.id_tipo_estado);*/
+
 		Phx.CP.loadingShow();
-		console.log('respuesta:'+resp);
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/siguienteEstadoReclamo',
 			params:{
@@ -1257,12 +1444,32 @@ header("content-type: text/javascript; charset=UTF-8");
 			scope:this
 		});
 
+
+
+
 	},
 
 	successWizard:function(resp){
-		console.log('vanessa: '+resp);
+		var rec = this.sm.getSelected();
+		var dias = ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
+		var fecha =  new Date();
+		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
 		Phx.CP.loadingHide();
 		resp.argument.wizard.panel.destroy();
+		if(rec.data.estado=='borrador' && dias[fecha.getDay()]){
+			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
+		}
+		console.log('v_codigo_estado_siguiente: '+reg.ROOT.datos.v_codigo_estado_siguiente);
+		//Cambiar a Reclamo con Respuesta del estado pendiente_respuesta a archivo_con_respuesta
+		/*if(reg.ROOT.datos.v_codigo_estado_siguiente=='archivo_con_respuesta'){
+			this.cambiarRev();
+		}*/
+		//Elegir el motivo de anulacion.
+		if(reg.ROOT.datos.v_codigo_estado_siguiente=='anulado'){
+			this.onButtonEdit();
+		}
+
 		this.reload();
 	},
 
@@ -1296,17 +1503,11 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
 
 		}, this);
-
-		/*this.Cmp.gestion.on('select', function (cmb, record, index) {
-			alert('salud');
-			this.Cmp.id_subtipo_incidente.reset();
-			this.Cmp.id_subtipo_incidente.modificado = true;
-			this.Cmp.id_subtipo_incidente.setDisabled(false);
-			this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
-		}, this);*/
+		
 	},
 
 	onButtonNew : function () {
+
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_workflow/control/TipoColumna/listarColumnasFormulario',
@@ -1327,11 +1528,33 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		Phx.CP.loadingHide();
 		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-
+		//console.log('USUARIO: '+JSON.stringify(objRes.datos));
 		Phx.vista.Reclamo.superclass.onButtonNew.call(this);
 
+		var fecha = new Date();
 		this.armarFormularioFromArray(objRes.datos);
 		this.Cmp.id_subtipo_incidente.disable();
+		this.Cmp.observaciones_incidente.setValue('Ninguna');
+		this.Cmp.fecha_hora_vuelo.setValue(new Date((fecha.getMonth()+1)+'/'+fecha.getDate()+'/'+fecha.getFullYear()));
+		this.Cmp.fecha_hora_incidente.setValue(new Date((fecha.getMonth()+1)+'/'+fecha.getDate()+'/'+fecha.getFullYear()));
+		this.Cmp.fecha_hora_recepcion.setValue(fecha);
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
+			params:{id_usuario: 0},
+			success:function(resp){
+				var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+				console.log(reg.ROOT.datos);
+
+				this.Cmp.id_oficina_registro_incidente.setValue(reg.ROOT.datos.id_oficina);
+				this.Cmp.id_oficina_registro_incidente.setRawValue(reg.ROOT.datos.oficina_nombre);
+
+				this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
+				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
+			},
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
 	},
 
 	onButtonEdit: function() {
@@ -1359,6 +1582,30 @@ header("content-type: text/javascript; charset=UTF-8");
 		//Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
 		this.armarFormularioFromArray(objRes.datos);
 	},
+	cargarCliente : function (id_cliente, nombre_cliente) {
+		this.Cmp.id_cliente.setValue(id_cliente);
+		this.Cmp.id_cliente.setRawValue(nombre_cliente.toUpperCase());
+	},
+
+	cambiarRev:function(){
+		Phx.CP.loadingShow();
+		var d = this.sm.getSelected().data;
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Reclamo/marcarRevisado',
+			params:{id_reclamo:d.id_reclamo},
+			success:this.successRev,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
+	},
+	successRev:function(resp){
+		Phx.CP.loadingHide();
+		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+		if(!reg.ROOT.error){
+			this.reload();
+		}
+	}
 		
 	/*reportes: function(){
 		Phx.CP.loadingShow();
@@ -1374,6 +1621,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			scope:this
 		});	
 	},
+
 	guardarReporte: function(resp){
 		Phx.CP.loadingHide();
 		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));

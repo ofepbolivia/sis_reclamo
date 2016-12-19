@@ -60,6 +60,7 @@ class MODReclamo extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 			$this->captura('id_gestion','int4');
+			$this->captura('id_motivo_anulado','int4');
 
 		//$this->captura('id_motivo_anulado','int4');
 
@@ -73,7 +74,25 @@ class MODReclamo extends MODbase{
         $this->captura('desc_nombre_fun_denun','text');
 
 			$this->captura('tiempo_respuesta','varchar');
-			$this->captura('revisado','varchar');
+			$this->captura('revisado', 'varchar');
+			$this->captura('transito', 'varchar');
+			$this->captura('dias_respuesta', 'varchar');
+			$this->captura('dias_informe', 'varchar');
+			
+			$this->captura('motivo_anulado', 'varchar');
+			$this->captura('nro_cite', 'varchar');//
+			$this->captura('conclusion_recomendacion', 'varchar');
+			$this->captura('recomendaciones', 'varchar');
+			$this->captura('genero', 'varchar');//
+			$this->captura('ci', 'varchar');//
+			$this->captura('telefono', 'varchar');//
+			$this->captura('email', 'varchar');//
+			$this->captura('ciudad_residencia', 'varchar');//
+			$this->captura('nro_guia_aerea', 'varchar');//
+			$this->captura('nombre_cargo', 'varchar');
+			//$this->captura('cargo', 'varchar');
+
+
 
         $this->setParametro('id_usuario','id_usuario','int4');
 
@@ -85,8 +104,100 @@ class MODReclamo extends MODbase{
 		$this->ejecutarConsulta();
 		
 		//Devuelve la respuesta
-			/*var_dump($this->respuesta);
-		exit;*/
+		return $this->respuesta;
+	}
+
+	function listarCRMGlobal(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='rec.ft_reclamo_sel';
+		$this->transaccion='REC_CRMG_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);
+		//Definicion de la lista del resultado del query
+		$this->captura('id_reclamo','int4');
+		$this->captura('id_tipo_incidente','int4');
+		$this->captura('id_subtipo_incidente','int4');
+		$this->captura('id_medio_reclamo','int4');
+		$this->captura('id_funcionario_recepcion','int4');
+		$this->captura('id_funcionario_denunciado','int4');
+		$this->captura('id_oficina_incidente','int4');
+		$this->captura('id_oficina_registro_incidente','int4');
+		$this->captura('id_proceso_wf','int4');
+		$this->captura('id_estado_wf','int4');
+		$this->captura('id_cliente','int4');
+		$this->captura('estado','varchar');
+		$this->captura('fecha_hora_incidente','timestamp');
+		$this->captura('nro_ripat_att','int4');
+		$this->captura('nro_hoja_ruta','int4');
+		$this->captura('fecha_hora_recepcion','timestamp');
+		$this->captura('estado_reg','varchar');
+		$this->captura('fecha_hora_vuelo','timestamp');
+		$this->captura('origen','varchar');
+		$this->captura('nro_frd','varchar');
+		$this->captura('correlativo_preimpreso_frd','int4');
+		$this->captura('fecha_limite_respuesta','date');
+		$this->captura('observaciones_incidente','text');
+		$this->captura('destino','varchar');
+		$this->captura('nro_pir','int4');
+		$this->captura('nro_frsa','int4');
+		$this->captura('nro_att_canalizado','int4');
+		$this->captura('nro_tramite','varchar');
+		$this->captura('detalle_incidente','text');
+		$this->captura('pnr','varchar');
+		$this->captura('nro_vuelo','varchar');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('usuario_ai','varchar');
+		$this->captura('id_usuario_ai','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');
+		$this->captura('id_gestion','int4');
+		$this->captura('id_motivo_anulado','int4');
+
+		//$this->captura('id_motivo_anulado','int4');
+
+		$this->captura('desc_nombre_medio','varchar');
+		$this->captura('desc_nom_cliente','text');
+		$this->captura('desc_nombre_incidente','varchar');
+		$this->captura('desc_nombre_oficina','varchar');
+		$this->captura('desc_oficina_registro_incidente','varchar');
+		$this->captura('desc_sudnom_incidente','varchar');
+		$this->captura('desc_nombre_funcionario','text');
+		$this->captura('desc_nombre_fun_denun','text');
+
+		$this->captura('tiempo_respuesta','varchar');
+		$this->captura('revisado', 'varchar');
+		$this->captura('transito', 'varchar');
+		$this->captura('dias_respuesta', 'varchar');
+		$this->captura('dias_informe', 'varchar');
+
+		$this->captura('motivo_anulado', 'varchar');
+		$this->captura('nro_cite', 'varchar');//
+		$this->captura('conclusion_recomendacion', 'varchar');
+		$this->captura('recomendaciones', 'varchar');
+		$this->captura('genero', 'varchar');//
+		$this->captura('ci', 'varchar');//
+		$this->captura('telefono', 'varchar');//
+		$this->captura('email', 'varchar');//
+		$this->captura('ciudad_residencia', 'varchar');//
+		$this->captura('nro_guia_aerea', 'varchar');//
+		$this->captura('nombre_cargo', 'varchar');
+		//$this->captura('cargo', 'varchar');
+
+
+
+		$this->setParametro('id_usuario','id_usuario','int4');
+
+
+
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
 		return $this->respuesta;
 	}
 
@@ -129,6 +240,9 @@ class MODReclamo extends MODbase{
 		$this->setParametro('pnr','pnr','varchar');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
 			$this->setParametro('id_gestion','id_gestion','int4');
+			$this->setParametro('id_motivo_anulado','id_motivo_anulado','int4');
+
+			$this->setParametro('transito','transito','varchar');
 
 		//$this->setParametro('correlativo','correlativo',  'int4');
 		//Ejecuta la instruccion
@@ -178,11 +292,15 @@ class MODReclamo extends MODbase{
 		$this->setParametro('detalle_incidente','detalle_incidente','text');
 		$this->setParametro('pnr','pnr','varchar');
 		$this->setParametro('nro_vuelo','nro_vuelo','varchar');
-			$this->captura('id_gestion','id_gestion','int4');
+			//$this->captura('id_gestion','id_gestion','int4');
+			$this->setParametro('id_motivo_anulado','id_motivo_anulado','int4');
+			$this->setParametro('transito','transito','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+		/*var_dump($this->respuesta);
+		exit;*/
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -274,10 +392,24 @@ class MODReclamo extends MODbase{
 
 	function getNombreFun(){
 		$this->procedimiento='rec.ft_reclamo_ime';
-		$this->transaccion='RH_FUNNOM_GET';
+		$this->transaccion='REC_FUNNOM_GET';
 		$this->tipo_procedimiento='IME';
 
 		$this->setParametro('id_funcionario','id_funcionario','int4');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+	function getDatosOficina(){
+		$this->procedimiento='rec.ft_reclamo_ime';
+		$this->transaccion='REC_DATOFI_GET';
+		$this->tipo_procedimiento='IME';
+
+		$this->setParametro('id_usuario','id_usuario','integer');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

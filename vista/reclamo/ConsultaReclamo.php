@@ -17,15 +17,16 @@ header("content-type: text/javascript; charset=UTF-8");
         bnew:false,
         bdel:false,
         bedit:false,
-
+        ActList: '../../sis_reclamo/control/Reclamo/listarCRMGlobal',
         constructor: function(config) {
             this.tbarItems = ['-',
                 this.cmbGestion
 
             ];
+
             Phx.vista.ConsultaReclamo.superclass.constructor.call(this,config);
             this.getBoton('btnObs').setVisible(false);
-            this.getBoton('btnChequeoDocumentosWf').setVisible(false);
+            //this.getBoton('btnChequeoDocumentosWf').setVisible(false);
             this.getBoton('sig_estado').setVisible(false);
             this.getBoton('ant_estado').setVisible(false);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
@@ -34,6 +35,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
             this.cmbGestion.on('select',this.capturarEventos, this);
+
+            /*this.addButton('btnChequeoDocumentosWf',{
+                text: 'Documentos',
+                grupo: [0,1,2,3,4,5],
+                iconCls: 'bchecklist',
+                disabled: true,
+                handler: this.loadCheckDocumentosRecWf,
+                tooltip: '<b>Documentos del Reclamo</b><br/>Consulta de Documentos del Reclamo.'
+            });*/
         },
 
         cmbGestion: new Ext.form.ComboBox({
@@ -69,6 +79,8 @@ header("content-type: text/javascript; charset=UTF-8");
             hidden:false,
             width:80
         }),
+
+        tabsouth :null,
 
         capturarEventos: function () {
             this.store.baseParams.pes_estado = 'borrador';

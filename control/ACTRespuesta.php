@@ -6,7 +6,9 @@
  *@date 11-08-2016 16:01:08
  *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
  */
+require_once(dirname(__FILE__).'/../reportes/RRespuestaFinal.php');
 require_once(dirname(__FILE__).'/../reportes/RRespuesta.php');
+
 
 class ACTRespuesta extends ACTbase{
 
@@ -50,9 +52,9 @@ class ACTRespuesta extends ACTbase{
         $this->res=$this->objFunc->eliminarRespuesta($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-    function getDiasRespuesta(){
+    function getCite(){
         $this->objFunc=$this->create('MODRespuesta');
-        $this->res=$this->objFunc->getDiasRespuesta($this->objParam);
+        $this->res=$this->objFunc->getCite($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
@@ -73,11 +75,40 @@ class ACTRespuesta extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
-    function reporteRespuesta(){
+    function reporteRespuestaPDF(){
+
+        $this->objFunc=$this->create('MODRespuesta');
+        $this->res=$this->objFunc->reportesRespuesta($this->objParam);
+
+        $this->objFunc=$this->create('MODRespuesta');
+        $this->res2=$this->objFunc->listarDatosQRRespuesta($this->objParam);
+        //obtener titulo del reporte
+        $titulo = 'Informe de Reclamo';
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo=uniqid(md5(session_id()).$titulo);
+        $nombreArchivo.='.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //Instancia la clase de pdf
+
+        $this->objReporteFormato=new RRespuestaFinal($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos);
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+    function reporteRespuestaWORD(){
 
         $this->objFunc=$this->create('MODRespuesta');
         $dataSource = $this->objFunc->reportesRespuesta();
-        $nombreArchivo = uniqid(md5(session_id()).'RRespuesta').'.docx';
+        $nombreArchivo = uniqid(md5(session_id()).'RespuestaDoc').'.docx';
         $reporte = new RRespuesta($this->objParam);
 
         $reporte->datosHeader($dataSource->getDatos());
@@ -88,8 +119,8 @@ class ACTRespuesta extends ACTbase{
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
-
     }
+
 
 }
 
