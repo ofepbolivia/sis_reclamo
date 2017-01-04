@@ -20,6 +20,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.CRMGlobal.superclass.constructor.call(this, config);
             this.grid.getTopToolbar().disable();
             this.grid.getBottomToolbar().disable();
+
             this.init();
         },
         Atributos: [

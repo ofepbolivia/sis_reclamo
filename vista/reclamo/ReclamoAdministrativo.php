@@ -26,7 +26,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'recurso_jerarquico',title:'<H1 align="center"><i class="fa fa-folder-open"></i> RR. Jerarquico</h1>',grupo:4,height:0},
             {name:'contencioso_administrativo',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Contencioso Adm.</h1>',grupo:5,height:0}
         ],
-
+        tam_pag:50,
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
@@ -46,7 +46,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             //primera carga
             this.store.baseParams.pes_estado = 'en_avenimiento';
-            this.load({params:{start:0, limit:50}});
+            this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
 
         },

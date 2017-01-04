@@ -24,13 +24,15 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'derivado',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Derivados</h1>',grupo:2,height:0},
             {name:'anulado',title:'<H1 align="center"><i class="fa fa-folder"></i> Anulados</h1>',grupo:3,height:0}
         ],
-
+        tam_pag: 50,
+        
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
+
         beditGroups: [0,1],
         bdelGroups:  [0],
         bactGroups:  [0,1,2,3],
@@ -38,6 +40,10 @@ header("content-type: text/javascript; charset=UTF-8");
         bexcelGroups: [0,1,2,3],
 
         constructor: function(config) {
+            this.tbarItems = ['-',
+                this.cmbGestion
+
+            ];
             this.Atributos.splice(5,1);
             /*this.Atributos.splice(this.Atributos.length,0,{
                 config: {
@@ -85,10 +91,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 filters: {pfiltro: 'ma.motivo', type: 'string'},
                 grid: true,
                 form: true
-            });
-            this.fields.push({name: 'motivo', type: 'string'});
+            });*/
+            /*this.fields.push({name: 'motivo', type: 'string'});
             this.fields.push({name: 'motivo_anulado', type: 'string'});
             this.fields.push({name: 'id_motivo_anulado', type: 'numeric'});*/
+
             this.Grupos.push({
                 bodyStyle: 'padding-right:10px;',
                 items: [
@@ -109,10 +116,93 @@ header("content-type: text/javascript; charset=UTF-8");
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             //primera carga
             this.store.baseParams.pes_estado = 'pendiente_revision';
-            this.load({params:{start:0, limit:60}});
+            this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
 
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
+                params:{id_usuario:0},
+                success:function(resp){
+                    var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                    console.log(reg);
+                    this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
+                    this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
+                    this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+            this.cmbGestion.on('select',this.capturarEventos, this);
+
         },
+        cmbGestion: new Ext.form.ComboBox({
+            name: 'gestion',
+            id: 'gestion',
+            fieldLabel: 'Gestion',
+            allowBlank: true,
+            emptyText:'Gestion...',
+            blankText: 'Año',
+            store:new Ext.data.JsonStore(
+                {
+                    url: '../../sis_parametros/control/Gestion/listarGestion',
+                    id: 'id_gestion',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'gestion',
+                        direction: 'DESC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_gestion','gestion'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'gestion'}
+                }),
+            valueField: 'id_gestion',
+            triggerAction: 'all',
+            displayField: 'gestion',
+            hiddenName: 'id_gestion',
+            mode:'remote',
+            pageSize:50,
+            queryDelay:500,
+            listWidth:'280',
+            hidden:false,
+            width:80
+        }),
+
+        capturarEventos: function () {
+            if(this.validarFiltros()){
+                this.capturaFiltros();
+            }
+        },
+
+        capturaFiltros:function(combo, record, index){
+            this.desbloquearOrdenamientoGrid();
+            this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+            this.load({params:{start:0, limit:this.tam_pag}});
+            //this.load();
+        },
+
+        validarFiltros:function(){
+            if(this.cmbGestion.isValid()){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+        },
+
+        onButtonAct:function(){
+            if(!this.validarFiltros()){
+                Ext.Msg.alert('ATENCION!!!','Especifique los filtros antes')
+            }
+            else{
+                this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+                Phx.vista.RevisionReclamo.superclass.onButtonAct.call(this);
+            }
+        },
+
         onCloseDocuments: function(paneldoc, data, directo){
             var newrec = this.store.getById(data.id_solicitud);
             if(newrec){
@@ -174,7 +264,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             this.disableTabRespuesta();
             return tb
-        },
+        }/*,
         onButtonEdit: function() {
             var rec = this.sm.getSelected();
             //this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', rec.data.id_tipo_incidente);
@@ -200,6 +290,6 @@ header("content-type: text/javascript; charset=UTF-8");
             //console.log('campos Edit: '+objRes);
             //Phx.vista.RevisionReclamo.superclass.onButtonEdit.call(this);
             this.armarFormularioFromArray(objRes.datos);
-        }
+        }*/
     };
 </script>

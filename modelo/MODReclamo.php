@@ -89,8 +89,10 @@ class MODReclamo extends MODbase{
 			$this->captura('email', 'varchar');//
 			$this->captura('ciudad_residencia', 'varchar');//
 			$this->captura('nro_guia_aerea', 'varchar');//
+			
 			$this->captura('nombre_cargo', 'varchar');
-			//$this->captura('cargo', 'varchar');
+			
+			$this->captura('cargo', 'varchar');
 
 
 
@@ -112,7 +114,7 @@ class MODReclamo extends MODbase{
 		$this->procedimiento='rec.ft_reclamo_sel';
 		$this->transaccion='REC_CRMG_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-		$this->setCount(false);
+		//$this->setCount(false);
 		//Definicion de la lista del resultado del query
 		$this->captura('id_reclamo','int4');
 		$this->captura('id_tipo_incidente','int4');
@@ -418,14 +420,18 @@ class MODReclamo extends MODbase{
 		return $this->respuesta;
 	}
 
-	function marcarRevisado(){
+	function listarRest(){
 		//Definicion de variables para ejecucion del procedimiento
-		$this->procedimiento='rec.ft_reclamo_ime';
-		$this->transaccion='REC_REV_IME';
+		$this->procedimiento='rec.ft_reclamo_sel';
+		$this->transaccion='REC_REST_SEL';
 		$this->tipo_procedimiento='IME';
 
 		//Define los parametros para la funcion
 		$this->setParametro('id_reclamo','id_reclamo','int4');
+
+		$this->captura('tramite','varchar');
+		$this->captura('id_estado','int4');
+		$this->captura('id_proceso','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

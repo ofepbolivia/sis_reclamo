@@ -11,6 +11,7 @@ require_once(dirname(__FILE__).'/../reportes/RReclamoPDF.php');
 class ACTReclamo extends ACTbase{
 			
 	function listarReclamo(){
+		//$this->objParam->count(true);
 		$this->objParam->defecto('ordenacion','id_reclamo');
 		$this->objParam->defecto('dir_ordenacion','asc');
 
@@ -24,10 +25,7 @@ class ACTReclamo extends ACTbase{
 
 		}
 
-		/*if($this->objParam->getParametro('estado')!=''){
-			$this->objParam->addFiltro("rec.estado = " . $this->objParam->getParametro('estado'));
-		}*/
-		//crmg
+		
 		if($this->objParam->getParametro('nro_tramite')!=''){
 			$this->objParam->addFiltro("rec.nro_tramite ilike ''%".$this->objParam->getParametro('nro_tramite')."%''");
 		}
@@ -44,13 +42,17 @@ class ACTReclamo extends ACTbase{
 			$this->objParam->addFiltro("(rec.fecha_reg::date  <= ''%".$this->objParam->getParametro('hasta')."%''::date)");
 		}
 
+		if($this->objParam->getParametro('id_oficina_registro_incidente')!=''){
+			$this->objParam->addFiltro("rec.id_oficina_registro_incidente = ". $this->objParam->getParametro('id_oficina_registro_incidente'));
+		}
+
 		if($this->objParam->getParametro('id_tipo_incidente')!=''){
 			$this->objParam->addFiltro("rec.id_tipo_incidente = ". $this->objParam->getParametro('id_tipo_incidente'));
 		}
 		if($this->objParam->getParametro('id_subtipo_incidente')!=''){
 			$this->objParam->addFiltro("rec.id_subtipo_incidente = ". $this->objParam->getParametro('id_subtipo_incidente'));
 		}
-		//crmg
+
 
 		switch($this->objParam->getParametro('pes_estado')){
 			case 'borrador':
@@ -79,6 +81,9 @@ class ACTReclamo extends ACTbase{
 				break;
 			case 'archivo_con_respuesta':
 				$this->objParam->addFiltro("rec.estado in (''archivo_con_respuesta'')");
+				break;
+			case 'respuesta_registrado_ripat':
+				$this->objParam->addFiltro("rec.estado in (''respuesta_registrado_ripat'')");
 				break;
 			case 'archivado_concluido':
 				$this->objParam->addFiltro("rec.estado in (''archivado_concluido'')");
@@ -212,10 +217,13 @@ class ACTReclamo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
-	function marcarRevisado(){
+	function listarRest(){
+		$this->objParam->defecto('ordenacion','id_log');
+		$this->objParam->defecto('dir_ordenacion','desc');
+		
 		$this->objFunc=$this->create('MODReclamo');
 		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
-		$this->res=$this->objFunc->marcarRevisado($this->objParam);
+		$this->res=$this->objFunc->listarRest($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 

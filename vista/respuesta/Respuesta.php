@@ -167,7 +167,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				/*regex: '/[A-Z]/',
 				regexText: "<b>Error</b></br>Invalid Number entered.",*/
 				anchor: '40%',
-				gwidth: 150,
+				gwidth: 100,
 				maxLength: 50,
 				style:'text-transform:uppercase;'
 
@@ -200,12 +200,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: false,
 				anchor: '100%',
 				qtip:'Definimos una Respuesta Formateada',
-				gwidth: 100,
+				gwidth: 200,
 				enableColors: true,
 				enableAlignments: true,
 				enableLists: true,
-				enableSourceEdit: true,
-				labelSeparator: ''
+				enableSourceEdit: true
 			},
 			type:'HtmlEditor',
 			filters: {pfiltro: 'res.respuesta', type: 'string'},
@@ -235,7 +234,8 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 200,
-				maxLength: 1000000
+				maxLength: 1000000,
+				value:'Ninguna'
 			},
 			type: 'TextArea',
 			filters: {pfiltro: 'res.recomendaciones', type: 'string'},
@@ -444,7 +444,8 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'id_proceso_wf', type: 'numeric'},
 		{name: 'id_estado_wf', type: 'numeric'},
 		{name: 'estado', type: 'string'},
-		{name: 'nro_respuesta', type: 'numeric'}
+		{name: 'nro_respuesta', type: 'numeric'},
+		{name: 'email', type: 'string'}
 
 	],
 	sortInfo: {
@@ -602,7 +603,9 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		var fecha = this.sumarDias(new Date(),parseInt(this.maestro.tiempo_respuesta));
 		this.Cmp.fecha_respuesta.setValue(new Date());
 		this.Cmp.asunto.setValue('Respuesta Reclamo');
+		this.Cmp.recomendaciones.setValue('Ninguna');
 		this.generarCite();
+
 		/*Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Respuesta/getDiasRespuesta',
 			params:{id_tipo_incidente:this.store.baseParams.id_tipo_incidente},
@@ -637,30 +640,17 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		this.argumentExtraSubmit.id_reclamo = this.maestro.id_reclamo;
 	},
 	dia: ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'],
-	/*successTI:function(resp){
-		//Phx.CP.loadingHide();
-		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-		var fecha = this.sumarDias(new Date(),parseInt(reg.ROOT.datos.tiempo_respuesta));
-		this.Cmp.fecha_respuesta.setValue(fecha);
-	},*/
 	sumarDias: function (fecha, dias){
-		//var dia = ;
 		console.log(dias+' DIA '+this.dia[fecha.getDay()]);
-		if(/*this.dia[fecha.getDay()]=='lunes' &&*/ this.maestro.tiempo_respuesta==10) {
+		if(this.maestro.tiempo_respuesta==10) {
 			fecha.setDate(fecha.getDate() + dias + 4);
-		}
-		/*else if((this.dia[fecha.getDay()]=='martes' || this.dia[fecha.getDay()]=='miercoles' || this.dia[fecha.getDay()]=='jueves' || this.dia[fecha.getDay()]=='viernes') && this.maestro.tiempo_respuesta==10){
-			fecha.setDate(fecha.getDate() + dias + 3);
-
-		}*/
-		else if((this.dia[fecha.getDay()]=='lunes'||this.dia[fecha.getDay()]=='martes'||this.dia[fecha.getDay()]=='miercoles') && this.maestro.tiempo_respuesta==7){
+		}else if((this.dia[fecha.getDay()]=='lunes'||this.dia[fecha.getDay()]=='martes'||this.dia[fecha.getDay()]=='miercoles') && this.maestro.tiempo_respuesta==7){
 			fecha.setDate(fecha.getDate() + dias + 2);
 		}else if((this.dia[fecha.getDay()]=='jueves'||this.dia[fecha.getDay()]=='viernes') && this.maestro.tiempo_respuesta==7){
 			fecha.setDate(fecha.getDate() + dias + 4);
 
 		}
 		return fecha;
-
 	},
 
 	onButtonEdit: function() {

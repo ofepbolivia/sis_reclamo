@@ -44,6 +44,7 @@ class MODRespuesta extends MODbase{
 		$this->captura('id_estado_wf','int4');
 		$this->captura('estado','varchar');
 		$this->captura('nro_respuesta','varchar');
+		$this->captura('email', 'varchar');
 
 
 		
@@ -65,7 +66,7 @@ class MODRespuesta extends MODbase{
 		$this->setParametro('id_reclamo','id_reclamo','int4');
 		$this->setParametro('recomendaciones','recomendaciones','varchar');
 		$this->setParametro('nro_cite','nro_cite','varchar');
-		$this->setParametro('respuesta','respuesta','varchar');
+		$this->setParametro('respuesta','respuesta','codigo_html');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('procedente','procedente','varchar');
@@ -92,7 +93,7 @@ class MODRespuesta extends MODbase{
 		$this->setParametro('id_reclamo','id_reclamo','int4');
 		$this->setParametro('recomendaciones','recomendaciones','varchar');
 		$this->setParametro('nro_cite','nro_cite','varchar');
-		$this->setParametro('respuesta','respuesta','varchar');
+		$this->setParametro('respuesta','respuesta','codigo_html');
 		$this->setParametro('fecha_respuesta','fecha_respuesta','date');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('procedente','procedente','varchar');

@@ -15,7 +15,7 @@ header("content-type: text/javascript; charset=UTF-8");
         title:'Reclamo',
         nombreVista: 'RegistroReclamos',
         //layoutType: 'wizard',
-        constructor: function(config) {
+        constructor: function(config){
             this.maestro=config.maestro;
             this.mycls = config.mycls;
             this.Atributos.splice(3,1);
@@ -30,7 +30,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'pendiente_revision',title:'<H1 align="center"><i class="fa fa-list-ul"></i>Adjuntar Informe</h1>',grupo:2,height:0, width: 100},
             {name:'pendiente_informacion',title:'<H1 align="center"><i class="fa fa-files-o"></i> Pendientes Inf.</h1>',grupo:1,height:0}
         ],
-
+        tam_pag:50,
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
                 this.store.baseParams.pes_estado = name;
@@ -68,8 +68,8 @@ header("content-type: text/javascript; charset=UTF-8");
         preparaMenu:function(n){
             var data = this.getSelectedData();
             var tb =this.tbar;
-            console.log('registro_1:'+data);
-            console.log('registro_2:'+JSON.stringify(data));
+            //console.log('registro_1:'+data);
+            //console.log('registro_2:'+JSON.stringify(data));
             Phx.vista.RegistroReclamos.superclass.preparaMenu.call(this,n);
             //habilitar reporte de colicitud de comrpa y preorden de compra
             //var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
@@ -88,21 +88,30 @@ header("content-type: text/javascript; charset=UTF-8");
             else {
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
-                this.disableTabRespuesta();
+                this.enableTabRespuesta();
 
             }
 
             return tb;
         },
+
         liberaMenu:function(){
             var tb = Phx.vista.RegistroReclamos.superclass.liberaMenu.call(this);
+            var data = this.getSelectedData();
             if(tb){
                 this.getBoton('sig_estado').disable();
                 this.getBoton('sig_estado').disable();
+
+                /*if(data.estado = 'pendiente_informacion'){
+                    this.enableTabRespuesta();
+                }else {
+                    this.disableTabRespuesta();
+                }*/
             }
-            this.disableTabRespuesta();
+
             return tb;
         },
+
         onButtonEdit: function() {
             Phx.vista.RegistroReclamos.superclass.onButtonEdit.call(this);
         }

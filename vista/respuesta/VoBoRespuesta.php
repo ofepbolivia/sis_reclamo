@@ -17,7 +17,7 @@ header("content-type: text/javascript; charset=UTF-8");
         //layoutType: 'wizard',
         bnew:false,
         bdel:false,
-        gruposBarraTareas:[
+        /*gruposBarraTareas:[
 
             {name:'revision_legal',title:'<H1 align="center"><i class="fa fa-legal"></i> Revision Legal</h1>',grupo:0,height:0},
             {name:'vobo_respuesta',title:'<H1 align="center"><i class="fa fa-thumbs-o-up"></i>VoBo. Respuesta</h1>',grupo:1,height:0}
@@ -34,15 +34,14 @@ header("content-type: text/javascript; charset=UTF-8");
         bdelGroups:  [0,1],
         bactGroups:  [0,1],
         btestGroups: [],
-        bexcelGroups: [0,1],
-
+        bexcelGroups: [0,1],*/
+        tam_pag: 50,
         constructor: function(config) {
             this.maestro = config.maestro;
             Phx.vista.VoBoRespuesta.superclass.constructor.call(this,config);
-            //this.getBoton('ant_estado').setVisible(true);
             this.store.baseParams={tipo_interfaz:this.nombreVista};
             //primera carga
-            this.store.baseParams.pes_estado = 'revision_legal';
+            this.store.baseParams.pes_estado = 'vobo_respuesta';
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
 
@@ -93,46 +92,45 @@ header("content-type: text/javascript; charset=UTF-8");
             var tb =this.tbar;
             Phx.vista.VoBoRespuesta.superclass.preparaMenu.call(this,n);
 
-            this.getBoton('sig_estado').enable();
-            this.getBoton('ant_estado').enable();
-            /*console.log('data: '+JSON.stringify(data));
-            console.log('config: '+JSON.stringify(this.maestro));*/
+            //this.getBoton('sig_estado').enable();
+            //this.getBoton('ant_estado').enable();
 
-            Ext.Ajax.request({
+            if(data.estado =='vobo_respuesta'){
+                this.getBoton('sig_estado').enable();
+                this.getBoton('ant_estado').enable();
+                this.getBoton('diagrama_gantt').enable();
+                this.getBoton('btnObs').enable();
+                this.getBoton('btnChequeoDocumentosWf').enable();
+                console.log('DOS');
+            }
+
+            /*Ext.Ajax.request({
                 url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
                 params:{id_usuario: 0},
                 success:function(resp){
                     var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                     console.log('datos: '+JSON.stringify(reg.ROOT.datos));
-
-                    if(data.estado =='revision_legal' ){
-
+                    //&& reg.ROOT.datos.nombre_cargo == 'Responsable Atención al Cliente'
+                    if(data.estado =='vobo_respuesta'){
                         this.getBoton('sig_estado').enable();
                         this.getBoton('ant_estado').enable();
                         this.getBoton('diagrama_gantt').enable();
                         this.getBoton('btnObs').enable();
                         this.getBoton('btnChequeoDocumentosWf').enable();
-                    }else if(data.estado =='vobo_respuesta' && reg.ROOT.datos.nombre_cargo == 'Responsable Atención al Cliente'){
-                        this.getBoton('sig_estado').enable();
-                        this.getBoton('ant_estado').enable();
-                        this.getBoton('diagrama_gantt').enable();
-                        this.getBoton('btnObs').enable();
-                        this.getBoton('btnChequeoDocumentosWf').enable();
+                        console.log('DOS');
                     }else{
                         this.getBoton('sig_estado').disable();
                         this.getBoton('ant_estado').disable();
                         this.getBoton('diagrama_gantt').disable();
                         this.getBoton('btnObs').disable();
                         this.getBoton('btnChequeoDocumentosWf').disable();
+                        console.log('TRES');
                     }
                 },
                 failure: this.conexionFailure,
                 timeout:this.timeout,
                 scope:this
-            });
-
-
-
+            });*/
             return tb
         },
         liberaMenu:function(){

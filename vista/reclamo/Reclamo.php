@@ -94,6 +94,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		}
 
 	},
+		
 	compositeFields : function(){  //step 1
 		return{
 			xtype	        : "compositefield", //step 2
@@ -120,6 +121,28 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type: 'Field',
 			form: true,
+			id_grupo:1
+		},
+		{
+			//configuracion del componente
+			config: {
+				labelSeparator: '',
+				inputType: 'hidden',
+				name: 'id_estado_wf'
+			},
+			type: 'Field',
+			form: false,
+			id_grupo:1
+		},
+		{
+			//configuracion del componente
+			config: {
+				labelSeparator: '',
+				inputType: 'hidden',
+				name: 'id_proceso_wf'
+			},
+			type: 'Field',
+			form: false,
 			id_grupo:1
 		},
 		{
@@ -237,7 +260,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			/*id_grupo: 1,*/
 			grid: true,
 			form: false
-		},
+		}/*,
 		{
 			config: {
 				name: 'fecha_limite_respuesta',
@@ -256,7 +279,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo: 4,
 			grid: true,
 			form: true
-		},
+		}*/,
 		{
 			config: {
 				name: 'dias_informe',
@@ -339,7 +362,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 20
+				maxLength: 25
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'rec.nro_frd', type: 'string'},
@@ -355,7 +378,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 4
+				maxLength: 25
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.nro_frsa', type: 'numeric'},
@@ -370,7 +393,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 4
+				maxLength: 25
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.nro_pir', type: 'numeric'},
@@ -385,7 +408,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 20
+				maxLength: 25
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'rec.nro_att_canalizado', type: 'numeric'},
@@ -397,10 +420,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			config: {
 				name: 'nro_ripat_att',
 				fieldLabel: 'Nro. RIPAT Att',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 6
+				maxLength: 25
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.nro_ripat_att', type: 'numeric'},
@@ -415,7 +438,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength: 4
+				maxLength: 25
 			},
 			type: 'NumberField',
 			filters: {pfiltro: 'rec.nro_hoja_ruta', type: 'numeric'},
@@ -569,7 +592,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 50,
-				maxLength: 4
+				maxLength: 25
 			},
 			type: 'TextField',
 			filters: {pfiltro: 'rec.pnr', type: 'string'},
@@ -985,7 +1008,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			config: {
 				name: 'id_motivo_anulado',
 				fieldLabel: 'Motivo Anulado',
-				allowBlank: false,
+				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_reclamo/control/MotivoAnulado/listarMotivoAnulado',
@@ -1158,7 +1181,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'id_proceso_wf', type: 'numeric'},
 		{name: 'id_estado_wf', type: 'numeric'},
 		{name: 'id_cliente', type: 'string'},
-		{name: 'estado', type: 'string'},
+		{name: 'estado', type: 'string', dataIndex:'estado'},
 		{name: 'fecha_hora_incidente', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'nro_ripat_att', type: 'numeric'},
 		{name: 'nro_hoja_ruta', type: 'numeric'},
@@ -1209,8 +1232,9 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'motivo', type: 'string'},
 		{name: 'motivo_anulado', type: 'string'},
 		{name: 'id_motivo_anulado', type: 'numeric'},
-		{name: 'nombre_cargo', type: 'string'}/*,
-		{name: 'cargo', type: 'string'}*/
+		{name: 'nombre_cargo', type: 'string'},
+		{name: 'cargo', type: 'string'},
+		{name: 'email', type: 'string'}
 
 
 	],
@@ -1345,6 +1369,25 @@ header("content-type: text/javascript; charset=UTF-8");
 		)
 	},
 
+	onOpenObs:function() {
+		var rec=this.sm.getSelected();
+		var data = {
+			id_proceso_wf: rec.data.id_proceso_wf,
+			id_estado_wf: rec.data.id_estado_wf,
+			num_tramite: rec.data.nro_tramite
+		}
+		Phx.CP.loadWindows('../../../sis_workflow/vista/obs/Obs.php',
+			'Observaciones del WF',
+			{
+				width:'80%',
+				height:'70%'
+			},
+			data,
+			this.idContenedor,
+			'Obs'
+		)
+	},
+
 	antEstado:function(res){
 		//alert('anterior');
 		var rec=this.sm.getSelected();
@@ -1385,50 +1428,61 @@ header("content-type: text/javascript; charset=UTF-8");
 
 	successEstadoSinc:function(resp){
 		Phx.CP.loadingHide();
-		resp.argument.wizard.panel.destroy()
+		resp.argument.wizard.panel.destroy();
 		this.reload();
 	},
 
 	sigEstado: function(){
 		var rec = this.sm.getSelected();
-
-		console.log('funcion--> estado:'+rec.data.id_estado_wf+'proceso:'+rec.data.id_proceso_wf);
-		this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
-			'Estado de Wf',
-			{
-				modal:true,
-				width:700,
-				height:450
+		/*Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
+			params:{id_usuario:0},
+			success:function(resp){
+				var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+				console.log(reg);
 			},
-			{
-				data:{
-					id_estado_wf:rec.data.id_estado_wf,
-					id_proceso_wf:rec.data.id_proceso_wf
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});*/
+
+		if(rec.data.estado=='pendiente_revision' && rec.data.nro_ripat_att==null){
+			//Ext.Msg.alert('ATENCION !!!','<b>Olvido N° Ripatt, verifique si asigno numero  de Registro Ripatt al Reclamo</b>');
+			this.onButtonEdit();
+		}else {
+			console.log('funcion--> estado:' + rec.data.id_estado_wf + 'proceso:' + rec.data.id_proceso_wf);
+			this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+				'Estado de Wf',
+				{
+					modal: true,
+					width: 700,
+					height: 450
+				},
+				{
+					data: {
+						id_estado_wf: rec.data.id_estado_wf,
+						id_proceso_wf: rec.data.id_proceso_wf
+					}
+				}, this.idContenedor, 'FormEstadoWf',
+				{
+					config: [{
+						event: 'beforesave',
+						delegate: this.onSaveWizard,
+					}],
+					scope: this
 				}
-			}, this.idContenedor,'FormEstadoWf',
-			{
-				config:[{
-					event:'beforesave',
-					delegate: this.onSaveWizard,
-				}],
-				scope:this
-			});
+			);
+
+		}
 	},
 
 	onSaveWizard:function(wizard,resp){
 		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-		//console.log('wizard: %'+JSON.stringify(wizard));
-		/*console.log('json: %'+JSON.stringify(reg));
-		console.log('json: %'+JSON.stringify(resp));
-		console.log('resp.id_proceso_wf_act: %'+resp.id_proceso_wf_act);
-		console.log('resp.id_estado_wf_act: %'+resp.id_estado_wf_act);
-		console.log('resp.id_tipo_estado: %'+resp.id_tipo_estado);*/
-
+		
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/siguienteEstadoReclamo',
 			params:{
-
 				id_proceso_wf_act:  resp.id_proceso_wf_act,
 				id_estado_wf_act:   resp.id_estado_wf_act,
 				id_tipo_estado:     resp.id_tipo_estado,
@@ -1443,55 +1497,34 @@ header("content-type: text/javascript; charset=UTF-8");
 			timeout:this.timeout,
 			scope:this
 		});
-
-
-
-
 	},
 
 	successWizard:function(resp){
 		var rec = this.sm.getSelected();
-		var dias = ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
-		var fecha =  new Date();
+
 		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
 		Phx.CP.loadingHide();
 		resp.argument.wizard.panel.destroy();
-		if(rec.data.estado=='borrador' && dias[fecha.getDay()]){
+
+		var estado = reg.ROOT.datos.v_codigo_estado_siguiente;
+
+		if(estado=='pendiente_revision' ){
 			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
 		}
-		console.log('v_codigo_estado_siguiente: '+reg.ROOT.datos.v_codigo_estado_siguiente);
-		//Cambiar a Reclamo con Respuesta del estado pendiente_respuesta a archivo_con_respuesta
-		/*if(reg.ROOT.datos.v_codigo_estado_siguiente=='archivo_con_respuesta'){
-			this.cambiarRev();
+
+		/*if(estado=='registrado_ripat' && rec.data.nro_ripat_att==null){
+			//Ext.Msg.alert('ATENCION !!!','<b>Olvido N° Ripatt, verifique si asigno numero  de Registro Ripatt al Reclamo</b>');
+			this.onButtonEdit();
 		}*/
+
+		console.log('v_codigo_estado_siguiente: '+reg.ROOT.datos.v_codigo_estado_siguiente);
 		//Elegir el motivo de anulacion.
-		if(reg.ROOT.datos.v_codigo_estado_siguiente=='anulado'){
+		if(estado=='anulado'){
 			this.onButtonEdit();
 		}
 
 		this.reload();
-	},
-
-	onOpenObs:function() {
-		var rec=this.sm.getSelected();
-
-		var data = {
-			id_proceso_wf: rec.data.id_proceso_wf,
-			id_estado_wf: rec.data.id_estado_wf,
-			num_tramite: rec.data.nro_tramite
-		}
-
-		Phx.CP.loadWindows('../../../sis_workflow/vista/obs/Obs.php',
-			'Observaciones del WF',
-			{
-				width:'80%',
-				height:'70%'
-			},
-			data,
-			this.idContenedor,
-			'Obs'
-		)
 	},
 
 	iniciarEvento:function() {
@@ -1525,10 +1558,9 @@ header("content-type: text/javascript; charset=UTF-8");
 	},
 
 	saveCampos: function(resp){
-
 		Phx.CP.loadingHide();
 		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-		//console.log('USUARIO: '+JSON.stringify(objRes.datos));
+
 		Phx.vista.Reclamo.superclass.onButtonNew.call(this);
 
 		var fecha = new Date();
@@ -1538,12 +1570,12 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.Cmp.fecha_hora_vuelo.setValue(new Date((fecha.getMonth()+1)+'/'+fecha.getDate()+'/'+fecha.getFullYear()));
 		this.Cmp.fecha_hora_incidente.setValue(new Date((fecha.getMonth()+1)+'/'+fecha.getDate()+'/'+fecha.getFullYear()));
 		this.Cmp.fecha_hora_recepcion.setValue(fecha);
+
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
 			params:{id_usuario: 0},
 			success:function(resp){
 				var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-				console.log(reg.ROOT.datos);
 
 				this.Cmp.id_oficina_registro_incidente.setValue(reg.ROOT.datos.id_oficina);
 				this.Cmp.id_oficina_registro_incidente.setRawValue(reg.ROOT.datos.oficina_nombre);
@@ -1557,8 +1589,105 @@ header("content-type: text/javascript; charset=UTF-8");
 		});
 	},
 
+	successSave:function(resp){
+		Phx.vista.Reclamo.superclass.successSave.call(this,resp);
+
+		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+        console.log(objRes);
+
+		if(objRes.ROOT.datos.v_momento == 'new'){
+			this.sigEstado2(objRes.ROOT.datos.v_id_estado_wf, objRes.ROOT.datos.v_id_proceso_wf);
+		}else{
+			console.log('momento: '+objRes.ROOT.datos.v_momento);
+		}
+	},
+
+	sigEstado2: function(estado, proceso) {
+		this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+			'Estado de Wf',
+			{
+				modal: true,
+				width: 700,
+				height: 450
+			},
+			{
+				data: {
+					id_estado_wf: estado,
+					id_proceso_wf: proceso
+				}
+			}, this.idContenedor, 'FormEstadoWf',
+			{
+				config: [{
+					event: 'beforesave',
+					delegate: this.onSaveWizard2,
+				}],
+				scope: this
+			}
+		);
+	},
+
+	onSaveWizard2:function(wizard,resp){
+		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Reclamo/siguienteEstadoReclamo',
+			params:{
+
+				id_proceso_wf_act:  resp.id_proceso_wf_act,
+				id_estado_wf_act:   resp.id_estado_wf_act,
+				id_tipo_estado:     resp.id_tipo_estado,
+				id_funcionario_wf:  resp.id_funcionario_wf,
+				id_depto_wf:        resp.id_depto_wf,
+				obs:                resp.obs,
+				json_procesos:      Ext.util.JSON.encode(resp.procesos)
+			},
+			success:this.successWizard2,
+			failure: this.conexionFailure,
+			argument:{wizard:wizard},
+			timeout:this.timeout,
+			scope:this
+		});
+	},
+
+	successWizard2:function(resp){
+		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+		var estado = reg.ROOT.datos.v_codigo_estado_siguiente;
+
+		Phx.CP.loadingHide();
+		resp.argument.wizard.panel.destroy();
+
+		if(estado=='pendiente_revision'){
+			/*Ext.Msg.show({
+				title: 'ATENCION !!!',
+				msg: '<b>A partir de este momento usted tiene ' + '\n' + ' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>',
+				width: 600,
+				buttons: Ext.Msg.YESNO,
+				icon : Ext.Msg.WARNING
+			});*/
+			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
+
+		}
+
+		if(estado=='registrado_ripat' && rec.data.nro_ripat_att==null){
+			this.onButtonEdit();
+		}
+
+		console.log('v_codigo_estado_siguiente: '+reg.ROOT.datos.v_codigo_estado_siguiente);
+
+		//Elegir el motivo de anulacion.
+		if(estado=='anulado'){
+			this.onButtonEdit();
+		}
+
+		this.reload();
+	},
+
 	onButtonEdit: function() {
 		var rec = this.sm.getSelected();
+
+		console.log('onButtonEdit: '+rec);
 		this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', rec.data.id_tipo_incidente);
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
@@ -1578,10 +1707,10 @@ header("content-type: text/javascript; charset=UTF-8");
 	editCampos: function(resp){
 		Phx.CP.loadingHide();
 		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-		console.log('campos Edit: '+objRes);
-		//Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
+		//console.log('campos Edit: '+JSON.stringify(objRes));
 		this.armarFormularioFromArray(objRes.datos);
 	},
+
 	cargarCliente : function (id_cliente, nombre_cliente) {
 		this.Cmp.id_cliente.setValue(id_cliente);
 		this.Cmp.id_cliente.setRawValue(nombre_cliente.toUpperCase());
@@ -1606,7 +1735,6 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.reload();
 		}
 	}
-		
 	/*reportes: function(){
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({

@@ -11,6 +11,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
 <script>
     Phx.vista.FormFiltros=Ext.extend(Phx.frmInterfaz,{
+
+
         constructor:function(config)
         {
             this.panelResumen = new Ext.Panel({html:''});
@@ -29,6 +31,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             Phx.vista.FormFiltros.superclass.constructor.call(this,config);
             this.init();
+            this.Cmp.id_subtipo_incidente.disable();
             this.iniciarEventos();
 
 
@@ -81,6 +84,51 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'Field',
                 id_grupo: 0,
+                form: true
+            },
+            {
+                config: {
+                    name: 'id_oficina_registro_incidente',
+                    fieldLabel: 'Oficina',
+                    allowBlank: true,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_organigrama/control/Oficina/listarOficina',
+                        id: 'id_oficina',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'nombre',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 'ofi.nombre#ofi.codigo#lug.nombre'}
+                    }),
+                    valueField: 'id_oficina',
+                    displayField: 'nombre',
+                    gdisplayField: 'desc_oficina_registro_incidente',
+                    hiddenName: 'id_oficina',
+                    forceSelection: true,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 10,
+                    queryDelay: 1000,
+                    anchor: '100%',
+                    gwidth: 150,
+                    minChars: 2,
+                    resizable:true,
+                    listWidth:'240',
+                    renderer: function (value, p, record) {
+                        return String.format('{0}', record.data['desc_oficina_registro_incidente']);
+                    }
+                },
+                type: 'ComboBox',
+                id_grupo: 4,
+                filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
+                grid: true,
                 form: true
             },
             {
@@ -147,8 +195,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         },
                         totalProperty: 'total',
                         fields: ['id_tipo_incidente', 'nombre_incidente'],
-                        remoteSort: true,
-                         baseParams: {par_filtro: 'tip.nombre_incidente', nivel:'2'}
+                        remoteSort: true/*,
+                         baseParams: {par_filtro: 'rti.nombre_incidente',  fk_tipo_incidente:'id_tipo_incidente'}*/
 
                     }),
                     valueField: 'id_tipo_incidente',
@@ -200,6 +248,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.onEnablePanel(this.idContenedor + '-east', parametros)
             }
+            this.Cmp.id_subtipo_incidente.disable();
         },
         iniciarEventos:function(){
             this.Cmp.id_gestion.on('select', function(cmb, rec, ind){
@@ -210,6 +259,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 console.log('cargando Filtrado...');
 
             },this);
+
+            this.Cmp.id_tipo_incidente.on('select', function (cmb, record, index) {
+                this.Cmp.id_subtipo_incidente.reset();
+                this.Cmp.id_subtipo_incidente.modificado = true;
+                this.Cmp.id_subtipo_incidente.setDisabled(false);
+                this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
+
+            }, this);
         }
     })
 </script>
