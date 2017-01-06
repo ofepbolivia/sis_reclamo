@@ -12,7 +12,8 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
     Phx.vista.FormFiltros=Ext.extend(Phx.frmInterfaz,{
 
-
+        /*fheight:'100%',
+        fwidth: '40%',*/
         constructor:function(config)
         {
             this.panelResumen = new Ext.Panel({html:''});
@@ -24,9 +25,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 layout: 'form',
                 items: [],
                 id_grupo: 0
+                /*width: 500,
+                height:1000*/
 
-            },
-                this.panelResumen
+            }/*,
+                this.panelResumen*/
             ];
 
             Phx.vista.FormFiltros.superclass.constructor.call(this,config);
@@ -116,7 +119,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 10,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '70%',
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
@@ -162,7 +165,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 15,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '70%',
                     /*width: 200,*/
                     gwidth: 150,
                     minChars: 2,
@@ -211,7 +214,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 15,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '70%',
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
@@ -236,6 +239,8 @@ header("content-type: text/javascript; charset=UTF-8");
             cls: 'CRMGlobal'
         },
 
+
+
         title: 'Filtros Para el Reporte de Reclamos',
         // Funcion guardar del formulario
         onSubmit: function(o) {
@@ -250,6 +255,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             this.Cmp.id_subtipo_incidente.disable();
         },
+        
         iniciarEventos:function(){
             this.Cmp.id_gestion.on('select', function(cmb, rec, ind){
 

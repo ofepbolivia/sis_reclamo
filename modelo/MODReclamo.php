@@ -353,12 +353,12 @@ class MODReclamo extends MODbase{
 		return $this->respuesta;
 	}
 
-	function verificarDias(){
+	function stadistica(){
 		$this->procedimiento='rec.ft_reclamo_ime';
-		$this->transaccion='REC_VERDIAS_GET';
+		$this->transaccion='REC_STADISTICA_GET';
 		$this->tipo_procedimiento='IME';
 
-		$this->setParametro('f_actual','f_actual','date');
+		$this->setParametro('id_usuario','id_usuario','integer');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

@@ -38,7 +38,10 @@ DECLARE
 
     v_respuesta				record;
     v_gestion				integer;
-    v_cont_resp integer = 0;
+    v_cont_resp 			integer;
+
+    v_record				record;
+
 BEGIN
 	 v_nombre_funcion = 'rec.f_inserta_respuesta';
 
@@ -46,25 +49,7 @@ BEGIN
      /*
     HSTORE  PARAMETERS
 
-    (p_hstore_cotizacion->id_proceso_compra)::integer;
-    (p_hstore_cotizacion->id_proveedor)::integer;
-    (p_hstore_cotizacion->nro_contrato)::varchar
-    (p_hstore_cotizacion->lugar_entrega)::varchar,
-    (p_hstore_cotizacion->tipo_entrega)::varchar,
-    (p_hstore_cotizacion->fecha_coti)::date,
-	(p_hstore_cotizacion->fecha_entrega)::date,
-    (p_hstore_cotizacion->id_moneda)::integer,
-    (p_hstore_cotizacion->fecha_venc)::date,
-    (p_hstore_cotizacion->tipo_cambio_conv)::numeric,
-    (p_hstore_cotizacion->obs)::text,
-	(p_hstore_cotizacion->fecha_adju)::date,
-	(p_hstore_cotizacion->nro_contrato)::varchar,
-    (p_hstore_cotizacion->_id_usuario_ai)::varchar,
-    (p_hstore_cotizacion->_nombre_usuario_ai)::varchar,
-
-    v_parametros._id_usuario_ai,
-    v_parametros._nombre_usuario_ai,
-
+    (p_hstore_respuesta->'id_reclamo')::integer
 
     */
 
@@ -95,61 +80,66 @@ BEGIN
            --end;
 
 		  IF  v_estado_rec = 'pendiente_respuesta'  THEN
-              	select * into v_reclamo
+
+                select * into v_reclamo
               	from rec.treclamo r
               	where r.id_reclamo = (p_hstore_respuesta->'id_reclamo')::integer;
-                select   tp.codigo, pm.id_proceso_macro
-              	into v_codigo_tipo_proceso, v_id_proceso_macro
-              	from  wf.tproceso_macro pm, wf.ttipo_proceso tp
-              	where pm.id_proceso_macro=38 and tp.tabla='rec.trespuesta' and tp.estado_reg = 'activo' and tp.inicio = 'no';
-                --raise exception 'nro:%, cont:% , res1:%, res2:%',v_reclamo.nro_tramite,v_reclamo.cont_respuesta,v_respuesta.tipo_respuesta, p_hstore_respuesta->'tipo_respuesta';
-            IF (v_reclamo.cont_respuesta < 2) THEN
-            	 --raise exception 'cont: %',v_reclamo.cont_respuesta;
-              IF (v_reclamo.cont_respuesta=1 and v_respuesta.tipo_respuesta = 'respuesta_final') THEN
-              	RAISE EXCEPTION 'EL RECLAMO YA CUENTA CON RESPUESTA';
-              ELSIF (v_respuesta.tipo_respuesta = 'respuesta_parcial' OR v_reclamo.cont_respuesta=0)THEN
-              	IF (p_hstore_respuesta->'tipo_respuesta'='respuesta_final' OR v_reclamo.cont_respuesta=0)THEN
-                  IF (v_respuesta.estado='respuesta_enviada' OR v_reclamo.cont_respuesta=0)THEN
+
+                SELECT tp.codigo, tp.id_proceso_macro
+                INTO v_codigo_tipo_proceso, v_id_proceso_macro
+                FROM wf.ttipo_proceso tp
+                WHERE tp.codigo = 'RESP' AND tp.estado_reg = 'activo';
+
+            SELECT count(*)
+            INTO v_cont_resp
+            FROM rec.trespuesta
+            WHERE id_reclamo = (p_hstore_respuesta->'id_reclamo')::integer;
+
+            IF (v_cont_resp < 2) THEN
+
+              IF (v_cont_resp=1 and v_respuesta.tipo_respuesta = 'respuesta_final') THEN
+              	RAISE EXCEPTION 'NO ES POSIBLE REGISTRAR NUEVA RESPUESTA EL RECLAMO YA CUENTA CON UN RESPUESTA...';
+              ELSIF (v_respuesta.tipo_respuesta = 'respuesta_parcial' OR v_cont_resp=0)THEN
+              	IF (p_hstore_respuesta->'tipo_respuesta'='respuesta_final' OR v_cont_resp=0)THEN
+                  IF (v_respuesta.estado='respuesta_enviada' OR v_cont_resp=0)THEN
                     --OBTENEMOS GESTION
                     --begin
                     select g.gestion
                     into v_gestion
                     from param.tgestion g
                     where g.id_gestion = v_reclamo.id_gestion;
-                    /*IF v_gestion is null THEN
-                        raise exception 'NO SE ENCONTRO LA GESTION SOLICITADA';
-                    END IF;*/
                     --end
                     --codigo de numero de Respuesta
                     --begin
-                    v_codigo = (v_codigo_tipo_proceso||'-'||lpad((v_reclamo.cont_respuesta+1)::varchar,2,'0')||'-['||v_reclamo.nro_tramite||']');
-                    update rec.treclamo
-                    set cont_respuesta = v_reclamo.cont_respuesta+1
-                    where id_reclamo = (p_hstore_respuesta->'id_reclamo')::integer;
-                    --end;
-                    SELECT
+                    v_codigo = (v_codigo_tipo_proceso||'-'||lpad((v_cont_resp+1)::varchar,2,'0')||'-['||v_reclamo.nro_tramite||']');
 
-                        ps_num_tramite,
-                        ps_id_proceso_wf,
-                        ps_id_estado_wf,
-                        ps_codigo_estado
-                    into
-                        v_nro_respuesta,
-                        v_id_proceso_wf,
-                        v_id_estado_wf,
-                        v_codigo_estado
-                    FROM wf.f_inicia_tramite(
-                        p_id_usuario,
-                        (p_hstore_respuesta->'_id_usuario_ai')::integer,
-                        (p_hstore_respuesta->'__nombre_usuario_ai')::varchar,
-                        v_reclamo.id_gestion,
-                        v_codigo_tipo_proceso,
-                        v_reclamo.id_funcionario_recepcion,
-                        null,
-                        'Respuesta'||(p_hstore_respuesta->'nro_cite')::varchar,
-                        'RESP',
-                        v_codigo
-                    );
+                    SELECT tf.id_funcionario INTO v_record
+                    FROM segu.tusuario tu
+                    INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
+                    INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
+                    INNER JOIN rec.treclamo tr on tr.id_usuario_reg = tu.id_usuario
+                    WHERE tu.id_usuario = p_id_usuario ;
+
+                    SELECT
+                                 ps_id_proceso_wf,
+                                 ps_id_estado_wf,
+                                 ps_codigo_estado,
+                                 ps_nro_tramite
+                    INTO
+                                 v_id_proceso_wf,
+                                 v_id_estado_wf,
+                                 v_codigo_estado,
+                                 v_nro_respuesta
+                   	FROM wf.f_registra_proceso_disparado_wf(
+                                p_id_usuario,
+                                (p_hstore_respuesta->'_id_usuario_ai')::integer,
+                                (p_hstore_respuesta->'_nombre_usuario_ai')::varchar,
+                                v_reclamo.id_estado_wf,
+                                v_record.id_funcionario,  --id_funcionario wf
+                                null,
+                                v_codigo,--'Respuesta'||(p_hstore_respuesta->'nro_cite')::varchar,
+                                'RESP',
+                                v_codigo);
                   insert into rec.trespuesta(
                     id_reclamo,
                     recomendaciones,
@@ -191,13 +181,14 @@ BEGIN
                     v_id_proceso_wf,
                     v_id_estado_wf,
                     v_codigo_estado,
-                    v_nro_respuesta
+                    v_codigo
                     )RETURNING id_respuesta into v_id_respuesta;
-
+        			--RAISE EXCEPTION 'ERROR';
                     --Definicion de la respuesta
                     v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Respuesta almacenado(a) con exito (id_respuesta'||v_id_respuesta||')');
                     v_resp = pxp.f_agrega_clave(v_resp,'id_respuesta',v_id_respuesta::varchar);
                     --Devuelve la respuesta
+
                     return v_resp;
                   ELSE
                   	RAISE EXCEPTION 'LA RESPUESTA PARCIAL NO HA SIDO CONCLUIDA...';
@@ -209,10 +200,10 @@ BEGIN
               	RAISE EXCEPTION 'YA TIENE UNA RESPUESTA PARCIAL, INCLUYA UNA RESPUESTA FINAL...';
               END IF;
             ELSE
-            	RAISE EXCEPTION 'EL RECLAMO YA TIENE RESPUESTA...';
+            	RAISE EXCEPTION 'NO ES POSIBLE REGISTRAR NUEVA RESPUESTA EL RECLAMO YA CUENTA CON UN RESPUESTA......';
             END IF;
           ELSE
-          		RAISE EXCEPTION 'VAYA A LA BANDEJA PENDIENTE DE RESPUESTA...';
+          		RAISE EXCEPTION 'NO ES POSIBLE REGISTRAR NUEVA RESPUESTA EL RECLAMO YA CUENTA CON UN RESPUESTA......';
           END IF;
                       /*  SELECT
                            ps_id_tipo_estado,

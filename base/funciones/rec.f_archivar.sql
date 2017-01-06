@@ -16,6 +16,8 @@ DECLARE
 
     v_fecha				date;
 
+    v_codigo_estado integer;
+
 BEGIN
 	 --Procesamos todos los reclamos
      v_acceso_directo = '';
@@ -24,12 +26,12 @@ BEGIN
      v_tipo_noti = 'notificacion';
      v_titulo  = 'Visto Bueno';
      --INSERT INTO rec.ttipo_incidente(nombre_incidente,fk_tipo_incidente,tiempo_respuesta, nivel) VALUES ('pokemon',1,'5',1);
-     IF ((SELECT count(*) FROM rec.treclamo r WHERE  r.estado = 'archivo_con_respuesta')>0)THEN
+     IF ((SELECT count(*) FROM rec.treclamo r WHERE  r.estado = 'respuesta_registrado_ripat')>0)THEN
 
      	FOR	v_record IN
         SELECT r.*
         FROM rec.treclamo r
-        WHERE  r.estado = 'archivo_con_respuesta' LOOP
+        WHERE  r.estado = 'respuesta_registrado_ripat' LOOP
 
             SELECT tr.fecha_mod INTO v_fecha
             FROM rec.trespuesta tr
@@ -42,6 +44,12 @@ BEGIN
                 FROM wf.testado_wf te
                 WHERE te.id_estado_wf=v_record.id_estado_wf;
 
+                --id tipo_estado
+                SELECT te.id_tipo_estado
+                INTO v_codigo_estado
+                FROM wf.ttipo_estado te
+                WHERE te.codigo = 'archivado_concluido';
+
                 SELECT tu.id_usuario INTO v_id_usuario
                 FROM wf.testado_wf te
                 inner join orga.tfuncionario tf on tf.id_funcionario = te.id_funcionario
@@ -49,7 +57,7 @@ BEGIN
                 inner join segu.tusuario tu on tu.id_persona = tp.id_persona
                 WHERE te.id_estado_wf=v_record.id_estado_wf;
                 v_id_estado_actual =  wf.f_registra_estado_wf(
-                						789,
+                						v_codigo_estado,
                                         v_id_funcionario,
                                         v_record.id_estado_wf,
                                         v_record.id_proceso_wf,

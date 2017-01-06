@@ -17,19 +17,41 @@ DECLARE
     v_valor   varchar = '';
     v_cont integer = 0;
     v_record 			record;
+    v_cont_resp			integer;
+
+    v_registros_rec		record;
+    v_revisado			varchar;
+
 BEGIN
 
 	v_nombre_funcion = 'rec.f_procesar_estados_reclamo';
 
-    select r.* into v_reclamo
-    from rec.treclamo	r
-    where r.id_proceso_wf = p_id_proceso_wf;
-    --RAISE EXCEPTION 'RECLAMO: %', p_id_proceso_wf;
-    select  resp.* into v_respuesta
-    from rec.trespuesta resp
-    where resp.id_reclamo = v_reclamo.id_reclamo;
+    select * into v_reclamo
+    from rec.treclamo
+    where id_proceso_wf = p_id_proceso_wf;
 
-    if(p_codigo_estado in ('pendiente_revision','registrado_ripat','derivado','anulado')) then
+    select  * into v_respuesta
+    from rec.trespuesta
+    where id_reclamo = v_reclamo.id_reclamo;
+
+    SELECT count(*)
+    INTO v_cont_resp
+    FROM rec.trespuesta
+    WHERE id_reclamo = v_reclamo.id_reclamo;
+
+    if(p_codigo_estado = 'pendiente_revision') then
+    	begin
+    		update rec.treclamo r set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now(),
+                fecha_recepcion_sac = fecha_mod::date
+    		where id_proceso_wf = p_id_proceso_wf;
+        end;
+    elsif(p_codigo_estado in ('registrado_ripat','derivado','anulado')) then
     	begin
         --raise EXCEPTION 'pendiente_revision';
     		update rec.treclamo r set
@@ -43,6 +65,17 @@ BEGIN
         end;
 
     elsif(p_codigo_estado in ('pendiente_informacion')) then
+    	begin
+    		update rec.treclamo r set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    		where id_proceso_wf = p_id_proceso_wf;
+    	end;
+    elsif(p_codigo_estado in ('pendiente_asignacion')) then
     	begin
     		update rec.treclamo r set
        			id_estado_wf =  p_id_estado_wf,
@@ -78,7 +111,7 @@ BEGIN
             end if;
 
         end loop;
-        if (v_cont = v_reclamo.cont_respuesta and v_reclamo.cont_respuesta>0) then
+        if (v_cont = v_cont_resp and v_cont_resp>0) then
     		update rec.treclamo r set
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
@@ -88,7 +121,7 @@ BEGIN
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
         else
-        	if( v_reclamo.cont_respuesta = 0) then
+        	if( v_cont_resp = 0) then
             	raise exception 'No tiene respuesta para este Reclamo, Cree una.';
             else
         		raise exception 'Falta algunas Respuestas por finalizar ';
@@ -96,7 +129,50 @@ BEGIN
         end if;
 
     	end;
-    elsif(p_codigo_estado in ('archivado_concluido')) then
+    elsif(p_codigo_estado in ('respuesta_registrado_ripat')) then
+    	begin
+        	--Cambiar a Marcado con Verde de pendiente_respuesta a archivo_con_respuesta
+                --begin
+
+            	update rec.treclamo r set
+       			id_estado_wf =  p_id_estado_wf,
+      			estado = p_codigo_estado,
+       			id_usuario_mod=p_id_usuario,
+       			id_usuario_ai = p_id_usuario_ai,
+		       	usuario_ai = p_usuario_ai,
+       			fecha_mod=now()
+    			where id_proceso_wf = p_id_proceso_wf;
+
+                select
+                	tr.revisado,
+                	tr.id_proceso_wf
+              	into
+                	v_registros_rec
+              	from rec.treclamo tr
+              	where tr.id_reclamo = v_respuesta.id_reclamo;
+
+
+              	IF (v_registros_rec.revisado = 'si') THEN
+                	v_revisado = 'no';
+              	ELSE
+                 	v_revisado = 'si';
+              	END IF;
+
+              	update rec.treclamo  tr set
+                	revisado = v_revisado,
+                 	id_usuario_mod=p_id_usuario,
+                 	fecha_mod=now(),
+                 	id_usuario_ai = p_id_usuario_ai,
+                 	usuario_ai = p_usuario_ai
+               	where tr.id_reclamo  = v_respuesta.id_reclamo;
+
+              	--modifica el proeso wf para actulizar el mismo campo
+               	update wf.tproceso_wf  set
+                	revisado_asistente = v_revisado
+               	where id_proceso_wf  = v_registros_rec.id_proceso_wf;
+                --end;
+    	end;
+    /*elsif(p_codigo_estado in ('archivado_concluido')) then
     	begin
         	select  resp.tipo_respuesta
             into v_record
@@ -113,7 +189,7 @@ BEGIN
 		       	usuario_ai = p_usuario_ai,
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
-    	end;
+    	end;*/
     elsif(p_codigo_estado in ('en_avenimiento')) then
     	begin
     		update rec.treclamo r set

@@ -199,9 +199,9 @@ class ACTReclamo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
-	function verificarDias(){
+	function stadistica(){
 		$this->objFunc=$this->create('MODReclamo');
-		$this->res=$this->objFunc->verificarDias($this->objParam);
+		$this->res=$this->objFunc->stadistica($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 

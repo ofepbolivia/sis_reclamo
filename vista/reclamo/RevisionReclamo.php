@@ -136,6 +136,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.cmbGestion.on('select',this.capturarEventos, this);
 
         },
+        
         cmbGestion: new Ext.form.ComboBox({
             name: 'gestion',
             id: 'gestion',

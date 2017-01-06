@@ -13,6 +13,7 @@ DECLARE
 
     v_contador			integer=0;
     v_fecha_actual		date;
+    v_fecha_limite      date;
 
 BEGIN
 	IF(p_transaccion='DIAS_RESP')THEN
@@ -33,17 +34,17 @@ BEGIN
     ELSIF(p_transaccion='DIAS_INF')THEN
       --Dias para Adjuntar Informacion Adicional
       --begin
-      v_diferencia = p_fecha_actual-p_fecha_limite;
-      raise notice 'diferencia: %',v_diferencia;
-      v_contador = -1;
       IF (date_part('dow',p_fecha_limite) in (1,2,3))THEN
+      	v_fecha_limite =  p_fecha_limite + 2;
+        v_diferencia = v_fecha_limite - p_fecha_actual;
       	IF(v_diferencia>=0 AND v_diferencia<=2 )THEN
           v_contador = v_diferencia;
       	ELSE
           v_contador = -1;
       	END IF;
       ELSIF (date_part('dow',p_fecha_limite) in (4,5))THEN
-      	v_diferencia = v_diferencia - 2;
+      	v_fecha_limite =  p_fecha_limite + 4;
+      	v_diferencia = v_fecha_limite - p_fecha_actual - 2;
       	IF(v_diferencia>=0 AND v_diferencia<=2 )THEN
         	v_contador = v_diferencia;
         ELSE

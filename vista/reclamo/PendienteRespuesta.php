@@ -359,8 +359,11 @@ header("content-type: text/javascript; charset=UTF-8");
 
         vista: new Ext.Window({
             title:'Graficos',
-            width: 600,
-            height:450,
+            modal:true,
+            
+            width: 700,
+            height:550,
+            bodyStyle: 'padding:5px;',
             tbar: [  // <--- ToolBar
                 {text:'Back'}, // <--- Buttons
                 {text:'Forward'},
