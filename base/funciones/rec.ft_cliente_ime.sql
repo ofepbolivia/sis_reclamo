@@ -29,11 +29,13 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_cliente	integer;
+	v_id_cliente			integer;
+    v_nombre				varchar;
 
 BEGIN
 
     v_nombre_funcion = 'rec.ft_cliente_ime';
+
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************
@@ -46,6 +48,7 @@ BEGIN
 	if(p_transaccion='REC_CLI_INS')then
 
         begin
+
         	--Sentencia de la insercion
         	insert into rec.tcliente(
 			genero,
@@ -115,6 +118,7 @@ BEGIN
 	elsif(p_transaccion='REC_CLI_MOD')then
 
 		begin
+        	--RAISE EXCEPTION 'MODIFICAR';
 			--Sentencia de la modificacion
 			update rec.tcliente set
 			genero = v_parametros.genero,
@@ -168,7 +172,30 @@ BEGIN
             return v_resp;
 
 		end;
+    /*********************************
+ 	#TRANSACCION:  'REC_NOMCLI_GET'
+ 	#DESCRIPCION:	RECUPERA EL NOMBRE COMPLETO DE UN CLIENTE
+ 	#AUTOR:		admin
+ 	#FECHA:		31-10-2016 14:29:16
+	***********************************/
 
+	elsif(p_transaccion='REC_NOMCLI_GET')then
+
+		begin
+			select vc.nombre_completo1 into v_nombre
+            from rec.vcliente vc
+            where vc.id_cliente = v_parametros.id_cliente;
+
+
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Nombre Cliente');
+            v_resp = pxp.f_agrega_clave(v_resp,'nombre_completo1',v_nombre);
+
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
 	else
 
     	raise exception 'Transaccion inexistente: %',p_transaccion;

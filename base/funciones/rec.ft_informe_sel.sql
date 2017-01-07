@@ -1,7 +1,11 @@
-CREATE OR REPLACE FUNCTION "rec"."ft_informe_sel"(
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+CREATE OR REPLACE FUNCTION rec.ft_informe_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_informe_sel
@@ -42,7 +46,7 @@ BEGIN
     begin
       --Sentencia de la consulta
       v_consulta:='select
-						distinct on (infor.id_informe) infor.id_informe,
+						infor.id_informe,
 						infor.sugerencia_respuesta,
 						infor.id_reclamo,
 						infor.antecedentes_informe,
@@ -61,13 +65,13 @@ BEGIN
 						infor.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-                        com.nombre as desc_nombre_compensacion,
+
                         fun.desc_funcionario1 as desc_fun,
                         rec.ft_informe_crear_lista(infor.lista_compensacion) as lista
 						from rec.tinforme infor
 						inner join segu.tusuario usu1 on usu1.id_usuario = infor.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = infor.id_usuario_mod
-                        join rec.tcompensacion com on com.id_compensacion = com.id_compensacion
+
                         inner join orga.vfuncionario fun on fun.id_funcionario = infor.id_funcionario
 				        where  ';
 
@@ -95,6 +99,7 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = infor.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = infor.id_usuario_mod
                         join rec.tcompensacion com on com.id_compensacion = com.id_compensacion
+                        inner join orga.vfuncionario fun on fun.id_funcionario = infor.id_funcionario
 					    where ';
 
       --Definicion de la respuesta
@@ -113,9 +118,9 @@ BEGIN
      elsif(p_transaccion='REC_INFORREP_SEL')then
 
     	begin
-
+   			--RAISE EXCEPTION 'PRUEBA: ',v_parametros.id_proceso_wf;
            --recupera el funcionario ...
-          v_gaf = orga.f_obtener_gerente_x_codigo_uo('gerente_financiero', now()::Date);
+          --v_gaf = orga.f_obtener_gerente_x_codigo_uo('gerente_financiero', now()::Date);
            --Sentencia de la consulta
 		  v_consulta:=' select
 						distinct on (infor.id_informe) infor.id_informe,
@@ -150,19 +155,18 @@ BEGIN
                         re.origen,
                         re.destino,
                         cli.nombre_completo1,
-                        cl.email,
-                        cl.celular,
+                        cli.email,
+                        cli.celular,
                         re.detalle_incidente
 						from rec.tinforme infor
 						inner join segu.tusuario usu1 on usu1.id_usuario = infor.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = infor.id_usuario_mod
-                        join rec.tcompensacion com on com.id_compensacion = com.id_compensacion
+                        INNER JOIN rec.tcompensacion com on com.id_compensacion = com.id_compensacion
                         inner join orga.vfuncionario fun on fun.id_funcionario = infor.id_funcionario
                         inner join rec.treclamo re on re.id_reclamo = infor.id_reclamo
                         inner join orga.toficina of on of.id_oficina = re.id_oficina_incidente
                         inner join rec.vcliente cli on cli.id_cliente = re.id_cliente
-                        inner join rec.tcliente cl on cl.id_cliente = re.id_cliente
-                        where re.id_proceso_wf ='||v_parametros.id_proceso_wf;
+                        where re.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
                         raise notice '%', v_consulta;
 
@@ -185,7 +189,9 @@ BEGIN
     v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
     raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "rec"."ft_informe_sel"(integer, integer, character varying, character varying) OWNER TO postgres;

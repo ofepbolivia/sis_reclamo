@@ -82,6 +82,13 @@ DECLARE
     v_record_gestion	record;
     v_siguiente_estado 	varchar;
 
+    --STADISTICA BEGIN
+    	v_stadistica	record;
+    	v_hombres			integer=0;
+        v_mujeres			integer=0;
+        v_genero			varchar;
+    --END
+
 BEGIN
 
     v_nombre_funcion = 'rec.ft_reclamo_ime';
@@ -861,21 +868,33 @@ BEGIN
         end;
 
      /*********************************
-    #TRANSACCION:  'REC_VERDIAS_GET'
+    #TRANSACCION:  'REC_STADISTICA_GET'
  	#DESCRIPCION:	Obtiene el numero de dias de respuesta
  	#AUTOR:		Franklin Espinoza Alvarez
  	#FECHA:		20-10-2016 10:01:08
 	***********************************/
-    elsif(p_transaccion='REC_VERDIAS_GET')then
+    elsif(p_transaccion='REC_STADISTICA_GET')then
 
 		begin
 
-			--raise exception 'fecha: %',v_parametros.f_actual;
-            v_resp = '';
+			FOR v_stadistica IN (SELECT * FROM rec.treclamo  WHERE id_gestion=13) LOOP
 
+                SELECT c.genero INTO v_genero
+                FROM rec.tcliente c
+                WHERE c.id_cliente=v_stadistica.id_cliente;
+
+                IF v_genero = 'VARON' THEN
+                	v_hombres=v_hombres+1;
+                ELSE
+                	v_mujeres=v_mujeres+1;
+                END IF;
+            END LOOP;
+            --v_resp = '';
+            --RAISE EXCEPTION 'DATOS: %,%',v_hombres,v_mujeres;
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Fecha Actual');
-            v_resp = pxp.f_agrega_clave(v_resp,'fecha_actual',v_parametros.f_actual);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+            v_resp = pxp.f_agrega_clave(v_resp,'v_hombres',v_hombres::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_mujeres',v_mujeres::varchar);
 
             --Devuelve la respuesta
             return v_resp;

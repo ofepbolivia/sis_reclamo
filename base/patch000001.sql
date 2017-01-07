@@ -1,62 +1,210 @@
-/***********************************I-SCP-MAM-REC-1-10/08/2016****************************************/
+/***********************************I-SCP-FEA-REC-1-07/01/2017****************************************/
+CREATE TABLE rec.tcliente (
+  id_cliente SERIAL,
+  ci VARCHAR(40) NOT NULL,
+  lugar_expedicion VARCHAR(10),
+  nombre VARCHAR(100),
+  apellido_paterno VARCHAR(30),
+  apellido_materno VARCHAR(30),
+  genero VARCHAR(10),
+  nacionalidad VARCHAR(30),
+  email VARCHAR(100),
+  celular INTEGER,
+  telefono VARCHAR(70),
+  id_pais_residencia INTEGER,
+  ciudad_residencia VARCHAR(70),
+  barrio_zona VARCHAR(200),
+  direccion VARCHAR(200),
+  CONSTRAINT tcliente_pkey PRIMARY KEY(id_cliente),
+  CONSTRAINT cliente_lugar_fk FOREIGN KEY (id_pais_residencia)
+    REFERENCES param.tlugar(id_lugar)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
 CREATE TABLE rec.tcompensacion (
   id_compensacion SERIAL,
   nombre VARCHAR(100) NOT NULL,
   codigo VARCHAR(100) NOT NULL,
+  orden NUMERIC(4,2) DEFAULT 1 NOT NULL,
   CONSTRAINT tcompensacion_pkey PRIMARY KEY(id_compensacion)
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
 
-CREATE TABLE rec.trespuesta (
-  id_respuesta SERIAL,
+CREATE TABLE rec.tinforme (
+  id_informe SERIAL,
   id_reclamo INTEGER NOT NULL,
-  nro_cite INTEGER NOT NULL,
-  fecha_respuesta DATE NOT NULL,
-  respuesta VARCHAR(100) NOT NULL,
-  procedimiento VARCHAR(100) NOT NULL,
-  recomendaciones VARCHAR(100) NOT NULL,
-  fecha_notificacion DATE NOT NULL,
-  CONSTRAINT trespuesta_pkey PRIMARY KEY(id_respuesta)
+  nro_informe VARCHAR DEFAULT nextval('rec.tinforme_nro_informe_seq'::regclass) NOT NULL,
+  fecha_informe DATE,
+  id_funcionario INTEGER NOT NULL,
+  lista_compensacion VARCHAR(500),
+  antecedentes_informe VARCHAR(1000),
+  analisis_tecnico VARCHAR(1000),
+  sugerencia_respuesta VARCHAR(1000),
+  conclusion_recomendacion VARCHAR(1000),
+  CONSTRAINT tinforme_pkey PRIMARY KEY(id_informe),
+  CONSTRAINT fk_tinforme__id_reclamo FOREIGN KEY (id_reclamo)
+    REFERENCES rec.treclamo(id_reclamo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tinforme_id_funcionario_fkey FOREIGN KEY (id_funcionario)
+    REFERENCES orga.tfuncionario(id_funcionario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
 
-/***********************************F-SCP-MAM-REC-1-10/08/2016****************************************/
+CREATE TABLE rec.tmedio_reclamo (
+  id_medio_reclamo SERIAL,
+  codigo VARCHAR(20),
+  nombre_medio VARCHAR(100),
+  orden NUMERIC(4,2) DEFAULT 1 NOT NULL,
+  CONSTRAINT tmedio_reclamo_codigo_key UNIQUE(codigo),
+  CONSTRAINT tmedio_reclamo_pkey PRIMARY KEY(id_medio_reclamo)
+) INHERITS (pxp.tbase)
 
-/***********************************I-SCP-FEA-REC-1-10/08/2016****************************************/
+WITH (oids = false);
+
+CREATE TABLE rec.tmotivo_anulado (
+  id_motivo_anulado SERIAL,
+  motivo VARCHAR(1000),
+  orden NUMERIC(4,2) DEFAULT 1,
+  CONSTRAINT tmotivo_anulado_pkey PRIMARY KEY(id_motivo_anulado)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
 
 CREATE TABLE rec.treclamo (
   id_reclamo SERIAL,
   id_tipo_incidente INTEGER NOT NULL,
   id_subtipo_incidente INTEGER,
-  nro_tramite INTEGER,
+  nro_tramite VARCHAR(20) NOT NULL,
   id_medio_reclamo INTEGER NOT NULL,
   id_funcionario_recepcion INTEGER NOT NULL,
-  fecha_hora_incidente TIMESTAMP(6) WITHOUT TIME ZONE,
-  fecha_hora_recepcion TIMESTAMP(6) WITHOUT TIME ZONE,
+  fecha_hora_incidente TIMESTAMP WITHOUT TIME ZONE,
+  fecha_hora_recepcion TIMESTAMP WITHOUT TIME ZONE,
   id_cliente INTEGER,
-  pnr INTEGER,
-  nro_vuelo VARCHAR(10),
-  origen VARCHAR(10),
-  destino VARCHAR(10),
-  hora_vuelo TIME(6) WITHOUT TIME ZONE,
+  pnr VARCHAR(30),
+  nro_vuelo VARCHAR(25),
+  origen VARCHAR(25),
+  destino VARCHAR(25),
   id_oficina_incidente INTEGER,
   id_oficina_registro_incidente INTEGER NOT NULL,
-  nro_frd INTEGER,
+  nro_frd VARCHAR(25),
   nro_frsa INTEGER,
   nro_pir INTEGER,
   nro_att_canalizado INTEGER,
   nro_ripat_att INTEGER,
   nro_hoja_ruta INTEGER,
-  id_funcionario_denunciado INTEGER NOT NULL,
+  id_funcionario_denunciado INTEGER,
   detalle_incidente TEXT,
   observaciones_incidente TEXT,
   id_proceso_wf INTEGER NOT NULL,
   id_estado_wf INTEGER NOT NULL,
-  estado VARCHAR(100),
-  CONSTRAINT treclamo_pkey PRIMARY KEY(id_reclamo)
+  estado VARCHAR(100) NOT NULL,
+  correlativo_preimpreso_frd INTEGER DEFAULT 0 NOT NULL,
+  fecha_limite_respuesta DATE,
+  fecha_hora_vuelo TIMESTAMP WITHOUT TIME ZONE,
+  id_gestion INTEGER,
+  id_motivo_anulado INTEGER,
+  fecha_recepcion_sac DATE,
+  transito VARCHAR(15),
+  nro_guia_aerea VARCHAR,
+  revisado VARCHAR(5) DEFAULT 'no'::character varying NOT NULL,
+  CONSTRAINT treclamo_pkey PRIMARY KEY(id_reclamo),
+  CONSTRAINT id_estado_wf_fk FOREIGN KEY (id_estado_wf)
+    REFERENCES wf.testado_wf(id_estado_wf)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT id_funcionario_denunciado_fk FOREIGN KEY (id_funcionario_denunciado)
+    REFERENCES orga.tfuncionario(id_funcionario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT id_funcionario_recepcion_fk FOREIGN KEY (id_funcionario_recepcion)
+    REFERENCES orga.tfuncionario(id_funcionario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT id_medio_reclamo_fk FOREIGN KEY (id_medio_reclamo)
+    REFERENCES rec.tmedio_reclamo(id_medio_reclamo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT id_oficina_incidente_fk FOREIGN KEY (id_oficina_incidente)
+    REFERENCES orga.toficina(id_oficina)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT id_oficina_registro_incidente_fk FOREIGN KEY (id_oficina_registro_incidente)
+    REFERENCES orga.toficina(id_oficina)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT id_proceso_wf_fk FOREIGN KEY (id_proceso_wf)
+    REFERENCES wf.tproceso_wf(id_proceso_wf)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT id_subtipo_incidente_fk FOREIGN KEY (id_subtipo_incidente)
+    REFERENCES rec.ttipo_incidente(id_tipo_incidente)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT movito_anulado_fk FOREIGN KEY (id_motivo_anulado)
+    REFERENCES rec.tmotivo_anulado(id_motivo_anulado)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT treclamo_id_tipo_incidente_fkey FOREIGN KEY (id_tipo_incidente)
+    REFERENCES rec.ttipo_incidente(id_tipo_incidente)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
 
+WITH (oids = false);
+
+
+CREATE TABLE rec.trespuesta (
+  id_respuesta SERIAL,
+  id_reclamo INTEGER NOT NULL,
+  nro_cite VARCHAR(50),
+  fecha_respuesta DATE,
+  respuesta VARCHAR(1000000),
+  procedente VARCHAR(5) NOT NULL,
+  recomendaciones VARCHAR(1000000) NOT NULL,
+  fecha_notificacion DATE,
+  tipo_respuesta VARCHAR(50) DEFAULT 'respuesta_final'::character varying NOT NULL,
+  asunto VARCHAR(100000),
+  id_proceso_wf INTEGER NOT NULL,
+  id_estado_wf INTEGER NOT NULL,
+  estado VARCHAR(100) NOT NULL,
+  nro_respuesta VARCHAR(50) NOT NULL,
+  CONSTRAINT trespuesta_pkey PRIMARY KEY(id_respuesta),
+  CONSTRAINT trespuesta_fk FOREIGN KEY (id_proceso_wf)
+    REFERENCES wf.tproceso_wf(id_proceso_wf)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT trespuesta_fk1 FOREIGN KEY (id_estado_wf)
+    REFERENCES wf.testado_wf(id_estado_wf)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT trespuesta_fk2 FOREIGN KEY (id_reclamo)
+    REFERENCES rec.treclamo(id_reclamo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
@@ -65,72 +213,17 @@ CREATE TABLE rec.ttipo_incidente (
   id_tipo_incidente SERIAL,
   nombre_incidente VARCHAR(50) NOT NULL,
   fk_tipo_incidente INTEGER,
-  tiempo_respuesta INTEGER,
+  tiempo_respuesta VARCHAR(5),
   nivel INTEGER,
-  CONSTRAINT ttipo_incidente_pkey PRIMARY KEY(id_tipo_incidente)
+  CONSTRAINT ttipo_incidente_pkey PRIMARY KEY(id_tipo_incidente),
+  CONSTRAINT ttipo_incidente_fk FOREIGN KEY (fk_tipo_incidente)
+    REFERENCES rec.ttipo_incidente(id_tipo_incidente)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
 
 
-/***********************************F-SCP-FEA-REC-1-10/08/2016****************************************/
-
-/***********************************I-SCP-FEA-REC-1-11/08/2016****************************************/
-CREATE TABLE rec.tcliente (
-  id_cliente SERIAL,
-  ci VARCHAR(20),
-  lugar_expedicion VARCHAR(10),
-  nombre VARCHAR(30),
-  apellido_paterno VARCHAR(30),
-  apellido_materno VARCHAR(30),
-  genero CHAR(1),
-  nacionalidad VARCHAR(30),
-  email VARCHAR(30),
-  celular INTEGER,
-  telefono INTEGER,
-  pais_residencia VARCHAR(30),
-  ciudad_residencia VARCHAR(30),
-  barrio_zona VARCHAR(50),
-  direccion VARCHAR(50),
-  PRIMARY KEY(id_cliente, ci)
-) INHERITS (pxp.tbase)
-
-WITH (oids = false);
-/***********************************F-SCP-FEA-REC-1-11/08/2016****************************************/
-
-
-/***********************************I-SCP-EAQ-REC-1-19/08/2016****************************************/
-CREATE TABLE rec.tmedio_reclamo (
-  id_medio_reclamo SERIAL,
-  codigo VARCHAR(20),
-  nombre_medio VARCHAR(30),
-  PRIMARY KEY( id_medio_reclamo)
-) INHERITS (pxp.tbase)
-
-WITH (oids = false);
-/***********************************F-SCP-EAQ-REC-1-19/08/2016****************************************/
-
-/***********************************I-SCP-EAQ-REC-1-11/08/2016****************************************/
-CREATE TABLE rec.tinforme (
-  id_informe SERIAL,
-  id_reclamo SERIAL,
-  nro_informe SERIAL,
-  fecha_informe DATE,
-  id_funcionario SERIAL,
-  lista_compensacion VARCHAR(100),
-  antecedentes_informe VARCHAR(100),
-  analisis_tecnico VARCHAR(100),
-  sugerencia_respuesta VARCHAR(100),
-  conclusion_recomendacion VARCHAR(100),
-  PRIMARY KEY(id_informe)
-) INHERITS (pxp.tbase)
-WITH (oids = false);
-/***********************************F-SCP-EAQ-REC-1-11/08/2016****************************************/
-
-/***********************************I-SCP-EAQ-REC-1-24/08/2016****************************************/
-ALTER TABLE rec.tmedio_reclamo
-  ADD UNIQUE (codigo);
-/***********************************F-SCP-EAQ-REC-1-24/08/2016****************************************/
-/***********************************I-SCP-EAQ-REC-1-24/08/2016****************************************/
-
-/***********************************F-SCP-EAQ-REC-1-24/08/2016****************************************/
+/***********************************F-SCP-FEA-REC-1-07/01/2017****************************************/

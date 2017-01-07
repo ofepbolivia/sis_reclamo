@@ -1,8 +1,11 @@
-CREATE OR REPLACE FUNCTION "rec"."ft_medio_reclamo_ime" (
-	p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-	RETURNS character varying AS
-$BODY$
-
+CREATE OR REPLACE FUNCTION rec.ft_medio_reclamo_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Gestion de Reclamos
  FUNCION: 		rec.ft_medio_reclamo_ime
@@ -53,7 +56,8 @@ BEGIN
 				usuario_ai,
 				id_usuario_ai,
 				fecha_mod,
-				id_usuario_mod
+				id_usuario_mod,
+                orden
 			) values(
 				v_parametros.codigo,
 				'activo',
@@ -63,8 +67,8 @@ BEGIN
 				v_parametros._nombre_usuario_ai,
 				v_parametros._id_usuario_ai,
 				null,
-				null
-
+				null,
+				v_parametros.orden
 
 
 			)RETURNING id_medio_reclamo into v_id_medio_reclamo;
@@ -95,7 +99,8 @@ BEGIN
 				fecha_mod = now(),
 				id_usuario_mod = p_id_usuario,
 				id_usuario_ai = v_parametros._id_usuario_ai,
-				usuario_ai = v_parametros._nombre_usuario_ai
+				usuario_ai = v_parametros._nombre_usuario_ai,
+                orden = v_parametros.orden
 			where id_medio_reclamo=v_parametros.id_medio_reclamo;
 
 			--Definicion de la respuesta
@@ -146,7 +151,9 @@ BEGIN
 		raise exception '%',v_resp;
 
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "rec"."ft_medio_reclamo_ime"(integer, integer, character varying, character varying) OWNER TO postgres;
