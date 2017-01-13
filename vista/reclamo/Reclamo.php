@@ -6,7 +6,7 @@
  *@date 10-08-2016 17:32:59
  *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema Reclamos
  */
-
+//Hola
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
