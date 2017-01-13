@@ -19,7 +19,7 @@ header("content-type: text/javascript; charset=UTF-8");
         hombres:876,
         mujeres:654,
         constructor: function(config) {
-
+            var me = this;
             Ext.apply(this, config);
             var me = this;
             this.callParent(arguments);
@@ -29,28 +29,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             var newIndex = 3;
 
-            this.loaderTree = new Ext.tree.TreeLoader({
-                url : '../../sis_parametros/control/Dashboard/listarDashboard',
-                baseParams : {foo:'bar'},
-                clearOnLoad : true
-            });
 
-
-            // set up the Album tree
-            this.treeMenu = new Ext.tree.TreePanel({
-                // tree
-                animate:true,
-                //maskDisabled:false,
-                containerScroll: true,
-                rootVisible:false,
-                region:'west',
-                width:200,
-                split:true,
-                autoScroll:true,
-                tbar: this.tb,
-                loader : this.loaderTree,
-                margins: '5 0 5 5'
-            });
 
             this.menu = new Ext.FormPanel({
                 labelWidth: 75, // label settings here cascade unless overridden
@@ -97,50 +76,6 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
 
-
-            var myData = [
-                ['3m Co',                               71.72, 0.02,  0.03,  '9/1 12:00am'],
-                ['Alcoa Inc',                           29.01, 0.42,  1.47,  '9/1 12:00am'],
-                ['Altria Group Inc',                    83.81, 0.28,  0.34,  '9/1 12:00am'],
-                ['American Express Company',            52.55, 0.01,  0.02,  '9/1 12:00am'],
-                ['American International Group, Inc.',  64.13, 0.31,  0.49,  '9/1 12:00am'],
-                ['AT&T Inc.',                           31.61, -0.48, -1.54, '9/1 12:00am'],
-                ['Boeing Co.',                          75.43, 0.53,  0.71,  '9/1 12:00am'],
-                ['Caterpillar Inc.',                    67.27, 0.92,  1.39,  '9/1 12:00am'],
-                ['Citigroup, Inc.',                     49.37, 0.02,  0.04,  '9/1 12:00am'],
-                ['E.I. du Pont de Nemours and Company', 40.48, 0.51,  1.28,  '9/1 12:00am'],
-                ['Exxon Mobil Corp',                    68.1,  -0.43, -0.64, '9/1 12:00am'],
-                ['General Electric Company',            34.14, -0.08, -0.23, '9/1 12:00am'],
-                ['General Motors Corporation',          30.27, 1.09,  3.74,  '9/1 12:00am'],
-                ['Hewlett-Packard Co.',                 36.53, -0.03, -0.08, '9/1 12:00am'],
-                ['Honeywell Intl Inc',                  38.77, 0.05,  0.13,  '9/1 12:00am'],
-                ['Intel Corporation',                   19.88, 0.31,  1.58,  '9/1 12:00am'],
-                ['International Business Machines',     81.41, 0.44,  0.54,  '9/1 12:00am'],
-                ['Johnson & Johnson',                   64.72, 0.06,  0.09,  '9/1 12:00am'],
-                ['JP Morgan & Chase & Co',              45.73, 0.07,  0.15,  '9/1 12:00am'],
-                ['McDonald\'s Corporation',             36.76, 0.86,  2.40,  '9/1 12:00am'],
-                ['Merck & Co., Inc.',                   40.96, 0.41,  1.01,  '9/1 12:00am'],
-                ['Microsoft Corporation',               25.84, 0.14,  0.54,  '9/1 12:00am'],
-                ['Pfizer Inc',                          27.96, 0.4,   1.45,  '9/1 12:00am'],
-                ['The Coca-Cola Company',               45.07, 0.26,  0.58,  '9/1 12:00am'],
-                ['The Home Depot, Inc.',                34.64, 0.35,  1.02,  '9/1 12:00am'],
-                ['The Procter & Gamble Company',        61.91, 0.01,  0.02,  '9/1 12:00am'],
-                ['United Technologies Corporation',     63.26, 0.55,  0.88,  '9/1 12:00am'],
-                ['Verizon Communications',              35.57, 0.39,  1.11,  '9/1 12:00am'],
-                ['Wal-Mart Stores, Inc.',               45.45, 0.73,  1.63,  '9/1 12:00am']
-            ];
-
-            var store = new Ext.data.ArrayStore({
-                fields: [
-                    {name: 'company'},
-                    {name: 'price',      type: 'float'},
-                    {name: 'change',     type: 'float'},
-                    {name: 'pctChange',  type: 'float'},
-                    {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
-                ]
-            });
-            store.loadData(myData);
-
             var banco = new Ext.data.JsonStore({
                 url: '../../sis_reclamo/control/MotivoAnulado/listarMotivoAnulado',
                 id:'id_motivo_anulado',
@@ -151,183 +86,21 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             console.log('banco',banco);
 
-
-
-
-
-
-            Ext.Ajax.request({
-                url:'../../sis_reclamo/control/Reclamo/stadistica',
-                params:{id_usuario:0},
-                success:function(resp){
-                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                    hombres=parseInt(reg.ROOT.datos.v_hombres);
-                    mujeres=parseInt(reg.ROOT.datos.v_mujeres);
-                    //console.log(hombres, mujeres);
-
-                    console.log('estadistica:',reg);
-                },
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
-
-            storeGraf = new Ext.data.JsonStore({
-                fields: ['season', 'total'],
-                data: [{
-                    season: 'Hombres',
-                    total: this.hombres
-                },{
-                    season: 'Mujeres',
-                    total: this.mujeres
-                }]
-            });
-
-            var grid = new Ext.grid.GridPanel({
-                store: store,
-                columns: [
-                    {
-                        id       :'company',
-                        header   : 'Company',
-                        width    : 160,
-                        sortable : true,
-                        dataIndex: 'company'
-                    },
-                    {
-                        header   : 'Price',
-                        width    : 75,
-                        sortable : true,
-                        renderer : 'usMoney',
-                        dataIndex: 'price'
-                    },
-                    {
-                        header   : 'Change',
-                        width    : 75,
-                        sortable : true,
-                        renderer : this.change,
-                        dataIndex: 'change'
-                    },
-                    {
-                        header   : '% Change',
-                        width    : 75,
-                        sortable : true,
-                        renderer : this.pctChange,
-                        dataIndex: 'pctChange'
-                    },
-                    {
-                        header   : 'Last Updated',
-                        width    : 85,
-                        sortable : true,
-                        renderer : Ext.util.Format.dateRenderer('m/d/Y'),
-                        dataIndex: 'lastChange'
-                    },
-                    {
-                        xtype: 'actioncolumn',
-                        width: 50,
-                        items: [{
-                            icon   : '../shared/icons/fam/delete.gif',  // Use a URL in the icon config
-                            tooltip: 'Sell stock',
-                            handler: function(grid, rowIndex, colIndex) {
-                                var rec = store.getAt(rowIndex);
-                                alert("Sell " + rec.get('company'));
-                            }
-                        }, {
-                            getClass: function(v, meta, rec) {          // Or return a class from a function
-                                if (rec.get('change') < 0) {
-                                    this.items[1].tooltip = 'Do not buy!';
-                                    return 'alert-col';
-                                } else {
-                                    this.items[1].tooltip = 'Buy stock';
-                                    return 'buy-col';
-                                }
-                            },
-                            handler: function(grid, rowIndex, colIndex) {
-                                var rec = store.getAt(rowIndex);
-                                alert("Buy " + rec.get('company'));
-                            }
-                        }]
-                    }
-                ],
-                stripeRows: true,
-                //height: '50%',
-                //height: 288,
-                //width: 798,
-                width: '100%',
-                //anchor: '100%',
-                title: 'Detalle',
-                // config options for stateful behavior
-                stateful: true,
-                stateId: 'grid',
-                collapsible:true,
-                flex: 2
-            });
-
-            var grafico = new Ext.Panel({
-                title: 'Grafico',
-                bodyPadding: 5,
-                //width: 798,
-                width: '100%',
-                //height:'50%',
-                //anchor: '100%',
-                //height:288,
-                items: [{
-                    store: storeGraf,
-                    xtype: 'piechart',
-                    dataField: 'total',
-                    categoryField: 'season',
-                    //extra styles get applied to the chart defaults
-                    extraStyle:
-                    {
-                        legend:
-                        {
-                            display: 'bottom',
-                            padding: 5,
-                            font:
-                            {
-                                family: 'Tahoma',
-                                size: 13
-                            }
-                        }
-                    }
-                }], // An array of form fields
-                flex: 2,
-                collapsible: true
-            });
-
             this.reportPanel = new Ext.Panel({
-
+                id: 'reportPanel',
                 width: '100%',
                 height: '100%',
-                renderTo: Ext.get('principal'),
+                /*renderTo: Ext.get('principal'),*/
                 region:'center',
                 margins: '5 0 5 5',
                 layout: 'vbox',
-                items: [grafico, grid]
-            });
-            //this.reportPanel.doLayout();
-
-            this.root = new Ext.tree.AsyncTreeNode({
-                text : this.textRoot,
-                draggable : false,
-                allowDelete : true,
-                allowEdit : true,
-                collapsed : true,
-                expanded : true,
-                expandable : true,
-                hidden : false,
-                id : 'id'
+                items: [/*grafico, grid*/]
             });
 
-            this.treeMenu.setRootNode(this.root);
+            this.iniciarEventos();
 
-            // add an inline editor for the nodes
-            this.ge = new Ext.tree.TreeEditor(this.treeMenu, {/* fieldconfig here */ }, {
-                allowBlank:false,
-                blankText:'A name is required',
-                selectOnFocus:true
-            });
 
-            this.ge.on('complete', this.editDashboard, this);
+
 
 
 
@@ -341,38 +114,757 @@ header("content-type: text/javascript; charset=UTF-8");
             this.panel.doLayout();
             this.addEvents('init');
 
-            this.treeMenu.on('click', function(node, e){
-                if(node.isLeaf()){
-                    if (e != undefined) {
-                        e.stopEvent();
-                    }
-                    console.log('node',node)
-                    this.iniciarDashboard(node);
-                }
-            }, this);
 
-            // create some portlet tools using built in Ext tool ids
-            this.toolsportlet = [{
-                id:'gear',
-                handler: function(){
-                    Ext.Msg.alert('Message', 'The Settings tool was clicked.');
-                }
-            },{
-                id:'close',
-                handler: function(e, target, panel){
-                    panel.ownerCt.remove(panel, true);
-                }
-            }];
 
-            this.iniciarEventos();
+
+
+            //this.iniciarEventos();
         },
-        nodoActual: null,
 
         iniciarEventos: function(){
 
             Ext.getCmp('reportes').on('select', function(cmb, rec, ind){
-                Ext.Msg.alert('Nombre',rec.data.field1);
+                this.cargarTipo(rec.data.field1);
             },this);
+        },
+
+        cargarTipo: function(tipoGrafico){
+            this.reportPanel.removeAll();
+            if(tipoGrafico=='Tipo Incidente'){
+                Ext.Ajax.request({
+                    url:'../../sis_reclamo/control/Reclamo/stadistica',
+                    params:{tipo:'tipo_incidente'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                        console.log(parseInt(reg.ROOT.datos.v_boleto),parseInt(reg.ROOT.datos.v_vuelo));
+                        boleto = parseInt(reg.ROOT.datos.v_boleto);
+                        vuelo = parseInt(reg.ROOT.datos.v_vuelo);
+                        equipaje = parseInt(reg.ROOT.datos.v_equipaje);
+                        carga = parseInt(reg.ROOT.datos.v_carga);
+                        catering = parseInt(reg.ROOT.datos.v_catering);
+                        sac = parseInt(reg.ROOT.datos.v_sac);
+                        otros = parseInt(reg.ROOT.datos.v_otros);
+
+                        var myData = [
+                            ['BOLETOS', boleto],
+                            ['VUELO', vuelo],
+                            ['EQUIPAJE', equipaje],
+                            ['CARGA/ENCOMIENDA', carga],
+                            ['CATERING', catering],
+                            ['ATENCION AL USUARIO', sac],
+                            ['OTROS', otros],
+                            ['TOTAL', boleto+vuelo+equipaje+carga+catering+sac+otros]
+                        ];
+                        var store = new Ext.data.ArrayStore({
+                            fields: [
+                                {name: 'tipo'},
+                                {name: 'cantidad', type: 'integer'}
+
+                            ]
+                        });
+                        store.loadData(myData);
+
+                        var grid = new Ext.grid.GridPanel({
+                            store: store,
+                            columns: [
+                                {
+                                    header   : 'Tipo de Incidente',
+                                    width    : 120,
+                                    sortable : true,
+                                    dataIndex: 'tipo'
+                                },
+                                {
+                                    header   : 'N°. Casos',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'cantidad'
+                                },
+                                {
+                                    header   : 'Porcentaje',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'porcentaje'
+                                }
+                            ],
+                            stripeRows: true,
+                            width: '100%',
+                            title: 'Detalle',
+                            // config options for stateful behavior
+                            stateful: true,
+                            stateId: 'grid',
+                            collapsible:true,
+                            flex: 2
+                        });
+                        var grafico = new Ext.Panel({
+                            title: 'Grafico',
+                            id: 'grafico',
+                            bodyPadding: 5,
+                            width: '100%',
+                            items: [{
+                                store: new Ext.data.JsonStore({
+                                    fields: ['season', 'total'],
+                                    data: [{
+                                        season: 'Boletos',
+                                        total: boleto
+                                    },{
+                                        season: 'Vuelo',
+                                        total: vuelo
+                                    },{
+                                        season: 'Equipaje',
+                                        total: equipaje
+                                    },{
+                                        season: 'Carga/Encomienda',
+                                        total: carga
+                                    },{
+                                        season: 'Catering',
+                                        total: catering
+                                    },{
+                                        season: 'Atencion al Usuario',
+                                        total: sac
+                                    },{
+                                        season: 'Otros',
+                                        total: otros
+                                    }]
+                                }),
+                                xtype: 'piechart',
+                                dataField: 'total',
+                                categoryField: 'season',
+                                //extra styles get applied to the chart defaults
+                                extraStyle:
+                                {
+                                    legend:
+                                    {
+                                        display: 'bottom',
+                                        padding: 5,
+                                        font:
+                                        {
+                                            family: 'Tahoma',
+                                            size: 13
+                                        }
+                                    }
+                                }
+                            }], // An array of form fields
+                            flex: 2,
+                            collapsible: true
+                        });
+                        this.reportPanel.add(grafico);
+                        this.reportPanel.add(grid);
+                        this.reportPanel.render(Ext.get('principal'));
+                        this.reportPanel.doLayout();
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+            }else if(tipoGrafico=='Ciudad de Reclamo'){
+                Ext.Ajax.request({
+                    url:'../../sis_reclamo/control/Reclamo/stadistica',
+                    params:{tipo:'ciudad'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                        console.log(reg.ROOT.datos);
+                        //console.log(parseInt(reg.ROOT.datos.v_boleto),parseInt(reg.ROOT.datos.v_vuelo));
+
+                        v_lim = parseInt(reg.ROOT.datos.v_lim);
+                        v_bue = parseInt(reg.ROOT.datos.v_bue);
+                        v_sla = parseInt(reg.ROOT.datos.v_sla);
+                        v_sao = parseInt(reg.ROOT.datos.v_sao);
+                        v_mad = parseInt(reg.ROOT.datos.v_mad);
+                        v_viru = parseInt(reg.ROOT.datos.v_viru);
+                        v_uyu = parseInt(reg.ROOT.datos.v_uyu);
+                        v_oru = parseInt(reg.ROOT.datos.v_oru);
+                        v_poi = parseInt(reg.ROOT.datos.v_poi);
+                        v_cij = parseInt(reg.ROOT.datos.v_cij);
+                        v_tdd = parseInt(reg.ROOT.datos.v_tdd);
+                        v_tja = parseInt(reg.ROOT.datos.v_tja);
+                        v_sre = parseInt(reg.ROOT.datos.v_sre);
+                        v_srz = parseInt(reg.ROOT.datos.v_srz);
+                        v_lpb = parseInt(reg.ROOT.datos.v_lpb);
+                        v_cbb = parseInt(reg.ROOT.datos.v_cbb);
+                        v_acft = parseInt(reg.ROOT.datos.v_acft);
+                        v_otros = parseInt(reg.ROOT.datos.v_otros);
+                        v_mia = parseInt(reg.ROOT.datos.v_mia);
+
+
+                        var myData = [
+                            ['CBB', v_cbb],
+                            ['LPB', v_lpb],
+                            ['SRZ', v_srz],
+                            ['SRE', v_sre],
+                            ['TJA', v_tja],
+                            ['TDD', v_tdd],
+                            ['CIJ', v_cij],
+                            ['POI', v_poi],
+                            ['ORU', v_oru],
+                            ['UYU', v_uyu],
+                            ['VIRU', v_viru],
+                            ['OTROS', v_otros],
+                            ['ACFT', v_acft],
+                            ['MAD', v_mad],
+                            ['SAO', v_sao],
+                            ['SLA', v_sla],
+                            ['MIA', v_mia],
+                            ['BUE', v_bue],
+                            ['TOTAL', v_cbb+v_lpb+v_srz+v_sre+v_tja+v_tdd+v_cij+v_poi+v_oru+v_uyu+v_viru+v_otros+v_acft+v_mad+v_sao+v_sla+v_mia+v_bue]
+                        ];
+                        var store = new Ext.data.ArrayStore({
+                            fields: [
+                                {name: 'tipo'},
+                                {name: 'cantidad', type: 'integer'}
+
+                            ]
+                        });
+                        store.loadData(myData);
+
+                        var grid = new Ext.grid.GridPanel({
+                            store: store,
+                            columns: [
+                                {
+                                    header   : 'Ciudad de Reclamo',
+                                    width    : 120,
+                                    sortable : true,
+                                    dataIndex: 'tipo'
+                                },
+                                {
+                                    header   : 'N°. Casos',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'cantidad'
+                                },
+                                {
+                                    header   : 'Porcentaje',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'porcentaje'
+                                }
+                            ],
+                            stripeRows: true,
+                            width: '100%',
+                            title: 'Detalle',
+                            // config options for stateful behavior
+                            stateful: true,
+                            stateId: 'grid',
+                            collapsible:true,
+                            flex: 2
+                        });
+                        var grafico = new Ext.Panel({
+                            title: 'Grafico',
+                            id: 'grafico',
+                            bodyPadding: 5,
+                            width: '100%',
+                            items: [{
+                                store: new Ext.data.JsonStore({
+                                    fields: ['season', 'total'],
+                                    data: [{
+                                        season: 'Cochabamba',
+                                        total: v_cbb
+                                    },{
+                                        season: 'La Paz',
+                                        total: v_lpb
+                                    },{
+                                        season: 'Santa Cruz',
+                                        total: v_srz
+                                    },{
+                                        season: 'Sucre',
+                                        total: v_sre
+                                    },{
+                                        season: 'Tarija',
+                                        total: v_tja
+                                    },{
+                                        season: 'Trinidad',
+                                        total: v_tdd
+                                    },{
+                                        season: 'Cobija',
+                                        total: v_cij
+                                    },{
+                                        season: 'Potosi',
+                                        total: v_poi
+                                    },{
+                                        season: 'Oruro',
+                                        total: v_oru
+                                    },{
+                                        season: 'Uyuni',
+                                        total: v_uyu
+                                    },{
+                                        season: 'Viru Viru',
+                                        total: v_viru
+                                    },{
+                                        season: 'Otros',
+                                        total: v_otros
+                                    },{
+                                        season: 'ACFT',
+                                        total: v_acft
+                                    },{
+                                        season: 'Madrid',
+                                        total: v_mad
+                                    },{
+                                        season: 'Sao Paulo',
+                                        total: v_sao
+                                    },{
+                                        season: 'Salta',
+                                        total: v_sla
+                                    },{
+                                        season: 'Miami',
+                                        total: v_mia
+                                    },{
+                                        season: 'Buenos Aires',
+                                        total: v_bue
+                                    }]
+                                }),
+                                xtype: 'piechart',
+                                dataField: 'total',
+                                categoryField: 'season',
+                                //extra styles get applied to the chart defaults
+                                extraStyle:
+                                {
+                                    legend:
+                                    {
+                                        display: 'bottom',
+                                        padding: 5,
+                                        font:
+                                        {
+                                            family: 'Tahoma',
+                                            size: 13
+                                        }
+                                    }
+                                }
+                            }], // An array of form fields
+                            flex: 2,
+                            collapsible: true
+                        });
+                        this.reportPanel.add(grafico);
+                        this.reportPanel.add(grid);
+                        this.reportPanel.render(Ext.get('principal'));
+                        this.reportPanel.doLayout();
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+            }else if(tipoGrafico=='Lugar de Reclamo'){
+                Ext.Ajax.request({
+                    url:'../../sis_reclamo/control/Reclamo/stadistica',
+                    params:{tipo:'lugar'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+                        v_ato = parseInt(reg.ROOT.datos.v_ato);
+                        v_cto = parseInt(reg.ROOT.datos.v_cto);
+                        v_cga = parseInt(reg.ROOT.datos.v_cga);
+                        v_canalizado = parseInt(reg.ROOT.datos.v_canalizado);
+                        v_web = parseInt(reg.ROOT.datos.v_web);
+                        v_acft = parseInt(reg.ROOT.datos.v_acft);
+                        v_call = parseInt(reg.ROOT.datos.v_call);
+                        v_att = parseInt(reg.ROOT.datos.v_att);
+
+                        var myData = [
+                            ['ATO', v_ato],
+                            ['CTO', v_cto],
+                            ['CGA', v_cga],
+                            ['CANALIZADO', v_canalizado],
+                            ['WEB', v_web],
+                            ['ACFT', v_acft],
+                            ['CALL CENTER', v_call],
+                            ['ATT', v_att],
+                            ['TOTAL', v_ato+v_cto+v_cga+v_canalizado+v_web+v_acft+v_call+v_att]
+                        ];
+
+                        var store = new Ext.data.ArrayStore({
+                            fields: [
+                                {name: 'tipo'},
+                                {name: 'cantidad', type: 'integer'}
+
+                            ]
+                        });
+                        store.loadData(myData);
+
+                        var grid = new Ext.grid.GridPanel({
+                            store: store,
+                            columns: [
+                                {
+                                    header   : 'Lugar Reclamo',
+                                    width    : 120,
+                                    sortable : true,
+                                    dataIndex: 'tipo'
+                                },
+                                {
+                                    header   : 'N°. Casos',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'cantidad'
+                                },
+                                {
+                                    header   : 'Porcentaje',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'porcentaje'
+                                }
+                            ],
+                            stripeRows: true,
+                            width: '100%',
+                            title: 'Detalle',
+                            // config options for stateful behavior
+                            stateful: true,
+                            stateId: 'grid',
+                            collapsible:true,
+                            flex: 2
+                        });
+
+
+                        var grafico = new Ext.Panel({
+                            title: 'Grafico',
+                            id: 'grafico',
+                            bodyPadding: 5,
+                            width: '100%',
+                            items: [{
+                                store: new Ext.data.JsonStore({
+                                    fields: ['season', 'total'],
+                                    data: [{
+                                        season: 'Aeropuerto',
+                                        total: v_ato
+                                    },{
+                                        season: 'Oficina Regional',
+                                        total: v_cto
+                                    },{
+                                        season: 'Carga',
+                                        total: v_cga
+                                    },{
+                                        season: 'Canalizado',
+                                        total: v_canalizado
+                                    },{
+                                        season: 'Web',
+                                        total: v_web
+                                    },{
+                                        season: 'ACFT',
+                                        total: v_acft
+                                    },{
+                                        season: 'Call Center',
+                                        total: v_call
+                                    },{
+                                        season: 'ATT',
+                                        total: v_att
+                                    }]
+                                }),
+                                xtype: 'piechart',
+                                dataField: 'total',
+                                categoryField: 'season',
+                                //extra styles get applied to the chart defaults
+                                extraStyle:
+                                {
+                                    legend:
+                                    {
+                                        display: 'bottom',
+                                        padding: 5,
+                                        font:
+                                        {
+                                            family: 'Tahoma',
+                                            size: 13
+                                        }
+                                    }
+                                }
+                            }], // An array of form fields
+                            flex: 2,
+                            collapsible: true
+                        });
+                        this.reportPanel.add(grafico);
+                        this.reportPanel.add(grid);
+                        this.reportPanel.render(Ext.get('principal'));
+                        this.reportPanel.doLayout();
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+            }
+            else if(tipoGrafico=='Genero'){
+                Ext.Ajax.request({
+                    url:'../../sis_reclamo/control/Reclamo/stadistica',
+                    params:{tipo:'genero'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                        hombres = parseInt(reg.ROOT.datos.v_hombres);
+                        mujeres = parseInt(reg.ROOT.datos.v_mujeres);
+                        noEspecifica = parseInt(reg.ROOT.datos.v_noEspecifica);
+
+
+                        var myData = [
+                            ['VARONES', hombres],
+                            ['MUJERES', mujeres],
+                            ['NO ESPECIFICA', noEspecifica],
+                            ['TOTAL', hombres+mujeres+noEspecifica]
+                        ];
+                        var store = new Ext.data.ArrayStore({
+                            fields: [
+                                {name: 'genero'},
+                                {name: 'cantidad', type: 'integer'}
+
+                            ]
+                        });
+                        store.loadData(myData);
+
+                        var grid = new Ext.grid.GridPanel({
+                            store: store,
+                            columns: [
+                                {
+                                    header   : 'Genero',
+                                    width    : 120,
+                                    sortable : true,
+                                    dataIndex: 'genero'
+                                },
+                                {
+                                    header   : 'Cantidad',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'cantidad'
+                                },
+                                {
+                                    header   : 'Porcentaje',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'porcentaje'
+                                }
+                            ],
+                            stripeRows: true,
+                            width: '100%',
+                            title: 'Detalle',
+                            // config options for stateful behavior
+                            stateful: true,
+                            stateId: 'grid',
+                            collapsible:true,
+                            flex: 2
+                        });
+                        var grafico = new Ext.Panel({
+                            title: 'Grafico',
+                            id: 'grafico',
+                            bodyPadding: 5,
+                            width: '100%',
+                            items: [{
+                                store: new Ext.data.JsonStore({
+                                    fields: ['season', 'total'],
+                                    data: [{
+                                        season: 'Varones',
+                                        total: hombres
+                                    },{
+                                        season: 'Mujeres',
+                                        total: mujeres
+                                    },{
+                                        season: 'No Especifica',
+                                        total: noEspecifica
+                                    }]
+                                }),
+                                xtype: 'piechart',
+                                dataField: 'total',
+                                categoryField: 'season',
+                                //extra styles get applied to the chart defaults
+                                extraStyle:
+                                {
+                                    legend:
+                                    {
+                                        display: 'bottom',
+                                        padding: 5,
+                                        font:
+                                        {
+                                            family: 'Tahoma',
+                                            size: 13
+                                        }
+                                    }
+                                }
+                            }], // An array of form fields
+                            flex: 2,
+                            collapsible: true
+                        });
+                        this.reportPanel.add(grafico);
+                        this.reportPanel.add(grid);
+                        this.reportPanel.render(Ext.get('principal'));
+                        this.reportPanel.doLayout();
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+            }else if(tipoGrafico=='Ambiente del Incidente'){
+                Ext.Msg.alert('Ambiente',tipoGrafico);
+
+            }else if(tipoGrafico=='Estado del Reclamo'){
+                Ext.Ajax.request({
+                    url:'../../sis_reclamo/control/Reclamo/stadistica',
+                    params:{tipo:'estado'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+                        borrador = parseInt(reg.ROOT.datos.borrador);
+                        pen_rev = parseInt(reg.ROOT.datos.pendiente_revision);
+                        reg_ripat = parseInt(reg.ROOT.datos.registrado_ripat);
+                        pen_inf = parseInt(reg.ROOT.datos.pendiente_informacion);
+                        anulado = parseInt(reg.ROOT.datos.anulado);
+                        derivado = parseInt(reg.ROOT.datos.derivado);
+                        pen_resp = parseInt(reg.ROOT.datos.pendiente_respuesta);
+                        arch_con_resp = parseInt(reg.ROOT.datos.archivo_con_respuesta);
+                        arch_con = parseInt(reg.ROOT.datos.archivado_concluido);
+                        en_ave = parseInt(reg.ROOT.datos.en_avenimiento);
+                        form_cargos = parseInt(reg.ROOT.datos.formulacion_cargos);
+                        res_admin = parseInt(reg.ROOT.datos.resolucion_administrativa);
+                        rec_revo = parseInt(reg.ROOT.datos.recurso_revocatorio);
+                        rec_jerar = parseInt(reg.ROOT.datos.recurso_jerarquico);
+                        con_admin = parseInt(reg.ROOT.datos.contencioso_administrativo);
+                        pen_asig = parseInt(reg.ROOT.datos.pendiente_asignacion);
+                        resp_reg_ripat = parseInt(reg.ROOT.datos.respuesta_registro_ripat);
+
+                        var myData = [
+                            ['BORRADOR', borrador],
+                            ['PENDIENTE REV.', pen_rev],
+                            ['REG. RIPAT', reg_ripat],
+                            ['PENDIENTE INF.', pen_inf],
+                            ['ANULADO', anulado],
+                            ['DERIVADO', derivado],
+                            ['PENDIENTE RESP.', pen_resp],
+                            ['ARCHIVO CON RESP.', arch_con_resp],
+                            ['ARCHIVADO-CONCLUIDO', arch_con],
+                            ['EN AVENIMIENTO', en_ave],
+                            ['FORMULACION CARGOS', form_cargos],
+                            ['RES. ADMINISTRATIVA', res_admin],
+                            ['REC. REVOCATORIO', rec_revo],
+                            ['REC. JERARQUICO', rec_jerar],
+                            ['CONTENCIOSO ADMIN.', con_admin],
+                            ['PENDIENTE ASIG.', pen_asig],
+                            ['RESP. REG. RIPAT', resp_reg_ripat],
+                            ['TOTAL', borrador+pen_rev+reg_ripat+pen_inf+anulado+derivado+pen_resp+arch_con_resp+arch_con+en_ave+form_cargos+res_admin+rec_revo+rec_jerar+con_admin+pen_asig+resp_reg_ripat]
+                        ];
+
+                        var store = new Ext.data.ArrayStore({
+                            fields: [
+                                {name: 'tipo'},
+                                {name: 'cantidad', type: 'integer'}
+
+                            ]
+                        });
+                        store.loadData(myData);
+
+                        var grid = new Ext.grid.GridPanel({
+                            store: store,
+                            columns: [
+                                {
+                                    header   : 'Tipo de Incidente',
+                                    width    : 120,
+                                    sortable : true,
+                                    dataIndex: 'tipo'
+                                },
+                                {
+                                    header   : 'N°. Casos',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'cantidad'
+                                },
+                                {
+                                    header   : 'Porcentaje',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'porcentaje'
+                                }
+                            ],
+                            stripeRows: true,
+                            width: '100%',
+                            title: 'Detalle',
+                            // config options for stateful behavior
+                            stateful: true,
+                            stateId: 'grid',
+                            collapsible:true,
+                            flex: 2
+                        });
+
+
+
+                        pen_asig = parseInt(reg.ROOT.datos.pendiente_asignacion);
+                        resp_reg_ripat = parseInt(reg.ROOT.datos.respuesta_registro_ripat);
+                        var grafico = new Ext.Panel({
+                            title: 'Grafico',
+                            id: 'grafico',
+                            bodyPadding: 5,
+                            width: '100%',
+                            items: [{
+                                store: new Ext.data.JsonStore({
+                                    fields: ['season', 'total'],
+                                    data: [{
+                                        season: 'Borrador',
+                                        total: borrador
+                                    },{
+                                        season: 'P. Resp.',
+                                        total: pen_rev
+                                    },{
+                                        season: 'Reg. Rip.',
+                                        total: reg_ripat
+                                    },{
+                                        season: 'Pen. Inf.',
+                                        total: pen_inf
+                                    },{
+                                        season: 'Anulado',
+                                        total: anulado
+                                    },{
+                                        season: 'Derivado',
+                                        total: derivado
+                                    },{
+                                        season: 'Pen. Resp.',
+                                        total: pen_resp
+                                    },{
+                                        season: 'Archivo con Resp.',
+                                        total: arch_con_resp
+                                    },{
+                                        season: 'Avenimiento',
+                                        total: en_ave
+                                    },{
+                                        season: 'Form. Cargos',
+                                        total: form_cargos
+                                    },{
+                                        season: 'Res. Adm.',
+                                        total: res_admin
+                                    },{
+                                        season: 'Rec. Revo.',
+                                        total: rec_revo
+                                    },{
+                                        season: 'Rec. Jer.',
+                                        total: rec_jerar
+                                    },{
+                                        season: 'Cont. Adm.',
+                                        total: con_admin
+                                    },{
+                                        season: 'Pen. Asig.',
+                                        total: pen_asig
+                                    },{
+                                        season: 'Resp Reg. Rip.',
+                                        total: resp_reg_ripat
+                                    }]
+                                }),
+                                xtype: 'piechart',
+                                dataField: 'total',
+                                categoryField: 'season',
+                                //extra styles get applied to the chart defaults
+                                extraStyle:
+                                {
+                                    legend:
+                                    {
+                                        display: 'bottom',
+                                        padding: 5,
+                                        font:
+                                        {
+                                            family: 'Tahoma',
+                                            size: 13
+                                        }
+                                    }
+                                }
+                            }], // An array of form fields
+                            flex: 2,
+                            collapsible: true
+                        });
+                        this.reportPanel.add(grafico);
+                        this.reportPanel.add(grid);
+                        this.reportPanel.render(Ext.get('principal'));
+                        this.reportPanel.doLayout();
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+            }
         },
 
         change: function (val) {
