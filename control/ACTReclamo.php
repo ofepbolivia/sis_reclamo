@@ -228,8 +228,7 @@ class ACTReclamo extends ACTbase{
 	}
 
 	function reporteReclamoDoc (){
-
-
+		
         $this->objFunc=$this->create('MODReclamo');
         $this->res=$this->objFunc->reportesReclamo($this->objParam);
         //obtener titulo del reporte

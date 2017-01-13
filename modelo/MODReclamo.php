@@ -358,7 +358,7 @@ class MODReclamo extends MODbase{
 		$this->transaccion='REC_STADISTICA_GET';
 		$this->tipo_procedimiento='IME';
 
-		$this->setParametro('id_usuario','id_usuario','integer');
+		$this->setParametro('tipo','tipo','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
