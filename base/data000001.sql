@@ -1,4 +1,4 @@
-/***********************************I-DAT-MAM-REC-1-07/01/2017****************************************/
+/***********************************I-DAT-FEA-REC-1-07/01/2017****************************************/
 
 INSERT INTO segu.tsubsistema ("codigo", "nombre", "fecha_reg", "prefijo", "estado_reg", "nombre_carpeta", "id_subsis_orig")
 VALUES (E'REC', E'Gestion de Reclamos', E'2016-08-09', E'REC', E'activo', E'reclamo', NULL);

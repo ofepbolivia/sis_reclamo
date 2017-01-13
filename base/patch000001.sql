@@ -35,31 +35,6 @@ CREATE TABLE rec.tcompensacion (
 
 WITH (oids = false);
 
-CREATE TABLE rec.tinforme (
-  id_informe SERIAL,
-  id_reclamo INTEGER NOT NULL,
-  nro_informe VARCHAR DEFAULT nextval('rec.tinforme_nro_informe_seq'::regclass) NOT NULL,
-  fecha_informe DATE,
-  id_funcionario INTEGER NOT NULL,
-  lista_compensacion VARCHAR(500),
-  antecedentes_informe VARCHAR(1000),
-  analisis_tecnico VARCHAR(1000),
-  sugerencia_respuesta VARCHAR(1000),
-  conclusion_recomendacion VARCHAR(1000),
-  CONSTRAINT tinforme_pkey PRIMARY KEY(id_informe),
-  CONSTRAINT fk_tinforme__id_reclamo FOREIGN KEY (id_reclamo)
-    REFERENCES rec.treclamo(id_reclamo)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT tinforme_id_funcionario_fkey FOREIGN KEY (id_funcionario)
-    REFERENCES orga.tfuncionario(id_funcionario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
-) INHERITS (pxp.tbase)
-
-WITH (oids = false);
 
 CREATE TABLE rec.tmedio_reclamo (
   id_medio_reclamo SERIAL,
@@ -80,6 +55,23 @@ CREATE TABLE rec.tmotivo_anulado (
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
+
+CREATE TABLE rec.ttipo_incidente (
+  id_tipo_incidente SERIAL,
+  nombre_incidente VARCHAR(50) NOT NULL,
+  fk_tipo_incidente INTEGER,
+  tiempo_respuesta VARCHAR(5),
+  nivel INTEGER,
+  CONSTRAINT ttipo_incidente_pkey PRIMARY KEY(id_tipo_incidente),
+  CONSTRAINT ttipo_incidente_fk FOREIGN KEY (fk_tipo_incidente)
+  REFERENCES rec.ttipo_incidente(id_tipo_incidente)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+  NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
 
 CREATE TABLE rec.treclamo (
   id_reclamo SERIAL,
@@ -173,6 +165,31 @@ CREATE TABLE rec.treclamo (
 
 WITH (oids = false);
 
+CREATE TABLE rec.tinforme (
+  id_informe SERIAL,
+  id_reclamo INTEGER NOT NULL,
+  nro_informe VARCHAR NOT NULL,
+  fecha_informe DATE,
+  id_funcionario INTEGER NOT NULL,
+  lista_compensacion VARCHAR(500),
+  antecedentes_informe VARCHAR(1000),
+  analisis_tecnico VARCHAR(1000),
+  sugerencia_respuesta VARCHAR(1000),
+  conclusion_recomendacion VARCHAR(1000),
+  CONSTRAINT tinforme_pkey PRIMARY KEY(id_informe),
+  CONSTRAINT fk_tinforme__id_reclamo FOREIGN KEY (id_reclamo)
+  REFERENCES rec.treclamo(id_reclamo)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+  NOT DEFERRABLE,
+  CONSTRAINT tinforme_id_funcionario_fkey FOREIGN KEY (id_funcionario)
+  REFERENCES orga.tfuncionario(id_funcionario)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+  NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
 
 CREATE TABLE rec.trespuesta (
   id_respuesta SERIAL,
@@ -209,21 +226,6 @@ CREATE TABLE rec.trespuesta (
 
 WITH (oids = false);
 
-CREATE TABLE rec.ttipo_incidente (
-  id_tipo_incidente SERIAL,
-  nombre_incidente VARCHAR(50) NOT NULL,
-  fk_tipo_incidente INTEGER,
-  tiempo_respuesta VARCHAR(5),
-  nivel INTEGER,
-  CONSTRAINT ttipo_incidente_pkey PRIMARY KEY(id_tipo_incidente),
-  CONSTRAINT ttipo_incidente_fk FOREIGN KEY (fk_tipo_incidente)
-    REFERENCES rec.ttipo_incidente(id_tipo_incidente)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
-) INHERITS (pxp.tbase)
-
-WITH (oids = false);
 
 
 /***********************************F-SCP-FEA-REC-1-07/01/2017****************************************/
