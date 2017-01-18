@@ -48,8 +48,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         xtype:'combo',
                         name: 'reportes',
                         id: 'reportes',
-                        fieldLabel: 'Reporte de',
-                        allowBlank:true,
+                        fieldLabel: 'Tipo Reporte',
+                        allowBlank:false,
 
                         width: 150,
                         maxLength:25,
@@ -64,7 +64,74 @@ header("content-type: text/javascript; charset=UTF-8");
                     id_grupo:0,
                     grid:true,
                     form:true*/
-                }
+                },{
+                        xtype:'combo',
+                        name: 'gestion',
+                        id: 'gestion',
+                        fieldLabel: 'Gestion',
+                        allowBlank: false,
+                        emptyText:'Gestion...',
+                        blankText: 'Año',
+                        store:new Ext.data.JsonStore(
+                            {
+                                url: '../../sis_parametros/control/Gestion/listarGestion',
+                                id: 'id_gestion',
+                                root: 'datos',
+                                sortInfo:{
+                                    field: 'gestion',
+                                    direction: 'DESC'
+                                },
+                                totalProperty: 'total',
+                                fields: ['id_gestion','gestion'],
+                                // turn on remote sorting
+                                remoteSort: true,
+                                baseParams:{par_filtro:'gestion'}
+                            }),
+                        valueField: 'id_gestion',
+                        triggerAction: 'all',
+                        displayField: 'gestion',
+                        hiddenName: 'id_gestion',
+                        mode:'remote',
+                        pageSize:50,
+                        queryDelay:500,
+                        listWidth:'280',
+                        width:150
+                },
+                {
+                       xtype:'combo',
+                       name: 'periodo',
+                       id: 'periodo',
+                       fieldLabel: 'Periodo',
+                       allowBlank: true,
+                       emptyText:'Periodo...',
+                       blankText: 'Periodo',
+                       store:new Ext.data.JsonStore(
+                           {
+                               url: '../../sis_parametros/control/Periodo/listarPeriodo',
+                               id: 'id_periodo',
+                               root: 'datos',
+                               sortInfo:{
+                                   field: 'periodo',
+                                   direction: 'ASC'
+                               },
+                               totalProperty: 'total',
+                               fields: ['id_periodo','id_gestion','periodo', 'literal'],
+                               // turn on remote sorting
+                               remoteSort: true,
+                               baseParams:{par_filtro:'periodo'}
+                           }),
+                       valueField: 'id_periodo',
+                       displayField: 'literal',
+                       hiddenName: 'id_periodo',
+                       triggerAction: 'all',
+                       mode:'remote',
+                       pageSize:12,
+                       queryDelay:500,
+                       listWidth:'230',
+                       hidden:false,
+                       width:150
+                   }
+
                 ],
 
                 buttons: [{
@@ -97,7 +164,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 items: [/*grafico, grid*/]
             });
 
-            this.iniciarEventos();
+            //this.iniciarEventos();
 
 
 
@@ -126,9 +193,15 @@ header("content-type: text/javascript; charset=UTF-8");
             Ext.getCmp('reportes').on('select', function(cmb, rec, ind){
                 this.cargarTipo(rec.data.field1);
             },this);
+            
+            Ext.getCmp('gestion').on('select', function(cmb, rec, ind){
+            },this);
         },
 
         cargarTipo: function(tipoGrafico){
+
+            alert('Hola Mundo');
+            console.log('TIPO ',Ext.getCmp('reportes'),'gestion',Ext.getCmp('gestion').store.data.items.data,'periodo',Ext.getCmp('periodo'));
             this.reportPanel.removeAll();
             if(tipoGrafico=='Tipo Incidente'){
                 Ext.Ajax.request({
@@ -683,7 +756,131 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope:this
                 });
             }else if(tipoGrafico=='Ambiente del Incidente'){
-                Ext.Msg.alert('Ambiente',tipoGrafico);
+                Ext.Ajax.request({
+                    url:'../../sis_reclamo/control/Reclamo/stadistica',
+                    params:{tipo:'ambiente'},
+                    success:function(resp){
+                        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+                        v_ato = parseInt(reg.ROOT.datos.v_ato);
+                        v_cto = parseInt(reg.ROOT.datos.v_cto);
+                        v_cga = parseInt(reg.ROOT.datos.v_cga);
+                        v_call = parseInt(reg.ROOT.datos.v_call);
+                        v_acft = parseInt(reg.ROOT.datos.v_acft);
+                        v_web = parseInt(reg.ROOT.datos.v_web);
+
+
+
+                        var myData = [
+                            ['ATO', v_ato],
+                            ['CTO', v_cto],
+                            ['CGA', v_cga],
+                            ['CALL CENTER', v_call],
+                            ['ACFT', v_acft],
+                            ['WEB', v_web],
+                            ['TOTAL', v_ato+v_cto+v_cga+v_web+v_acft+v_call]
+                        ];
+
+                        var store = new Ext.data.ArrayStore({
+                            fields: [
+                                {name: 'tipo'},
+                                {name: 'cantidad', type: 'integer'}
+
+                            ]
+                        });
+                        store.loadData(myData);
+
+                        var grid = new Ext.grid.GridPanel({
+                            store: store,
+                            columns: [
+                                {
+                                    header   : 'Ambiente del Incidente',
+                                    width    : 120,
+                                    sortable : true,
+                                    dataIndex: 'tipo'
+                                },
+                                {
+                                    header   : 'N°. Casos',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'cantidad'
+                                },
+                                {
+                                    header   : 'Porcentaje',
+                                    width    : 75,
+                                    sortable : true,
+                                    dataIndex: 'porcentaje'
+                                }
+                            ],
+                            stripeRows: true,
+                            width: '100%',
+                            title: 'Detalle',
+                            // config options for stateful behavior
+                            stateful: true,
+                            stateId: 'grid',
+                            collapsible:true,
+                            flex: 2
+                        });
+
+
+                        var grafico = new Ext.Panel({
+                            title: 'Grafico',
+                            id: 'grafico',
+                            bodyPadding: 5,
+                            width: '100%',
+                            items: [{
+                                store: new Ext.data.JsonStore({
+                                    fields: ['season', 'total'],
+                                    data: [{
+                                        season: 'Aeropuerto',
+                                        total: v_ato
+                                    },{
+                                        season: 'Oficina Regional',
+                                        total: v_cto
+                                    },{
+                                        season: 'Carga',
+                                        total: v_cga
+                                    },{
+                                        season: 'Call Center',
+                                        total: v_call
+                                    },{
+                                        season: 'ACFT',
+                                        total: v_acft
+                                    },{
+                                        season: 'Web',
+                                        total: v_web
+                                    }]
+                                }),
+                                xtype: 'piechart',
+                                dataField: 'total',
+                                categoryField: 'season',
+                                //extra styles get applied to the chart defaults
+                                extraStyle:
+                                {
+                                    legend:
+                                    {
+                                        display: 'bottom',
+                                        padding: 5,
+                                        font:
+                                        {
+                                            family: 'Tahoma',
+                                            size: 13
+                                        }
+                                    }
+                                }
+                            }], // An array of form fields
+                            flex: 2,
+                            collapsible: true
+                        });
+                        this.reportPanel.add(grafico);
+                        this.reportPanel.add(grid);
+                        this.reportPanel.render(Ext.get('principal'));
+                        this.reportPanel.doLayout();
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
 
             }else if(tipoGrafico=='Estado del Reclamo'){
                 Ext.Ajax.request({
@@ -867,26 +1064,8 @@ header("content-type: text/javascript; charset=UTF-8");
             }
         },
 
-        change: function (val) {
-            if (val > 0) {
-                return '<span style="color:green;">' + val + '</span>';
-            } else if (val < 0) {
-                return '<span style="color:red;">' + val + '</span>';
-            }
-            return val;
-        },
-
-        pctChange: function (val) {
-            if (val > 0) {
-                return '<span style="color:green;">' + val + '%</span>';
-            } else if (val < 0) {
-                return '<span style="color:red;">' + val + '%</span>';
-            }
-            return val;
-        },
-
         guardar: function(){
-            Ext.Msg.alert('Guardar');
+            this.cargarTipo('x');
         },
 
         cancelar:  function(){
