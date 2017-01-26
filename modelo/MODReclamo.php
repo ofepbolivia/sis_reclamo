@@ -94,9 +94,11 @@ class MODReclamo extends MODbase{
 			
 			$this->captura('cargo', 'varchar');
 
+			$this->captura('nombre_completo2','text');
 
 
-        $this->setParametro('id_usuario','id_usuario','int4');
+
+		$this->setParametro('id_usuario','id_usuario','int4');
 
 
 
@@ -359,6 +361,9 @@ class MODReclamo extends MODbase{
 		$this->tipo_procedimiento='IME';
 
 		$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('p_gestion','p_gestion','varchar');
+		$this->setParametro('p_periodo','p_periodo','varchar');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

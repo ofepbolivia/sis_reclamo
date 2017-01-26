@@ -256,7 +256,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				forceSelection: true,
 				triggerAction:'all',
 				mode:'local',
-				store:['SI','NO','NINGUNO']
+				store:['NO','SI','NINGUNO']
 			},
 			type: 'ComboBox',
 			filters: {pfiltro: 'res.procedente', type: 'string'},
@@ -621,7 +621,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		if(/^([0-9])+[(\/)(\-)(\.)]([0-9a-zA-Z])+$/.test(this.Cmp.nro_cite.getValue())){
 			this.Cmp.nro_cite.setValue(this.Cmp.nro_cite.getValue());
 		}else{
-			Ext.Ajax.request({
+			setInterval(Ext.Ajax.request({
 				url:'../../sis_reclamo/control/Respuesta/getCite',
 				params:{num_cite:this.Cmp.nro_cite.getValue()},
 				success: function(resp){
@@ -631,7 +631,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				failure: this.conexionFailure,
 				timeout:this.timeout,
 				scope:this
-			});
+			}),15000);
 		}
 	},
 

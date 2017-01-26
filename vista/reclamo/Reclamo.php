@@ -31,8 +31,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.load({params: {start: 0, limit: this.tam_pag}});
 		this.finCons = true;
 
-
-
 		this.addButton('ant_estado',{
 				grupo: [0,1,2,3,4,5],
 				argument: {estado: 'anterior'},
@@ -93,8 +91,13 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 		}
 
+
 	},
-		
+
+	/*onReload : function (){
+		alert('15');
+	},*/
+
 	compositeFields : function(){  //step 1
 		return{
 			xtype	        : "compositefield", //step 2
@@ -170,8 +173,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				name: 'nro_tramite',
 				fieldLabel: 'No. Tramite',
 				allowBlank: false,
-				anchor: '80%',
-				gwidth: 200,
+				anchor: '50%',
+				gwidth: 150,
 				maxLength:100,
 				renderer: function(value, p, record) {
 					var fecha_actual = new Date();
@@ -208,11 +211,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type:'TextField',
 			filters:{pfiltro:'rec.nro_tramite',type:'string'},
-			/*id_grupo:1,*/
 			grid:true,
 			form:false,
 			bottom_filter : true
-		},{
+		},/*{
 			config: {
 				name: 'dias_respuesta',
 				fieldLabel: 'Dias Para Responder',
@@ -256,11 +258,9 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type: 'TextField',
-			/*filters: {pfiltro: 'rec.estado', type: 'string'},*/
-			/*id_grupo: 1,*/
 			grid: true,
 			form: false
-		}/*,
+		},
 		{
 			config: {
 				name: 'fecha_limite_respuesta',
@@ -279,7 +279,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo: 4,
 			grid: true,
 			form: true
-		}*/,
+		},
 		{
 			config: {
 				name: 'dias_informe',
@@ -303,42 +303,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type: 'TextField',
-			/*filters: {pfiltro: 'rec.estado', type: 'string'},*/
-			/*id_grupo: 1,*/
 			grid: true,
 			form: false
-		},
-		{
-			config: {
-				name: 'estado',
-				fieldLabel: 'Estado',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 200,
-				maxLength: 100
-			},
-			type: 'TextField',
-			filters: {pfiltro: 'rec.estado', type: 'string'},
-			/*id_grupo: 1,*/
-			grid: true,
-			form: false
-		},
-		/*{
-			config: {
-				name: 'correlativo',
-				fieldLabel: 'Preimpreso FRD',
-				msgTarget: 'under',
-				layout:'hbox',
-				items: [
-					{xtype: 'textfield', value: 'CBB', emptyText: 'CBB', name:'region', id: 'region', disabled:true, width:35},
-					{xtype: 'textfield', name: 'correlativo', id: 'correlativo', width: 50, allowBlank: true},
-					{xtype: 'textfield', value: '2016', emptyText:'2016', name: 'gestion',id: 'gestion', disabled:true, width: 40, allowBlank: true, margins: '0 5 0 0'}
-				]
-			},
-			type: 'CompositeField',
-			id_grupo: 0,
-			form: true
 		},*/
+
 		{
 			config: {
 				name: 'correlativo_preimpreso_frd',
@@ -370,6 +338,21 @@ header("content-type: text/javascript; charset=UTF-8");
 			bottom_filter:true,
 			grid: true,
 			form: true
+		},
+		{
+			config: {
+				name: 'estado',
+				fieldLabel: 'Estado',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 200,
+				maxLength: 100
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'rec.estado', type: 'string'},
+			/*id_grupo: 1,*/
+			grid: true,
+			form: false
 		},
 		{
 			config: {
@@ -426,6 +409,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				maxLength: 25
 			},
 			type: 'NumberField',
+			bottom_filter:true,
 			filters: {pfiltro: 'rec.nro_ripat_att', type: 'numeric'},
 			id_grupo: 0,
 			grid: true,
@@ -470,7 +454,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}),
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
-				gdisplayField:'desc_nom_cliente',//mapea al store del grid
+				gdisplayField:'nombre_completo2',//mapea al store del grid
 				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p><p style= "color : green;" >email:{email}</p></div></tpl>',
 				hiddenName: 'id_cliente',
 				forceSelection:true,
@@ -895,7 +879,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				/*disabled: true,*/
+				disabled: true,
 				gdisplayField: 'fecha_hora_recepcion',
 				format: 'd/m/Y H:i',
 				renderer: function (value, p, record) {
@@ -1225,7 +1209,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'tiempo_respuesta', type: 'string'},
 		{name: 'revisado', type: 'string'},/*,
 		{name: 'desc_funcionario1', type: 'string'},*/
-		{name: 'nombre_completo2', type: 'string'},
+
 		{name: 'transito', type: 'string'},
 		{name: 'dias_respuesta', type: 'string'},
 		{name: 'dias_informe', type: 'string'},
@@ -1234,7 +1218,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'id_motivo_anulado', type: 'numeric'},
 		{name: 'nombre_cargo', type: 'string'},
 		{name: 'cargo', type: 'string'},
-		{name: 'email', type: 'string'}
+		{name: 'email', type: 'string'},
+		{name: 'nombre_completo2', type: 'string'},
 
 
 	],
@@ -1352,6 +1337,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			//this.getBoton('reportes').disable();
 		}
 		return tb
+	},
+
+	recargarPagina:function() {
+		alert('Chau');
 	},
 
 	loadCheckDocumentosRecWf:function() {
@@ -1528,7 +1517,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	},
 
 	iniciarEvento:function() {
-		//alert(this.Cmp.id_tipo_incidente);
+
 		this.Cmp.id_tipo_incidente.on('select', function (cmb, record, index) {
 			this.Cmp.id_subtipo_incidente.reset();
 			this.Cmp.id_subtipo_incidente.modificado = true;
@@ -1536,7 +1525,22 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
 
 		}, this);
-		
+
+		this.Cmp.id_cliente.on('select',function(cmb, record, index){
+			/*var v_cliente = new Cliente();
+			v_cliente.*/
+			//alert('Chau');
+			//Ext.Msg.alert('hola');
+		},this);
+
+		that = this;
+		setInterval(function(){ that.reload();},30000);
+	},
+
+	onButtonAct : function(){
+		alert('entra');
+		Phx.vista.Reclamo.superclass.onButtonAct.call(this);
+
 	},
 
 	onButtonNew : function () {

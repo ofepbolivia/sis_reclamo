@@ -203,5 +203,31 @@ class MODCliente extends MODbase{
 
 
     }
+
+	function listarLibroResp()
+	{
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='rec.ft_cliente_sel';
+		$this->transaccion='REC_LIBRESP_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
+		$this->setParametro('id_gestion','id_gestion','integer');
+		$this->setParametro('id_periodo','id_periodo','integer');
+		$this->setCount(false);
+
+		$this->captura('fecha','date');
+		$this->captura('correlativo','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('subtipo','varchar');
+		$this->captura('oficina','varchar');
+		$this->captura('cliente','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		//var_dump($this->respuesta); exit;
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 }
 ?>

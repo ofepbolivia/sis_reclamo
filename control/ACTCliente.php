@@ -7,6 +7,7 @@
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 require_once(dirname(__FILE__).'/../reportes/RLibroReclamoPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RLibroRespuestaPDF.php');
 
 class ACTCliente extends ACTbase{    
 			
@@ -92,6 +93,42 @@ class ACTCliente extends ACTbase{
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
+
+	function libroRespuesta(){
+
+		/*if ($this->objParam->getParametro('id_oficina_registro_incidente') == '') {
+			$this->objParam->addParametro('id_oficina_registro_incidente','-1');
+			//$this->objParam->addParametro('id_oficina_registro_incidente','TODOS');
+		}*/
+
+		$this->objParam->getParametro('id_gestion');
+		$this->objParam->getParametro('id_periodo');
+
+		$this->objFunc=$this->create('MODCliente');
+		$this->res=$this->objFunc->listarLibroResp($this->objParam);
+		//obtener titulo del reporte
+
+		$titulo = 'Libro De Respuestas';
+		//Genera el nombre del archivo (aleatorio + titulo)
+		$nombreArchivo=uniqid(md5(session_id()).$titulo);
+		$nombreArchivo.='.pdf';
+		$this->objParam->addParametro('orientacion','L');
+		$this->objParam->addParametro('tamano','LETTER');
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//Instancia la clase de pdf
+
+		$this->objReporteFormato=new RLibroRespuestaPDF ($this->objParam);
+		$this->objReporteFormato->setDatos($this->res->datos);
+		$this->objReporteFormato->generarReporte();
+		$this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+			'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+	}
 }
 
 ?>

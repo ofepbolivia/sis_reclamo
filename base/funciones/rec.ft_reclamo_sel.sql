@@ -77,7 +77,7 @@ BEGIN
                     LEFT JOIN rec.treclamo  tr ON tr.id_estado_wf = te.id_estado_wf
                     WHERE tr.estado =  'pendiente_asignacion' LIMIT 1);
 
-                    v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND';
+                    v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND ';
 
                     /*IF (v_id_usuario_rev = v_id_usuario_pen) THEN
                     	v_filtro = 'rec.id_usuario_mod = '||v_id_usuario_rev--||' AND rec.estado = ''pendiente_asignacion''';

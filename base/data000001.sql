@@ -5,20 +5,15 @@ VALUES (E'REC', E'Gestion de Reclamos', E'2016-08-09', E'REC', E'activo', E'recl
 
 select pxp.f_insert_tgui ('<i class="fa fa-comments-o fa-2x"></i>GESTIÓN DE RECLAMOS', '', 'REC', 'si', 1, '', 1, '', '', 'REC');
 select pxp.f_insert_tgui ('<i class="fa fa-compress  fa-2x"></i>Compensaciones', 'Compensacion', 'SISCOM', 'si', 3, 'sis_reclamo/vista/compensacion/Compensacion.php', 2, '', 'Compensacion', 'REC');
-select pxp.f_delete_tgui ('SISRES');
+
 select pxp.f_insert_tgui ('Informes', 'Informe', 'SISINF', 'si', 2, 'sis_reclamo/vista/informe/Informe.php', 2, '', 'Informe', 'REC');
 select pxp.f_insert_tgui ('<i class="fa fa-pinterest fa-2x"></i>Tipos de Incidentes', 'TipoIncidente', 'RECTI', 'si', 1, 'sis_reclamo/vista/tipo_incidente/TipoIncidente.php', 2, '', 'TipoIncidente', 'REC');
 select pxp.f_insert_tgui ('<i class="fa fa-info-circle fa-2x"></i>Medios de Reclamo ', 'medio reclamo', 'MEDRE', 'si', 2, 'sis_reclamo/vista/medio_reclamo/MedioReclamo.php', 2, '', 'MedioReclamo', 'REC');
-select pxp.f_delete_tgui ('INFORM');
-select pxp.f_delete_tgui ('recl');
-select pxp.f_delete_tgui ('RESRE');
 select pxp.f_insert_tgui ('<i class="fa fa-users fa-2x"></i>Clientes', 'Cliente Vista', 'CLI', 'si', 5, 'sis_reclamo/vista/cliente/Cliente.php', 2, '', 'Cliente', 'REC');
-select pxp.f_delete_tgui ('RTI');
 select pxp.f_insert_tgui ('<i class="fa fa-archive fa-2x"></i>Registro Reclamos', 'Reclamo', 'RECM', 'si', 1, 'sis_reclamo/vista/reclamo/RegistroReclamos.php', 2, '', 'RegistroReclamos', 'REC');
 select pxp.f_insert_tgui ('<i class="fa fa-home fa-2x"></i>Catalogos', 'Catalogos', 'CAT', 'si', 1, '', 2, '', '', 'REC');
 select pxp.f_insert_tgui ('<i class="fa fa-folder fa-2x"></i>Procesos', 'Procesos', 'PROC2', 'si', 2, '', 2, '', '', 'REC');
 select pxp.f_insert_tgui ('<i class="fa fa-file-o fa-2x"></i>Reportes', 'Reportes', 'RE2', 'si', 3, '', 2, '', '', 'REC');
-select pxp.f_delete_tgui ('REIN');
 select pxp.f_insert_tgui ('<i class="fa fa-globe  fa-2x"></i>CRM Global', 'CRM Global', 'CRM', 'si', 2, 'sis_reclamo/vista/reporte/FormFiltros.php', 3, '', 'FormFiltros', 'REC');
 select pxp.f_insert_tgui ('<i class="fa fa-folder-open fa-2x"></i>Consulta de Reclamos', 'Consulta de Reclamos', 'CONSREC', 'si', 7, 'sis_reclamo/vista/reclamo/ConsultaReclamo.php', 3, '', 'ConsultaReclamo', 'REC');
 select pxp.f_insert_tgui ('<i class="fa  fa-ban fa-2x"></i>Motivos de Anulación', 'Motivos de Anulacion', 'MOTAN', 'si', 4, 'sis_reclamo/vista/motivo_anulado/MotivoAnulado.php', 3, '', 'MotivoAnulado', 'REC');

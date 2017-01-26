@@ -44,7 +44,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.cmbGestion
 
             ];
-            this.Atributos.splice(5,1);
+            //this.Atributos.splice(5,1);
             /*this.Atributos.splice(this.Atributos.length,0,{
                 config: {
                     name: 'id_motivo_anulado',
@@ -124,7 +124,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 params:{id_usuario:0},
                 success:function(resp){
                     var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
-                    console.log(reg);
+                    console.log('rEG2: '+reg);
                     this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
                     this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
                     this.store.baseParams.id_gestion=this.cmbGestion.getValue();

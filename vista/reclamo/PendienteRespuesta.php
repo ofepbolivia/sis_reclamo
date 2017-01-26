@@ -47,8 +47,55 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro=config.maestro;
            
 
-            this.Atributos.splice(5,1);
-            //this.Atributos.splice(3,0,);
+            //this.Atributos.splice(5,1);
+            this.Atributos.splice(5,0,
+             {
+                config: {
+                    name: 'dias_respuesta',
+                        fieldLabel: 'Dias Para Responder',
+                        allowBlank: true,
+                        anchor: '100%',
+                        gwidth: 150,
+                        maxLength: 100,
+                        renderer: function(value, p, record) {
+                        var dias = record.data.dias_respuesta;
+                        var ids = new Array(4, 6, 37, 38, 48, 50);
+                        var id_tipo = parseInt(record.data.id_tipo_incidente);
+                        if(ids.indexOf(id_tipo) >= 0) {
+                            if (dias >= 7 && dias <= 10) {
+                                return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+                            }
+                            else if(dias >=3  && dias <= 6){
+                                return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
+                            }else if(dias>=0 && dias<=2) {
+                                if(dias == 1)
+                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Falta {0} Día</font></b><br></div>', value);
+                                else if(dias == 0 || dias ==2)
+                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Faltan {0} Días</font></b><br></div>', value);
+                            }else if(dias = -1){
+                                return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">Con Respuesta o Vencido</font></b><br></div>', value);
+                            }
+                        }else if(record.data.id_tipo_incidente==36){
+                            if (dias >=5  && dias <= 7) {
+                                return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+                            }
+                            else if(dias >=2  && dias <= 4){
+                                return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
+                            }else if(dias>=0 && dias<=1) {
+                                if(dias == 1)
+                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Falta {0} Día</font></b><br></div>', value);
+                                else if(dias == 0)
+                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Faltan {0} Días</font></b><br></div>', value);
+                            }else if(dias = -1){
+                                return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">Con Respuesta o Vencido</font></b><br></div>', value);
+                            }
+                        }
+                    }
+                },
+                type: 'TextField',
+                    grid: true,
+                    form: false
+            });
 
             this.Atributos.unshift({
                 config:{
@@ -84,7 +131,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 params:{id_usuario:0},
                 success:function(resp){
                     var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
-                    console.log(reg);
+                    console.log('rEG1: '+reg);
                     this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
                     this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
                     this.store.baseParams.id_gestion=this.cmbGestion.getValue();
@@ -221,21 +268,9 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         reportes: function(){
-
-            /*Phx.CP.loadingShow();
-            Ext.Ajax.request({
-                url:'../../sis_reclamo/control/Reclamo/generarReporte',
-                params:{
-                    codigo_proceso:  'REC',
-                    proceso_macro:   'REC'
-                },
-                success:this.guardarReporte,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });*/
+            
             this.vista.show();
-            //Ext.Msg.alert('Titulo','Good');
+
         },
 
         guardarReporte: function(resp){

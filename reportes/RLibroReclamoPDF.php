@@ -13,7 +13,7 @@ class RLibroReclamoPDF extends ReportePDF  {
         $height = 5;
         $height2 = 40;
         $this->Image(dirname(__FILE__) . '/../../lib' . $_SESSION['_DIR_LOGO'], 5, 8, 60, 15);
-        $this->SetFont('times', 'BI', 20);
+        $this->SetFont('times', 'B', 20);
         $this->Write(0, 'LIBRO DE RECLAMOS', '', 0, 'C', true, 0, false, false, 0);
         $this->Write(0, 'ODECO - OPERADOR', '', 0, 'C', true, 0, false, false, 0);
         //$this->ln(0,5);
@@ -30,11 +30,11 @@ class RLibroReclamoPDF extends ReportePDF  {
     }
     function generarReporte() {
 
-   
 
+        $this->SetMargins(20,35,20);
         $this->setFontSubsetting(false);
         $this->AddPage();
-        $this->Ln(10);
+        //$this->Ln(10);
         $this->SetFont('','B',9);
 
         $conf_det_tablewidths=array(18,20,45,30,30,20,20,25,40);
@@ -63,6 +63,9 @@ class RLibroReclamoPDF extends ReportePDF  {
         $this->tablewidths=$conf_det_tablewidths;
         $this->tablealigns=$conf_det_tablealigns;
 
+        $cont_filas = 1;
+        //$this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        //$this->SetHeaderMargin(50);
         foreach ($this->datos as $Row) {
 
             $RowArray = array(
@@ -74,12 +77,33 @@ class RLibroReclamoPDF extends ReportePDF  {
                 'Fecha de Incedenteo' => date("d-M-Y", strtotime($Row['fecha_hora_incidente'])) ,
                 'Fecha de Recepcion' =>  date("d-M-Y", strtotime($Row['fecha_hora_recepcion'])),
                 'Fecha Envio Oficina Central' =>  $Row['fecha_hora_recepcion_sac'], // cambiar formato recordatorio
-                'Observaciones' => $Row['detalle_incidente']."\n",
+                'Observaciones' => " ",
 
 
             );
 
             $this-> MultiRow($RowArray);
+            /*if($cont_filas==17){
+                $this->SetFont('','B',9);
+                $RowArray = array(
+
+                    'FRD',
+                    'Preimpreso',
+                    'Nombre y Apellido',
+                    'Datos de Contacto',
+                    'Motivo de Reclamo',
+                    'Fecha de Incidente',
+                    'Fecha de Recepcion',
+                    'Fecha Envio Oficina Central',
+                    'Detalle de Reclamo'
+                );
+                //$this->Ln(10);
+                $this-> MultiRow($RowArray);
+                $cont_filas=0;
+
+            }
+            $this->SetFont('','',8);
+            $cont_filas++;*/
 
         }
         //$this->Ln(10);

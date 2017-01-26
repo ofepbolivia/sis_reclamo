@@ -18,7 +18,34 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function(config){
             this.maestro=config.maestro;
             this.mycls = config.mycls;
-            this.Atributos.splice(3,1);
+            //this.Atributos.splice(3,1);
+            this.Atributos.splice(5,0,{
+                 config: {
+                 name: 'dias_informe',
+                 fieldLabel: 'Dias Para Adjuntar Inf.',
+                 allowBlank: true,
+                 anchor: '100%',
+                 gwidth: 300,
+                 maxLength: 100,
+                 renderer: function(value, p, record) {
+                 var dias = record.data.dias_informe;
+                 console.log('dias: '+record.data.dias_informe);
+                 //console.log('dias_informe: '+JSON.stringify(record.data));
+                 if (dias == 2) {
+                 return String.format('<div ext:qtip="Bueno"><b><font color="green">Le Quedan 48 Horas</font></b><br></div>', value);
+                 }
+                 else if(dias>=0 && dias<=1){
+                 return String.format('<div ext:qtip="Malo"><b><font color="orange">Le Quedan 24 Horas</font></b><br></div>', value);
+                 }else if(dias = -1){
+                 return String.format('<div ext:qtip="Vencido"><b><font color="blue">Vencido</font></b><br></div>', value);
+                 }
+                 }
+                 },
+                 type: 'TextField',
+
+                 grid: true,
+                 form: false
+             });
             Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
             //this.store.baseParams.func_estado = 'oficina';
             console.log('padre: '+this.mycls);

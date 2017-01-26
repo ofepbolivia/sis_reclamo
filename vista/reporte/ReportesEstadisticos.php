@@ -66,8 +66,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     form:true*/
                 },{
                         xtype:'combo',
-                        name: 'gestion',
-                        id: 'gestion',
+                        name: 'id_gestion',
+                        id: 'id_gestion',
                         fieldLabel: 'Gestion',
                         allowBlank: false,
                         emptyText:'Gestion...',
@@ -78,7 +78,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 id: 'id_gestion',
                                 root: 'datos',
                                 sortInfo:{
-                                    field: 'gestion',
+                                    field: 'id_gestion',
                                     direction: 'DESC'
                                 },
                                 totalProperty: 'total',
@@ -99,8 +99,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 {
                        xtype:'combo',
-                       name: 'periodo',
-                       id: 'periodo',
+                       name: 'id_periodo',
+                       id: 'id_periodo',
                        fieldLabel: 'Periodo',
                        allowBlank: true,
                        emptyText:'Periodo...',
@@ -111,7 +111,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                id: 'id_periodo',
                                root: 'datos',
                                sortInfo:{
-                                   field: 'periodo',
+                                   field: 'id_periodo',
                                    direction: 'ASC'
                                },
                                totalProperty: 'total',
@@ -121,7 +121,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                baseParams:{par_filtro:'periodo'}
                            }),
                        valueField: 'id_periodo',
-                       displayField: 'literal',
+                       displayField: 'periodo',
                        hiddenName: 'id_periodo',
                        triggerAction: 'all',
                        mode:'remote',
@@ -129,29 +129,28 @@ header("content-type: text/javascript; charset=UTF-8");
                        queryDelay:500,
                        listWidth:'230',
                        hidden:false,
-                       width:150
+                       width:150,
+                       disabled:true
                    }
 
                 ],
 
-                buttons: [{
+                buttons: [
+                    {
                     iconCls: 'album-btn',
                     handler: this.guardar,
-                    text: 'Generar',
+                    text: 'Mostrar Detalle',
                     scope: this
-                }]
+                    },
+                    {
+                        iconCls: 'album-btn',
+                        handler: this.procesar,
+                        text: 'Generar Reporte',
+                        scope: this
+                    }
+                ]
             });
 
-
-            var banco = new Ext.data.JsonStore({
-                url: '../../sis_reclamo/control/MotivoAnulado/listarMotivoAnulado',
-                id:'id_motivo_anulado',
-                totalProperty: 'total',
-                root: 'datos',
-                remoteSort: true,
-                fields: ['id_motivo_anulado', 'motivo', 'orden']
-            });
-            console.log('banco',banco);
 
             this.reportPanel = new Ext.Panel({
                 id: 'reportPanel',
@@ -164,12 +163,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 items: [/*grafico, grid*/]
             });
 
-            //this.iniciarEventos();
-
-
-
-
-
+            this.iniciarEventos();
 
             this.Border = new Ext.Container({
                 layout:'border',
@@ -181,32 +175,47 @@ header("content-type: text/javascript; charset=UTF-8");
             this.panel.doLayout();
             this.addEvents('init');
 
-
-
-
-
             //this.iniciarEventos();
         },
 
         iniciarEventos: function(){
 
-            Ext.getCmp('reportes').on('select', function(cmb, rec, ind){
+            /*Ext.getCmp('reportes').on('select', function(cmb, rec, ind){
+                alert('Adios')
                 this.cargarTipo(rec.data.field1);
-            },this);
+            },this);*/
             
-            Ext.getCmp('gestion').on('select', function(cmb, rec, ind){
+            Ext.getCmp('id_gestion').on('select', function(cmb, rec, ind){
+
+                Ext.getCmp('id_periodo').reset();
+                Ext.getCmp('id_periodo').enable();
+                Ext.getCmp('id_periodo').store.baseParams.id_gestion = rec.data.id_gestion;
             },this);
         },
 
-        cargarTipo: function(tipoGrafico){
+        guardar: function(){
+            this.cargarTipo();
+        },
 
-            alert('Hola Mundo');
-            console.log('TIPO ',Ext.getCmp('reportes'),'gestion',Ext.getCmp('gestion').store.data.items.data,'periodo',Ext.getCmp('periodo'));
+        cargarTipo: function(){
+            //var item = getFieldValues(Ext.getCmp('id_gestion'), 'id_gestion', 'gestion');
+            var comboG = Ext.getCmp('id_gestion');
+            var comboP = Ext.getCmp('id_periodo');
+
+            var tipoGrafico = Ext.getCmp('reportes').getValue();
+            var gestion = comboG.getValue();
+            var periodo = comboP.getRawValue();
+
+
             this.reportPanel.removeAll();
             if(tipoGrafico=='Tipo Incidente'){
                 Ext.Ajax.request({
                     url:'../../sis_reclamo/control/Reclamo/stadistica',
-                    params:{tipo:'tipo_incidente'},
+                    params:{
+                        tipo:'tipo_incidente',
+                        p_gestion: gestion,
+                        p_periodo: periodo
+                    },
                     success:function(resp){
                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                         console.log(parseInt(reg.ROOT.datos.v_boleto),parseInt(reg.ROOT.datos.v_vuelo));
@@ -332,7 +341,11 @@ header("content-type: text/javascript; charset=UTF-8");
             }else if(tipoGrafico=='Ciudad de Reclamo'){
                 Ext.Ajax.request({
                     url:'../../sis_reclamo/control/Reclamo/stadistica',
-                    params:{tipo:'ciudad'},
+                    params:{
+                        tipo:'ciudad',
+                        p_gestion: gestion,
+                        p_periodo: periodo
+                    },
                     success:function(resp){
                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                         console.log(reg.ROOT.datos);
@@ -517,7 +530,11 @@ header("content-type: text/javascript; charset=UTF-8");
             }else if(tipoGrafico=='Lugar de Reclamo'){
                 Ext.Ajax.request({
                     url:'../../sis_reclamo/control/Reclamo/stadistica',
-                    params:{tipo:'lugar'},
+                    params:{
+                        tipo:'lugar',
+                        p_gestion: gestion,
+                        p_periodo: periodo
+                    },
                     success:function(resp){
                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
@@ -650,9 +667,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 });
             }
             else if(tipoGrafico=='Genero'){
+                console.log('Val: ',gestion, periodo,tipoGrafico);
                 Ext.Ajax.request({
                     url:'../../sis_reclamo/control/Reclamo/stadistica',
-                    params:{tipo:'genero'},
+                    params:{
+                        tipo:'genero',
+                        p_gestion: gestion,
+                        p_periodo: periodo
+                    },
                     success:function(resp){
                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                         hombres = parseInt(reg.ROOT.datos.v_hombres);
@@ -758,7 +780,11 @@ header("content-type: text/javascript; charset=UTF-8");
             }else if(tipoGrafico=='Ambiente del Incidente'){
                 Ext.Ajax.request({
                     url:'../../sis_reclamo/control/Reclamo/stadistica',
-                    params:{tipo:'ambiente'},
+                    params:{
+                        tipo:'ambiente',
+                        p_gestion: gestion,
+                        p_periodo: periodo
+                    },
                     success:function(resp){
                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
@@ -885,7 +911,11 @@ header("content-type: text/javascript; charset=UTF-8");
             }else if(tipoGrafico=='Estado del Reclamo'){
                 Ext.Ajax.request({
                     url:'../../sis_reclamo/control/Reclamo/stadistica',
-                    params:{tipo:'estado'},
+                    params:{
+                        tipo:'estado',
+                        p_gestion: gestion,
+                        p_periodo: periodo
+                    },
                     success:function(resp){
                         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
@@ -1064,12 +1094,8 @@ header("content-type: text/javascript; charset=UTF-8");
             }
         },
 
-        guardar: function(){
-            this.cargarTipo('x');
-        },
-
-        cancelar:  function(){
-            Ext.Msg.alert('Cancelar');
+        procesar:  function(){
+            Ext.Msg.alert('Generar Reporte pdf');
         },
 
         iniciarDashboard:function(nodo){
