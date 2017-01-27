@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION rec.ft_reclamo_ime (
 )
 RETURNS varchar AS
 $body$
-/**************************************************************************
+  /**************************************************************************
  SISTEMA:		Sistema de Reclamos
  FUNCION: 		rec.ft_reclamo_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'rec.treclamo'
@@ -82,11 +82,69 @@ DECLARE
     v_record_gestion	record;
     v_siguiente_estado 	varchar;
 
+
     --STADISTICA BEGIN
-    	v_stadistica	record;
-    	v_hombres			integer=0;
-        v_mujeres			integer=0;
-        v_genero			varchar;
+    v_stadistica	record;
+    v_hombres			integer=0;
+    v_mujeres			integer=0;
+    v_noEspecifica 		integer=0;
+    v_criterio			varchar;
+
+    v_boleto			INTEGER=0;
+    v_vuelo				INTEGER=0;
+    v_equipaje			INTEGER=0;
+    v_carga				INTEGER=0;
+    v_catering			INTEGER=0;
+    v_sac				INTEGER=0;
+    v_otros				INTEGER=0;
+
+    borrador	integer=0;
+    pendiente_revision	integer=0;
+    registrado_ripat	integer=0;
+    pendiente_informacion	integer=0;
+    anulado	integer=0;
+    derivado	integer=0;
+    pendiente_respuesta	integer=0;
+	archivo_con_respuesta	integer=0;
+	archivado_concluido	integer=0;
+	en_avenimiento	integer=0;
+	formulacion_cargos	integer=0;
+	resolucion_administrativa	integer=0;
+	recurso_revocatorio	integer=0;
+	recurso_jerarquico	integer=0;
+	contencioso_administrativo integer=0;
+	pendiente_asignacion	integer=0;
+	respuesta_registro_ripat	integer=0;
+
+    v_lim	INTEGER=0;
+    v_bue	INTEGER=0;
+    v_sla	INTEGER=0;
+    v_sao	INTEGER=0;
+    v_mad	INTEGER=0;
+    v_viru	INTEGER=0;
+    v_uyu	INTEGER=0;
+    v_oru	INTEGER=0;
+    v_poi	INTEGER=0;
+    v_cij	INTEGER=0;
+    v_tdd	INTEGER=0;
+    v_tja	INTEGER=0;
+    v_sre	INTEGER=0;
+    v_srz	INTEGER=0;
+    v_lpb	INTEGER=0;
+    v_cbb	INTEGER=0;
+    v_acft  INTEGER=0;
+    v_mia	INTEGER=0;
+
+    v_ato INTEGER=0;
+    v_cto INTEGER=0;
+    v_cga INTEGER=0;
+    v_canalizado INTEGER=0;
+    v_web INTEGER=0;
+
+    v_call INTEGER=0;
+    v_att INTEGER=0;
+
+     v_fecha_hasta date;
     --END
 
 BEGIN
@@ -733,7 +791,6 @@ BEGIN
         $this->setParametro('obs','obs','text');
         $this->setParametro('json_procesos','json_procesos','text');
         */
-
           --recupera toda la tabla reclamos
           select recl.*
           into v_reclamo
@@ -752,6 +809,7 @@ BEGIN
           from wf.testado_wf ew
           inner join wf.ttipo_estado te on te.id_tipo_estado = ew.id_tipo_estado
           where ew.id_estado_wf =  v_parametros.id_estado_wf_act;
+
 
 
            -- obtener datos tipo estado siguiente //codigo=borrador
@@ -877,24 +935,348 @@ BEGIN
 
 		begin
 
-			FOR v_stadistica IN (SELECT * FROM rec.treclamo  WHERE id_gestion=13) LOOP
+        	select p.fecha_fin
+            into v_fecha_hasta
+            from param.tperiodo p
+            where p.id_gestion = v_parametros.p_gestion::integer AND p.periodo = v_parametros.p_periodo::integer;
+            --RAISE EXCEPTION 'v_fecha_hasta; %',v_fecha_hasta;
+          	v_fecha_hasta = to_char(v_fecha_hasta,'DD/MM/YYYY');
+			FOR v_stadistica IN (SELECT * FROM rec.treclamo  WHERE fecha_reg<=v_fecha_hasta) LOOP
 
-                SELECT c.genero INTO v_genero
-                FROM rec.tcliente c
-                WHERE c.id_cliente=v_stadistica.id_cliente;
+            	IF (v_parametros.tipo='tipo_incidente')THEN
 
-                IF v_genero = 'VARON' THEN
-                	v_hombres=v_hombres+1;
-                ELSE
-                	v_mujeres=v_mujeres+1;
+                	SELECT nombre_incidente INTO v_criterio
+                    FROM rec.ttipo_incidente
+                    WHERE id_tipo_incidente=v_stadistica.id_tipo_incidente;
+
+                    IF (v_criterio='Pasaje/Boleto')THEN
+                    	v_boleto = v_boleto + 1;
+                    END IF;
+                    IF (v_criterio='Vuelo')THEN
+                    	v_vuelo=v_vuelo+1;
+                    END IF;
+                    IF (v_criterio='Equipaje')THEN
+                    	v_equipaje=v_equipaje+1;
+                    END IF;
+                    IF (v_criterio='Carga/Encomienda')THEN
+                    	v_carga=v_carga+1;
+                    END IF;
+                    IF (v_criterio='Catering')THEN
+                    	v_catering=v_catering+1;
+                    END IF;
+                    IF (v_criterio='Atencion al Usuario')THEN
+                    	v_sac=v_sac+1;
+                    END IF;
+                    IF (v_criterio='No Especifica')THEN
+                    	v_otros=v_otros+1;
+                    END IF;
+                END IF;
+                --CIUDAD
+                IF (v_parametros.tipo='ciudad')THEN
+
+                	SELECT DISTINCT ON (tl.codigo) tl.codigo INTO v_criterio
+                    FROM param.tlugar tl
+                    INNER JOIN orga.toficina tof ON tof.id_lugar = tl.id_lugar
+                    INNER JOIN rec.treclamo tr ON tr.id_oficina_registro_incidente = tof.id_oficina
+                    WHERE tr.id_oficina_registro_incidente=v_stadistica.id_oficina_registro_incidente;
+
+                    IF (v_criterio='CBB')THEN
+                    	v_cbb = v_cbb + 1;
+                    END IF;
+                    IF (v_criterio='LPB')THEN
+                    	v_lpb = v_lpb + 1;
+                    END IF;
+                    IF (v_criterio='SRZ')THEN
+                    	v_srz=v_srz + 1;
+                    END IF;
+                    IF (v_criterio='SRE')THEN
+                    	v_sre=v_sre + 1;
+                    END IF;
+                    IF (v_criterio='TJA')THEN
+                    	v_tja = v_tja + 1;
+                    END IF;
+                    IF (v_criterio='TDD')THEN
+                    	v_tdd=v_tdd+1;
+                    END IF;
+                    IF (v_criterio='CIJ')THEN
+                    	v_cij=v_cij+1;
+                    END IF;
+                    IF (v_criterio='POI')THEN
+                    	v_poi=v_poi+1;
+                    END IF;
+                    IF (v_criterio='ORU')THEN
+                    	v_oru=v_oru+1;
+                    END IF;
+                    IF (v_criterio='UYU')THEN
+                    	v_uyu=v_uyu+1;
+                    END IF;
+                    IF (v_criterio='OTROS')THEN
+                    	v_otros=v_otros+1;
+                    END IF;
+                    IF (v_criterio='VIRU VIRU')THEN
+                    	v_viru=v_viru+1;
+                    END IF;
+                    IF (v_criterio='MAD')THEN
+                    	v_mad=v_mad+1;
+                    END IF;
+                    IF (v_criterio='SAO')THEN
+                    	v_sao=v_sao+1;
+                    END IF;
+                    IF (v_criterio='SLA')THEN
+                    	v_sla=v_sla+1;
+                    END IF;
+                    IF (v_criterio='BUE')THEN
+                    	v_bue=v_bue+1;
+                    END IF;
+                    IF (v_criterio='MIA')THEN
+                    	v_mia=v_mia+1;
+                    END IF;
+                    IF (v_criterio='LIM')THEN
+                    	v_lim=v_lim+1;
+                    END IF;
+                    IF (v_criterio='ACFT')THEN
+                    	v_acft=v_acft+1;
+                    END IF;
+                END IF;
+
+
+
+                IF v_parametros.tipo='lugar' THEN
+
+                	SELECT  DISTINCT ON (tol.codigo) tol.codigo INTO v_criterio
+                    FROM orga.toficina tol
+                    INNER JOIN rec.treclamo tr ON tr.id_oficina_registro_incidente = tol.id_oficina
+                    WHERE tr.id_oficina_registro_incidente=v_stadistica.id_oficina_registro_incidente;
+
+            		IF v_criterio % 'ATO%' THEN
+                    	 	v_ato = v_ato+1;
+                	END IF;
+                    IF v_criterio  % 'CTO%' /*OR v_criterio % 'OCC'*/  THEN
+                         	v_cto = v_cto+1;
+                    END IF;
+                    IF v_criterio % 'OCC%' THEN
+                         	v_cga = v_cga+1;
+                    END IF;
+                    IF v_criterio % 'CANALIZADO' THEN
+            	 			v_canalizado = v_canalizado+1;
+                    END IF;
+                    IF v_criterio % 'WEB' THEN
+            	 			v_web = v_web+1;
+                    END IF;
+                    IF v_criterio % 'CC' THEN
+            	 			v_call = v_call+1;
+                    END IF;
+                    IF v_criterio % 'ATT' THEN
+            	 			v_att = v_att+1;
+                    END IF;
+
+                    IF v_criterio % 'ACFT' THEN
+                    	 	v_acft = v_acft+1;
+                    END IF;
+
+                END IF;
+
+                --GENERO
+                IF (v_parametros.tipo='genero')THEN
+                  SELECT c.genero INTO v_criterio
+                  FROM rec.tcliente c
+                  WHERE c.id_cliente=v_stadistica.id_cliente;
+
+                  IF v_criterio = 'VARON' THEN
+                  	v_hombres = v_hombres+1;
+                  ELSIF v_criterio = 'MUJER'THEN
+                  	v_mujeres = v_mujeres+1;
+                  ELSE
+                  	v_noEspecifica = v_noEspecifica+1;
+                  END IF;
+                END IF;
+
+                IF v_parametros.tipo='ambiente' THEN
+
+                	SELECT  DISTINCT ON (tol.codigo) tol.codigo INTO v_criterio
+                    FROM orga.toficina tol
+                    INNER JOIN rec.treclamo tr ON tr.id_oficina_registro_incidente = tol.id_oficina
+                    WHERE tr.id_oficina_incidente=v_stadistica.id_oficina_incidente;
+
+            		IF v_criterio % 'ATO%' THEN
+                    	 	v_ato = v_ato+1;
+                	END IF;
+                    IF v_criterio  % 'CTO%' /*OR v_criterio % 'OCC'*/  THEN
+                         	v_cto = v_cto+1;
+                    END IF;
+                    IF v_criterio % 'OCC%' THEN
+                         	v_cga = v_cga+1;
+                    END IF;
+
+                    IF v_criterio % 'CC' THEN
+            	 			v_call = v_call+1;
+                    END IF;
+
+                    IF v_criterio % 'ACFT' THEN
+                    	 	v_acft = v_acft+1;
+                    END IF;
+
+                    IF v_criterio % 'WEB' THEN
+            	 			v_web = v_web+1;
+                    END IF;
+                END IF;
+
+            	IF (v_parametros.tipo='estado')THEN
+                	SELECT estado INTO v_criterio
+                    FROM rec.treclamo
+                    WHERE estado=v_stadistica.estado;
+
+                    IF (v_criterio='borrador')THEN
+                    	borrador = borrador + 1;
+                    END IF;
+                    IF (v_criterio='pendiente_revision')THEN
+                    	pendiente_revision=pendiente_revision+1;
+                    END IF;
+                    IF (v_criterio='registrado_ripat')THEN
+                    	registrado_ripat=registrado_ripat+1;
+                    END IF;
+                    IF (v_criterio='pendiente_informacion')THEN
+                    	pendiente_informacion=pendiente_informacion+1;
+                    END IF;
+                    IF (v_criterio='anulado')THEN
+                    	anulado=anulado+1;
+                    END IF;
+                    IF (v_criterio='derivado')THEN
+                    	derivado=derivado+1;
+                    END IF;
+                    IF (v_criterio='pendiente_respuesta')THEN
+                    	pendiente_respuesta=pendiente_respuesta+1;
+                    END IF;
+                    IF (v_criterio='archivo_con_respuesta')THEN
+                    	archivo_con_respuesta=archivo_con_respuesta+1;
+                    END IF;
+                    IF (v_criterio='archivado_concluido')THEN
+                    	archivado_concluido=archivado_concluido+1;
+                    END IF;
+                    IF (v_criterio='en_avenimiento')THEN
+                    	en_avenimiento=en_avenimiento+1;
+                    END IF;
+                    IF (v_criterio='formulacion_cargos')THEN
+                    	formulacion_cargos=formulacion_cargos+1;
+                    END IF;
+                    IF (v_criterio='resolucion_administrativa')THEN
+                    	resolucion_administrativa=resolucion_administrativa+1;
+                    END IF;
+                    IF (v_criterio='recurso_revocatorio')THEN
+                    	recurso_revocatorio=recurso_revocatorio+1;
+                    END IF;
+                    IF (v_criterio='recurso_jerarquico')THEN
+                    	recurso_jerarquico=recurso_jerarquico+1;
+                    END IF;
+                    IF (v_criterio='contencioso_administrativo')THEN
+                    	contencioso_administrativo=contencioso_administrativo+1;
+                    END IF;
+                    IF (v_criterio='pendiente_asignacion')THEN
+                    	pendiente_asignacion=pendiente_asignacion+1;
+                    END IF;
+                    IF (v_criterio='respuesta_registro_ripat')THEN
+                    	respuesta_registro_ripat=respuesta_registro_ripat+1;
+                    END IF;
                 END IF;
             END LOOP;
-            --v_resp = '';
-            --RAISE EXCEPTION 'DATOS: %,%',v_hombres,v_mujeres;
+
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
-            v_resp = pxp.f_agrega_clave(v_resp,'v_hombres',v_hombres::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'v_mujeres',v_mujeres::varchar);
+            IF (v_parametros.tipo='tipo_incidente')THEN
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_boleto',v_boleto::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_vuelo',v_vuelo::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_equipaje',v_equipaje::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_carga',v_carga::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_catering',v_catering::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_sac',v_sac::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_otros',v_otros::varchar);
+            END IF;
+
+            IF (v_parametros.tipo='ciudad')THEN
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+                v_resp = pxp.f_agrega_clave(v_resp,'v_otros',v_otros::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_lim',v_lim::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_bue',v_bue::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_sla',v_sla::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_sao',v_sao::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_mad',v_mad::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_viru',v_viru::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_uyu',v_uyu::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_oru',v_oru::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_poi',v_poi::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_cij',v_cij::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_tdd',v_tdd::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_tja',v_tja::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_sre',v_sre::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_srz',v_srz::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_lpb',v_lpb::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_cbb',v_cbb::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_mia',v_mia::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_acft',v_acft::varchar);
+            END IF;
+
+            IF (v_parametros.tipo='lugar')THEN
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+                v_resp = pxp.f_agrega_clave(v_resp,'v_ato',v_ato::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_cto',v_cto::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_cga',v_cga::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_canalizado',v_canalizado::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_web',v_web::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_acft',v_acft::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_call',v_call::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_att',v_att::varchar);
+
+
+            END IF;
+
+            IF (v_parametros.tipo='genero')THEN
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_hombres',v_hombres::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_mujeres',v_mujeres::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_noEspecifica',v_noEspecifica::varchar);
+            END IF;
+
+            IF (v_parametros.tipo='ambiente')THEN
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+                v_resp = pxp.f_agrega_clave(v_resp,'v_ato',v_ato::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_cto',v_cto::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_cga',v_cga::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_call',v_call::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_acft',v_acft::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_web',v_web::varchar);
+            END IF;
+
+			IF (v_parametros.tipo='estado')THEN
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+            	v_resp = pxp.f_agrega_clave(v_resp,'borrador',borrador::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'pendiente_revision',pendiente_revision::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'registrado_ripat',registrado_ripat::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'pendiente_informacion',pendiente_informacion::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'anulado',anulado::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'derivado',derivado::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'pendiente_respuesta',pendiente_respuesta::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'archivo_con_respuesta',archivo_con_respuesta::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'archivado_concluido',archivado_concluido::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'en_avenimiento',en_avenimiento::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'formulacion_cargos',formulacion_cargos::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'resolucion_administrativa',resolucion_administrativa::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'recurso_revocatorio',recurso_revocatorio::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'recurso_jerarquico',recurso_jerarquico::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'contencioso_administrativo',contencioso_administrativo::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'pendiente_asignacion',pendiente_asignacion::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'respuesta_registro_ripat',respuesta_registro_ripat::varchar);
+            END IF;
+
+            /*IF (v_parametros.tipo='tipo_incidente')THEN
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_boleto',v_boleto::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_vuelo',v_vuelo::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_equipaje',v_equipaje::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_carga',v_carga::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_catering',v_catering::varchar);
+            	v_resp = pxp.f_agrega_clave(v_resp,'v_sac',v_sac::varchar);
+                v_resp = pxp.f_agrega_clave(v_resp,'v_otros',v_otros::varchar);
+            END IF;*/
 
             --Devuelve la respuesta
             return v_resp;

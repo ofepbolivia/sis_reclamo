@@ -439,7 +439,7 @@ BEGIN
              v_parametros_ad = '';
              v_tipo_noti = 'notificacion';
              v_titulo  = 'Visto Bueno';
-
+             --RAISE EXCEPTION 'v_codigo_estado_siguiente: %,v_id_tipo_estado: %, v_id_estado_wf: %, v_parametros.id_proceso_wf_act: %, v_parametros.id_estado_wf_act: %',v_codigo_estado_siguiente,v_id_tipo_estado,v_id_estado_wf, v_parametros.id_proceso_wf_act, v_parametros.id_estado_wf_act;
 
              --Sirve para configurar el acceso o enlace dentro del correo electronico
              IF   v_codigo_estado_siguiente not in('elaboracion_respuesta','respuesta_aprobada','respuesta_enviada','vobo_respuesta')   THEN

@@ -50,6 +50,8 @@ BEGIN
 
     	begin
 
+
+
         	SELECT vfcl.id_oficina, vfcl.nombre_cargo,  vfcl.oficina_nombre,
             tf.id_funcionario, vfcl.desc_funcionario1/*, tr.id_reclamo*/ INTO v_record
             FROM segu.tusuario tu
@@ -63,11 +65,11 @@ BEGIN
             FROM rec.trespuesta res
             where	res.id_reclamo = v_record.id_reclamo;*/
 
-            IF (p_id_usuario = 1 OR p_id_usuario = 18) THEN
+            IF (p_administrador) THEN
             	v_filtro= '0 = 0 AND ';
-            ELSIF (v_record.nombre_cargo='Especialista Atención al Cliente')THEN
+            /*ELSIF (v_record.nombre_cargo='Especialista Atención al Cliente')THEN
             		v_filtro = '(vfc.id_oficina = '||v_record.id_oficina||' OR tew.id_funcionario = '||v_record.id_funcionario||') AND';
---                     AND res.estado in (''archivo_con_respuesta'',''respuesta_registrado_ripat'')
+--                     AND res.estado in (''archivo_con_respuesta'',''respuesta_registrado_ripat'')*/
             ELSE
             	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
             END IF;

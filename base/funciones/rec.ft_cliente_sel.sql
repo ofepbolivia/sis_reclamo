@@ -28,6 +28,7 @@ DECLARE
 	v_nombre_funcion   	text;
 	v_resp				varchar;
     v_where				varchar;
+    v_fecha_fin 	date;
 
 BEGIN
 
@@ -162,6 +163,32 @@ BEGIN
 
 
 	end;
+
+    ELSIF (p_transaccion= 'REC_LIBRESP_SEL')THEN
+    	BEGIN
+         SELECT tp.fecha_fin
+         INTO v_fecha_fin
+         FROM param.tperiodo tp
+         WHERE tp.id_periodo = v_parametros.id_periodo AND tp.id_gestion = v_parametros.id_gestion;
+
+          v_consulta = 'SELECT DISTINCT ON (correlativo)
+          trp.fecha_respuesta AS fecha,
+          SUBSTRING(trc.nro_tramite FROM 5 FOR 6) AS correlativo,
+          ti.nombre_incidente AS tipo,
+          sti.nombre_incidente AS subtipo,
+          vfcl.oficina_nombre AS oficina,
+          vc.nombre_completo1 AS cliente
+          FROM rec.treclamo trc
+          INNER JOIN rec.trespuesta trp ON trp.id_reclamo = trc.id_reclamo
+          INNER JOIN rec.ttipo_incidente 	ti ON ti.id_tipo_incidente = trc.id_tipo_incidente
+          INNER JOIN rec.ttipo_incidente sti ON sti.id_tipo_incidente = trc.id_subtipo_incidente
+          INNER JOIN orga.vfuncionario_cargo_lugar vfcl ON vfcl.id_oficina = trc.id_oficina_incidente
+          INNER JOIN rec.vcliente vc ON vc.id_cliente = trc.id_cliente
+          WHERE trp.fecha_respuesta <=  '||v_fecha_fin;
+
+          RETURN v_consulta;
+
+        END;
 	else
 
 		raise exception 'Transaccion inexistente';

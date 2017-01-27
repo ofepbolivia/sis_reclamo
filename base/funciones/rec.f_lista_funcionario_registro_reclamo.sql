@@ -21,8 +21,8 @@ $body$
 ***************************************************************************
  HISTORIA DE MODIFICACIONES:
 
- DESCRIPCIÓN:
- AUTOR:
+ DESCRIPCIÓN: Consulta que recupera el id del anterior Usuario
+ AUTOR: Franklin Espinoza
  FECHA:
 
 ***************************************************************************/
@@ -33,8 +33,6 @@ $body$
 
 -- PARÁMETROS FIJOS
 /*
-
-
   p_id_usuario integer,                                identificador del actual usuario de sistema
   p_id_tipo_estado integer,                            idnetificador del tipo estado del que se quiere obtener el listado de funcionario  (se correponde con tipo_estado que le sigue a id_estado_wf proporcionado)
   p_fecha date = now(),                                fecha  --para verificar asginacion de cargo con organigrama
@@ -43,31 +41,16 @@ $body$
   p_limit integer = 1,                                 los siguiente son parametros para filtrar en la consulta
   p_start integer = 0,
   p_filtro varchar = '0=0'::character varying
-
-
-
-
 */
 
 DECLARE
 	g_registros  		record;
     v_depto_asignacion    varchar;
-    v_nombre_depto_func_list   varchar;
 
     v_consulta varchar;
     v_nombre_funcion varchar;
     v_resp varchar;
 
-
-     v_cad_ep varchar;
-     v_cad_uo varchar;
-     v_id_funcionario_gerente   integer;
-
-    v_a_eps varchar[];
-    v_a_uos varchar[];
-    v_uos_eps varchar;
-    v_size    integer;
-    v_i       integer;
     v_id_usuario_reg  integer;
     v_id_funcionario integer;
 
@@ -77,24 +60,12 @@ BEGIN
 
     --recuperamos la la opbligacion de pago a partir del is_estado_wf del la obligacion
 
-    select
-      rec.id_funcionario_recepcion
-    into
-      v_id_usuario_reg
-    from rec.treclamo rec
-    where rec.id_estado_wf = p_id_estado_wf;
-
-
-    --obtiene el funciono que registros la obligacion
-
-    select
-    f.id_funcionario
-    into
-    v_id_funcionario
-    from segu.tusuario u
-    inner join segu.tpersona p on u.id_persona = p.id_persona
-    inner join orga.tfuncionario f on f.id_persona = p.id_persona
-    where u.id_usuario = v_id_usuario_reg;
+                    SELECT tew.id_funcionario
+                    INTO v_id_funcionario
+                    FROM wf.testado_wf tew
+                    LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = tew.id_estado_wf
+                    LEFT JOIN rec.trespuesta  tr ON tr.id_estado_wf = te.id_estado_wf
+                    WHERE tr.id_estado_wf =  p_id_estado_wf;
 
     IF not p_count then
 

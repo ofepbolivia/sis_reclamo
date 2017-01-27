@@ -33,7 +33,7 @@ DECLARE
     v_dias_respuesta  	varchar;
     v_record 			record;
 
-    v_id_usuario_rev	integer;
+    v_id_usuario_rev	record;
     v_id_usuario_pen	integer;
 
 BEGIN
@@ -60,14 +60,14 @@ BEGIN
             INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
             WHERE tu.id_usuario = p_id_usuario ;
 
-            IF (p_id_usuario = 1 OR p_id_usuario = 18) THEN
+            IF (p_administrador) THEN
             	v_filtro= '0 = 0 AND ';
 
             ELSIF (v_record.nombre_cargo='Técnico Atención al Cliente')THEN
             	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
             ELSIF (v_record.nombre_cargo='Especialista Atención al Cliente')THEN
                     --Consulta que muestra el id_usuario del anterior estado
-                    SELECT tu.id_usuario
+                    SELECT tu.id_usuario, count(tu.id_usuario)::varchar as cant_reg
             		INTO v_id_usuario_rev
                     FROM segu.tusuario tu
                     INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
@@ -75,23 +75,18 @@ BEGIN
                     FROM wf.testado_wf tew
                     LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = tew.id_estado_wf
                     LEFT JOIN rec.treclamo  tr ON tr.id_estado_wf = te.id_estado_wf
-                    WHERE tr.estado =  'pendiente_asignacion' LIMIT 1);
+                    WHERE tr.estado =  'pendiente_asignacion' LIMIT 1)
+                    GROUP BY tu.id_usuario;
 
-                    v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND ';
-
-                    /*IF (v_id_usuario_rev = v_id_usuario_pen) THEN
-                    	v_filtro = 'rec.id_usuario_mod = '||v_id_usuario_rev--||' AND rec.estado = ''pendiente_asignacion''';
-                    --v_filtro = '(vfc.id_oficina = '||v_record.id_oficina||' OR  tew.id_funcionario = '||v_record.id_funcionario||')';
+                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+                    	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
                     ELSE
-                   		v_filtro = ' tew.id_funcionario = '||v_record.id_funcionario;
-            		END IF;
-                    v_filtro = v_filtro||' AND';*/
+                    	v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND ';
+                    END IF;
 
             ELSE
             	v_filtro = 'rec.id_usuario_reg = '||p_id_usuario||
                 ' AND rec.id_oficina_registro_incidente = '||v_record.id_oficina||' AND ';
-                --' OR tew.id_funcionario = '||v_record.id_funcionario||' AND ';
-               -- AND rec.id_oficina_registro_incidente = '||v_record.id_oficina||' AND ';
             END IF;
 
     		--Sentencia de la consulta
@@ -161,7 +156,9 @@ BEGIN
                             c.ciudad_residencia,
                             rec.nro_guia_aerea,
                             fun.nombre_cargo,
-                            fu.nombre_cargo as cargo
+                            fu.nombre_cargo as cargo,
+                            c.nombre_completo2 as desc_nom_cliente
+
 
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
