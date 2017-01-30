@@ -13,12 +13,13 @@ header("content-type: text/javascript; charset=UTF-8");
     Phx.vista.LibroRespuesta= Ext.extend(Phx.frmInterfaz, {
         Atributos : [
 
-            /*{
+            {
                 config: {
                     name: 'id_oficina_registro_incidente',
                     fieldLabel: 'Oficina Reclamo',
                     allowBlank: true,
                     emptyText: 'Elija una opción...',
+                    disabled:true,
                     store: new Ext.data.JsonStore({
                         url: '../../sis_organigrama/control/Oficina/listarOficina',
                         id: 'id_oficina',
@@ -55,9 +56,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboBox',
                 id_grupo: 1,
                 filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
-                grid: true,
                 form: true
-            },*/
+            },/*
             {
                 config:{
                     name : 'id_gestion',
@@ -85,7 +85,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type : 'ComboRec',
                 id_grupo : 0,
                 form : true
-            }/*,
+            },*/
             {
                 config:{
                     name: 'fecha_ini',
@@ -99,7 +99,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'DateField',
                 filters:{pfiltro:'fecha_ini',type:'date'},
                 id_grupo:1,
-                grid:true,
                 form:true
             },
             {
@@ -115,12 +114,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'DateField',
                 filters:{pfiltro:'fecha_fin',type:'date'},
                 id_grupo:1,
-                grid:true,
                 form:true
-            }*/
+            }
         ],
         title : 'Generar Reporte',
-        ActSave : '../../sis_reclamo/control/Cliente/libroRespuesta',
+        ActSave : '../../sis_reclamo/control/Reclamo/libroRespuesta',
         topBar : true,
         botones : false,
         labelSubmit : 'Imprimir',
@@ -128,7 +126,7 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor : function(config) {
             Phx.vista.LibroRespuesta.superclass.constructor.call(this, config);
             this.init();
-            this.iniciarEventos();
+            //this.iniciarEventos();
         },
 
 
@@ -143,12 +141,12 @@ header("content-type: text/javascript; charset=UTF-8");
             }, this);
         },
         tipo : 'reporte',
-        clsSubmit : 'bprint'/*,
+        clsSubmit : 'bprint',
 
-        agregarArgsExtraSubmit: function() {
+        onSubmit:function(o){
+            Phx.vista.LibroRespuesta.superclass.onSubmit.call(this,o);
 
-            this.argumentExtraSubmit.oficina = this.Cmp.id_oficina_registro_incidente.getRawValue();
-        }*/
+        }
 
     })
 </script>

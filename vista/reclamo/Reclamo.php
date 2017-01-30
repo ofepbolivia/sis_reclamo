@@ -1537,11 +1537,11 @@ header("content-type: text/javascript; charset=UTF-8");
 		setInterval(function(){ that.reload();},30000);
 	},
 
-	onButtonAct : function(){
+	/*onButtonAct : function(){
 		alert('entra');
 		Phx.vista.Reclamo.superclass.onButtonAct.call(this);
 
-	},
+	},*/
 
 	onButtonNew : function () {
 

@@ -105,6 +105,7 @@ class MODReclamo extends MODbase{
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
+
 		$this->ejecutarConsulta();
 		
 		//Devuelve la respuesta
@@ -502,7 +503,35 @@ class MODReclamo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
 
-
     }
+
+	function listarResp()
+	{
+		$this->setCount(false);
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='rec.ft_reclamo_sel';
+		$this->transaccion='REC_LIBRESP_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		//echo 'llega2';exit;
+		$this->setParametro('id_oficina_registro_incidente','id_oficina_registro_incidente','integer');
+		$this->setParametro('fecha_ini','fecha_ini','date');
+		$this->setParametro('fecha_fin','fecha_fin','date');
+
+
+		$this->captura('fecha','date');
+		$this->captura('correlativo','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('subtipo','varchar');
+		$this->captura('oficina','varchar');
+		$this->captura('cliente','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		//var_dump( $this->consulta); exit;
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 }
 ?>
