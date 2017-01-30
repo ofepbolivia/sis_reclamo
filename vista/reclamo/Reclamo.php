@@ -1339,10 +1339,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		return tb
 	},
 
-	recargarPagina:function() {
-		alert('Chau');
-	},
-
 	loadCheckDocumentosRecWf:function() {
 		var rec=this.sm.getSelected();
 		rec.data.nombreVista = this.nombreVista;
@@ -1533,15 +1529,15 @@ header("content-type: text/javascript; charset=UTF-8");
 			//Ext.Msg.alert('hola');
 		},this);
 
-		that = this;
-		setInterval(function(){ that.reload();},30000);
+		/*that = this;
+		setInterval(function(){ that.reload();},30000);*/
 	},
 
-	onButtonAct : function(){
+	/*onButtonAct : function(){
 		alert('entra');
 		Phx.vista.Reclamo.superclass.onButtonAct.call(this);
 
-	},
+	},*/
 
 	onButtonNew : function () {
 

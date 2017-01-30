@@ -81,8 +81,8 @@ class RRespuestaFinal extends ReportePDFFormulario
             'module_height' => 1 // height of a single module in points
         );
 
-        $this->write2DBarcode($html, 'QRCODE,L',110, 224, 25, 25, $style, 'N');
-        $this->Text(100, 250, 'Atencion al Cliente BoA');
+        $this->write2DBarcode($html, 'QRCODE,L',55, 224, 25, 25, $style, 'N');
+        $this->Text(100, 210, 'Atencion al Cliente BoA');
 
     }
     public function Footer() {

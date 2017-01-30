@@ -84,6 +84,12 @@ BEGIN
                     	v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND ';
                     END IF;
 
+                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
+                    	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                    ELSE
+                    	v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND ';
+                    END IF;
+
             ELSE
             	v_filtro = 'rec.id_usuario_reg = '||p_id_usuario||
                 ' AND rec.id_oficina_registro_incidente = '||v_record.id_oficina||' AND ';

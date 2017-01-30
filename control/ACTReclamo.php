@@ -254,6 +254,33 @@ class ACTReclamo extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
 
+	function libroRespuesta(){
+		$this->objFunc=$this->create('MODReclamo');
+
+		$this->res=$this->objFunc->listarResp($this->objParam);
+		//obtener titulo del reporte
+		$titulo = 'Libro De Respuestas';
+		//Genera el nombre del archivo (aleatorio + titulo)
+		$nombreArchivo=uniqid(md5(session_id()).$titulo);
+		$nombreArchivo.='.pdf';
+		$this->objParam->addParametro('orientacion','L');
+		$this->objParam->addParametro('tamano','LETTER');
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//Instancia la clase de pdf
+
+		$this->objReporteFormato=new RLibroRespuestaPDF ($this->objParam);
+		$this->objReporteFormato->setDatos($this->res->datos);
+		$this->objReporteFormato->generarReporte();
+		$this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+			'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+	}
+
 }
 
 ?>
