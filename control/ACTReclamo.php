@@ -7,6 +7,8 @@
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
 require_once(dirname(__FILE__).'/../reportes/RReclamoPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RLibroRespuestaPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RReporteGrafico.php');
 
 class ACTReclamo extends ACTbase{
 			
@@ -14,7 +16,8 @@ class ACTReclamo extends ACTbase{
 		//$this->objParam->count(true);
 		$this->objParam->defecto('ordenacion','id_reclamo');
 		$this->objParam->defecto('dir_ordenacion','asc');
-
+        //echo $this->objParam->getParametro('tipo_interfaz');
+		//$this->addParametro('interfaz',$this->objParam->getParametro('tipo_interfaz'));
         if($this->objParam->getParametro('id_reclamo') != '' ) {
             $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
         }
@@ -53,6 +56,7 @@ class ACTReclamo extends ACTbase{
 			$this->objParam->addFiltro("rec.id_subtipo_incidente = ". $this->objParam->getParametro('id_subtipo_incidente'));
 		}
 
+		
 
 		switch($this->objParam->getParametro('pes_estado')){
 			case 'borrador':
@@ -165,6 +169,28 @@ class ACTReclamo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
+    function listarConsulta(){
+        /*$this->objParam->defecto('ordenacion','id_reclamo');
+        $this->objParam->defecto('dir_ordenacion','asc');*/
+
+        /*if($this->objParam->getParametro('id_reclamo') != '' ) {
+            $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+        }*/
+
+        if ($this->objParam->getParametro('id_gestion') != '') {
+            $this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
+        }
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODReclamo','listarConsulta');
+        }else {
+            $this->objFunc = $this->create('MODReclamo');
+            $this->res = $this->objFunc->listarConsulta($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
 	function insertarReclamo(){
 		$this->objFunc=$this->create('MODReclamo');
 		if($this->objParam->insertar('id_reclamo')){
@@ -218,11 +244,11 @@ class ACTReclamo extends ACTbase{
 	}
 
 	function listarRest(){
-		$this->objParam->defecto('ordenacion','id_log');
-		$this->objParam->defecto('dir_ordenacion','desc');
+		/*$this->objParam->defecto('ordenacion','id_log');
+		$this->objParam->defecto('dir_ordenacion','desc');*/
 		
 		$this->objFunc=$this->create('MODReclamo');
-		$this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
+		//$this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
 		$this->res=$this->objFunc->listarRest($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
@@ -267,7 +293,6 @@ class ACTReclamo extends ACTbase{
 		$this->objParam->addParametro('tamano','LETTER');
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		//Instancia la clase de pdf
-
 		$this->objReporteFormato=new RLibroRespuestaPDF ($this->objParam);
 		$this->objReporteFormato->setDatos($this->res->datos);
 		$this->objReporteFormato->generarReporte();
@@ -280,6 +305,67 @@ class ACTReclamo extends ACTbase{
 		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 	}
+	
+
+	function listarOficinas(){
+        $this->objParam->defecto('ordenacion','id_oficina');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        $this->objFunc=$this->create('MODReclamo');
+        $this->res=$this->objFunc->listarOficinas($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+	function getFRD(){
+		$this->objFunc=$this->create('MODReclamo');
+		$this->res=$this->objFunc->getFRD($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function generarReporteGrafico(){
+        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-Grafico]').'.docx';
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        
+	    $this->objFunc=$this->create('MODReclamo');
+        $dataSource = $this->objFunc->stadistica();
+        $this->dataSource=$dataSource->getDatos();
+
+        $reporte = new RReporteGrafico($this->objParam);
+
+        $reporte->datosHeader($this->dataSource);
+        $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function listarRegRipat(){
+
+        if($this->objParam->getParametro('id_reclamo') != '' ) {
+            $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+        }
+
+        if ($this->objParam->getParametro('id_gestion') != '') {
+
+            $this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
+
+        }
+        /*$this->objFunc=$this->create('MODReclamo');
+        $this->res=$this->objFunc->listarRegRipat($this->objParam);*/
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODReclamo','listarRegRipat');
+        }else {
+
+            $this->objFunc = $this->create('MODReclamo');
+            $this->res = $this->objFunc->listarRegRipat($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
 }
 

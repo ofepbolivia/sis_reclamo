@@ -57,35 +57,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo: 1,
                 filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
                 form: true
-            },/*
-             {
-             config:{
-             name : 'id_gestion',
-             origen : 'GESTION',
-             fieldLabel : 'Gestion',
-             allowBlank : false,
-             width:230,
-             listWidth:'230'
-             },
-             type : 'ComboRec',
-             id_grupo : 0,
-             form : true
-             },
-             {
-             config:{
-             name : 'id_periodo',
-             origen : 'PERIODO',
-             fieldLabel : 'Periodo',
-             allowBlank : true,
-             pageSize:12,
-             width:230,
-             listWidth:'230',
-             disabled:true
-             },
-             type : 'ComboRec',
-             id_grupo : 0,
-             form : true
-             },*/
+            },
             {
                 config:{
                     name: 'fecha_ini',
