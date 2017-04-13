@@ -96,7 +96,143 @@ header("content-type: text/javascript; charset=UTF-8");
             /*this.fields.push({name: 'motivo', type: 'string'});
             this.fields.push({name: 'motivo_anulado', type: 'string'});
             this.fields.push({name: 'id_motivo_anulado', type: 'numeric'});*/
+            this.Atributos.splice(5,0,
+                {
+                    config: {
+                        name: 'dias_respuesta',
+                        fieldLabel: 'Dias Para Responder',
+                        allowBlank: true,
+                        anchor: '100%',
+                        gwidth: 150,
+                        maxLength: 100,
+                        renderer: function(value, p, record) {
+                            var dias = record.data.dias_respuesta;
+                            var ids = new Array(4, 6, 37, 38, 48, 50);
+                            var id_tipo = parseInt(record.data.id_tipo_incidente);
 
+                            if(ids.indexOf(id_tipo) >= 0) {
+                                if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta'  || record.data.revisado == 'concluido')
+                                    return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/respondido.png' align='center' width='24' height='24'/></div>");
+                                else {
+                                    switch (dias) {
+                                        case '10':
+                                            console.log('10');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/ten.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '9':
+                                            console.log('9');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/nine.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '8':
+                                            console.log('8');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/eight.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '7':
+                                            console.log('7');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/seven.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '6':
+                                            console.log('6');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/six.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '5':
+                                            console.log('5');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/five.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '4':
+                                            console.log('4');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/four.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '3':
+                                            console.log('3');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/three.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '2':
+                                            console.log('2');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/two.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '1':
+                                            console.log('1');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/one.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '0':
+                                            console.log('0');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/cero.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '-1':
+                                            console.log('-1');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/vencido.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                    }
+                                }
+
+                                /*if (dias >= 1 && dias <= 10) {
+                                 return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+                                 }
+                                 else if(dias == 0){
+                                 return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
+                                 }else if(dias = -1){
+                                 return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">Con Respuesta o Vencido</font></b><br></div>', value);
+                                 }*/
+                            }else if(record.data.id_tipo_incidente==36){
+                                /*if (dias >=1  && dias <= 7) {
+                                 return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+                                 }
+                                 else if(dias == 0){
+                                 return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
+                                 }else if(dias = -1){
+                                 return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">Con Respuesta o Vencido</font></b><br></div>', value);
+                                 }*/
+                                if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido')
+                                    return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/respondido.png' align='center' width='24' height='24'/></div>");
+                                else {
+                                    switch (dias) {
+                                        case '7':
+                                            console.log('7');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/seven.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '6':
+                                            console.log('6');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/six.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '5':
+                                            console.log('5');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/five.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '4':
+                                            console.log('4');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/four.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '3':
+                                            console.log('3');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/three.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '2':
+                                            console.log('2');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/two.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '1':
+                                            console.log('1');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/one.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '0':
+                                            console.log('0');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/cero.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                        case '-1':
+                                            console.log('-1');
+                                            return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/vencido.png' align='center' width='24' height='24'/></div>");
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    type: 'Checkbox',
+                    id_grupo:1,
+                    grid: true,
+                    form: false
+                });
             this.Grupos.push({
                 bodyStyle: 'padding-right:10px;',
                 items: [

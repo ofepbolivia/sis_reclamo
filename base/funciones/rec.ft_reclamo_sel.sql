@@ -175,8 +175,8 @@ BEGIN
                             rec.nro_guia_aerea,
 
                             c.nombre_completo2 as desc_nom_cliente,
-							'||p_administrador||'::integer AS administrador
-
+							'||p_administrador||'::integer AS administrador,
+							tri.id_informe
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
@@ -194,6 +194,7 @@ BEGIN
 
                             LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
+                            LEFT JOIN rec.treclamo_informe tri ON tri.id_reclamo = rec.id_reclamo
 
 				        where  '||v_filtro;
 

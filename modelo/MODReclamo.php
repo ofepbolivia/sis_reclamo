@@ -99,6 +99,7 @@ class MODReclamo extends MODbase
 
 		$this->captura('nombre_completo2', 'text');
 		$this->captura('administrador', 'int4');
+		$this->captura('id_informe', 'int4');
 
 
 
@@ -439,7 +440,6 @@ class MODReclamo extends MODbase
 
 	function stadistica()
 	{
-	    //var_dump('estadisticas');exit;
 		$this->procedimiento = 'rec.ft_reclamo_ime';
 		$this->transaccion = 'REC_STADISTICA_GET';
 		$this->tipo_procedimiento = 'IME';
@@ -447,11 +447,9 @@ class MODReclamo extends MODbase
 		$this->setParametro('tipo', 'tipo', 'varchar');
 		$this->setParametro('p_gestion', 'p_gestion', 'varchar');
 		$this->setParametro('p_periodo', 'p_periodo', 'varchar');
-		$this->setParametro('nombre_archivo', 'nombre_archivo', 'varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
-		//var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta

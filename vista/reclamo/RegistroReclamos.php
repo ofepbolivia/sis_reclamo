@@ -20,13 +20,17 @@ header("content-type: text/javascript; charset=UTF-8");
         this.maestro=config.maestro;
         this.mycls = config.mycls;
         //this.Atributos.splice(3,1);
+        this.tbarItems = ['-',
+            this.cmbGestion,'-'
+
+        ];
         this.Atributos.splice(5,0,{
              config: {
              name: 'dias_informe',
              fieldLabel: 'Dias Para Adjuntar Inf.',
              allowBlank: true,
              anchor: '100%',
-             gwidth: 150,
+             gwidth: 125,
              maxLength: 100,
              renderer: function(value, p, record) {
              var dias = record.data.dias_informe;
@@ -34,7 +38,9 @@ header("content-type: text/javascript; charset=UTF-8");
              //console.log('dias_informe: '+JSON.stringify(record.data));
              if(record.data.revisado == 'con_informe')
                  return  String.format('{0}',"<div style='text-align:center'><img title='El Reclamo ya tiene Informe'  src = '../../../sis_reclamo/media/respondido.png' align='center' width='24' height='24'/></div>");
-             else if (dias == 2) {
+             else if (dias == 3) {
+                 return  String.format('{0}',"<div style='text-align:center'><img title='Tiene 72 Horas Para adjuntar Informe'  src = '../../../sis_reclamo/media/three.png' align='center' width='24' height='24'/></div>");
+             }else if (dias == 2) {
                  return  String.format('{0}',"<div style='text-align:center'><img title='Tiene 48 Horas Para adjuntar Informe'  src = '../../../sis_reclamo/media/two.png' align='center' width='24' height='24'/></div>");
              }
              else if(dias>=0 && dias<=1){
@@ -60,17 +66,76 @@ header("content-type: text/javascript; charset=UTF-8");
             form: true,
             id_grupo:1
         });
+        aux = this.Atributos[16]
+        this.Atributos[16] = this.Atributos[31];
+        this.Atributos[31] = aux;
         Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
         //this.store.baseParams.func_estado = 'oficina';
         this.store.baseParams.tipo_interfaz=this.nombreVista;
         console.log('padre: '+this.mycls);
         console.log('maestro: '+JSON.stringify(config));
+        Ext.Ajax.request({
+            url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
+            params:{id_usuario:0},
+            success:function(resp){
+                var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+
+                this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
+                this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
+                console.log(reg.ROOT.datos.id_gestion);
+                this.store.baseParams.id_gestion = reg.ROOT.datos.id_gestion;
+                this.load({params:{start:0, limit:this.tam_pag}});
+
+            },
+            failure: this.conexionFailure,
+            timeout:this.timeout,
+            scope:this
+        });
+
+        this.cmbGestion.on('select',this.capturarEventos, this);
         //this.padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
+
+        console.log(this.Atributos);
     },
+    cmbGestion: new Ext.form.ComboBox({
+        name: 'gestion',
+        id: 'gestion',
+        fieldLabel: 'Gestion',
+        allowBlank: true,
+        emptyText:'Gestion...',
+        blankText: 'Año',
+        store:new Ext.data.JsonStore(
+            {
+                url: '../../sis_parametros/control/Gestion/listarGestion',
+                id: 'id_gestion',
+                root: 'datos',
+                sortInfo:{
+                    field: 'gestion',
+                    direction: 'DESC'
+                },
+                totalProperty: 'total',
+                fields: ['id_gestion','gestion'],
+                // turn on remote sorting
+                remoteSort: true,
+                baseParams:{par_filtro:'gestion'}
+            }),
+        valueField: 'id_gestion',
+        triggerAction: 'all',
+        displayField: 'gestion',
+        hiddenName: 'id_gestion',
+        mode:'remote',
+        pageSize:50,
+        queryDelay:500,
+        listWidth:'280',
+        hidden:false,
+        width:80
+    }),
     gruposBarraTareas:[
         {name:'borrador',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Borradores</h1>',grupo:0,height:0, width: 100},
         {name:'pendiente_revision',title:'<H1 align="center"><i class="fa fa-list-ul"></i>Adjuntar Informe</h1>',grupo:2,height:0, width: 100},
-        {name:'pendiente_informacion',title:'<H1 align="center"><i class="fa fa-files-o"></i> Pendientes Inf.</h1>',grupo:1,height:0}
+        {name:'pendiente_informacion',title:'<H1 align="center"><i class="fa fa-files-o"></i> Pendientes Inf.</h1>',grupo:1,height:0},
+        {name:'en_proceso',title:'<H1 align="center"><i class="fa fa-gear"></i> En Proceso </h1>',grupo:3,height:0},
+        {name:'concluidos',title:'<H1 align="center"><i class="fa fa-power-off"></i> Concluidos </h1>',grupo:4,height:0}
     ],
     tam_pag:50,
     actualizarSegunTab: function(name, indice){
@@ -81,8 +146,8 @@ header("content-type: text/javascript; charset=UTF-8");
     },
     beditGroups: [0],
     bdelGroups:  [0],
-    bactGroups:  [0,1,2],
-    bexcelGroups: [0,1,2],
+    bactGroups:  [0,1,2,3,4],
+    bexcelGroups: [0,1,2,3,4],
     tabsouth :[
         {
             url:'../../../sis_reclamo/vista/informe/Informe.php',
@@ -118,20 +183,33 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
         //console.log('papa: '+this.padre);
-        if(data['estado']==  'borrador'){
+        if(data['estado'] ==  'borrador'){
+            this.getBoton('sig_estado').setVisible(true);
+            //this.getBoton('ant_estado').setVisible(false);
+            this.getBoton('btnObs').setVisible(true);
             this.getBoton('sig_estado').enable();
             this.disableTabRespuesta();
 
-        }else if(data['estado']==  'pendiente_revision' /*&& this.mycls == 'RegistroReclamos'*/){
+        }else if(data['estado'] ==  'pendiente_revision' /*&& this.mycls == 'RegistroReclamos'*/){
+            this.getBoton('sig_estado').setVisible(true);
+            this.getBoton('ant_estado').setVisible(true);
+            this.getBoton('btnObs').setVisible(true);
             this.getBoton('sig_estado').disable();
             this.getBoton('ant_estado').disable();
             this.enableTabRespuesta();
         }
-        else {
+        else if(data['estado'] ==  'pendiente_informacion'){
+            this.getBoton('sig_estado').setVisible(true);
+            this.getBoton('ant_estado').setVisible(true);
+            this.getBoton('btnObs').setVisible(true);
             this.getBoton('sig_estado').enable();
             this.getBoton('ant_estado').enable();
             this.enableTabRespuesta();
 
+        }else {
+            this.getBoton('sig_estado').setVisible(false);
+            this.getBoton('ant_estado').setVisible(false);
+            this.getBoton('btnObs').setVisible(false);
         }
 
         return tb;
@@ -139,16 +217,13 @@ header("content-type: text/javascript; charset=UTF-8");
 
     liberaMenu:function(){
         var tb = Phx.vista.RegistroReclamos.superclass.liberaMenu.call(this);
-        var data = this.getSelectedData();
+        //var data = this.getSelectedData();
         if(tb){
             this.getBoton('sig_estado').disable();
             this.getBoton('sig_estado').disable();
-
-            /*if(data.estado = 'pendiente_informacion'){
-                this.enableTabRespuesta();
-            }else {
-                this.disableTabRespuesta();
-            }*/
+            /*estados = 'pendiente_asignacion, pendiente_respuesta, en_avenimiento, archivo_con_respuesta, respuesta_registrado_ripatt, archivado_concluido';
+            estados = estados.split(',');
+            console.log(estados,data);*/
         }
 
         return tb;
@@ -156,7 +231,17 @@ header("content-type: text/javascript; charset=UTF-8");
 
     onButtonEdit: function() {
         Phx.vista.RegistroReclamos.superclass.onButtonEdit.call(this);
-    }/*,
+    },
+
+    capturarEventos: function () {
+        //if(this.validarFiltros()){
+        //this.capturaFiltros();
+        //}
+        this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+        this.load({params:{start:0, limit:this.tam_pag}});
+    }
+
+    /*,
 
     actualizarFRD:function () {
 

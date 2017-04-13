@@ -2,6 +2,7 @@
 /*include_once(dirname(__FILE__).'/../../lib/PHPWord/src/PhpWord/Autoloader.php');
 \PhpOffice\PhpWord\Autoloader::register();
 use \PhpOffice\PhpWord\PhpWord;*/
+//include_once (dirname(__FILE__).'/../../../kerp_capacitacion/lib/phpdocx/Classes/Phpdocx/Create/CreateDocx.inc');
 include_once (dirname(__FILE__).'/../../pxp/lib/phpdocx/Classes/Phpdocx/Create/CreateDocx.inc');
 //winclude_once (dirname(__FILE__).'/../../../kerp_capacitacion/lib/phpdocx/Classes/Phpdocx/Transform/TransformDoc.inc');
 

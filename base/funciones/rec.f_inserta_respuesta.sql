@@ -80,7 +80,7 @@ BEGIN
            where res.id_reclamo = (p_hstore_respuesta->'id_reclamo')::integer;
            --end;
 
-		  IF  v_estado_rec = 'pendiente_respuesta'  THEN
+		  IF (v_estado_rec = 'pendiente_respuesta' OR v_estado_rec = 'respuesta_parcial')  THEN
 
                 select * into v_reclamo
               	from rec.treclamo r
@@ -97,11 +97,10 @@ BEGIN
             WHERE id_reclamo = (p_hstore_respuesta->'id_reclamo')::integer;
 
             IF (v_cont_resp < 2) THEN
-
               IF (v_cont_resp=1 and v_respuesta.tipo_respuesta = 'respuesta_final') THEN
               	RAISE EXCEPTION 'NO ES POSIBLE REGISTRAR NUEVA RESPUESTA EL RECLAMO YA CUENTA CON UN RESPUESTA...';
               ELSIF (v_respuesta.tipo_respuesta = 'respuesta_parcial' OR v_cont_resp=0)THEN
-              	IF (p_hstore_respuesta->'tipo_respuesta'='respuesta_final' OR v_cont_resp=0)THEN
+              	IF (p_hstore_respuesta->'tipo_respuesta' = 'respuesta_final' OR v_cont_resp=0)THEN
                   IF (v_respuesta.estado='respuesta_enviada' OR v_cont_resp=0)THEN
                     --OBTENEMOS GESTION
                     --begin

@@ -34,18 +34,18 @@ BEGIN
     ELSIF(p_transaccion='DIAS_INF')THEN
       --Dias para Adjuntar Informacion Adicional
       --begin
-      IF (date_part('dow',p_fecha_limite) in (1,2,3))THEN
-      	v_fecha_limite =  p_fecha_limite + 2;
+      IF (date_part('dow',p_fecha_limite) in (1,2))THEN
+      	v_fecha_limite =  p_fecha_limite + 3;
         v_diferencia = v_fecha_limite - p_fecha_actual;
-      	IF(v_diferencia>=0 AND v_diferencia<=2 )THEN
+      	IF(v_diferencia>=0 AND v_diferencia<=3 )THEN
           v_contador = v_diferencia;
       	ELSE
           v_contador = -1;
       	END IF;
-      ELSIF (date_part('dow',p_fecha_limite) in (4,5))THEN
-      	v_fecha_limite =  p_fecha_limite + 4;
+      ELSIF (date_part('dow',p_fecha_limite) in (3,4,5))THEN
+      	v_fecha_limite =  p_fecha_limite + 5;
       	v_diferencia = v_fecha_limite - p_fecha_actual - 2;
-      	IF(v_diferencia>=0 AND v_diferencia<=2 )THEN
+      	IF(v_diferencia>=0 AND v_diferencia<=3 )THEN
         	v_contador = v_diferencia;
         ELSE
       		v_contador = -1;

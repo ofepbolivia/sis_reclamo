@@ -93,10 +93,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
 	},
 
-	/*onReload : function (){
-		alert('15');
-	},*/
-
 	compositeFields : function(){  //step 1
 		return{
 			xtype	        : "compositefield", //step 2
@@ -177,7 +173,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'No. Tramite',
 				allowBlank: false,
 				anchor: '50%',
-				gwidth: 150,
+				gwidth: 120,
 				maxLength:100,
 				renderer: function(value, p, record) {
 					var fecha_actual = new Date();
@@ -318,7 +314,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'Nro. Preimpreso FRD',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 120,
 				maxLength: 25
 			},
 			type: 'NumberField',
@@ -334,7 +330,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'Nro. FRD',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 70,
 				maxLength: 25
 			},
 			type: 'TextField',
@@ -350,7 +346,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'Estado',
 				allowBlank: true,
 				anchor: '100%',
-				gwidth: 200,
+				gwidth: 150,
 				maxLength: 100
 			},
 			type: 'TextField',
@@ -471,7 +467,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				pageSize:10,
 				queryDelay:1000,
 				width:250,
-				gwidth:320,
+				gwidth:250,
 				minChars:1,
 				turl:'../../../sis_reclamo/vista/cliente/FormCliente.php',
 				ttitle:'Clientes',
@@ -950,7 +946,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				queryDelay: 1000,
 				anchor: '100%',
 				width: 260,
-				gwidth: 200,
+				gwidth: 250,
 				minChars: 2,
 				resizable:true,
 				listWidth:'240',
@@ -1245,7 +1241,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'cargo', type: 'string'},
 		{name: 'email', type: 'string'},
 		{name: 'nombre_completo2', type: 'string'},
-		{name: 'administrador', type: 'numeric'}
+		{name: 'administrador', type: 'numeric'},
+		{name: 'id_informe', type: 'numeric'}
 
 
 	],
@@ -1521,7 +1518,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		var estado = reg.ROOT.datos.v_codigo_estado_siguiente;
 
 		if(estado=='pendiente_revision' ){
-			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
+			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">72 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
 		}
 
 		/*if(estado=='registrado_ripat' && rec.data.nro_ripat_att==null){

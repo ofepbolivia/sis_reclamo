@@ -31,7 +31,9 @@ DECLARE
 	v_mensaje_error         text;
 	v_id_informe	integer;
 
-
+    v_ids_rec 				varchar[];
+	v_tam					integer;
+    cont					integer;
 
 BEGIN
 
@@ -153,6 +155,56 @@ BEGIN
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','informe eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_informe',v_parametros.id_informe::varchar);
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+
+    /*********************************
+ 	#TRANSACCION:  'REC_INFORME_COPIAR'
+ 	#DESCRIPCION:	Nos permite copiar un informe a varios Reclamos.
+ 	#AUTOR:		admin
+ 	#FECHA:		31-03-2017 16:50:07
+	***********************************/
+
+	elsif(p_transaccion='REC_INFORME_COPIAR')then
+
+		begin
+
+            v_ids_rec = string_to_array(v_parametros.copiar_informe,',')::varchar[];
+            v_tam = array_length(v_ids_rec,1);
+
+            IF (v_tam>0)THEN
+            	for cont in 1..v_tam loop
+                    INSERT INTO rec.treclamo_informe(
+                      id_usuario_reg,
+                      id_usuario_mod,
+                      fecha_reg,
+                      fecha_mod,
+                      estado_reg,
+                      id_usuario_ai,
+                      usuario_ai,
+                      id_reclamo,
+                      id_informe
+                    )VALUES(
+                      p_id_usuario,
+                      null,
+                      now(),
+                      null,
+                      'activo',
+                      v_parametros._id_usuario_ai,
+                      v_parametros._nombre_usuario_ai,
+                      v_ids_rec[cont]::integer,
+                      v_parametros.id_informe::integer
+                    );
+                end loop;
+            	--Definicion de la respuesta
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Informe fue copiado a otros Reclamos');
+            ELSE
+            	--Definicion de la respuesta
+            	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Informe no fue copiado a ningun Reclamo');
+            END IF;
 
             --Devuelve la respuesta
             return v_resp;

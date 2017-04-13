@@ -1,5 +1,6 @@
 <?php
 
+//include_once (dirname(__FILE__).'/../../../kerp_capacitacion/lib/phpdocx/Classes/Phpdocx/Create/CreateDocx.inc');
 include_once (dirname(__FILE__).'/../../pxp/lib/phpdocx/Classes/Phpdocx/Create/CreateDocx.inc');
 //winclude_once (dirname(__FILE__).'/../../../kerp_capacitacion/lib/phpdocx/Classes/Phpdocx/Transform/TransformDoc.inc');
 
@@ -10,6 +11,7 @@ Class RReporteGrafico{
 
     public function datosHeader( $dataSource ) {
         $this->dataSource = $dataSource;
+        //var_dump($this->dataSource);exit;
     }
 
     function write($fileName){

@@ -36,6 +36,9 @@ DECLARE
     va_prioridad_res		integer[];
 
     v_id_reclamo	integer;
+	v_id_tipo_estado_sig	integer;
+    v_tipo_respuesta		varchar;
+    v_codigo_estado_sig		varchar;
 
 BEGIN
 
@@ -119,11 +122,6 @@ BEGIN
                 WHERE tr.id_reclamo = v_respuesta.id_reclamo;
 
 
-
-                /*SELECT te.id_tipo_estado into v_id_tipo_estado
-                FROM wf.ttipo_estado te
-                WHERE te.codigo=v_record.estado;*/
-
                 v_acceso_directo = '../../../sis_reclamo/vista/Reclamo/Reclamo.php';
                 v_clase = 'Reclamo';
                 v_parametros_ad = '{filtro_directo:{campo:"rec.id_proceso_wf",valor:"'||
@@ -131,20 +129,6 @@ BEGIN
                 v_tipo_noti = 'notificacion';
                 v_titulo  = 'Notificacion';
 
-                /*SELECT tf.id_funcionario INTO v_id_funcionario
-                    FROM segu.tusuario tu
-                    INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
-                    INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
-                    INNER JOIN rec.treclamo tr on tr.id_usuario_reg = tu.id_usuario
-                    WHERE tu.id_usuario = p_id_usuario ;*/
-
-
-                /*SELECT tf.id_funcionario
-                INTO v_id_funcionario
-				FROM segu.tusuario tu
-                INNER JOIN rec.treclamo tr ON tr.id_usuario_mod = tu.id_usuario
-				INNER JOIN orga.tfuncionario tf ON tf.id_persona = tu.id_persona
-				WHERE tu.id_usuario = p_id_usuario ;*/
 
 
                 SELECT tf.id_funcionario
@@ -168,8 +152,24 @@ BEGIN
                           va_regla_res,
                           va_prioridad_res
             	FROM wf.f_obtener_estado_wf(v_record.id_proceso_wf, v_record.id_estado_wf,NULL,'siguiente');
-				--raise exception 'va_id_tipo_estado_res %,v_id_funcionario % v_record.id_proceso_wf % v_record.id_estado_wf %',va_id_tipo_estado_res,v_id_funcionario,v_record.id_proceso_wf,v_record.id_estado_wf;
-                v_id_estado_actual =  wf.f_registra_estado_wf(va_id_tipo_estado_res[1],
+
+                --Definimos si la Respuesta se va al estado respuesta_parcial o al estado archivo_con_respuesta
+                SELECT tr.tipo_respuesta
+                INTO v_tipo_respuesta
+                FROM rec.trespuesta tr
+                WHERE tr.id_proceso_wf = p_id_proceso_wf;
+
+
+
+				IF(v_tipo_respuesta = 'respuesta_parcial')THEN
+                	v_id_tipo_estado_sig = va_id_tipo_estado_res[3];
+                    v_codigo_estado_sig = va_codigo_estado_res[3];
+                ELSIF(v_tipo_respuesta = 'respuesta_final')THEN
+                	v_id_tipo_estado_sig = va_id_tipo_estado_res[1];
+                    v_codigo_estado_sig = va_codigo_estado_res[1];
+                END IF;
+
+                v_id_estado_actual =  wf.f_registra_estado_wf(v_id_tipo_estado_sig,
                                                              v_id_funcionario,
                                                              v_record.id_estado_wf,
                                                              v_record.id_proceso_wf,
@@ -183,14 +183,13 @@ BEGIN
                                                              v_parametros_ad,
                                                              v_tipo_noti,
                                                              v_titulo);
-           		--RAISE EXCEPTION 'v_id_estado_actual: %',v_id_estado_actual;
 
          		IF rec.f_procesar_estados_reclamo(p_id_usuario,
            									p_id_usuario_ai,
                                             p_usuario_ai,
                                             v_id_estado_actual,
                                             v_record.id_proceso_wf,
-                                            va_codigo_estado_res[1]) THEN
+                                            v_codigo_estado_sig) THEN
                 	RAISE NOTICE 'PASANDO ESTADO CON EXITO';
 
           		END IF;
@@ -203,17 +202,6 @@ BEGIN
     		RAISE EXCEPTION 'La respuesta es improcedente, Verifique información.';
 
 	END IF;*/
-
-	-- actualiza estado en la solicitud
-   /* update rec.treclamo  r set
-       id_estado_wf =  p_id_estado_wf,
-       estado = p_codigo_estado,
-       id_usuario_mod = p_id_usuario,
-       id_usuario_ai = p_id_usuario_ai,
-       usuario_ai = p_usuario_ai,
-       fecha_mod=now()
-    where id_proceso_wf = p_id_proceso_wf;*/
-
 		return true;
 
 EXCEPTION

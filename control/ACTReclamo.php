@@ -80,7 +80,10 @@ class ACTReclamo extends ACTbase{
 			case 'pendiente_asignacion':
 				$this->objParam->addFiltro("rec.estado in (''pendiente_asignacion'')");
 				break;
-			case 'pendiente_respuesta':
+			case 'respuesta_parcial':
+				$this->objParam->addFiltro("rec.estado in (''respuesta_parcial'')");
+				break;
+            case 'pendiente_respuesta':
 				$this->objParam->addFiltro("rec.estado in (''pendiente_respuesta'')");
 				break;
 			case 'archivo_con_respuesta':
@@ -115,6 +118,12 @@ class ACTReclamo extends ACTbase{
 				break;
 			case 'contencioso_administrativo':
 				$this->objParam->addFiltro("rec.estado in (''contencioso_administrativo'')");
+				break;
+            case 'en_proceso':
+				$this->objParam->addFiltro("rec.estado in (''pendiente_asignacion'',''pendiente_respuesta'',''en_avenimiento'')");
+				break;
+            case 'concluidos':
+				$this->objParam->addFiltro("rec.estado in (''archivo_con_respuesta'',''respuesta_registrado_ripatt'',''archivado_concluido'')");
 				break;
 		}
 
@@ -176,7 +185,7 @@ class ACTReclamo extends ACTbase{
         /*if($this->objParam->getParametro('id_reclamo') != '' ) {
             $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
         }*/
-
+        //var_dump('error 400');exit;
         if ($this->objParam->getParametro('id_gestion') != '') {
             $this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
         }
@@ -323,12 +332,11 @@ class ACTReclamo extends ACTbase{
 	}
 
 	function generarReporteGrafico(){
-        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-Grafico]').'.docx';
-        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
-        
+
 	    $this->objFunc=$this->create('MODReclamo');
         $dataSource = $this->objFunc->stadistica();
         $this->dataSource=$dataSource->getDatos();
+        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-Grafico]').'.docx';
 
         $reporte = new RReporteGrafico($this->objParam);
 

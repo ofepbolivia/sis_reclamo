@@ -1095,6 +1095,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         procesar:  function(){
+            console.log('Generar Reporte pdf');
             var comboG = Ext.getCmp('id_gestion');
             var comboP = Ext.getCmp('id_periodo');
 
@@ -1108,6 +1109,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     p_gestion: gestion,
                     p_periodo: periodo
                 },
+                argument:{},
                 success: this.cargarArchivo,
                 failure: this.conexionFailure,
                 timeout:this.timeout,

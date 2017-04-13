@@ -56,7 +56,7 @@ DECLARE
 
 BEGIN
 
-    v_nombre_funcion ='rec.f_lista_funcionario_registro_reclamo';
+    v_nombre_funcion ='rec.f_lista_funcionario_registro_respuesta';
 
     --recuperamos la la opbligacion de pago a partir del is_estado_wf del la obligacion
 

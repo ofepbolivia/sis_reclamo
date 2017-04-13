@@ -22,6 +22,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             {name:'pendiente_asignacion',title:'<H1 align="center"><i class="fa fa-list-ol"></i> Pendientes Asig.</h1>',grupo:0,height:0},
             {name:'pendiente_respuesta',title:'<H1 align="center"><i class="fa fa-list-ul"></i> Pendientes Resp.</h1>',grupo:1,height:0},
+            {name:'respuesta_parcial',title:'<H1 align="center"><i class="fa fa-sitemap"></i>Respuesta Parcial.</h1>',grupo:5,height:0},
             {name:'archivo_con_respuesta',title:'<H1 align="center"><i class="fa fa-sitemap"></i>Archivo con Resp.</h1>',grupo:2,height:0},
             {name:'respuesta_registrado_ripat',title:'<H1 align="center"><i class="fa fa-sitemap"></i>Registrado Ripatt</h1>',grupo:4,height:0},
             {name:'archivado_concluido',title:'<H1 align="center"><i class="fa fa-folder"></i> Archivado/Concl.</h1>',grupo:3,height:0}
@@ -33,11 +34,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
         },
-        beditGroups: [0,1],
+        beditGroups: [0,1,5],
         bdelGroups:  [0,1],
-        bactGroups:  [0,1,2,3,4],
+        bactGroups:  [0,1,2,3,4,5],
         btestGroups: [0,1],
-        bexcelGroups: [0,1,2,3,4],
+        bexcelGroups: [0,1,2,3,4,5],
 
         constructor: function(config) {
             this.tbarItems = ['-',
@@ -456,6 +457,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 //this.getBoton('reportes').enable();
                 this.getBoton('verificar_estado').enable();
                 this.enableTabRespuesta();
+            }else if(data.estado =='respuesta_parcial'){
+                this.getBoton('sig_estado').disable();
+                this.getBoton('ant_estado').disable();
+                this.getBoton('verificar_estado').enable();
+                this.enableTabRespuesta();
             }
             else if(data.estado =='archivo_con_respuesta' ){
                 if (this.nombreVista == 'PendienteRespuesta' && data.administrador ==1){
@@ -474,7 +480,12 @@ header("content-type: text/javascript; charset=UTF-8");
                 }
             }else if(data.estado == 'respuesta_registrado_ripat' ){
                 this.getBoton('sig_estado').enable();
-                this.getBoton('ant_estado').disable();
+                if(data.administrador ==1){
+                    this.getBoton('ant_estado').enable();
+                }
+                else{
+                    this.getBoton('ant_estado').disable();
+                }
                 this.getBoton('verificar_estado').enable();
                 //this.getBoton('reportes').enable();
                 this.enableTabRespuesta();

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION rec.ft_motivo_anulado_sel (
+CREATE OR REPLACE FUNCTION rec.ft_motivo_anulado_ime (
   p_administrador integer,
   p_id_usuario integer,
   p_tabla varchar,
@@ -8,8 +8,8 @@ RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Gestión de Reclamos
- FUNCION: 		rec.ft_motivo_anulado_sel
- DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'rec.tmotivo_anulado'
+ FUNCION: 		rec.ft_motivo_anulado_ime
+ DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'rec.tmotivo_anulado'
  AUTOR: 		 (admin)
  FECHA:	        12-10-2016 19:36:54
  COMENTARIOS:
@@ -23,93 +23,131 @@ $body$
 
 DECLARE
 
-	v_consulta    		varchar;
-	v_parametros  		record;
-	v_nombre_funcion   	text;
-	v_resp				varchar;
+	v_nro_requerimiento    	integer;
+	v_parametros           	record;
+	v_id_requerimiento     	integer;
+	v_resp		            varchar;
+	v_nombre_funcion        text;
+	v_mensaje_error         text;
+	v_id_motivo_anulado	integer;
 
 BEGIN
 
-	v_nombre_funcion = 'rec.ft_motivo_anulado_sel';
+    v_nombre_funcion = 'rec.ft_motivo_anulado_ime';
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************
- 	#TRANSACCION:  'REC_RMA_SEL'
- 	#DESCRIPCION:	Consulta de datos
+ 	#TRANSACCION:  'REC_RMA_INS'
+ 	#DESCRIPCION:	Insercion de registros
  	#AUTOR:		admin
  	#FECHA:		12-10-2016 19:36:54
 	***********************************/
 
-	if(p_transaccion='REC_RMA_SEL')then
+	if(p_transaccion='REC_RMA_INS')then
 
-    	begin
-    		--Sentencia de la consulta
-			v_consulta:='select
-						rma.id_motivo_anulado,
-						rma.motivo,
-                        rma.orden,
-						rma.estado_reg,
-						rma.fecha_reg,
-						rma.usuario_ai,
-						rma.id_usuario_reg,
-						rma.id_usuario_ai,
-						rma.fecha_mod,
-						rma.id_usuario_mod,
-						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod
-						from rec.tmotivo_anulado rma
-						inner join segu.tusuario usu1 on usu1.id_usuario = rma.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = rma.id_usuario_mod
-				        where  ';
+        begin
+        	--Sentencia de la insercion
+        	insert into rec.tmotivo_anulado(
+			motivo,
+            orden,
+			estado_reg,
+			fecha_reg,
+			usuario_ai,
+			id_usuario_reg,
+			id_usuario_ai,
+			fecha_mod,
+			id_usuario_mod
+          	) values(
+			v_parametros.motivo,
+            v_parametros.orden,
+			'activo',
+			now(),
+			v_parametros._nombre_usuario_ai,
+			p_id_usuario,
+			v_parametros._id_usuario_ai,
+			null,
+			null
+
+
+
+			)RETURNING id_motivo_anulado into v_id_motivo_anulado;
 
 			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','MotivoAnulado almacenado(a) con exito (id_motivo_anulado'||v_id_motivo_anulado||')');
+            v_resp = pxp.f_agrega_clave(v_resp,'id_motivo_anulado',v_id_motivo_anulado::varchar);
 
-			--Devuelve la respuesta
-			return v_consulta;
+            --Devuelve la respuesta
+            return v_resp;
 
 		end;
 
 	/*********************************
- 	#TRANSACCION:  'REC_RMA_CONT'
- 	#DESCRIPCION:	Conteo de registros
+ 	#TRANSACCION:  'REC_RMA_MOD'
+ 	#DESCRIPCION:	Modificacion de registros
  	#AUTOR:		admin
  	#FECHA:		12-10-2016 19:36:54
 	***********************************/
 
-	elsif(p_transaccion='REC_RMA_CONT')then
+	elsif(p_transaccion='REC_RMA_MOD')then
 
 		begin
-			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id_motivo_anulado)
-					    from rec.tmotivo_anulado rma
-					    inner join segu.tusuario usu1 on usu1.id_usuario = rma.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = rma.id_usuario_mod
-					    where ';
+			--Sentencia de la modificacion
+			update rec.tmotivo_anulado set
+			motivo = v_parametros.motivo,
+            orden = v_parametros.orden,
+			fecha_mod = now(),
+			id_usuario_mod = p_id_usuario,
+			id_usuario_ai = v_parametros._id_usuario_ai,
+			usuario_ai = v_parametros._nombre_usuario_ai
+			where id_motivo_anulado=v_parametros.id_motivo_anulado;
 
 			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','MotivoAnulado modificado(a)');
+            v_resp = pxp.f_agrega_clave(v_resp,'id_motivo_anulado',v_parametros.id_motivo_anulado::varchar);
 
-			--Devuelve la respuesta
-			return v_consulta;
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+
+	/*********************************
+ 	#TRANSACCION:  'REC_RMA_ELI'
+ 	#DESCRIPCION:	Eliminacion de registros
+ 	#AUTOR:		admin
+ 	#FECHA:		12-10-2016 19:36:54
+	***********************************/
+
+	elsif(p_transaccion='REC_RMA_ELI')then
+
+		begin
+			--Sentencia de la eliminacion
+			delete from rec.tmotivo_anulado
+            where id_motivo_anulado=v_parametros.id_motivo_anulado;
+
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','MotivoAnulado eliminado(a)');
+            v_resp = pxp.f_agrega_clave(v_resp,'id_motivo_anulado',v_parametros.id_motivo_anulado::varchar);
+
+            --Devuelve la respuesta
+            return v_resp;
 
 		end;
 
 	else
 
-		raise exception 'Transaccion inexistente';
+    	raise exception 'Transaccion inexistente: %',p_transaccion;
 
 	end if;
 
 EXCEPTION
 
 	WHEN OTHERS THEN
-			v_resp='';
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
-			v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
-			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
-			raise exception '%',v_resp;
+		v_resp='';
+		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_resp;
+
 END;
 $body$
 LANGUAGE 'plpgsql'

@@ -46,6 +46,7 @@ class MODInforme extends MODbase{
 
        //Ejecuta la instruccion
 		$this->armarConsulta();
+        //var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -169,6 +170,23 @@ class MODInforme extends MODbase{
         $this->captura('funcionario_reg','text');
 
         //Ejecuta la instruccion
+        $this->armarConsulta();
+        //var_dump ('consulta'.$this->consulta);exit;
+        $this->ejecutarConsulta();
+        //var_dump($this->respuesta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function copiarInforme(){
+        $this->procedimiento='rec.ft_informe_ime';
+        $this->transaccion='REC_INFORME_COPIAR';
+        $this->tipo_procedimiento='IME';
+
+        $this->setParametro('gestion','gestion','varchar');
+        $this->setParametro('copiar_informe','copiar_informe','varchar');
+        $this->setParametro('id_informe','id_informe','varchar');
+
         $this->armarConsulta();
         //var_dump ('consulta'.$this->consulta);exit;
         $this->ejecutarConsulta();

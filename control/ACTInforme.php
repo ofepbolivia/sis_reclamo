@@ -14,8 +14,21 @@ class ACTInforme extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_informe');
 		$this->objParam->defecto('dir_ordenacion','asc');
 
-		if($this->objParam->getParametro('id_reclamo') != '') {
+		/*if($this->objParam->getParametro('id_reclamo') != ''){
             $this->objParam->addFiltro("infor.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+        }
+
+        if($this->objParam->getParametro('id_informe') != null || $this->objParam->getParametro('id_informe') != '') {
+            $this->objParam->addFiltro("infor.id_informe = " . $this->objParam->getParametro('id_informe'));
+        }*/
+
+        if($this->objParam->getParametro('id_reclamo') != '') {
+            if ($this->objParam->getParametro('id_informe') != null || $this->objParam->getParametro('id_informe') != ''){
+                $this->objParam->addFiltro("(infor.id_reclamo = ".$this->objParam->getParametro('id_reclamo')." or infor.id_informe = ".$this->objParam->getParametro('id_informe').")");
+            }else{
+                $this->objParam->addFiltro("infor.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+            }
+
         }
 		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -59,6 +72,12 @@ class ACTInforme extends ACTbase{
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function copiarInforme(){
+        $this->objFunc=$this->create('MODInforme');
+        $this->res=$this->objFunc->copiarInforme($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
 }

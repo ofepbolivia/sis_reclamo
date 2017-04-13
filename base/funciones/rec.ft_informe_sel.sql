@@ -73,12 +73,14 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = infor.id_usuario_mod
 
                         inner join orga.vfuncionario fun on fun.id_funcionario = infor.id_funcionario
+                        left join rec.treclamo_informe tre ON tre.id_informe = infor.id_informe
 				        where  ';
 
       --Definicion de la respuesta
       v_consulta:=v_consulta||v_parametros.filtro;
       v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
       --Devuelve la respuesta
+      raise notice 'consulta %',v_consulta;
       return v_consulta;
 
     end;
@@ -118,7 +120,7 @@ BEGIN
      elsif(p_transaccion='REC_INFORREP_SEL')then
 
     	begin
-   			--RAISE EXCEPTION 'PRUEBA: ',v_parametros.id_proceso_wf;
+   			--RAISE EXCEPTION 'PRUEBA: %',v_parametros.id_proceso_wf;
            --recupera el funcionario ...
           --v_gaf = orga.f_obtener_gerente_x_codigo_uo('gerente_financiero', now()::Date);
            --Sentencia de la consulta
@@ -165,11 +167,11 @@ BEGIN
                         INNER JOIN rec.tcompensacion com on com.id_compensacion = com.id_compensacion
                         inner join orga.vfuncionario fun on fun.id_funcionario = infor.id_funcionario
                         inner join rec.treclamo re on re.id_reclamo = infor.id_reclamo
-                        inner join rec.toficinas of on of.id_oficina = re.id_oficina_incidente
+                        inner join rec.toficina of on of.id_oficina = re.id_oficina_registro_incidente
                         inner join rec.vcliente cli on cli.id_cliente = re.id_cliente
                         where re.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
-                        raise notice '%', v_consulta;
+                        raise notice '% ', v_consulta;
             return v_consulta;
 
 		end;

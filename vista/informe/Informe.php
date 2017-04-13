@@ -20,7 +20,9 @@ header("content-type: text/javascript; charset=UTF-8");
 				//this.grid.getTopToolbar().disable();
 				//this.grid.getBottomToolbar().disable();
 				this.init();
-
+				//this.load({params:{start:0, limit: 0}});
+				//this.bloquearMenus();
+				//this.iniciarEventos();
                 this.addButton('copiar',{
                     grupo:[0,1,2,3,4,5],
                     text :'Copiar Informe.',
@@ -29,9 +31,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     handler : this.copiarInf,
                     tooltip : '<b>Copiar</b><br/><b>Nos permite copiar, un Informe similar para varios Reclamos.</b>'
                 });
-				//this.load({params:{start:0, limit: 0}});
-				//this.bloquearMenus();
-				//this.iniciarEventos();
 			},
 			Atributos:[
 				{
@@ -185,7 +184,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '80%',
 						height: 80,
 						gwidth: 100,
-						maxLength:1000
+						maxLength:100000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.antecedentes_informe',type:'string'},
@@ -201,7 +200,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '80%',
 						height: 80,
 						gwidth: 200,
-						maxLength:1000
+						maxLength:100000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.analisis_tecnico',type:'string'},
@@ -218,7 +217,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '80%',
 						height: 80,
 						gwidth: 200,
-						maxLength:1000
+						maxLength:100000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.conclusion_recomendacion',type:'string'},
@@ -234,7 +233,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '80%',
 						height: 80,
 						gwidth: 200,
-						maxLength:1000
+						maxLength:100000
 					},
 					type:'TextArea',
 					filters:{pfiltro:'infor.sugerencia_respuesta',type:'string'},
@@ -397,165 +396,223 @@ header("content-type: text/javascript; charset=UTF-8");
 				//this.Cmp.id_funcionario.setValue(this.maestro.id_funcionario_recepcion);
 			},
 
-			onReloadPage: function(m){
+			/*onReloadPage: function(m){
 				this.maestro = m;
-				this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
+				console.log('bolivia',this.maestro);
+                //this.store.baseParams = {id_informe: this.maestro.id_informe};
+                this.store.baseParams = {id_reclamo: this.maestro.id_reclamo};
 				this.load({params:{start: 0, limit: 50}});
 
-			},
+			},*/
+
+            onReloadPage:function(param){
+                //Se obtiene la gestión de los Reclamos.
+                this.maestro = param;
+                this.initFiltro(param);
+            },
+
+            initFiltro: function(param){
+                console.log('parametros',param);
+                this.store.baseParams=param;
+                this.load( { params: { start:0, limit: this.tam_pag } });
+            },
 
 			loadValoresIniciales: function(){
 				this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
 				Phx.vista.Informe.superclass.loadValoresIniciales.call(this);
 			},
 
-		preparaMenu:function(n){
-			//console.log('preparaMenu');
-			Phx.vista.Informe.superclass.preparaMenu.call(this,n);
-			if(this.maestro.estado ==  'pendiente_revision'||this.maestro.estado == 'registrado_ripat'||this.maestro.estado ==  'derivado'){
-				this.getBoton('del').disable();
-			}else if(this.maestro.estado ==  'anulado'){
-				this.getBoton('new').disable();
-				this.getBoton('edit').disable();
-				this.getBoton('del').disable();
-			}
-
-			/*var padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
-
-			if(this.maestro.estado ==  'borrador' || (padre == 'ObligacionPagoVb' && this.maestro.estado ==  'vbpresupuestos')){
-				alert(padre);
-				this.getBoton('edit').enable();
-				this.getBoton('new').enable();
-				this.getBoton('del').enable();
-
-				this.getBoton('btnProrrateo').enable();
-
-
-			}
-			else{
-				alert(padre);
-				this.getBoton('edit').disable();
-				this.getBoton('new').disable();
-				this.getBoton('del').disable();
-				this.getBoton('btnProrrateo').disable();
-
-
-			}
-			if(this.maestro&&(this.maestro.estado ==  'borrador' && this.maestro.tipo_obligacion=='adquisiciones' )){
-
-				this.getBoton('edit').enable();
-				this.getBoton('new').disable();
-				this.getBoton('del').disable();
-				this.getBoton('btnProrrateo').disable();
-			}*/
-		},
-
-		liberaMenu: function() {
-			//console.log('libera Menu');
-			Phx.vista.Informe.superclass.liberaMenu.call(this);
-			/*this.getBoton('btnProrrateo').enable();
-			if(this.maestro&&(this.maestro.estado !=  'borrador')){
-
-				this.getBoton('edit').disable();
-				this.getBoton('new').disable();
-				this.getBoton('del').disable();
-				this.getBoton('btnProrrateo').disable();
-			}
-			if(this.maestro&&(this.maestro.estado ==  'borrador' && this.maestro.tipo_obligacion=='adquisiciones')){
-
-				this.getBoton('edit').disable();
-				this.getBoton('new').disable();
-				this.getBoton('del').disable();
-				this.getBoton('btnProrrateo').disable();
-			}*/
-
-		}
-        ,
-
-        copiarInf: function () {
-            //Ext.Msg.alert('Copiar',' Nos permite copiar Informe');
-            this.objWizard = Phx.CP.loadWindows('../../../sis_reclamo/vista/informe/Copiar.php',
-                'Copiar Informe',
-                {
-                    modal: true,
-                    width: 450,
-                    height: 150
-                },
-                {
-                    /*data: {
-                     id_estado_wf: rec.data.id_estado_wf,
-                     id_proceso_wf: rec.data.id_proceso_wf
-                     }*/
-                }, this.idContenedor, 'Copiar',
-                {
-                    config: [{
-                        event: 'beforesave',
-                        delegate: this.onExito,
-                    }],
-                    scope: this
+            preparaMenu:function(n){
+                //console.log('preparaMenu');
+                Phx.vista.Informe.superclass.preparaMenu.call(this,n);
+                this.getBoton('copiar').enable();
+                if(this.maestro.estado ==  'pendiente_revision'||this.maestro.estado == 'registrado_ripat'||this.maestro.estado ==  'derivado'){
+                    this.getBoton('del').disable();
+                }else if(this.maestro.estado ==  'anulado'){
+                    this.getBoton('new').disable();
+                    this.getBoton('edit').disable();
+                    this.getBoton('del').disable();
                 }
-            );
-        }/*,
 
-        formReclamos : new Ext.form.FormPanel({
-         baseCls: 'x-plain',
-         autoDestroy: true,
-         layout: 'form',
-         items: [
-         {
-             xtype: 'itemselector',
-             name: 'Reclamos',
-             fieldLabel: 'ItemSelector',
-             imagePath: '../ux/images/',
-             multiselects: [
-             {
-                 width: 250,
-                 height: 200,
-                 store: ds,
-                 displayField: 'text',
-                 valueField: 'value'
-             },
-             {
-                 width: 250,
-                 height: 200,
-                 store: [['10','Ten']],
-                 tbar:[{
-                 text: 'clear',
-                 handler:function(){
-                    isForm.getForm().findField('itemselector').reset();
+                /*var padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
+
+                if(this.maestro.estado ==  'borrador' || (padre == 'ObligacionPagoVb' && this.maestro.estado ==  'vbpresupuestos')){
+                    alert(padre);
+                    this.getBoton('edit').enable();
+                    this.getBoton('new').enable();
+                    this.getBoton('del').enable();
+
+                    this.getBoton('btnProrrateo').enable();
+                    /usr/lib64/libtdsodbc.so
+
+
                  }
-                }]
-             }]
-         }
-         ]
-         }),
+                else{
+                    alert(padre);
+                    this.getBoton('edit').disable();
+                    this.getBoton('new').disable();
+                    this.getBoton('del').disable();
+                    this.getBoton('btnProrrateo').disable();
 
 
-         wReclamos : new Ext.Window({
-         title: 'Depto Tesoreria',
-         collapsible: true,
-         maximizable: true,
-         autoDestroy: true,
-         width: 400,
-         height: 200,
-         layout: 'fit',
-         plain: true,
-         bodyStyle: 'padding:5px;',
-         buttonAlign: 'center',
-         items: this.formDEPTO,
-         modal:true,
-         closeAction: 'hide',
-         buttons: [{
-         text: 'Guardar',
-         handler:this.onSubmitHabPag,
-         scope:this
+                }
+                if(this.maestro&&(this.maestro.estado ==  'borrador' && this.maestro.tipo_obligacion=='adquisiciones' )){
 
-         },{
-         text: 'Cancelar',
-         handler:function(){this.wDEPTO.hide()},
-         scope:this
-         }]
-         })*/
+                    this.getBoton('edit').enable();
+                    this.getBoton('new').disable();
+                    this.getBoton('del').disable();
+                    this.getBoton('btnProrrateo').disable();
+                }*/
+            },
+
+            liberaMenu: function() {
+                Phx.vista.Informe.superclass.liberaMenu.call(this);
+                this.getBoton('copiar').disable();
+
+
+            },
+
+            copiarInf: function () {
+                var rec = this.sm.getSelected();
+                //console.log(rec.data.id_informe);
+                this.objWizard = Phx.CP.loadWindows('../../../sis_reclamo/vista/informe/Copiar.php',
+                    'Copiar Informe',
+                    {
+                        modal: true,
+                        width: 450,
+                        height: 150
+                    },
+                    {
+                        data: {
+                            id_informe: rec.data.id_informe
+                        }
+                    }, this.idContenedor, 'Copiar'/*,
+                    {
+                        config: [{
+                            event: 'beforesave',
+                            delegate: this.onExito,
+                        }],
+                        scope: this
+                    }*/
+                );
+                /*this.crearFormCopiarRec();
+                this.wReclamos.show();*/
+            },
+
+            /*onExito : function () {
+                Phx.CP.loadingShow();
+                Phx.CP.loadingHide();
+                this.reload();
+            },*/
+
+            crearFormCopiarRec: function () {
+                console.log('itemSelector');
+                this.formReclamos = new Ext.form.FormPanel({
+                    baseCls: 'x-plain',
+                    autoDestroy: true,
+                    layout: 'form',
+                    items: [
+                        {
+                            xtype: 'itemselector',
+                            name: 'itemselector',
+                            fieldLabel: '',
+                            imagePath: '../../../lib/ext3/examples/ux/images/',
+                            multiselects:
+                            [
+                                {
+                                    legend: 'Lista de Reclamos',
+                                    width: 280,
+                                    height: 320,
+                                    store: new Ext.data.JsonStore({
+                                        url: '../../sis_reclamo/control/Reclamo/listarConsulta',
+                                        id: 'id_reclamo',
+                                        root: 'datos',
+                                        sortInfo: {
+                                            field: 'nro_tramite',
+                                            direction: 'ASC'
+                                        },
+                                        totalProperty: 'total',
+                                        fields: ['id_reclamo', 'nro_tramite'],
+                                        remoteSort: true/*,
+                                        baseParams: {par_filtro: 'rec.id_reclamo'}*/
+                                    }),
+                                    valueField: 'id_reclamo',
+                                    displayField: 'nro_tramite',
+                                    title: 'Izquierda'
+
+                                }
+                                ,{
+                                    legend: 'Informe Copiado a Reclamos',
+                                    width: 280,
+                                    height: 320,
+                                    store: [],
+                                    title: 'Derecha'/*,
+                                    tbar:[{
+                                        text: 'clear',
+                                        handler:function(){
+                                            this.formReclamos.getForm().findField('itemselector').reset();
+                                        }
+                                    }]*/
+                                }
+                            ]
+                        }
+                    ]
+                });
+
+                console.log('pasa');
+                this.wReclamos = new Ext.Window({
+                    title: 'Reclamos a Seleccionar',
+                    collapsible: true,
+                    maximizable: true,
+                    autoDestroy: true,
+                    width: 800,
+                    height: 400,
+                    layout: 'fit',
+                    plain: true,
+                    bodyStyle: 'padding:5px;',
+                    buttonAlign: 'center',
+                    items: this.formReclamos,
+                    modal:true,
+                    closeAction: 'hide',
+                    buttons: [{
+                        text: 'Guardar',
+                        handler:this.onSubmitReclamos,
+                        scope:this
+
+                    },{
+                        text: 'Cancelar',
+                        handler:function(){this.wReclamos.hide()},
+                        scope:this
+                    }]
+                });
+                console.log('fallas');
+            },
+
+            onSubmitReclamos : function(){
+                Ext.Msg.alert('funciona');
+                this.wReclamos.hide();
+                this.reload();
+                /*var d= this.sm.getSelected().data;
+
+                this.DataSelected = d
+
+                Phx.CP.loadingShow();
+
+                Ext.Ajax.request({
+                    url:'../../sis_adquisiciones/control/Cotizacion/siguienteEstadoCotizacion',
+                    params:{id_cotizacion:d.id_cotizacion,
+                        fecha_oc: this.cmpFechaOC.getValue().dateFormat('d/m/Y'),
+                        operacion:'verificar'},
+
+                    //params:{id_cotizacion:d.id_cotizacion,operacion:'sol_apro'},
+                    success:this.successSinc,
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });*/
+            }
+
+
 	});
 </script>
 
