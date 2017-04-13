@@ -41,60 +41,148 @@ header("content-type: text/javascript; charset=UTF-8");
 
         constructor: function(config) {
             this.tbarItems = ['-',
-                this.cmbGestion
+                this.cmbGestion,'-'
 
             ];
             this.maestro=config.maestro;
-           
-
+            //console.log('purisk',config);
             //this.Atributos.splice(5,1);
             this.Atributos.splice(5,0,
              {
                 config: {
                     name: 'dias_respuesta',
-                        fieldLabel: 'Dias Para Responder',
-                        allowBlank: true,
-                        anchor: '100%',
-                        gwidth: 150,
-                        maxLength: 100,
-                        renderer: function(value, p, record) {
+                    fieldLabel: 'Dias Para Responder',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 150,
+                    maxLength: 100,
+                    renderer: function(value, p, record) {
                         var dias = record.data.dias_respuesta;
                         var ids = new Array(4, 6, 37, 38, 48, 50);
                         var id_tipo = parseInt(record.data.id_tipo_incidente);
+
                         if(ids.indexOf(id_tipo) >= 0) {
-                            if (dias >= 7 && dias <= 10) {
-                                return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+                            if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta'  || record.data.revisado == 'concluido')
+                                return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/respondido.png' align='center' width='24' height='24'/></div>");
+                            else {
+                                switch (dias) {
+                                    case '10':
+                                        console.log('10');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/ten.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '9':
+                                        console.log('9');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/nine.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '8':
+                                        console.log('8');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/eight.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '7':
+                                        console.log('7');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/seven.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '6':
+                                        console.log('6');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/six.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '5':
+                                        console.log('5');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/five.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '4':
+                                        console.log('4');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/four.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '3':
+                                        console.log('3');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/three.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '2':
+                                        console.log('2');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/two.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '1':
+                                        console.log('1');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/one.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '0':
+                                        console.log('0');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/cero.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '-1':
+                                        console.log('-1');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/vencido.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                }
                             }
-                            else if(dias >=3  && dias <= 6){
-                                return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
-                            }else if(dias>=0 && dias<=2) {
-                                if(dias == 1)
-                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Falta {0} Día</font></b><br></div>', value);
-                                else if(dias == 0 || dias ==2)
-                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Faltan {0} Días</font></b><br></div>', value);
-                            }else if(dias = -1){
-                                return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">Con Respuesta o Vencido</font></b><br></div>', value);
-                            }
+
+                        /*if (dias >= 1 && dias <= 10) {
+                            return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
+                        }
+                        else if(dias == 0){
+                            return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
+                        }else if(dias = -1){
+                            return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">Con Respuesta o Vencido</font></b><br></div>', value);
+                        }*/
                         }else if(record.data.id_tipo_incidente==36){
-                            if (dias >=5  && dias <= 7) {
+                            /*if (dias >=1  && dias <= 7) {
                                 return String.format('<div ext:qtip="Optimo"><b><font color="green">Faltan {0} Días</font></b><br></div>', value);
                             }
-                            else if(dias >=2  && dias <= 4){
+                            else if(dias == 0){
                                 return String.format('<div ext:qtip="Critico"><b><font color="orange">Faltan {0} Días</font></b><br></div>', value);
-                            }else if(dias>=0 && dias<=1) {
-                                if(dias == 1)
-                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Falta {0} Día</font></b><br></div>', value);
-                                else if(dias == 0)
-                                    return String.format('<div ext:qtip="Malo"><b><font color="red">Faltan {0} Días</font></b><br></div>', value);
                             }else if(dias = -1){
-                                return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">Con Respuesta o Vencido</font></b><br></div>', value);
+                                return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">Con Respuesta o Vencido</font></b><br></div>', value);
+                            }*/
+                            if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido')
+                                return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/respondido.png' align='center' width='24' height='24'/></div>");
+                            else {
+                                switch (dias) {
+                                    case '7':
+                                        console.log('7');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/seven.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '6':
+                                        console.log('6');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/six.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '5':
+                                        console.log('5');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/five.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '4':
+                                        console.log('4');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/four.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '3':
+                                        console.log('3');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/three.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '2':
+                                        console.log('2');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/two.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '1':
+                                        console.log('1');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/one.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '0':
+                                        console.log('0');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/cero.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                    case '-1':
+                                        console.log('-1');
+                                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/media/vencido.png' align='center' width='24' height='24'/></div>");
+                                        break;
+                                }
                             }
                         }
                     }
-                },
-                type: 'TextField',
-                    grid: true,
-                    form: false
+             },
+             type: 'Checkbox',
+             id_grupo:1,
+             grid: true,
+             form: false
             });
 
             this.Atributos.unshift({
@@ -105,10 +193,37 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '80%',
                     gwidth: 100,
                     renderer:function (value, p, record){
-                        if(record.data['revisado'] == 'si')
-                            return  String.format('{0}',"<div style='text-align:center'><img title='Revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
+                        //console.log('RECORD',record.data);
+                        var revisado = record.data['revisado'];
+                        var estado = record.data['estado'];
+
+                        /*contador = 0;
+                        Ext.Ajax.request({
+                            url:'../../sis_reclamo/control/Reclamo/listarRest',
+                            params:{'id_reclamo':parseInt(record.data.id_reclamo)},
+                            success:function (resp){
+                                var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                                console.log('DATOS:',reg.ROOT.datos.v_contador);
+                               var contador = reg.ROOT.datos.v_contador;
+                                console.log('CONTADOR',contador);
+                            },
+                            failure: this.conexionFailure,
+                            timeout: this.timeout,
+                            scope: this
+                        });*/
+
+                        if(revisado == 'asignacion')
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Pendiente de Asignacion'  src = '../../../sis_reclamo/reportes/24-hours.png' align='center' width='24' height='24'/></div>");
+                        else if (revisado == 'respuesta')
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Pendiente de Respuesta'  src = '../../../lib/imagenes/warning.png' align='center' width='24' height='24'/></div>");
+                        else if (revisado == 'proceso')
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Procesando Respuesta'  src = '../../../lib/imagenes/a_form_edit.png' align='center' width='24' height='24'/></div>");
+                        else if (revisado == 'con_respuesta')
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Con Respuesta'  src = '../../../lib/imagenes/icono_dibu/dibu_send_mail.png' align='center' width='24' height='24'/></div>");
+                        else if (revisado == 'res_ripat')
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Reclamo Con Respuesta Registro Ripatt'  src = '../../../lib/imagenes/icono_dibu/dibu_documents.png' align='center' width='24' height='24'/></div>");
                         else
-                            return  String.format('{0}',"<div style='text-align:center'><img title='No revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_white.png' align='center' width='24' height='24'/></div>");
+                            return  String.format('{0}',"<div style='text-align:center'><img title='Respuesta Registrado Ripatt'  src = '../../../sis_reclamo/reportes/service.png' align='center' width='24' height='24'/></div>");
                     }
                 },
                 type:'Checkbox',
@@ -131,26 +246,40 @@ header("content-type: text/javascript; charset=UTF-8");
                 params:{id_usuario:0},
                 success:function(resp){
                     var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
-                    console.log('rEG1: '+reg);
+
                     this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
                     this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
-                    this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+                    console.log(reg.ROOT.datos.id_gestion);
+                    this.store.baseParams.id_gestion = reg.ROOT.datos.id_gestion;
+                    this.load({params:{start:0, limit:this.tam_pag}});
+
                 },
                 failure: this.conexionFailure,
                 timeout:this.timeout,
                 scope:this
             });
 
-            this.addButton('reportes',{
+            this.addButton('verificar_estado',{
+                grupo: [0,1,2,3,4],
+                text: 'Verificar Estado',
+                iconCls: 'bfolder',
+                disabled: false,
+                handler: this.verificarEstado,
+                tooltip: '<b>Permite revisar los reclamos en Registrado Rippat</b>',
+                scope:this
+            });
+
+            /*this.addButton('reportes',{
                 grupo: [0,1,2,3,4],
                 argument: {estado: 'reportes'},
                 text: 'Reportes',
                 iconCls: 'blist',
                 disabled: true,
+                hidden:true,
                 handler: this.reportes,
                 tooltip: '<b>Generar Reporte</b>',
                 scope:this
-            });
+            });*/
 
             this.cmbGestion.on('select',this.capturarEventos, this);
 
@@ -202,7 +331,7 @@ header("content-type: text/javascript; charset=UTF-8");
         ,
         cmbGestion: new Ext.form.ComboBox({
             name: 'gestion',
-            id: 'gestion',
+            id: 'gestion_pr',
             fieldLabel: 'Gestion',
             allowBlank: true,
             emptyText:'Gestion...',
@@ -235,12 +364,14 @@ header("content-type: text/javascript; charset=UTF-8");
         }),
 
         capturarEventos: function () {
-            if(this.validarFiltros()){
+            /*if(this.validarFiltros()){
                 this.capturaFiltros();
-            }
+            }*/
+            this.store.baseParams.id_gestion=this.cmbGestion.getValue();
+            this.load({params:{start:0, limit:this.tam_pag}});
         },
 
-        capturaFiltros:function(combo, record, index){
+        /*capturaFiltros:function(combo, record, index){
             this.desbloquearOrdenamientoGrid();
             this.store.baseParams.id_gestion=this.cmbGestion.getValue();
             this.load({params:{start:0, limit:this.tam_pag}});
@@ -265,7 +396,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.store.baseParams.id_gestion=this.cmbGestion.getValue();
                 Phx.vista.PendienteRespuesta.superclass.onButtonAct.call(this);
             }
-        },
+        },*/
 
         reportes: function(){
             
@@ -278,45 +409,20 @@ header("content-type: text/javascript; charset=UTF-8");
             var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
         },
 
-
-        /*fin_registro:function(paneldoc)
-        {
-            var d= this.sm.getSelected().data;
-
-            Phx.CP.loadingShow();
-            this.cmbRPC.reset();
-
-            this.cmbRPC.store.baseParams.id_uo=d.id_uo;
-            this.cmbRPC.store.baseParams.fecha=d.fecha_soli;
-            this.cmbRPC.store.baseParams.id_proceso_macro=d.id_proceso_macro;
-            Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
-                url:'../../sis_adquisiciones/control/Solicitud/finalizarSolicitud',
-                params: { id_solicitud: d.id_solicitud, operacion:'verificar', id_estado_wf: d.id_estado_wf },
-                argument: { paneldoc: paneldoc},
-                success: this.successSinc,
-                failure: this.conexionFailure,
-                timeout: this.timeout,
-                scope: this
-            });
+        verificarEstado: function () {
+            var rec=this.sm.getSelected();
+            rec.data.nombreVista = this.nombreVista;
+            Phx.CP.loadWindows('../../../sis_reclamo/vista/reclamo/VerificarEstado.php',
+                'Verificar Reclamos',
+                {
+                    width:'80%',
+                    height:'80%'
+                },
+                rec.data,
+                this.idContenedor,
+                'VerificarEstado'
+            )
         },
-        successSinc:function(resp){
-
-            Phx.CP.loadingHide();
-            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            if(!reg.ROOT.error){
-
-                if(resp.argument.paneldoc.panel){
-                    resp.argument.paneldoc.panel.destroy();
-                }
-                this.reload();
-            }else{
-
-                alert('ocurrio un error durante el proceso')
-            }
-
-
-        },*/
 
         enableTabRespuesta:function(){
             if(this.TabPanelSouth.get(1)){
@@ -341,27 +447,47 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.disableTabRespuesta();
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
-                this.getBoton('reportes').enable();
+                //this.getBoton('reportes').enable();
+                this.getBoton('verificar_estado').enable();
+
             }else if(data.estado =='pendiente_respuesta'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
-                this.getBoton('reportes').enable();
+                //this.getBoton('reportes').enable();
+                this.getBoton('verificar_estado').enable();
                 this.enableTabRespuesta();
             }
             else if(data.estado =='archivo_con_respuesta' ){
-                this.getBoton('sig_estado').enable();
-                this.getBoton('ant_estado').disable();
-                this.getBoton('reportes').enable();
-                this.enableTabRespuesta();
+                if (this.nombreVista == 'PendienteRespuesta' && data.administrador ==1){
+                    this.getBoton('sig_estado').enable();
+                    this.getBoton('ant_estado').enable();
+                    this.getBoton('verificar_estado').enable();
+                    //this.getBoton('reportes').enable();
+                    this.enableTabRespuesta();
+                }
+                else{
+                    this.getBoton('sig_estado').enable();
+                    this.getBoton('ant_estado').disable();
+                    this.getBoton('verificar_estado').enable();
+                    //this.getBoton('reportes').enable();
+                    this.enableTabRespuesta();
+                }
             }else if(data.estado == 'respuesta_registrado_ripat' ){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').disable();
-                this.getBoton('reportes').enable();
+                this.getBoton('verificar_estado').enable();
+                //this.getBoton('reportes').enable();
                 this.enableTabRespuesta();
             }else if(data.estado == 'archivado_concluido'){
                 this.getBoton('sig_estado').enable();
-                this.getBoton('ant_estado').disable();
-                this.getBoton('reportes').enable();
+                if(data.administrador ==1){
+                    this.getBoton('ant_estado').enable();
+                }
+                else{
+                    this.getBoton('ant_estado').disable();
+                }
+                this.getBoton('verificar_estado').enable();
+                //this.getBoton('reportes').enable();
                 this.enableTabRespuesta();
             }
             /*if(data['revisado_asistente']== 'si'){
@@ -381,7 +507,9 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
                 this.getBoton('ant_estado').disable();
                 this.getBoton('sig_estado').disable();
-                this.getBoton('reportes').disable();
+                this.getBoton('verificar_estado').disable();
+                //this.getBoton('reportes').disable();
+
             }
             //this.getBoton('btnRev').disable();
             this.disableTabRespuesta();

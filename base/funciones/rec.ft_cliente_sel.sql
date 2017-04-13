@@ -154,7 +154,8 @@ BEGIN
                                                 inner join rec.ttipo_incidente ti on ti.id_tipo_incidente = re.id_tipo_incidente
                                                 inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = re.id_subtipo_incidente
                                                 WHERE  re.fecha_hora_recepcion >= '''||v_parametros.fecha_ini||''' and re.fecha_hora_recepcion <= '''||v_parametros.fecha_fin||'''
-                                                and re.id_oficina_registro_incidente = '''||v_parametros.id_oficina_registro_incidente ||''' ';
+                                                and re.id_oficina_registro_incidente = '''||v_parametros.id_oficina_registro_incidente ||''' ORDER BY
+                                                re.nro_frd, re.correlativo_preimpreso_frd ASC';
 
                                                 --Definicion de la respuesta
                                                 --v_consulta:=v_consulta||v_parametros.filtro;
@@ -163,31 +164,36 @@ BEGIN
 
 
 	end;
-
-    ELSIF (p_transaccion= 'REC_LIBRESP_SEL')THEN
+    /*********************************
+ 		#TRANSACCION:  'CLI_LUGSEL'
+ 		#DESCRIPCION:	Permite recuperar las oficinas para la situacion de Ambiente del incidente y oficina de registro
+ 		#AUTOR:		FEA
+ 		#FECHA:		27-10-2016 18:32:59
+		***********************************/
+       ELSIF(p_transaccion = 'CLI_LUG_SEL')THEN
     	BEGIN
-         SELECT tp.fecha_fin
-         INTO v_fecha_fin
-         FROM param.tperiodo tp
-         WHERE tp.id_periodo = v_parametros.id_periodo AND tp.id_gestion = v_parametros.id_gestion;
-
-          v_consulta = 'SELECT DISTINCT ON (correlativo)
-          trp.fecha_respuesta AS fecha,
-          SUBSTRING(trc.nro_tramite FROM 5 FOR 6) AS correlativo,
-          ti.nombre_incidente AS tipo,
-          sti.nombre_incidente AS subtipo,
-          vfcl.oficina_nombre AS oficina,
-          vc.nombre_completo1 AS cliente
-          FROM rec.treclamo trc
-          INNER JOIN rec.trespuesta trp ON trp.id_reclamo = trc.id_reclamo
-          INNER JOIN rec.ttipo_incidente 	ti ON ti.id_tipo_incidente = trc.id_tipo_incidente
-          INNER JOIN rec.ttipo_incidente sti ON sti.id_tipo_incidente = trc.id_subtipo_incidente
-          INNER JOIN orga.vfuncionario_cargo_lugar vfcl ON vfcl.id_oficina = trc.id_oficina_incidente
-          INNER JOIN rec.vcliente vc ON vc.id_cliente = trc.id_cliente
-          WHERE trp.fecha_respuesta <=  '||v_fecha_fin;
-
-          RETURN v_consulta;
-
+        	v_consulta = 'select
+						lug.id_lugar,
+						lug.codigo,
+						lug.estado_reg,
+						lug.id_lugar_fk,
+						lug.nombre,
+						lug.sw_impuesto,
+						lug.sw_municipio,
+						lug.tipo,
+						lug.fecha_reg,
+						lug.id_usuario_reg,
+						lug.fecha_mod,
+						lug.id_usuario_mod,
+						usu1.cuenta as usr_reg,
+						usu2.cuenta as usr_mod,
+						lug.es_regional
+						from param.tlugar lug
+						inner join segu.tusuario usu1 on usu1.id_usuario = lug.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = lug.id_usuario_mod
+				        where  (lug.estado_reg = ''activo'' OR lug.estado_reg = ''inactivo'') AND lug.tipo = ''pais''';
+        	raise notice 'Consulta: %',v_consulta;
+        	RETURN v_consulta;
         END;
 	else
 

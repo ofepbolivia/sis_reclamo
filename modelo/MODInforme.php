@@ -164,11 +164,13 @@ class MODInforme extends MODbase{
         $this->captura('destino','varchar');
         $this->captura('nombre_completo1','text');
         $this->captura('email','varchar');
-        $this->captura('celular','int4');
+        $this->captura('celular','varchar');
         $this->captura('detalle_incidente','text');
+        $this->captura('funcionario_reg','text');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
+        //var_dump ('consulta'.$this->consulta);exit;
         $this->ejecutarConsulta();
         //var_dump($this->respuesta); exit;
         //Devuelve la respuesta

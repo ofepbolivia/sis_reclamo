@@ -33,7 +33,7 @@ Phx.vista.MotivoAnulado=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'descripcion_motivo',
+				name: 'motivo',
 				fieldLabel: 'Descripción Motivo',
 				allowBlank: false,
 				anchor: '80%',
@@ -41,7 +41,7 @@ Phx.vista.MotivoAnulado=Ext.extend(Phx.gridInterfaz,{
 				maxLength:1000
 			},
 				type:'TextField',
-				filters:{pfiltro:'rma.descripcion_motivo',type:'string'},
+				filters:{pfiltro:'rma.motivo',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:true
@@ -180,7 +180,7 @@ Phx.vista.MotivoAnulado=Ext.extend(Phx.gridInterfaz,{
 	id_store:'id_motivo_anulado',
 	fields: [
 		{name:'id_motivo_anulado', type: 'numeric'},
-		{name:'descripcion_motivo', type: 'string'},
+		{name:'motivo', type: 'string'},
 		'orden',
 		{name:'estado_reg', type: 'string'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
@@ -198,7 +198,7 @@ Phx.vista.MotivoAnulado=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:false
 	}
 )
 </script>

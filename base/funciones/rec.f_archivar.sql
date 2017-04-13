@@ -24,7 +24,7 @@ BEGIN
      v_clase = '';
      v_parametros_ad = '';
      v_tipo_noti = 'notificacion';
-     v_titulo  = 'Visto Bueno';
+     v_titulo  = 'Archivo Concluido';
      --INSERT INTO rec.ttipo_incidente(nombre_incidente,fk_tipo_incidente,tiempo_respuesta, nivel) VALUES ('pokemon',1,'5',1);
      IF ((SELECT count(*) FROM rec.treclamo r WHERE  r.estado = 'respuesta_registrado_ripat')>0)THEN
 
@@ -73,6 +73,7 @@ BEGIN
                                         v_titulo);
 
                 update rec.treclamo r set
+                revisado = 'concluido',
        			id_estado_wf =  v_id_estado_actual,
       			estado = 'archivado_concluido',
        			id_usuario_mod=v_id_usuario,

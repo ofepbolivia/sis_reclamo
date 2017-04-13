@@ -36,6 +36,10 @@ DECLARE
     v_id_usuario_rev	record;
     v_id_usuario_pen	integer;
 
+    va_id_depto 		integer[];
+    v_gestion		integer;
+
+
 BEGIN
 
 	v_nombre_funcion = 'rec.ft_reclamo_sel';
@@ -60,12 +64,16 @@ BEGIN
             INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
             WHERE tu.id_usuario = p_id_usuario ;
 
-            IF (p_administrador) THEN
-            	v_filtro= '0 = 0 AND ';
 
-            ELSIF (v_record.nombre_cargo='Técnico Atención al Cliente')THEN
-            	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
-            ELSIF (v_record.nombre_cargo='Especialista Atención al Cliente')THEN
+           	IF (p_administrador=1 OR v_parametros.tipo_interfaz='ConsultaReclamo' OR v_parametros.tipo_interfaz='filtros') THEN
+            	v_filtro= '0 = 0 AND ';
+	 	   	ELSE
+           		IF (v_parametros.tipo_interfaz='RevisionReclamo')THEN
+
+
+            		v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' OR rec.id_usuario_mod = '|| p_id_usuario||') AND rec.estado_reg <> ''inactivo'' AND ';
+
+           		ELSIF (v_parametros.tipo_interfaz::varchar = 'PendienteRespuesta' OR v_parametros.tipo_interfaz='ReclamoAdministrativo')THEN
                     --Consulta que muestra el id_usuario del anterior estado
                     SELECT tu.id_usuario, count(tu.id_usuario)::varchar as cant_reg
             		INTO v_id_usuario_rev
@@ -78,21 +86,25 @@ BEGIN
                     WHERE tr.estado =  'pendiente_asignacion' LIMIT 1)
                     GROUP BY tu.id_usuario;
 
-                    IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-                    	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
-                    ELSE
-                    	v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND ';
-                    END IF;
+                    select
+                       pxp.aggarray(depu.id_depto)
+                    into
+                       va_id_depto
+                    from param.tdepto_usuario depu
+                    where depu.id_usuario =  p_id_usuario;
 
                     IF(v_id_usuario_rev.cant_reg IS NULL)THEN
-                    	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND  ';
+                    	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND rec.estado_reg <> ''inactivo'' AND ';
                     ELSE
-                    	v_filtro = '(rec.id_usuario_mod = '||v_id_usuario_rev.id_usuario||' OR  tew.id_funcionario = '||v_record.id_funcionario||') AND ';
+                    	v_filtro = '( rec.id_usuario_mod = '||p_id_usuario||' OR tew.id_depto in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||') OR tew.id_funcionario = '||v_record.id_funcionario||') AND rec.estado_reg <> ''inactivo'' AND ';
                     END IF;
-
-            ELSE
-            	v_filtro = 'rec.id_usuario_reg = '||p_id_usuario||
-                ' AND rec.id_oficina_registro_incidente = '||v_record.id_oficina||' AND ';
+            	--END IF;
+            	ELSIF v_parametros.tipo_interfaz='RegistroReclamos' THEN
+            		v_filtro = '(rec.id_usuario_reg = '||p_id_usuario||
+               	 	' OR rec.id_oficina_registro_incidente = '||v_record.id_oficina||') AND ';
+            	ELSE
+            		v_filtro= '0 = 0 AND ';
+            	END IF;
             END IF;
 
     		--Sentencia de la consulta
@@ -161,38 +173,37 @@ BEGIN
                             c.email,
                             c.ciudad_residencia,
                             rec.nro_guia_aerea,
-                            fun.nombre_cargo,
-                            fu.nombre_cargo as cargo,
-                            c.nombre_completo2 as desc_nom_cliente
 
+                            c.nombre_completo2 as desc_nom_cliente,
+							'||p_administrador||'::integer AS administrador
 
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 						left join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
-                        inner join rec.vcliente c on c.id_cliente = rec.id_cliente
+                        left join rec.vcliente c on c.id_cliente = rec.id_cliente
                         inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        left join orga.toficina of on of.id_oficina = rec.id_oficina_incidente
-                      	inner join orga.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
-                        inner join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
-                        left join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
+                        inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
+                        left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
                         	left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                             left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                             left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
-                            LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
-                            LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
 
                             LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
 
 				        where  '||v_filtro;
+
 			--raise exception 'ordenacion: %',v_consulta;
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 			--Devuelve la respuesta
         	raise notice 'que esta pasando: %',v_consulta;
+
 			return v_consulta;
 
 		end;
@@ -212,18 +223,16 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
 						left join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
-                        inner join rec.vcliente c on c.id_cliente = rec.id_cliente
+                        left join rec.vcliente c on c.id_cliente = rec.id_cliente
                         inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        left join orga.toficina of on of.id_oficina = rec.id_oficina_incidente
-                      	inner join orga.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
-                        inner join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
-                        left  join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
+                        inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
+                        left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
                         	left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                             left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                             left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
-                            LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
-                            LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
 
                             LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
@@ -247,7 +256,7 @@ BEGIN
     	begin
             --SELECT
     		--Sentencia de la consulta
-			v_consulta:='select
+			v_consulta:='select distinct on (rec.id_reclamo)
 						rec.id_reclamo,
 						rec.id_tipo_incidente,
 						rec.id_subtipo_incidente,
@@ -320,23 +329,21 @@ BEGIN
 						left join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
                         inner join rec.vcliente c on c.id_cliente = rec.id_cliente
                         inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        left join orga.toficina of on of.id_oficina = rec.id_oficina_incidente
-                      	inner join orga.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
                         inner join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
                         left outer join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
-                        	left join param.tgestion gest on gest.id_gestion = rec.id_gestion
-                            left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
-                            left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
-                            LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
-                            LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
+                        left join param.tgestion gest on gest.id_gestion = rec.id_gestion
+                        left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
+                        left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
-                            LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
-							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
+                        LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
+						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
 				        WHERE ';
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			v_consulta:=v_consulta||' order by id_reclamo, ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
         	raise notice 'que esta pasando: %',v_consulta;
@@ -344,7 +351,7 @@ BEGIN
 
 		end;
     /*********************************
- 	#TRANSACCION:  'REC_REC_CONT'
+ 	#TRANSACCION:  'REC_CRMG_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		admin
  	#FECHA:		10-08-2016 18:32:59
@@ -361,19 +368,140 @@ BEGIN
 						left join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
                         inner join rec.vcliente c on c.id_cliente = rec.id_cliente
                         inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        left join orga.toficina of on of.id_oficina = rec.id_oficina_incidente
-                      	inner join orga.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
                         inner join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
                         left outer join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
-                        	left join param.tgestion gest on gest.id_gestion = rec.id_gestion
-                            left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
-                            left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
-                            LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
-                            LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
+                        left join param.tgestion gest on gest.id_gestion = rec.id_gestion
+                        left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
+                        left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
-                            LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
-							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
+                        LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
+						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
+					    where ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+    /*********************************
+ 	#TRANSACCION:  'REC_CONSULTA_SEL'
+ 	#DESCRIPCION:	Consulta PARA LA VISTA CONSULTA RECLAMO
+ 	#AUTOR:		admin
+ 	#FECHA:		01-02-2017 12:00:59
+	***********************************/
+	elsif(p_transaccion='REC_CONSULTA_SEL')then
+
+    	begin
+
+    		--Sentencia de la consulta
+			v_consulta:='select
+							rec.id_reclamo,
+							rec.id_tipo_incidente,
+							rec.id_subtipo_incidente,
+							rec.id_medio_reclamo,
+							rec.id_funcionario_recepcion,
+							rec.id_funcionario_denunciado,
+							rec.id_oficina_incidente,
+							rec.id_oficina_registro_incidente,
+							rec.id_proceso_wf,
+							rec.id_estado_wf,
+							rec.id_cliente,
+							rec.estado,
+							rec.fecha_hora_incidente,
+							rec.nro_ripat_att,
+							rec.nro_hoja_ruta,
+							rec.fecha_hora_recepcion,
+							rec.estado_reg,
+							rec.fecha_hora_vuelo,
+							rec.origen,
+							rec.nro_frd,
+        					rec.correlativo_preimpreso_frd,
+        					rec.fecha_limite_respuesta,
+							rec.observaciones_incidente,
+							rec.destino,
+							rec.nro_pir,
+							rec.nro_frsa,
+							rec.nro_att_canalizado,
+							rec.nro_tramite,
+							rec.detalle_incidente,
+							rec.pnr,
+							rec.nro_vuelo,
+							rec.id_usuario_reg,
+							rec.fecha_reg,
+							rec.usuario_ai,
+							rec.id_usuario_ai,
+							rec.fecha_mod,
+							rec.id_usuario_mod,
+							usu1.cuenta as usr_reg,
+							usu2.cuenta as usr_mod,
+        					rec.id_gestion,
+        					rec.id_motivo_anulado,
+        					med.nombre_medio as desc_nombre_medio,
+        					c.nombre_completo2 as desc_nom_cliente,
+        					tip.nombre_incidente as desc_nombre_incidente,
+        					of.nombre as desc_nombre_oficina,
+        					ofi.nombre as desc_oficina_registro_incidente,
+        					t.nombre_incidente as desc_sudnom_incidente,
+        					fun.desc_funcionario1 as desc_nombre_funcionario,
+        					fu.desc_funcionario1 as desc_nombre_fun_denun,
+        					rec.revisado,
+        					rec.transito,
+        					ma.motivo as motivo_anulado,
+        					rec.nro_guia_aerea,
+                            c.nombre_completo2
+						from rec.treclamo rec
+						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
+						INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+						LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
+						INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+						left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+						INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+						INNER join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+						INNER join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
+						left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
+						inner join param.tgestion gest on gest.id_gestion = rec.id_gestion
+						left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
+				        WHERE ';
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+			--Devuelve la respuesta
+        	raise notice 'que esta pasando: %',v_consulta;
+			return v_consulta;
+
+		end;
+    /*********************************
+ 	#TRANSACCION:  'REC_CONSULTA_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin
+ 	#FECHA:		10-08-2016 18:32:59
+	***********************************/
+
+	elsif(p_transaccion='REC_CONSULTA_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select count(rec.id_reclamo)
+			   			from rec.treclamo rec
+						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
+						INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+						LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
+						INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+						left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+						INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+						INNER join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+						INNER join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
+						left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
+						inner join param.tgestion gest on gest.id_gestion = rec.id_gestion
+						left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
 					    where ';
 
 			--Definicion de la respuesta
@@ -440,8 +568,8 @@ BEGIN
                         inner join rec.vcliente cli on cli.id_cliente = rec.id_cliente
                         inner join rec.tcliente cl on cl.id_cliente =rec.id_cliente
                         join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        inner join orga.toficina of on of.id_oficina = rec.id_oficina_incidente
-                      	inner join orga.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        inner join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
                         inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
                         left outer join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
@@ -452,19 +580,191 @@ BEGIN
 
             return v_consulta;
             END;
-     elsif(p_transaccion='REC_REST_SEL')then
 
-          BEGIN
-              v_consulta = 'SELECT
-                            tr.nro_tramite AS tramite,
-                            tr.id_estado_wf AS id_estado,
-                            tr.id_proceso_wf AS id_proceso
-                            FROM rec.treclamo tr
-                            WHERE tr.id_reclamo = '||v_parametros.id_reclamo;
+     ELSIF(p_transaccion = 'REC_LIBRESP_SEL')THEN
+    	BEGIN
 
-               return v_consulta;
-         END;
+          v_consulta = 'SELECT DISTINCT ON (correlativo)
+          trp.fecha_respuesta::date AS fecha,
+          (SUBSTRING(trc.nro_tramite FROM 5 FOR 6))::varchar AS correlativo,
+          ti.nombre_incidente::varchar AS tipo,
+          sti.nombre_incidente::varchar AS subtipo,
+          vfcl.oficina_nombre::varchar AS oficina,
+          vc.nombre_completo1::varchar AS cliente
+          FROM rec.treclamo trc
+          INNER JOIN rec.trespuesta trp ON trp.id_reclamo = trc.id_reclamo
+          INNER JOIN rec.ttipo_incidente 	ti ON ti.id_tipo_incidente = trc.id_tipo_incidente
+          INNER JOIN rec.ttipo_incidente sti ON sti.id_tipo_incidente = trc.id_subtipo_incidente
+          INNER JOIN orga.vfuncionario_cargo_lugar vfcl ON vfcl.id_oficina = trc.id_oficina_incidente
+          INNER JOIN rec.vcliente vc ON vc.id_cliente = trc.id_cliente
+          WHERE trp.fecha_respuesta >= '''|| to_char(v_parametros.fecha_ini,'DD-MM-YYYY')||''' AND trp.fecha_respuesta <= '''||to_char(v_parametros.fecha_fin,'DD-MM-YYYY')||'''';
 
+
+          RETURN v_consulta;
+
+        END;
+       /*********************************
+ 		#TRANSACCION:  'REC_OFICINAS_SEL'
+ 		#DESCRIPCION:	Permite recuperar las oficinas para la situacion de Ambiente del incidente y oficina de registro
+ 		#AUTOR:		FEA
+ 		#FECHA:		27-10-2016 18:32:59
+		***********************************/
+       ELSIF(p_transaccion = 'REC_OFICINAS_SEL')THEN
+    	BEGIN
+        	v_consulta = 'select
+						ofi.id_oficina,
+						ofi.aeropuerto,
+						ofi.id_lugar,
+						ofi.nombre,
+						ofi.codigo,
+						ofi.estado_reg,
+						ofi.fecha_reg,
+						ofi.id_usuario_reg,
+						ofi.fecha_mod,
+						ofi.id_usuario_mod,
+						usu1.cuenta as usr_reg,
+						usu2.cuenta as usr_mod,
+						lug.nombre as nombre_lugar,
+						ofi.zona_franca,
+						ofi.frontera
+						from rec.toficina ofi
+						inner join segu.tusuario usu1 on usu1.id_usuario = ofi.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = ofi.id_usuario_mod
+						inner join param.tlugar lug on lug.id_lugar = ofi.id_lugar
+				        where  (ofi.estado_reg = ''activo'' OR ofi.estado_reg = ''inactivo'') AND ';
+
+            v_consulta:=v_consulta||v_parametros.filtro;
+        	v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+            RETURN v_consulta;
+        END;
+    /*********************************
+     #TRANSACCION:  'REC_OFICINAS_CONT'
+     #DESCRIPCION:	Conteo de registros
+     #AUTOR:		admin
+     #FECHA:		15-01-2014 16:05:34
+    ***********************************/
+
+    elsif(p_transaccion='REC_OFICINAS_CONT')then
+
+      begin
+        --Sentencia de la consulta de conteo de registros
+        v_consulta:='select count(id_oficina)
+					   from rec.toficina ofi
+						inner join segu.tusuario usu1 on usu1.id_usuario = ofi.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = ofi.id_usuario_mod
+						inner join param.tlugar lug on lug.id_lugar = ofi.id_lugar
+				        where  (ofi.estado_reg = ''activo'' OR ofi.estado_reg = ''inactivo'') AND ';
+
+        --Definicion de la respuesta
+        v_consulta:=v_consulta||v_parametros.filtro;
+
+        --Devuelve la respuesta
+        return v_consulta;
+
+      end;
+    elsif(p_transaccion='REC_REG_RIP')then
+
+      begin
+        v_consulta:='select
+						rec.id_reclamo,
+						rec.id_tipo_incidente,
+						rec.id_subtipo_incidente,
+						rec.id_medio_reclamo,
+						rec.id_funcionario_recepcion,
+						rec.id_funcionario_denunciado,
+						rec.id_oficina_incidente,
+						rec.id_oficina_registro_incidente,
+						rec.id_proceso_wf,
+						rec.id_estado_wf,
+						rec.id_cliente,
+						rec.estado,
+						rec.fecha_hora_incidente,
+						rec.nro_ripat_att,
+						rec.nro_hoja_ruta,
+						rec.fecha_hora_recepcion,
+						rec.estado_reg,
+						rec.fecha_hora_vuelo,
+						rec.origen,
+						rec.nro_frd,
+                        rec.correlativo_preimpreso_frd,
+                        rec.fecha_limite_respuesta,
+						rec.observaciones_incidente,
+						rec.destino,
+						rec.nro_pir,
+						rec.nro_frsa,
+						rec.nro_att_canalizado,
+						rec.nro_tramite,
+						rec.detalle_incidente,
+						rec.pnr,
+						rec.nro_vuelo,
+						rec.id_usuario_reg,
+						rec.fecha_reg,
+						rec.usuario_ai,
+						rec.id_usuario_ai,
+						rec.fecha_mod,
+						rec.id_usuario_mod,
+						usu1.cuenta as usr_reg,
+						usu2.cuenta as usr_mod,
+                        	rec.id_gestion,
+                            rec.id_motivo_anulado,
+                        med.nombre_medio as desc_nombre_medio,
+                        	c.nombre_completo2 as desc_nom_cliente,
+                        tip.nombre_incidente as desc_nombre_incidente,
+                        of.nombre as desc_nombre_oficina,
+                        ofi.nombre as desc_oficina_registro_incidente,
+                        t.nombre_incidente as desc_sudnom_incidente,
+                        fun.desc_funcionario1 as desc_nombre_funcionario,
+                        fu.desc_funcionario1 as desc_nombre_fun_denun,
+                        	tip.tiempo_respuesta,
+                            rec.revisado,
+                            rec.transito,
+                            rec.f_dias_respuesta(now()::date, rec.fecha_limite_respuesta, ''DIAS_RESP'')::varchar as dias_respuesta,
+                            rec.f_dias_respuesta(now()::date, rec.fecha_hora_recepcion::date, ''DIAS_INF'')::varchar as dias_informe,
+                            ma.motivo as motivo_anulado,
+                            res.nro_cite,
+                            infor.conclusion_recomendacion ,
+							res.recomendaciones,
+                            c.genero,
+                            c.ci,
+                            c.telefono,
+                            c.email,
+                            c.ciudad_residencia,
+                            rec.nro_guia_aerea,
+
+                            c.nombre_completo2 as desc_nom_cliente,
+							'||p_administrador||'::integer AS administrador
+
+						from rec.treclamo rec
+						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
+						left join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+                        left join rec.vcliente c on c.id_cliente = rec.id_cliente
+                        inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+                        left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+                        inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
+                        left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
+                        	left join param.tgestion gest on gest.id_gestion = rec.id_gestion
+                            left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
+                            left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+
+                            LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
+							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
+
+				        where  rec.estado=''registrado_ripat'' AND ';
+
+			--raise exception 'ordenacion: %',v_consulta;
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			--Devuelve la respuesta
+        	raise notice 'que esta pasando: %',v_consulta;
+
+			return v_consulta;
+
+      end;
 	else
 
 		raise exception 'Transaccion inexistente';

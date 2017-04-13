@@ -15,11 +15,10 @@ header("content-type: text/javascript; charset=UTF-8");
 	nombreVista: 'Reclamo',
 	constructor: function (config) {
 		this.idContenedor = config.idContenedor;
-		console.log('maestro_reclamo: '+this.idContenedor);
+		//console.log('maestro_reclamo: '+this.idContenedor);
 		this.maestro = config.maestro;
-		console.log(config);
+		//console.log(config);
 		//llama al constructor de la clase padre
-
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 
 		this.init();
@@ -156,11 +155,15 @@ header("content-type: text/javascript; charset=UTF-8");
 				anchor: '50%',
 				gwidth: 60,
 				renderer:function (value, p, record){
-					if(record.data['revisado'] == 'si')
-						return  String.format('{0}',"<div style='text-align:center'><img title='Revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
-					else
-						return  String.format('{0}',"<div style='text-align:center'><img title='No revisado / Permite ver si el reclamo fue revisado'  src = '../../../lib/imagenes/ball_white.png' align='center' width='24' height='24'/></div>");
-				},
+				    //console.log('revisado',record.data['revisado']);
+					if(record.data['revisado'] == 'si') {
+                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo con Respuesta'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
+                    }else {
+                        return String.format('{0}', "<div style='text-align:center'><img title='Reclamo Pendiente de Respuesta'  src = '../../../lib/imagenes/ball_blue.png' align='center' width='24' height='24'/></div>");
+                    }//else {
+                        //return String.format('{0}', "<div style='text-align:center'><img title='Pendiente de Asignación'  src = '../../../lib/imagenes/ball_white.png' align='center' width='24' height='24'/></div>");
+                    //}
+				}
 			},
 			type:'Checkbox',
 			filters:{pfiltro:'rec.revisado',type:'string'},
@@ -185,28 +188,30 @@ header("content-type: text/javascript; charset=UTF-8");
 					var ids = new Array(4, 6, 37, 38, 48, 50);
 					var id_tipo = parseInt(record.data.id_tipo_incidente);
 					if(ids.indexOf(id_tipo) >= 0) {
-						if (dias >= 7 && dias <= 10) {
+                        if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido'){
+                            return String.format('<div ext:qtip="Con Respuesta"><b><font color="black">{0}</font></b><br></div>', value);
+                        }else if (dias >= 1 && dias <= 10) {
 							return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value);
-						}
-						else if(dias >=3  && dias <= 6){
-							return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value);
-						}else if(dias>=0 && dias<=2) {
-							return String.format('<div ext:qtip="Malo"><b><font color="red">{0}</font></b><br></div>', value);
-						}else if(dias = -1){
-							return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">{0}</font></b><br></div>', value);
-						}
+						}else if(dias==0) {
+							return String.format('<div ext:qtip="Malo"><b><font color="orange">{0}</font></b><br></div>', value);
+						}else if(dias == -1) {
+                            return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">{0}</font></b><br></div>', value);
+                        }
+
 					}else if(record.data.id_tipo_incidente==36){
-						if (dias >=5  && dias <= 7) {
+                        if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido'){
+                            return String.format('<div ext:qtip="Con Respuesta"><b><font color="black">{0}</font></b><br></div>', value);
+                        }else if (dias >=1  && dias <= 7) {
 							return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value);
-						}
-						else if(dias >=2  && dias <= 4){
+						}else if(dias == 0){
 							return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value);
-						}else if(dias>=0 && dias<=1) {
-							return String.format('<div ext:qtip="Malo"><b><font color="red">{0}</font></b><br></div>', value);
-						}else if(dias = -1){
-							return String.format('<div ext:qtip="Con Respuesta"><b><font color="blue">{0}</font></b><br></div>', value);
-						}
+						}else if(dias == -1) {
+                            return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">{0}</font></b><br></div>', value);
+                        }
 					}
+					/*if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido'){
+                        return String.format('<div ext:qtip="Con Respuesta"><b><font color="black">{0}</font></b><br></div>', value);
+                    }*/
 				}
 			},
 			type:'TextField',
@@ -438,6 +443,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank:false,
 				emptyText:'Elija una opción...',
 				dato: 'reclamo',
+                qtip:'Ingrese el Nombre del Cliente, Si se encuentra en la BD seleccionelo, Sino Registre Nuevo con el boton de Lupa.',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_reclamo/control/Cliente/listarCliente',
 					id: 'id_cliente',
@@ -469,7 +475,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				minChars:1,
 				turl:'../../../sis_reclamo/vista/cliente/FormCliente.php',
 				ttitle:'Clientes',
-				tconfig:{width: '35%' ,height:'95%'},
+				tconfig:{width: '35%' ,height:'90%'},
 				tdata:{},
 				tcls:'FormCliente',
 				pid:this.idContenedor,
@@ -512,9 +518,14 @@ header("content-type: text/javascript; charset=UTF-8");
 				anchor: '80%',
 				gwidth: 100,
 				maxLength: 25,
+                typeAhead:true,
+                forceSelection: true,
+                triggerAction:'all',
+                mode:'local',
+                store:[ 'BCN', 'BUE', 'BYC', 'CBB', 'CCA',  'LPB', 'CIJ', 'MAD', 'MIA', 'ORU', 'POI', 'RIB', 'RBQ', 'SAO', 'SLA', 'S.RE', 'SRZ', 'TDD', 'TJA', 'UYU'],
 				style:'text-transform:uppercase;'
 			},
-			type: 'TextField',
+			type: 'ComboBox',
 			filters: {pfiltro: 'rec.origen', type: 'string'},
 			id_grupo: 2,
 			grid: true,
@@ -527,9 +538,14 @@ header("content-type: text/javascript; charset=UTF-8");
 				anchor: '80%',
 				gwidth: 100,
 				maxLength: 25,
+                typeAhead:true,
+                forceSelection: true,
+                triggerAction:'all',
+                mode:'local',
+                store:['BCN', 'BUE', 'BYC', 'CBB', 'CCA',  'LPB', 'CIJ', 'MAD', 'MIA', 'ORU', 'POI', 'RIB', 'RBQ', 'SAO', 'SLA', 'S.RE', 'SRZ', 'TDD', 'TJA', 'UYU'],
 				style:'text-transform:uppercase;'
 			},
-			type: 'TextField',
+			type: 'ComboBox',
 			filters: {pfiltro: 'rec.transito', type: 'string'},
 			id_grupo: 2,
 			grid: true,
@@ -543,9 +559,15 @@ header("content-type: text/javascript; charset=UTF-8");
 				anchor: '80%',
 				gwidth: 100,
 				maxLength: 25,
-				style:'text-transform:uppercase;'
+                typeAhead:true,
+                forceSelection: true,
+                triggerAction:'all',
+                mode:'local',
+                store:['BCN', 'BUE', 'BYC', 'CBB', 'CCA',  'LPB', 'CIJ', 'MAD', 'MIA', 'ORU', 'POI', 'RIB', 'RBQ', 'SAO', 'SLA', 'S.RE', 'SRZ', 'TDD', 'TJA', 'UYU'],
+                style:'text-transform:uppercase;'
+
 			},
-			type: 'TextField',
+			type: 'ComboBox',
 			filters: {pfiltro: 'rec.destino', type: 'string'},
 			id_grupo: 2,
 			grid: true,
@@ -705,7 +727,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_organigrama/control/Oficina/listarOficina',
+					//url: '../../sis_reclamo/control/Reclamo/listarOficinas',
+					url: '../../sis_reclamo/control/Reclamo/listarOficinas',
 					id: 'id_oficina',
 					root: 'datos',
 					sortInfo: {
@@ -726,13 +749,13 @@ header("content-type: text/javascript; charset=UTF-8");
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'remote',
-				pageSize: 15,
+				pageSize: 10,
 				queryDelay: 1000,
 				anchor: '100%',
 				gwidth: 150,
 				minChars: 2,
 				resizable:true,
-				listWidth:'240',
+				listWidth:'263',
 				renderer: function (value, p, record) {
 
 					return String.format('{0}', record.data['desc_nombre_oficina']);
@@ -751,7 +774,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength: 1000
+				maxLength: 100000
 			},
 			type: 'TextArea',
 			bottom_filter:true,
@@ -767,7 +790,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 100,
-				maxLength: 1000
+				maxLength: 100000
 			},
 			type: 'TextArea',
 			bottom_filter:true,
@@ -820,7 +843,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			type: 'TrigguerCombo',
 			id_grupo:3,
 			filters:{
-				pfiltro:'fu.desc_funcionario1#fu.nombre_cargo',
+				pfiltro:'fu.desc_funcionario1',
 				type:'string'
 			},
 			bottom_filter:true,
@@ -833,8 +856,9 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'Oficina Reclamo',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
+                qtip: 'Oficina Fisica donde se hace el registro en el ERP, de un Reclamo,se rellena por Defecto.',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_organigrama/control/Oficina/listarOficina',
+					url: '../../sis_reclamo/control/Reclamo/listarOficinas',// ../../sis_organigrama/control/Oficina/listarOficina
 					id: 'id_oficina',
 					root: 'datos',
 					sortInfo: {
@@ -861,7 +885,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				gwidth: 150,
 				minChars: 2,
 				resizable:true,
-				listWidth:'240',
+				listWidth:'259',
 				renderer: function (value, p, record) {
 					return String.format('{0}', record.data['desc_oficina_registro_incidente']);
 				}
@@ -879,7 +903,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				disabled: true,
+				disabled: false,
 				gdisplayField: 'fecha_hora_recepcion',
 				format: 'd/m/Y H:i',
 				renderer: function (value, p, record) {
@@ -898,6 +922,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				fieldLabel: 'Funcionario que recibe Reclamo',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
+                qtip:'Funcionario que registra el Reclamo en el ERP, se rellena por Defecto.',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
 					id: 'id_funcionario',
@@ -909,7 +934,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					totalProperty: 'total',
 					fields: ['id_funcionario','desc_funcionario1','email_empresa','nombre_cargo','lugar_nombre','oficina_nombre'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'FUNCAR.desc_funcionario1#FUNCAR.nombre_cargo'}
+					baseParams: {par_filtro: 'FUNCAR.desc_funcionario1'}//#FUNCAR.nombre_cargo
 				}),
 				valueField: 'id_funcionario',
 				displayField: 'desc_funcionario1',
@@ -937,7 +962,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			bottom_filter:true,
 			id_grupo: 4,
 			filters:{
-				pfiltro:'fun.desc_funcionario1#fun.nombre_cargo',
+				pfiltro:'fun.desc_funcionario1',//#fun.nombre_cargo
 				type:'string'
 			},
 			grid: true,
@@ -1220,6 +1245,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'cargo', type: 'string'},
 		{name: 'email', type: 'string'},
 		{name: 'nombre_completo2', type: 'string'},
+		{name: 'administrador', type: 'numeric'}
 
 
 	],
@@ -1522,12 +1548,12 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		}, this);
 
-		this.Cmp.id_cliente.on('select',function(cmb, record, index){
-			/*var v_cliente = new Cliente();
-			v_cliente.*/
+		/*this.Cmp.id_cliente.on('select',function(cmb, record, index){
+			var v_cliente = new Cliente();
+			v_cliente.
 			//alert('Chau');
 			//Ext.Msg.alert('hola');
-		},this);
+		},this);*/
 
 		/*that = this;
 		setInterval(function(){ that.reload();},30000);*/
@@ -1565,6 +1591,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		var fecha = new Date();
 		this.armarFormularioFromArray(objRes.datos);
+
 		this.Cmp.id_subtipo_incidente.disable();
 		this.Cmp.observaciones_incidente.setValue('Ninguna');
 		this.Cmp.fecha_hora_vuelo.setValue(new Date((fecha.getMonth()+1)+'/'+fecha.getDate()+'/'+fecha.getFullYear()));
@@ -1573,7 +1600,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
-			params:{id_usuario: 0},
+			params:{
+			    id_usuario: 0
+			},
 			success:function(resp){
 				var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
@@ -1582,13 +1611,37 @@ header("content-type: text/javascript; charset=UTF-8");
 
 				this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
 				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
+				console.log('ofi: ',this.Cmp.id_oficina_registro_incidente.getValue());
+                this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
 			},
 			failure: this.conexionFailure,
 			timeout:this.timeout,
 			scope:this
 		});
+
 	},
 
+	/*actualizarFRD:function () {
+
+		Ext.Ajax.request({
+			url:'../../sis_reclamo/control/Reclamo/getFRD',
+			params:{
+				oficina:this.Cmp.id_oficina_registro_incidente.getValue()
+			},
+			success: function(resp){
+				var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+				//this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
+			},
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
+
+	},
+    onSubmit:function(o){
+        Phx.vista.Reclamo.superclass.onSubmit.call(this,o);
+        this.actualizarFRD();
+    },*/
 	successSave:function(resp){
 		Phx.vista.Reclamo.superclass.successSave.call(this,resp);
 
@@ -1716,7 +1769,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.Cmp.id_cliente.setRawValue(nombre_cliente.toUpperCase());
 	},
 
-	cambiarRev:function(){
+	/*cambiarRev:function(){
 		Phx.CP.loadingShow();
 		var d = this.sm.getSelected().data;
 		Ext.Ajax.request({
@@ -1734,8 +1787,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		if(!reg.ROOT.error){
 			this.reload();
 		}
-	}
-	/*reportes: function(){
+	},
+	reportes: function(){
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/generarReporte',

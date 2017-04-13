@@ -20,6 +20,15 @@ header("content-type: text/javascript; charset=UTF-8");
 				//this.grid.getTopToolbar().disable();
 				//this.grid.getBottomToolbar().disable();
 				this.init();
+
+                this.addButton('copiar',{
+                    grupo:[0,1,2,3,4,5],
+                    text :'Copiar Informe.',
+                    iconCls : 'bfolder',
+                    /*disabled: true,*/
+                    handler : this.copiarInf,
+                    tooltip : '<b>Copiar</b><br/><b>Nos permite copiar, un Informe similar para varios Reclamos.</b>'
+                });
 				//this.load({params:{start:0, limit: 0}});
 				//this.bloquearMenus();
 				//this.iniciarEventos();
@@ -461,6 +470,92 @@ header("content-type: text/javascript; charset=UTF-8");
 			}*/
 
 		}
+        ,
+
+        copiarInf: function () {
+            //Ext.Msg.alert('Copiar',' Nos permite copiar Informe');
+            this.objWizard = Phx.CP.loadWindows('../../../sis_reclamo/vista/informe/Copiar.php',
+                'Copiar Informe',
+                {
+                    modal: true,
+                    width: 450,
+                    height: 150
+                },
+                {
+                    /*data: {
+                     id_estado_wf: rec.data.id_estado_wf,
+                     id_proceso_wf: rec.data.id_proceso_wf
+                     }*/
+                }, this.idContenedor, 'Copiar',
+                {
+                    config: [{
+                        event: 'beforesave',
+                        delegate: this.onExito,
+                    }],
+                    scope: this
+                }
+            );
+        }/*,
+
+        formReclamos : new Ext.form.FormPanel({
+         baseCls: 'x-plain',
+         autoDestroy: true,
+         layout: 'form',
+         items: [
+         {
+             xtype: 'itemselector',
+             name: 'Reclamos',
+             fieldLabel: 'ItemSelector',
+             imagePath: '../ux/images/',
+             multiselects: [
+             {
+                 width: 250,
+                 height: 200,
+                 store: ds,
+                 displayField: 'text',
+                 valueField: 'value'
+             },
+             {
+                 width: 250,
+                 height: 200,
+                 store: [['10','Ten']],
+                 tbar:[{
+                 text: 'clear',
+                 handler:function(){
+                    isForm.getForm().findField('itemselector').reset();
+                 }
+                }]
+             }]
+         }
+         ]
+         }),
+
+
+         wReclamos : new Ext.Window({
+         title: 'Depto Tesoreria',
+         collapsible: true,
+         maximizable: true,
+         autoDestroy: true,
+         width: 400,
+         height: 200,
+         layout: 'fit',
+         plain: true,
+         bodyStyle: 'padding:5px;',
+         buttonAlign: 'center',
+         items: this.formDEPTO,
+         modal:true,
+         closeAction: 'hide',
+         buttons: [{
+         text: 'Guardar',
+         handler:this.onSubmitHabPag,
+         scope:this
+
+         },{
+         text: 'Cancelar',
+         handler:function(){this.wDEPTO.hide()},
+         scope:this
+         }]
+         })*/
 	});
 </script>
 

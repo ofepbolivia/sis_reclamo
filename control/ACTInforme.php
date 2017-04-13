@@ -49,12 +49,11 @@ class ACTInforme extends ACTbase{
 
         $this->objFunc=$this->create('MODInforme');
         $dataSource = $this->objFunc->reporteInformeDoc();
-        $nombreArchivo = uniqid(md5(session_id()).'InformeDoc').'.docx';
+       $this->dataSource=$dataSource->getDatos();
+        $nombreArchivo = uniqid(md5(session_id()).'[Informe-'.$this->dataSource[0]['nro_informe'].']').'.docx';
         $reporte = new RInformeDoc($this->objParam);
-
         $reporte->datosHeader($dataSource->getDatos());
         $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
-
 
         $this->mensajeExito=new Mensaje();
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');

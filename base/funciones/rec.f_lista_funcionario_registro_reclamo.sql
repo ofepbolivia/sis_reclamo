@@ -60,15 +60,21 @@ BEGIN
 
     --recuperamos la la opbligacion de pago a partir del is_estado_wf del la obligacion
 
-                    SELECT tew.id_funcionario
+                    /*SELECT tew.id_funcionario
                     INTO v_id_funcionario
                     FROM wf.testado_wf tew
                     LEFT JOIN wf.testado_wf te ON te.id_estado_anterior = tew.id_estado_wf
                     LEFT JOIN rec.trespuesta  tr ON tr.id_estado_wf = te.id_estado_wf
-                    WHERE tr.id_estado_wf =  p_id_estado_wf;
+                    WHERE tr.id_estado_wf =  p_id_estado_wf;*/
 
+                    SELECT tew.id_funcionario
+                    INTO v_id_funcionario
+					FROM wf.testado_wf  tew
+					LEFT JOIN wf.ttipo_estado tte ON tte.id_tipo_estado = tew.id_tipo_estado
+					WHERE tte.codigo =  'borrador' AND tew.id_proceso_wf = (SELECT tew.id_proceso_wf
+																						 FROM wf.testado_wf tew
+																						 WHERE tew.id_estado_wf = p_id_estado_wf);
     IF not p_count then
-
              v_consulta:='SELECT
                             fun.id_funcionario,
                             fun.desc_funcionario1 as desc_funcionario,

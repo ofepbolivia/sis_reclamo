@@ -33,7 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.menu = new Ext.FormPanel({
                 labelWidth: 75, // label settings here cascade unless overridden
-                url:'save-form.php',
+                //url:'save-form.php',
                 region:'west',
                 /*frame:true,*/
                 split:true,
@@ -50,7 +50,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         id: 'reportes',
                         fieldLabel: 'Tipo Reporte',
                         allowBlank:false,
-
+                        emptyText:'Tipo...',
                         width: 150,
                         maxLength:25,
                         typeAhead:true,
@@ -1095,7 +1095,29 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         procesar:  function(){
-            Ext.Msg.alert('Generar Reporte pdf');
+            var comboG = Ext.getCmp('id_gestion');
+            var comboP = Ext.getCmp('id_periodo');
+
+            var tipoGrafico = Ext.getCmp('reportes').getValue();
+            var gestion = comboG.getValue();
+            var periodo = comboP.getRawValue();
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/generarReporteGrafico',
+                params:{
+                    tipo:'genero',
+                    p_gestion: gestion,
+                    p_periodo: periodo
+                },
+                success: this.cargarArchivo,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+
+        cargarArchivo : function (resp) {
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            window.open('../../../lib/lib_control/Intermediario.php?r='+reg.ROOT.detalle.archivo_generado+'&t='+new Date().toLocaleTimeString());
         },
 
         iniciarDashboard:function(nodo){

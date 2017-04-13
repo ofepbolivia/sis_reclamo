@@ -29,7 +29,8 @@ class ACTCliente extends ACTbase{
 	}
 				
 	function insertarCliente(){
-		$this->objFunc=$this->create('MODCliente');	
+		$this->objFunc=$this->create('MODCliente');
+		//var_dump('alto');exit;
 		if($this->objParam->insertar('id_cliente')){
 			$this->res=$this->objFunc->insertarCliente($this->objParam);			
 		} else{			
@@ -43,15 +44,7 @@ class ACTCliente extends ACTbase{
 		$this->res=$this->objFunc->eliminarCliente($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-	
-	function listarPais(){
 
-		$this->objFunc=$this->create('MODCliente');
-		
-		$this->res=$this->objFunc->listarPais($this->objParam);
-		
-		$this->res->imprimirRespuesta($this->res->generarJson());
-	}
 
 	function getNombreCliente(){
 		$this->objFunc=$this->create('MODCliente');
@@ -92,6 +85,18 @@ class ACTCliente extends ACTbase{
             'Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function validarCliente(){
+        $this->objFunc=$this->create('MODCliente');
+        $this->res=$this->objFunc->validarCliente($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function listarPais(){
+        $this->objFunc=$this->create('MODCliente');
+        $this->res=$this->objFunc->listarPais();
+        $this->res->imprimirRespuesta($this->res->generarJson());
     }
 	
 }

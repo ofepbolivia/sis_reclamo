@@ -47,45 +47,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
         },
-        fin_registro:function(paneldoc)
-        {
-            var d= this.sm.getSelected().data;
-
-            Phx.CP.loadingShow();
-            this.cmbRPC.reset();
-
-            this.cmbRPC.store.baseParams.id_uo=d.id_uo;
-            this.cmbRPC.store.baseParams.fecha=d.fecha_soli;
-            this.cmbRPC.store.baseParams.id_proceso_macro=d.id_proceso_macro;
-            Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
-                url:'../../sis_adquisiciones/control/Solicitud/finalizarSolicitud',
-                params: { id_solicitud: d.id_solicitud, operacion:'verificar', id_estado_wf: d.id_estado_wf },
-                argument: { paneldoc: paneldoc},
-                success: this.successSinc,
-                failure: this.conexionFailure,
-                timeout: this.timeout,
-                scope: this
-            });
-        },
-
-        successSinc:function(resp){
-
-            Phx.CP.loadingHide();
-            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            if(!reg.ROOT.error){
-
-                if(resp.argument.paneldoc.panel){
-                    resp.argument.paneldoc.panel.destroy();
-                }
-                this.reload();
-            }else{
-
-                alert('ocurrio un error durante el proceso')
-            }
-
-
-        },
 
         preparaMenu:function(n){
             var data = this.getSelectedData();

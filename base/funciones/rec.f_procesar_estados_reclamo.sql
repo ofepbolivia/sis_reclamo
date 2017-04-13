@@ -48,7 +48,7 @@ BEGIN
        			id_usuario_ai = p_id_usuario_ai,
 		       	usuario_ai = p_usuario_ai,
        			fecha_mod=now(),
-                fecha_recepcion_sac = fecha_mod::date
+                fecha_recepcion_sac = now()::date
     		where id_proceso_wf = p_id_proceso_wf;
         end;
     elsif(p_codigo_estado in ('registrado_ripat','derivado','anulado')) then
@@ -78,6 +78,7 @@ BEGIN
     elsif(p_codigo_estado in ('pendiente_asignacion')) then
     	begin
     		update rec.treclamo r set
+            	revisado = 'asignacion',
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
        			id_usuario_mod=p_id_usuario,
@@ -85,12 +86,14 @@ BEGIN
 		       	usuario_ai = p_usuario_ai,
        			fecha_mod=now()
     		where id_proceso_wf = p_id_proceso_wf;
+
     	end;
     elsif(p_codigo_estado in ('pendiente_respuesta')) then
     	begin
 
 
     		update rec.treclamo r set
+            	revisado = 'respuesta',
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
        			id_usuario_mod=p_id_usuario,
@@ -113,6 +116,7 @@ BEGIN
         end loop;
         if (v_cont = v_cont_resp and v_cont_resp>0) then
     		update rec.treclamo r set
+            	revisado = 'con_respuesta',
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
        			id_usuario_mod=p_id_usuario,
@@ -135,6 +139,7 @@ BEGIN
                 --begin
 
             	update rec.treclamo r set
+                revisado = 'res_ripat',
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
        			id_usuario_mod=p_id_usuario,
@@ -143,7 +148,7 @@ BEGIN
        			fecha_mod=now()
     			where id_proceso_wf = p_id_proceso_wf;
 
-                select
+                /*select
                 	tr.revisado,
                 	tr.id_proceso_wf
               	into
@@ -164,12 +169,12 @@ BEGIN
                  	fecha_mod=now(),
                  	id_usuario_ai = p_id_usuario_ai,
                  	usuario_ai = p_usuario_ai
-               	where tr.id_reclamo  = v_respuesta.id_reclamo;
+               	where tr.id_reclamo  = v_respuesta.id_reclamo;*/
 
               	--modifica el proeso wf para actulizar el mismo campo
-               	update wf.tproceso_wf  set
+               	/*update wf.tproceso_wf  set
                 	revisado_asistente = v_revisado
-               	where id_proceso_wf  = v_registros_rec.id_proceso_wf;
+               	where id_proceso_wf  = v_registros_rec.id_proceso_wf;*/
                 --end;
     	end;
     /*elsif(p_codigo_estado in ('archivado_concluido')) then
@@ -215,6 +220,7 @@ BEGIN
     elsif(p_codigo_estado in ('archivado_concluido')) then
     	begin
     		update rec.treclamo r set
+            	revisado = 'concluido',
        			id_estado_wf =  p_id_estado_wf,
       			estado = p_codigo_estado,
        			id_usuario_mod=p_id_usuario,

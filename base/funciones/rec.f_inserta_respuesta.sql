@@ -41,6 +41,7 @@ DECLARE
     v_cont_resp 			integer;
 
     v_record				record;
+    v_res					varchar;
 
 BEGIN
 	 v_nombre_funcion = 'rec.f_inserta_respuesta';
@@ -113,12 +114,12 @@ BEGIN
                     --begin
                     v_codigo = (v_codigo_tipo_proceso||'-'||lpad((v_cont_resp+1)::varchar,2,'0')||'-['||v_reclamo.nro_tramite||']');
 
-                    SELECT tf.id_funcionario INTO v_record
-                    FROM segu.tusuario tu
-                    INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
-                    INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
-                    INNER JOIN rec.treclamo tr on tr.id_usuario_reg = tu.id_usuario
-                    WHERE tu.id_usuario = p_id_usuario ;
+
+                    SELECT tf.id_funcionario
+                    INTO v_record
+					FROM segu.tusuario tu
+					INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
+					WHERE tu.id_usuario = p_id_usuario ;
 
                     SELECT
                                  ps_id_proceso_wf,
@@ -140,6 +141,28 @@ BEGIN
                                 v_codigo,--'Respuesta'||(p_hstore_respuesta->'nro_cite')::varchar,
                                 'RESP',
                                 v_codigo);
+
+                    SELECT  tr.nro_cite
+                    INTO v_num_cite
+                    FROM rec.trespuesta tr
+                    WHERE tr.nro_cite = (p_hstore_respuesta->'nro_cite')::varchar;
+                    IF v_num_cite = (p_hstore_respuesta->'nro_cite')THEN
+                    	v_num_cite = (v_num_cite::integer + 1)::varchar;
+                    ELSE
+                    	v_num_cite = (p_hstore_respuesta->'nro_cite');
+                    END IF;
+
+                    v_res = replace((p_hstore_respuesta->'respuesta')::varchar,' align="right" ',' ');
+                    v_res = replace(v_res,' align="center" ',' ');
+                    v_res = replace(v_res,' align="left" ',' ');
+                    v_res = replace(v_res,'text-align: center','text-align: justify;');
+                    v_res = replace(v_res,'text-align: left;','text-align: justify;');
+                    v_res = replace(v_res,'text-align: right;','text-align: justify;');
+                    v_res = replace(v_res,'text-align:center','text-align: justify;');
+                    v_res = replace(v_res,'text-align:left;','text-align: justify;');
+                    v_res = replace(v_res,'text-align:right;','text-align: justify;');
+                    v_res = replace(v_res,'<p class="MsoNormal" style="','<p class="MsoNormal" style="text-align:justify; ');
+
                   insert into rec.trespuesta(
                     id_reclamo,
                     recomendaciones,
@@ -164,7 +187,7 @@ BEGIN
                     ) values(
                     (p_hstore_respuesta->'id_reclamo')::integer,
                     (p_hstore_respuesta->'recomendaciones')::varchar,
-                    upper((p_hstore_respuesta->'nro_cite')::varchar),
+                    upper(v_num_cite),
                     (p_hstore_respuesta->'respuesta')::varchar,
                     (p_hstore_respuesta->'fecha_respuesta')::date,
                     'activo',
@@ -183,7 +206,9 @@ BEGIN
                     v_codigo_estado,
                     v_codigo
                     )RETURNING id_respuesta into v_id_respuesta;
-        			--RAISE EXCEPTION 'ERROR';
+        			UPDATE rec.treclamo SET
+                    	revisado = 'proceso'
+                    WHERE id_reclamo=(p_hstore_respuesta->'id_reclamo')::integer;
                     --Definicion de la respuesta
                     v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Respuesta almacenado(a) con exito (id_respuesta'||v_id_respuesta||')');
                     v_resp = pxp.f_agrega_clave(v_resp,'id_respuesta',v_id_respuesta::varchar);

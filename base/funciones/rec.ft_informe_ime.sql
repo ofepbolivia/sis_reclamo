@@ -87,7 +87,9 @@ BEGIN
 
 
 			)RETURNING id_informe into v_id_informe;
-
+			update rec.treclamo  tr set
+               revisado = 'con_informe'
+             where tr.id_reclamo  = v_parametros.id_reclamo;
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','informe almacenado(a) con exito (id_informe'||v_id_informe||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_informe',v_id_informe::varchar);

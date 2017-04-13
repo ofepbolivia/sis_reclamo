@@ -1,7 +1,7 @@
 <?php
 /**
  *@package pXP
- *@file gen-ACTRespuesta.php
+ *@file ACTRespuesta.php
  *@author  (admin)
  *@date 11-08-2016 16:01:08
  *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
@@ -13,6 +13,7 @@ require_once(dirname(__FILE__).'/../reportes/RRespuesta.php');
 class ACTRespuesta extends ACTbase{
 
     function listarRespuesta(){
+
         $this->objParam->defecto('ordenacion','id_respuesta');
         $this->objParam->defecto('dir_ordenacion','asc');
 
@@ -81,6 +82,7 @@ class ACTRespuesta extends ACTbase{
         $this->res=$this->objFunc->reportesRespuesta($this->objParam);
 
         $this->objFunc=$this->create('MODRespuesta');
+
         $this->res2=$this->objFunc->listarDatosQRRespuesta($this->objParam);
         //obtener titulo del reporte
         $titulo = 'Informe de Reclamo';
@@ -91,7 +93,7 @@ class ACTRespuesta extends ACTbase{
         $this->objParam->addParametro('tamano','LETTER');
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
         //Instancia la clase de pdf
-
+        
         $this->objReporteFormato=new RRespuestaFinal($this->objParam);
         $this->objReporteFormato->setDatos($this->res->datos, $this->res2->datos);
         $this->objReporteFormato->generarReporte();
@@ -108,10 +110,12 @@ class ACTRespuesta extends ACTbase{
 
         $this->objFunc=$this->create('MODRespuesta');
         $dataSource = $this->objFunc->reportesRespuesta();
-        $nombreArchivo = uniqid(md5(session_id()).'RespuestaDoc').'.docx';
+        $this->dataSource=$dataSource->getDatos();
+        $nombreArchivo = uniqid(md5(session_id()).'[Respuesta-'.$this->dataSource[0]['nro_tramite'].']').'.docx';
+
         $reporte = new RRespuesta($this->objParam);
 
-        $reporte->datosHeader($dataSource->getDatos());
+        $reporte->datosHeader($this->dataSource);
         $reporte->write(dirname(__FILE__).'/../../reportes_generados/'.$nombreArchivo);
 
 
@@ -121,7 +125,12 @@ class ACTRespuesta extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
 
-
+    function validarCite(){
+        $this->objFunc=$this->create('MODRespuesta');
+        $this->res=$this->objFunc->validarCite($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    
 }
 
 ?>

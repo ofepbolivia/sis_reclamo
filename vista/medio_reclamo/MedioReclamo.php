@@ -11,7 +11,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
-
+    bsave:false,
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
@@ -240,8 +240,7 @@ Phx.vista.MedioReclamo=Ext.extend(Phx.gridInterfaz,{
 		field: 'orden',
 		direction: 'ASC'
 	},
-	bdel:true,
-	bsave:true
+	bdel:true
 	}
 )
 </script>

@@ -68,6 +68,9 @@ DECLARE
 
     v_id_reclamo			integer;
     v_record				record;
+
+    v_res 					varchar;
+    v_valid					varchar;
 BEGIN
 
     v_nombre_funcion = 'rec.ft_respuesta_ime';
@@ -198,12 +201,26 @@ BEGIN
 	elsif(p_transaccion='REC_RES_MOD')then
 
 		begin
+
+        	v_res = replace(v_parametros.respuesta,' align="right" ',' ');
+            v_res = replace(v_res,' align="center" ',' ');
+            v_res = replace(v_res,' align="left" ',' ');
+            v_res = replace(v_res,'text-align: center','text-align: justify;');
+            v_res = replace(v_res,'text-align: left;','text-align: justify;');
+            v_res = replace(v_res,'text-align: right;','text-align: justify;');
+            v_res = replace(v_res,'text-align:center','text-align: justify;');
+            v_res = replace(v_res,'text-align:left;','text-align: justify;');
+            v_res = replace(v_res,'text-align:right;','text-align: justify;');
+            --IF position('text-align:justify;' in v_parametros.respuesta)<=0 THEN
+                v_res = replace(v_res,'<p class="MsoNormal" style="','<p class="MsoNormal" style="text-align:justify; ');
+            --END IF;
 			--Sentencia de la modificacion
 			update rec.trespuesta set
 			id_reclamo = v_parametros.id_reclamo,
 			recomendaciones = v_parametros.recomendaciones,
 			nro_cite = upper(v_parametros.nro_cite),
-			respuesta = v_parametros.respuesta,
+			--respuesta = v_parametros.respuesta,
+            respuesta = v_res,
 			fecha_respuesta = v_parametros.fecha_respuesta,
 			procedente = v_parametros.procedente,
 			--fecha_notificacion = v_parametros.fecha_notificacion,
@@ -214,6 +231,10 @@ BEGIN
             asunto = v_parametros.asunto,
             tipo_respuesta = v_parametros.tipo_respuesta
 			where id_respuesta=v_parametros.id_respuesta;
+
+			/*UPDATE rec.treclamo SET
+            	revisado = 'proceso'
+            WHERE id_reclamo=v_parametros.id_reclamo;*/
 
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Respuesta modificado(a)');
@@ -262,6 +283,8 @@ BEGIN
  	#FECHA:		21-10-2016 11:32:59
 	***********************************/
     elseif(p_transaccion='REC_ANTERES_IME') then
+
+
     	begin
         v_operacion = 'anterior';
 
@@ -287,6 +310,7 @@ BEGIN
         v_id_proceso_wf = v_registros_res.id_proceso_wf;
 
         IF  v_operacion = 'anterior' THEN
+
             --------------------------------------------------
             --Retrocede al estado inmediatamente anterior
             -------------------------------------------------
@@ -308,7 +332,6 @@ BEGIN
                  v_codigo_estado,
                  v_id_estado_wf_ant
               FROM wf.f_obtener_estado_ant_log_wf(v_parametros.id_estado_wf);
-
 
               select
               	ew.id_proceso_wf
@@ -386,6 +409,8 @@ BEGIN
 	***********************************/
     elseif(p_transaccion='REC_SIGERES_IME') then
     	begin
+
+
         	/*   PARAMETROS
 
         $this->setParametro('id_proceso_wf_act','id_proceso_wf_act','int4');
@@ -409,7 +434,6 @@ BEGIN
             v_id_tipo_estado,
             v_pedir_obs,
             v_id_estado_wf
-
           from wf.testado_wf ew
           inner join wf.ttipo_estado te on te.id_tipo_estado = ew.id_tipo_estado
           where ew.id_estado_wf =  v_parametros.id_estado_wf_act;
@@ -452,22 +476,26 @@ BEGIN
                   v_titulo  = 'Notificacion';
              END IF;
 
-
+			--RAISE EXCEPTION 'LLEGA: %,%,%,%, % , %, %', v_parametros.id_funcionario_wf, v_parametros.id_tipo_estado,v_parametros.id_estado_wf_act,v_parametros.id_proceso_wf_act,v_id_depto,v_parametros._id_usuario_ai,v_parametros._nombre_usuario_ai;
              -- hay que recuperar el supervidor que seria el estado inmediato...
+
             v_id_estado_actual =  wf.f_registra_estado_wf(v_parametros.id_tipo_estado,
                                                              v_parametros.id_funcionario_wf,
                                                              v_parametros.id_estado_wf_act,
                                                              v_parametros.id_proceso_wf_act,
                                                              p_id_usuario,
-                                                             v_parametros._id_usuario_ai,
-                                                             v_parametros._nombre_usuario_ai,
-                                                             v_id_depto,
+            												 v_parametros._id_usuario_ai,
+                                                             COALESCE(v_parametros._nombre_usuario_ai,''),
+                                                             NULL,
                                                              COALESCE(v_respuesta.nro_respuesta,'--')||' Obs:'||v_obs,
                                                              v_acceso_directo ,
                                                              v_clase,
                                                              v_parametros_ad,
                                                              v_tipo_noti,
                                                              v_titulo);
+
+
+
 
              	--archivado_concluido
          --RAISE EXCEPTION 'p_id_usuario:%,id_usuario:%,NOMBRE:%,ACTUAL:%,PROCESO:%,ESTADO:%',p_id_usuario,v_parametros._id_usuario_ai,v_parametros._nombre_usuario_ai,v_id_estado_actual,v_parametros.id_proceso_wf_act,v_codigo_estado_siguiente;
@@ -485,7 +513,7 @@ BEGIN
           --------------------------------------
           -- registra los procesos disparados
           --------------------------------------
-
+			/*
           FOR v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) LOOP
 
                --get cdigo tipo proceso
@@ -522,11 +550,12 @@ BEGIN
 
 
            END LOOP;
-
+*/
 
           -- si hay mas de un estado disponible  preguntamos al usuario
           v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado de la planilla)');
           v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
+          v_resp = pxp.f_agrega_clave(v_resp,'v_codigo_estado_siguiente',v_codigo_estado_siguiente);
 
 
           -- Devuelve la respuesta
@@ -569,7 +598,37 @@ BEGIN
             return v_resp;
 
 		end;
+    /*********************************
+    #TRANSACCION:  'RES_VALIDAR_CITE'
+ 	#DESCRIPCION:	Validar el numero de CITE para Respuesta en caso de duplicados.
+ 	#AUTOR:		Franklin Espinoza Alvarez
+ 	#FECHA:		21-02-2017 10:01:08
+	***********************************/
+    elsif(p_transaccion='RES_VALIDAR_CITE')then
 
+		begin
+
+			SELECT count(tr.id_respuesta) AS contador, tr.nro_respuesta INTO v_record
+            FROM rec.trespuesta tr
+            WHERE tr.nro_cite = v_parametros.nro_cite
+            GROUP BY tr.nro_respuesta;
+
+            IF(v_record.contador >= 1)THEN
+            	v_valid = 'true';
+            ELSE
+            	v_valid = 'false';
+            END IF;
+
+
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Numero de Cite Valido');
+            v_resp = pxp.f_agrega_clave(v_resp,'v_valid',v_valid);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_nro_respuesta',v_record.nro_respuesta);
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
 	else
 
     	raise exception 'Transaccion inexistente: %',p_transaccion;

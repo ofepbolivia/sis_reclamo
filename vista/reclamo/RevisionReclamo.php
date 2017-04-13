@@ -22,7 +22,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'pendiente_revision',title:'<H1 align="center"><i class="fa fa-file"></i> Pendientes Revision.</h1>',grupo:0,height:0},
             {name:'registrado_ripat',title:'<H1 align="center"><i class="fa fa-file"></i> Registros Ripat</h1>',grupo:1,height:0},
             {name:'derivado',title:'<H1 align="center"><i class="fa fa-folder-open"></i> Derivados</h1>',grupo:2,height:0},
-            {name:'anulado',title:'<H1 align="center"><i class="fa fa-folder"></i> Anulados</h1>',grupo:3,height:0}
+            {name:'anulado',title:'<H1 align="center"><i class="fa fa-folder"></i> Anulados</h1>',grupo:3,height:0}/*,
+            {name:'edicion',title:'<H1 align="center"><i class="fa fa-folder"></i> Ediciones</h1>',grupo:4,height:0}*/
         ],
         tam_pag: 50,
         
@@ -41,7 +42,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         constructor: function(config) {
             this.tbarItems = ['-',
-                this.cmbGestion
+                this.cmbGestion,'-'
 
             ];
             //this.Atributos.splice(5,1);
@@ -139,7 +140,7 @@ header("content-type: text/javascript; charset=UTF-8");
         
         cmbGestion: new Ext.form.ComboBox({
             name: 'gestion',
-            id: 'gestion',
+            id: 'gestion_rev',
             fieldLabel: 'Gestion',
             allowBlank: true,
             emptyText:'Gestion...',

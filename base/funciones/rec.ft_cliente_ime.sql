@@ -31,6 +31,8 @@ DECLARE
 	v_mensaje_error         text;
 	v_id_cliente			integer;
     v_nombre				varchar;
+    v_contador				integer;
+    v_valid					varchar;
 
 BEGIN
 
@@ -102,6 +104,7 @@ BEGIN
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','cliente almacenado(a) con exito (id_cliente'||v_id_cliente||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_cliente',v_id_cliente::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_momento', 'new');
 
             --Devuelve la respuesta
             return v_resp;
@@ -144,6 +147,7 @@ BEGIN
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','cliente modificado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_cliente',v_parametros.id_cliente::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_momento', 'edit');
 
             --Devuelve la respuesta
             return v_resp;
@@ -192,6 +196,32 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'nombre_completo1',v_nombre);
 
 
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    /*********************************
+ 	#TRANSACCION:  'CLI_VALIDAR_GET'
+ 	#DESCRIPCION:	VERIFICA LA DUPLICIDAD DE CLIENTES
+ 	#AUTOR:		Franklin Espinoza
+ 	#FECHA:		31-12-2016 14:29:16
+	***********************************/
+
+	elsif(p_transaccion='CLI_VALIDAR_GET')then
+
+		begin
+			select count(tc.ci)
+            INTO v_contador
+            from rec.tcliente tc
+            where tc.nombre = trim(both ' ' from upper(v_parametros.nombre)) AND tc.apellido_paterno=trim(both ' ' from upper(v_parametros.apellido)) AND tc.ci=trim(both ' ' from v_parametros.ci);
+            IF(v_contador>=1)THEN
+        		v_valid = 'true';
+            ELSE
+            	v_valid = 'false';
+			END IF;
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Existe el Cliente');
+            v_resp = pxp.f_agrega_clave(v_resp,'v_valid',v_valid);
             --Devuelve la respuesta
             return v_resp;
 

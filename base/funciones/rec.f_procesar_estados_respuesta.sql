@@ -35,6 +35,8 @@ DECLARE
     va_regla_res			varchar[];
     va_prioridad_res		integer[];
 
+    v_id_reclamo	integer;
+
 BEGIN
 
 	v_nombre_funcion = 'rec.f_procesar_estados_respuesta';
@@ -42,8 +44,6 @@ BEGIN
     select * into v_respuesta
     from rec.trespuesta	res
     where res.id_proceso_wf = p_id_proceso_wf;
-	--raise exception 'PROCEDENTE: %',v_respuesta;
-    --IF v_respuesta.procedente = TRUE THEN
 
         if(p_codigo_estado in ('elaboracion_respuesta')) then
             begin
@@ -55,10 +55,20 @@ BEGIN
                     usuario_ai = p_usuario_ai,
                     fecha_mod=now()
                 where id_proceso_wf = p_id_proceso_wf;
+
+                SELECT r.id_reclamo
+                INTO v_id_reclamo
+                FROM rec.trespuesta r
+                WHERE id_proceso_wf = p_id_proceso_wf;
+
+                UPDATE rec.treclamo SET
+                	revisado = 'proceso'
+                WHERE id_reclamo = v_id_reclamo;
             end;
 
         elsif(p_codigo_estado in ('revision_legal')) then
             begin
+            --RAISE EXCEPTION 'LLEGA';
                 update rec.trespuesta r set
                     id_estado_wf =  p_id_estado_wf,
                     estado = p_codigo_estado,
@@ -121,12 +131,29 @@ BEGIN
                 v_tipo_noti = 'notificacion';
                 v_titulo  = 'Notificacion';
 
-                SELECT tf.id_funcionario INTO v_id_funcionario
+                /*SELECT tf.id_funcionario INTO v_id_funcionario
                     FROM segu.tusuario tu
                     INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
                     INNER JOIN orga.vfuncionario_cargo_lugar vfcl on vfcl.id_funcionario = tf.id_funcionario
                     INNER JOIN rec.treclamo tr on tr.id_usuario_reg = tu.id_usuario
-                    WHERE tu.id_usuario = p_id_usuario ;
+                    WHERE tu.id_usuario = p_id_usuario ;*/
+
+
+                /*SELECT tf.id_funcionario
+                INTO v_id_funcionario
+				FROM segu.tusuario tu
+                INNER JOIN rec.treclamo tr ON tr.id_usuario_mod = tu.id_usuario
+				INNER JOIN orga.tfuncionario tf ON tf.id_persona = tu.id_persona
+				WHERE tu.id_usuario = p_id_usuario ;*/
+
+
+                SELECT tf.id_funcionario
+                INTO v_id_funcionario
+				FROM segu.tusuario tu
+				INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
+				WHERE tu.id_usuario = (SELECT tr.id_usuario_mod
+                						FROM rec.trespuesta tr
+						                WHERE tr.id_estado_wf = p_id_estado_wf);
 
                 SELECT
                            ps_id_tipo_estado,
@@ -141,7 +168,7 @@ BEGIN
                           va_regla_res,
                           va_prioridad_res
             	FROM wf.f_obtener_estado_wf(v_record.id_proceso_wf, v_record.id_estado_wf,NULL,'siguiente');
-
+				--raise exception 'va_id_tipo_estado_res %,v_id_funcionario % v_record.id_proceso_wf % v_record.id_estado_wf %',va_id_tipo_estado_res,v_id_funcionario,v_record.id_proceso_wf,v_record.id_estado_wf;
                 v_id_estado_actual =  wf.f_registra_estado_wf(va_id_tipo_estado_res[1],
                                                              v_id_funcionario,
                                                              v_record.id_estado_wf,

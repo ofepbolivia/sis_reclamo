@@ -13,9 +13,12 @@ header("content-type: text/javascript; charset=UTF-8");
 Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 	nombreVista: 'Respuesta',
+    momento: '',
 	constructor: function (config) {
 		this.maestro = config.maestro;
 		console.log('contenedor: '+this.idContenedorPadre);
+		console.log('configuracion: ',config);
+
 		//llama al constructor de la clase padre
 		Phx.vista.Respuesta.superclass.constructor.call(this, config);
 		//this.setAutoScroll(false);
@@ -192,7 +195,73 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			id_grupo: 1,
 			grid: true,
 			form: true
-		},
+		},{
+            config: {
+                name: 'destinatario',
+                fieldLabel: 'Cliente',
+                allowBlank: true,
+                disabled:true,
+                anchor: '60%',
+                gwidth: 100,
+                maxLength: 50,
+                style:'text-transform:uppercase;'
+            },
+            type: 'TextField',
+
+            id_grupo: 1
+        },
+        {
+            config:{
+
+                name:'correos',
+                fieldLabel:'Correos',
+                allowBlank:true,
+                disabled:true,
+                //emptyText:'Elija una opción...',
+                dato: 'reclamo',
+                qtip:'Correo del Destinatario.',
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_reclamo/control/Cliente/listarCliente',
+                    id: 'id_cliente',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'nombre_completo2',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_cliente','nombre_completo2','nombre_completo1','ci','email'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'c.nombre_completo2'}
+                }),
+                valueField: 'id_cliente',
+                displayField: 'nombre_completo2',
+                gdisplayField:'nombre_completo2',//mapea al store del grid
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p><p style= "color : green;" >email:{email}</p></div></tpl>',
+                hiddenName: 'id_cliente',
+                forceSelection:true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:10,
+                queryDelay:1000,
+                width:315,
+                gwidth:320,
+                minChars:1,
+                turl:'../../../sis_reclamo/vista/cliente/Cliente.php',
+                ttitle:'Clientes',
+                tconfig:{width: '45%' ,height:'60%'},
+                tdata:{},
+                tcls:'Cliente',
+                //pid:this.idContenedor,
+
+                renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}
+            },
+            type:'TrigguerCombo',
+            bottom_filter:true,
+            id_grupo:1
+        },
 		{
 			config:{
 				name: 'respuesta',
@@ -204,7 +273,9 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				enableColors: true,
 				enableAlignments: true,
 				enableLists: true,
-				enableSourceEdit: true
+				enableSourceEdit: true,
+                enableFontSize: false,
+                defaultFont:'Arial'
 			},
 			type:'HtmlEditor',
 			filters: {pfiltro: 'res.respuesta', type: 'string'},
@@ -212,21 +283,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			grid:true,
 			form:true
 		},
-		/*{
-			config: {
-				name: 'respuesta',
-				fieldLabel: 'Contenido de la Respuesta',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 200,
-				maxLength: 1000000
-			},
-			type: 'TextArea',
-			filters: {pfiltro: 'res.respuesta', type: 'string'},
-			id_grupo: 1,
-			grid: true,
-			form: true
-		},*/
 		{
 			config: {
 				name: 'recomendaciones',
@@ -445,7 +501,8 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'id_estado_wf', type: 'numeric'},
 		{name: 'estado', type: 'string'},
 		{name: 'nro_respuesta', type: 'numeric'},
-		{name: 'email', type: 'string'}
+		{name: 'email', type: 'string'},
+		{name: 'admin', type: 'numeric'}
 
 	],
 	sortInfo: {
@@ -455,8 +512,8 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	bdel: true,
 	bsave: false,
 	btest: false,
-	fwidth: '50%',
-	fheight: '100%',
+	fwidth: '49%',
+	fheight: '95%',
 	collapsible:true,
 	iniciarEventos : function() {
 		this.Cmp.nro_cite.on('blur', function(field) {
@@ -570,7 +627,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 	onSaveWizard:function(wizard,resp){
 		Phx.CP.loadingShow();
-		
+		console.log(resp);
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Respuesta/siguienteEstadoRespuesta',
 			params:{
@@ -592,6 +649,18 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 
 	successWizard:function(resp){
+        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+        var estado = reg.ROOT.datos.v_codigo_estado_siguiente;
+        console.log('BORRACHERA',estado);
+        if(estado == 'respuesta_enviada'){
+            Phx.CP.getPagina(this.idContenedorPadre).reload();
+        }
+        if(estado == 'vobo_respuesta' || estado == 'respuesta_aprobada'){
+            this.reload();
+        }
+        //Phx.CP.getPagina('docs-PENRES-south-1').reload();
+
 		Phx.CP.loadingHide();
 		resp.argument.wizard.panel.destroy();
 		this.reload();
@@ -599,11 +668,17 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 	onButtonNew : function () {
 		Phx.vista.Respuesta.superclass.onButtonNew.call(this);
-	
+	    this.momento  = 'new';
+        //console.log('probando Momento',this.momento);
 		var fecha = this.sumarDias(new Date(),parseInt(this.maestro.tiempo_respuesta));
 		this.Cmp.fecha_respuesta.setValue(new Date());
-		this.Cmp.asunto.setValue('Respuesta Reclamo');
+		this.Cmp.asunto.setValue('Respuesta a Reclamo');
 		this.Cmp.recomendaciones.setValue('Ninguna');
+
+		//console.log('YO SOY TU MAESTRO', this.maestro);
+		this.Cmp.correos.setValue(this.maestro.email);
+        this.Cmp.destinatario.setValue(this.maestro.desc_nom_cliente);
+        //this.Cmp.correo_cli.setValue(this.maestro.email);
 		this.generarCite();
 
 		/*Ext.Ajax.request({
@@ -618,10 +693,10 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 	generarCite: function (){
 		///^([0-9])+(\/)+(\-)?(\.)?([0-9a-zA-Z])+$/
-		if(/^([0-9])+[(\/)(\-)(\.)]([0-9a-zA-Z])+$/.test(this.Cmp.nro_cite.getValue())){
+		if(/^([0-9])+[(\/)(\-)(\.)]*([0-9a-zA-Z])+$/.test(this.Cmp.nro_cite.getValue())){
 			this.Cmp.nro_cite.setValue(this.Cmp.nro_cite.getValue());
 		}else{
-			setInterval(Ext.Ajax.request({
+			Ext.Ajax.request({
 				url:'../../sis_reclamo/control/Respuesta/getCite',
 				params:{num_cite:this.Cmp.nro_cite.getValue()},
 				success: function(resp){
@@ -631,7 +706,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 				failure: this.conexionFailure,
 				timeout:this.timeout,
 				scope:this
-			}),15000);
+			});
 		}
 	},
 
@@ -655,7 +730,10 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 
 	onButtonEdit: function() {
 		Phx.vista.Respuesta.superclass.onButtonEdit.call(this);
-
+        this.Cmp.correos.setValue(this.maestro.email);
+        this.Cmp.destinatario.setValue(this.maestro.desc_nom_cliente);
+        this.momento = 'edit';
+        //console.log('probando Momento',this.momento);
 	}
 	/*preparaMenu: function(n){
 

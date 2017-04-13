@@ -34,6 +34,10 @@ DECLARE
     v_filtro 			varchar;
 
     v_respuesta			record;
+
+    v_elaboracion 		text;
+    v_vobo 				text;
+
 BEGIN
 
 	v_nombre_funcion = 'rec.ft_respuesta_sel';
@@ -60,20 +64,23 @@ BEGIN
             --INNER JOIN rec.treclamo tr on tr.id_usuario_reg = tu.id_usuario
             WHERE tu.id_usuario = p_id_usuario ;
 
+			--raise exception 'v_record.id_funcionario: %',p_id_usuario;
             /*SELECT *
             INTO v_respuesta
             FROM rec.trespuesta res
             where	res.id_reclamo = v_record.id_reclamo;*/
-
             IF (p_administrador) THEN
             	v_filtro= '0 = 0 AND ';
             /*ELSIF (v_record.nombre_cargo='Especialista Atención al Cliente')THEN
             		v_filtro = '(vfc.id_oficina = '||v_record.id_oficina||' OR tew.id_funcionario = '||v_record.id_funcionario||') AND';
---                     AND res.estado in (''archivo_con_respuesta'',''respuesta_registrado_ripat'')*/
+ 			-- AND res.estado in (''archivo_con_respuesta'',''respuesta_registrado_ripat'')*/
+
+            ELSIF (v_parametros.tipo_interfaz= 'RespuestaDetalle') THEN
+            	--raise exception 'entra';
+            	v_filtro = '(tew.id_funcionario = '||v_record.id_funcionario||' OR res.id_usuario_reg = '||p_id_usuario||') AND ';
             ELSE
             	v_filtro = 'tew.id_funcionario = '||v_record.id_funcionario||' AND ';
             END IF;
-
     		--Sentencia de la consulta
 			v_consulta:='select
 						res.id_respuesta,
@@ -99,15 +106,16 @@ BEGIN
 						res.id_estado_wf,
                         res.estado,
                         res.nro_respuesta,
-                        vc.email
+                        vc.email,
+                        '||p_administrador||'::integer AS admin
 						from rec.trespuesta res
 						inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = res.id_usuario_mod
                         inner join rec.treclamo tr on tr.id_reclamo = res.id_reclamo
                         inner join rec.vcliente vc on vc.id_cliente = tr.id_cliente
                         left join wf.testado_wf tew on tew.id_estado_wf = res.id_estado_wf
-                        LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
-                        LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
+
+                        LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tew.id_funcionario
 				        where '||v_filtro;
 
 			--Definicion de la respuesta
@@ -132,13 +140,13 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_respuesta)
 					    from rec.trespuesta res
-					    inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
+						inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = res.id_usuario_mod
                         inner join rec.treclamo tr on tr.id_reclamo = res.id_reclamo
                         inner join rec.vcliente vc on vc.id_cliente = tr.id_cliente
                         left join wf.testado_wf tew on tew.id_estado_wf = res.id_estado_wf
-                        LEFT JOIN wf.testado_wf tewf on tewf.id_estado_wf = tew.id_estado_anterior
-                        LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tewf.id_funcionario
+
+                        LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tew.id_funcionario
 					    where ';
 
 			--Definicion de la respuesta
@@ -183,7 +191,7 @@ BEGIN
                         CASE
                         	 WHEN res.procedente::text =ANY(ARRAY[''si''::CHARACTER VARYING,''SI''::character varying, ''si''::character varying]::text[]) THEN ''procedente''::text
                         	 WHEN res.procedente::text =ANY(ARRAY[''no''::CHARACTER VARYING,''NO''::character varying, ''no''::character varying]::text[]) THEN ''improcedente''::text
-                        ELSE''''::text
+                        ELSE ''ninguno''::text
                         END::character varying as prodedente,
                         tip.nombre_estado
                         from rec.trespuesta res
@@ -214,25 +222,58 @@ BEGIN
     elsif(p_transaccion='REC_RES_QR_SEL')then
       begin
    		--Sentencia de la consulta
-		  v_consulta:=' SELECT  resp.id_proceso_wf,
+
+          SELECT left(vf.nombre, 1)||'.'||left(vf.ap_paterno, 1)||'.'||left(vf.ap_materno, 1)||'.'
+          INTO v_elaboracion
+          FROM wf.ttipo_estado te
+          INNER JOIN wf.testado_wf tef ON tef.id_tipo_estado = te.id_tipo_estado
+          INNER JOIN orga.vfuncionario_personareporte vf ON vf.id_funcionario = tef.id_funcionario
+          WHERE tef.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'elaboracion_respuesta';
+
+          SELECT left(vf.nombre, 1)||'.'||left(vf.ap_paterno, 1)||'.'||left(vf.ap_materno, 1)||'.'
+          INTO v_vobo
+          FROM wf.ttipo_estado te
+          INNER JOIN wf.testado_wf tef ON tef.id_tipo_estado = te.id_tipo_estado
+          INNER JOIN orga.vfuncionario_personareporte vf ON vf.id_funcionario = tef.id_funcionario
+          WHERE tef.id_proceso_wf = v_parametros.id_proceso_wf AND te.codigo = 'vobo_respuesta';
+
+
+		  /*v_consulta:=' SELECT  resp.id_proceso_wf,
           						resp.id_respuesta,
           						''OB.GC.NE.''||resp.nro_cite||''.''||ge.gestion::text as num_cite,
           						recl.nro_frd,
           						of.nombre as  oficina,
           						resp.estado,
-          						left(pe.nombre, 1)||''.''||left(pe.apellido_paterno, 1)||''.''||left(pe.apellido_materno, 1)||''.''::text as  iniciales_fun_reg,
-          						left(fu.nombre,1)||''.''||left(fu.ap_paterno,1)||''.''||left(fu.ap_materno,1)||''.''::text as iniciales_fun_vis
+          						(left(pe.nombre, 1)||''.''||left(pe.apellido_paterno, 1)||''.''||left(pe.apellido_materno, 1)||''.''::text)::varchar as  iniciales_fun_reg,
+          						(left(fu.nombre,1)||''.''||left(fu.ap_paterno,1)||''.''||left(fu.ap_materno,1)||''.''::text)::varchar as iniciales_fun_vis
                                 FROM rec.treclamo recl
                                 inner join rec.trespuesta resp on resp.id_reclamo = recl.id_reclamo
-                                inner join orga.toficina  of on of.id_oficina = recl.id_oficina_registro_incidente
+                                inner join rec.toficina  of on of.id_oficina = recl.id_oficina_registro_incidente
                                 inner join segu.tusuario usu1 on usu1.id_usuario = resp.id_usuario_reg
                                 inner join segu.tpersona pe on pe.id_persona = usu1.id_persona
                                 inner join param.tgestion ge on ge.id_gestion = recl.id_gestion
                                 inner join wf.testado_wf wfs on wfs.id_estado_wf = resp.id_estado_wf
                                 inner join orga.vfuncionario_personareporte fu on fu.id_funcionario = wfs.id_funcionario
-                                where resp.id_proceso_wf='||v_parametros.id_proceso_wf;
+                                where resp.id_proceso_wf='||v_parametros.id_proceso_wf;*/
 
-                        raise notice '%', v_consulta;
+
+
+            v_consulta = 'SELECT
+            				  tres.id_proceso_wf,
+                              tres.id_respuesta,
+                              ''OB.GC.NE.''||tres.nro_cite||''.''||tg.gestion::text as num_cite,
+                              trec.nro_frd,
+                              tof.nombre as oficina,
+                              tres.estado,
+                              '''||v_elaboracion||'''::TEXT AS iniciales_fun_reg,
+                              '''||v_vobo||'''::TEXT AS iniciales_fun_vis
+							FROM rec.trespuesta tres
+                            INNER JOIN rec.treclamo trec ON trec.id_reclamo = tres.id_reclamo
+                            INNER JOIN param.tgestion tg ON tg.id_gestion = trec.id_gestion
+                            INNER JOIN rec.toficina tof ON tof.id_oficina = trec.id_oficina_registro_incidente
+                            where tres.id_proceso_wf = '||v_parametros.id_proceso_wf;
+
+                        raise notice 'que esta pasando: %', v_consulta;
 
             return v_consulta;
 

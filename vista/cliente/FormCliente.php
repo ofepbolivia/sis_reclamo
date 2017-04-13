@@ -263,18 +263,19 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 100,
                     maxLength:30,
                     style:'text-transform:uppercase;',
-                    turl:'../../../sis_parametros/vista/lugar/Lugar.php',
+                    /*turl:'../../../sis_parametros/vista/lugar/Lugar.php',
                     ttitle:'Lugar',
                     // tconfig:{width:1800,height:500},
                     tdata:{},
-                    tcls:'Lugar',
+                    tcls:'Lugar',*/
                     renderer: function(value, p, record){
                         return String.format('{0}', record.data['pais_residencia']);
                     }
                 },
-                type:'TrigguerCombo',
+                //type:'TrigguerCombo',
+                type:'ComboBox',
                 bottom_filter:false,
-                filters:{pfiltro:'cli.id_pais_residencia',type:'string'},
+                filters:{pfiltro:'lug.nombre',type:'string'},
                 id_grupo:2,
                 grid:true,
                 form:true
@@ -457,7 +458,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             Phx.CP.loadingHide();
-            //Phx.CP.getPagina(this.idContenedorPadre).reload();
             this.close();
             this.onDestroy();
 

@@ -11,7 +11,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 	Phx.vista.Cliente=Ext.extend(Phx.gridInterfaz,{
-
+            momento: '',// permite saber si se preciona en el boton Nuevo, Editar.
 			constructor:function(config){
 				this.maestro=config.maestro;
 				//llama al constructor de la clase padre
@@ -42,6 +42,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						anchor: '100%',
 						gwidth: 150,
 						maxLength:50,
+
 						style:'text-transform:uppercase;'
 					},
 					type:'TextField',
@@ -49,7 +50,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_grupo:1,
 					bottom_filter:true,
 					grid:true,
-					form:true,
+					form:true
 				},
 				{
 					config:{
@@ -97,7 +98,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						forceSelection: true,
 						triggerAction:'all',
 						mode:'local',
-						store:['VARON','MUJER']
+						store:['VARON','MUJER','OTROS']
 					},
 					type:'ComboBox',
 					filters:{pfiltro:'cli.genero',type:'string'},
@@ -164,10 +165,11 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '100%',
 						gwidth: 100,
-						maxLength:20
+						maxLength:70,
+                        qtip:'Puede ingresar mas de un No. de Celular separado por -, o / Ej: xxxxxxxxxx/xxxxxxxxx, yyyyyyyy-yyyyyyyy'
 					},
-					type:'NumberField',
-					filters:{pfiltro:'cli.celular',type:'numeric'},
+					type:'TextField',
+					filters:{pfiltro:'cli.celular',type:'string'},
 					id_grupo:2,
 					grid:true,
 					form:true
@@ -179,7 +181,8 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank: true,
 						anchor: '100%',
 						gwidth: 100,
-						maxLength:20
+						maxLength:70,
+                        qtip:'Puede ingresar mas de un No. de Telefono separado por -, o / Ej: xxxxxxxxxx/xxxxxxxxx, yyyyyyyy-yyyyyyyy'
 					},
 					type:'TextField',
 					filters:{pfiltro:'cli.telefono',type:'string'},
@@ -224,9 +227,9 @@ header("content-type: text/javascript; charset=UTF-8");
 						fieldLabel: 'Pais de Residencia',
 						allowBlank: false,
 						emptyText: 'Elija una opcion...',
-
+                        resizable:true,
 						store: new Ext.data.JsonStore({
-							url: '../../sis_parametros/control/Lugar/listarLugar',
+							url: '../../sis_parametros/control/Lugar/listarLugar',//../../sis_reclamo/control/Cliente/listarPais
 							id: 'id_lugar',
 							root: 'datos',
 							sortInfo:{
@@ -253,18 +256,19 @@ header("content-type: text/javascript; charset=UTF-8");
 						gwidth: 100,
 						maxLength:30,
 						style:'text-transform:uppercase;',
-						turl:'../../../sis_parametros/vista/lugar/Lugar.php',
+						/*turl:'../../../sis_parametros/vista/lugar/Lugar.php',
 						ttitle:'Lugar',
 						// tconfig:{width:1800,height:500},
 						tdata:{},
-						tcls:'Lugar',
+						tcls:'Lugar',*/
 						renderer: function(value, p, record){
 							return String.format('{0}', record.data['pais_residencia']);
 						}
 					},
-					type:'TrigguerCombo',
+					//type:'TrigguerCombo',
+					type:'ComboBox',
 					bottom_filter:false,
-					filters:{pfiltro:'cli.id_pais_residencia',type:'string'},
+					filters:{pfiltro:'lug.nombre',type:'string'},
 					id_grupo:2,
 					grid:true,
 					form:true
@@ -468,7 +472,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'ci', type: 'string'},
 				{name:'email', type: 'string'},
 				{name:'direccion', type: 'string'},
-				{name:'celular', type: 'numeric'},
+				{name:'celular', type: 'string'},
 				{name:'nombre', type: 'string'},
 				{name:'lugar_expedicion', type: 'string'},
 				{name:'apellido_paterno', type: 'string'},
@@ -488,7 +492,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				{name:'usr_reg', type: 'string'},
 				{name:'usr_mod', type: 'string'},
 
-				{name:'pais_residencia', type: 'string'}
+				{name:'pais_residencia', type: 'string'},
+				{name:'nombre', type: 'string'}
 
 
 			],
@@ -497,7 +502,72 @@ header("content-type: text/javascript; charset=UTF-8");
 				direction: 'ASC'
 			},
 			bdel:true,
-			bsave:false
+			bsave:false,
+        
+            onButtonNew : function () {
+                Phx.vista.Cliente.superclass.onButtonNew.call(this);
+                this.momento = 'new';
+            },
+
+            onButtonEdit: function () {
+                Phx.vista.Cliente.superclass.onButtonEdit.call(this);
+                this.momento = 'edit';
+            },
+            /*
+            successSave:function (resp) {
+
+                Phx.vista.Cliente.superclass.successSave.call(this,resp);
+                var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                console.log(objRes);
+                Phx.CP.getPagina('docs-PENRES').reload();
+                if(objRes.ROOT.datos.v_momento == 'new'){
+                    this.sigEstado2(objRes.ROOT.datos.v_id_estado_wf, objRes.ROOT.datos.v_id_proceso_wf);
+                }else{
+                    console.log('momento: '+objRes.ROOT.datos.v_momento);
+                }
+            },*/
+            onSubmit: function (o,x, force) {
+                //Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+                if(this.momento == 'edit'){
+                    console.log(this.momento);
+                    Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+                }else if(this.momento == 'new') {
+                    console.log(this.momento);
+                    Ext.Ajax.request({
+                        url: '../../sis_reclamo/control/Cliente/validarCliente',
+                        params: {
+                            nombre: this.Cmp.nombre.getValue(),
+                            apellido: this.Cmp.apellido_paterno.getValue(),
+                            genero: this.Cmp.genero.getValue(),
+                            ci: this.Cmp.ci.getValue()
+                        },
+                        argument: {},
+                        success: function (resp) {
+                            var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
+                            //console.log('EXISTE:',reg.ROOT.datos.v_valid);
+                            if (reg.ROOT.datos.v_valid == 'true') {
+                                Ext.Msg.alert('Alerta','El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' ya fue registrado, desea continuar el registro ');
+                                /*Ext.Msg.confirm('Confirmación', 'El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' ya fue registrado, desea continuar el registro ',
+                                    function (btn) {
+                                        if (btn === 'yes') {
+                                            Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+
+                                        } else {
+
+                                        }
+                                    }, this);*/
+                            }
+                            else
+                                Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+
+                        },
+                        failure: this.conexionFailure,
+                        timeout: this.timeout,
+                        scope: this
+                    });
+                }
+                
+            }
 
 
 		}

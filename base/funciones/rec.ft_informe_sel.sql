@@ -157,19 +157,19 @@ BEGIN
                         cli.nombre_completo1,
                         cli.email,
                         cli.celular,
-                        re.detalle_incidente
+                        re.detalle_incidente,
+                        fun.desc_funcionario1 as funcionario_reg
 						from rec.tinforme infor
 						inner join segu.tusuario usu1 on usu1.id_usuario = infor.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = infor.id_usuario_mod
                         INNER JOIN rec.tcompensacion com on com.id_compensacion = com.id_compensacion
                         inner join orga.vfuncionario fun on fun.id_funcionario = infor.id_funcionario
                         inner join rec.treclamo re on re.id_reclamo = infor.id_reclamo
-                        inner join orga.toficina of on of.id_oficina = re.id_oficina_incidente
+                        inner join rec.toficinas of on of.id_oficina = re.id_oficina_incidente
                         inner join rec.vcliente cli on cli.id_cliente = re.id_cliente
                         where re.id_proceso_wf = '||v_parametros.id_proceso_wf;
 
                         raise notice '%', v_consulta;
-
             return v_consulta;
 
 		end;

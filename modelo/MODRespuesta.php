@@ -45,11 +45,14 @@ class MODRespuesta extends MODbase{
 		$this->captura('estado','varchar');
 		$this->captura('nro_respuesta','varchar');
 		$this->captura('email', 'varchar');
+		$this->captura('admin', 'int4');
 
+        $this->setParametro('tipo_interfaz', 'tipo_interfaz', 'varchar');
 
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
+		//var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 		
 		//Devuelve la respuesta
@@ -249,9 +252,22 @@ class MODRespuesta extends MODbase{
         //var_dump($this->respuesta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
+    }
 
 
+    function validarCite(){
 
+        $this->procedimiento = 'rec.ft_respuesta_ime';
+        $this->transaccion = 'RES_VALIDAR_CITE';
+        $this->tipo_procedimiento = 'IME';
+
+        $this->setParametro('nro_cite','nro_cite','varchar');
+        //  $this->setParametro('momento','momento','varchar');
+
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
     }
 			
 }

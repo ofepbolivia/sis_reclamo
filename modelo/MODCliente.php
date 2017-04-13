@@ -25,7 +25,7 @@ class MODCliente extends MODbase{
 		$this->captura('ci','varchar');
 		$this->captura('email','varchar');
 		$this->captura('direccion','varchar');
-		$this->captura('celular','int4');
+		$this->captura('celular','varchar');
 		$this->captura('nombre','varchar');
 		$this->captura('lugar_expedicion','varchar');
 		$this->captura('apellido_paterno','varchar');
@@ -48,7 +48,9 @@ class MODCliente extends MODbase{
         $this->captura('nombre_completo1','text');
         $this->captura('nombre_completo2','text');
 		$this->captura('pais_residencia','varchar');
-		
+		//$this->captura('nombre','varchar');
+
+
 
 
 		
@@ -71,11 +73,11 @@ class MODCliente extends MODbase{
 		$this->setParametro('ci','ci','varchar');
 		$this->setParametro('email','email','varchar');
 		$this->setParametro('direccion','direccion','varchar');
-		$this->setParametro('celular','celular','int4');
+		$this->setParametro('celular','celular','varchar');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('lugar_expedicion','lugar_expedicion','varchar');
 		$this->setParametro('apellido_paterno','apellido_paterno','varchar');
-		$this->setParametro('telefono','telefono','int4');
+		$this->setParametro('telefono','telefono','varchar');
 		$this->setParametro('ciudad_residencia','ciudad_residencia','varchar');
 		$this->setParametro('id_pais_residencia','id_pais_residencia','int4');
 		$this->setParametro('nacionalidad','nacionalidad','varchar');
@@ -103,11 +105,11 @@ class MODCliente extends MODbase{
 		$this->setParametro('ci','ci','varchar');
 		$this->setParametro('email','email','varchar');
 		$this->setParametro('direccion','direccion','varchar');
-		$this->setParametro('celular','celular','int4');
+		$this->setParametro('celular','celular','varchar');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('lugar_expedicion','lugar_expedicion','varchar');
 		$this->setParametro('apellido_paterno','apellido_paterno','varchar');
-		$this->setParametro('telefono','telefono','int4');
+		$this->setParametro('telefono','telefono','varchar');
 		$this->setParametro('ciudad_residencia','ciudad_residencia','varchar');
 		$this->setParametro('id_pais_residencia','id_pais_residencia','int4');
 		$this->setParametro('nacionalidad','nacionalidad','varchar');
@@ -139,21 +141,7 @@ class MODCliente extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-	
-	/*function listarPais(){
-		$this->procedimiento='rec.ft_cliente_sel';
-		$this->transaccion='REC_CLI_P_SEL';
-		$this->tipo_procedimiento='SEL';
 
-		$this->captura('id_lugar','int4');
-		$this->captura('pais','varchar');
-
-		$this->armarConsulta();
-		$this->ejecutarConsulta();
-
-		//Devuelve la respuesta
-		return $this->respuesta;
-	}*/
     // libro de reclamos
 
 	function getNombreCliente(){
@@ -189,7 +177,7 @@ class MODCliente extends MODbase{
         $this->captura('fecha_hora_recepcion_sac','date');
         $this->captura('detalle_incidente','text');
         $this->captura('nombre','text');
-        $this->captura('celular','int4');
+        $this->captura('celular','varchar');
         $this->captura('telefono','varchar');
         $this->captura('nombre_incidente','varchar');
         $this->captura('sub_incidente','varchar');
@@ -202,6 +190,63 @@ class MODCliente extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
 
+    }
+
+    function validarCliente(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_cliente_ime';
+        $this->transaccion='CLI_VALIDAR_GET';
+        $this->tipo_procedimiento='IME';//tipo de transaccion
+
+        $this->setParametro('nombre','nombre','varchar');
+        $this->setParametro('apellido','apellido','varchar');
+        $this->setParametro('genero','genero','varchar');
+        $this->setParametro('ci','ci','varchar');
+        $this->setCount(false);
+
+        $this->captura('valido','boolean');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //var_dump($this->respuesta); exit;
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function listarPais(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_cliente_sel';
+        $this->transaccion='CLI_LUG_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setCount(false);
+        //Definicion de la lista del resultado del query
+        $this->captura('id_lugar','int4');
+        $this->captura('codigo','varchar');
+        $this->captura('estado_reg','varchar');
+        $this->captura('id_lugar_fk','int4');
+        $this->captura('nombre','varchar');
+        $this->captura('sw_impuesto','varchar');
+        $this->captura('sw_municipio','varchar');
+        $this->captura('tipo','varchar');
+        $this->captura('fecha_reg','timestamp');
+        $this->captura('id_usuario_reg','int4');
+        $this->captura('fecha_mod','timestamp');
+        $this->captura('id_usuario_mod','int4');
+        $this->captura('usr_reg','varchar');
+        $this->captura('usr_mod','varchar');
+        $this->captura('es_regional','varchar');
+
+        //$this->captura('nombre_lugar','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //var_dump($this->consulta); exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
     }
 
 }

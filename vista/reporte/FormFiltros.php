@@ -12,8 +12,7 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
     Phx.vista.FormFiltros=Ext.extend(Phx.frmInterfaz,{
 
-        /*fheight:'100%',
-        fwidth: '40%',*/
+        nombreVista: 'FormGlobal',
         constructor:function(config)
         {
             this.panelResumen = new Ext.Panel({html:''});
@@ -33,6 +32,7 @@ header("content-type: text/javascript; charset=UTF-8");
             ];
 
             Phx.vista.FormFiltros.superclass.constructor.call(this,config);
+            //this.store.baseParams={tipo_interfaz:'FormGlobal'};
             this.init();
             this.Cmp.id_subtipo_incidente.disable();
             this.iniciarEventos();
@@ -42,6 +42,17 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         Atributos:[
+            {
+                config: {
+                    labelSeparator: '',
+                    inputType: 'hidden',
+                    name: 'tipo_interfaz',
+                    value:'filtros'
+                },
+                type: 'Field',
+                form: true,
+                id_grupo:1
+            },
             {
                 config:{
                     name : 'id_gestion',
