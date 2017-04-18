@@ -756,4 +756,26 @@ class MODReclamo extends MODbase
         return $this->respuesta;
     }
 
+    function validarReclamo(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_reclamo_ime';
+        $this->transaccion='REC_VALIDAR_GET';
+        $this->tipo_procedimiento='IME';//tipo de transaccion
+        $this->setCount(false);
+
+        $this->setParametro('correlativo','correlativo','varchar');
+        $this->setParametro('frd','frd','varchar');
+
+
+        $this->captura('v_valid','varchar');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //var_dump($this->respuesta); exit;
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 }

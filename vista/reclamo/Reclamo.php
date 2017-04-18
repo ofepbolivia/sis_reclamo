@@ -11,7 +11,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 	Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
-
+    momento: '',
 	nombreVista: 'Reclamo',
 	constructor: function (config) {
 		this.idContenedor = config.idContenedor;
@@ -1563,7 +1563,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	},*/
 
 	onButtonNew : function () {
-
+        this.momento = 'new';
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_workflow/control/TipoColumna/listarColumnasFormulario',
@@ -1639,6 +1639,36 @@ header("content-type: text/javascript; charset=UTF-8");
         Phx.vista.Reclamo.superclass.onSubmit.call(this,o);
         this.actualizarFRD();
     },*/
+    onSubmit: function (o,x, force) {
+        //Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+        if(this.momento == 'edit'){
+            console.log(this.momento);
+            Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+        }else if(this.momento == 'new') {
+            console.log(this.momento);
+            Ext.Ajax.request({
+                url: '../../sis_reclamo/control/Reclamo/validarReclamo',
+                params: {
+                    correlativo: this.Cmp.correlativo_preimpreso_frd.getValue(),
+                    frd: this.Cmp.nro_frd.getValue()
+                },
+                success: function (resp) {
+                    var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
+                    //console.log('EXISTE:',reg.ROOT.datos.v_valid);
+                    if (reg.ROOT.datos.v_valid == 'true') {
+                        Ext.Msg.alert('Alerta','El Reclamo con Correlativo Preimpreso  Nro.' + this.Cmp.correlativo_preimpreso_frd.getValue()+ ' y F.R.D. Nro.' + this.Cmp.nro_frd.getValue() + ' ya fue registrado, Verifique los Reclamos de su Oficina');
+                    }
+                    else
+                        Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+
+                },
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });
+        }
+
+    },
 	successSave:function(resp){
 		Phx.vista.Reclamo.superclass.successSave.call(this,resp);
 
@@ -1736,7 +1766,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 	onButtonEdit: function() {
 		var rec = this.sm.getSelected();
-
+        this.momento = 'edit';
 		console.log('onButtonEdit: '+rec);
 		this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', rec.data.id_tipo_incidente);
 		Phx.CP.loadingShow();
@@ -1764,27 +1794,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	cargarCliente : function (id_cliente, nombre_cliente) {
 		this.Cmp.id_cliente.setValue(id_cliente);
 		this.Cmp.id_cliente.setRawValue(nombre_cliente.toUpperCase());
-	},
-
-	/*cambiarRev:function(){
-		Phx.CP.loadingShow();
-		var d = this.sm.getSelected().data;
-		Ext.Ajax.request({
-			url:'../../sis_reclamo/control/Reclamo/marcarRevisado',
-			params:{id_reclamo:d.id_reclamo},
-			success:this.successRev,
-			failure: this.conexionFailure,
-			timeout:this.timeout,
-			scope:this
-		});
-	},
-	successRev:function(resp){
-		Phx.CP.loadingHide();
-		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-		if(!reg.ROOT.error){
-			this.reload();
-		}
-	},
+	}/*,
 	reportes: function(){
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
