@@ -778,4 +778,8 @@ class MODReclamo extends MODbase
         return $this->respuesta;
     }
 
+    function listarFails(){
+
+    }
+
 }

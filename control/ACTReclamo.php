@@ -381,6 +381,10 @@ class ACTReclamo extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
+    function listarFails(){
+
+    }
+
 }
 
 ?>

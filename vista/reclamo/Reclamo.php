@@ -1253,7 +1253,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	bdel: true,
 	bedit: true,
 	btest: false,
-	fwidth: '65%',
+	fwidth: '75%',
 	fheight : '95%',
 	bodyStyle: 'padding:0 10px 0;',
 	Grupos: [

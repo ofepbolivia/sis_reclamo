@@ -270,6 +270,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope:this
             });
 
+            this.addButton('fails',{
+                grupo: [0,1,2,3,4],
+                text: 'Falla Correo',
+                iconCls: 'binfo',
+                disabled: false,
+                handler: this.verificarFails,
+                tooltip: '<b>Permite ver los reclamos que fallaron, al enviar correo de Respuesta.</b>',
+                scope:this
+            });
+
             /*this.addButton('reportes',{
                 grupo: [0,1,2,3,4],
                 argument: {estado: 'reportes'},
@@ -529,6 +539,21 @@ header("content-type: text/javascript; charset=UTF-8");
 
         onButtonEdit: function() {
             Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
+        },
+
+        verificarFails: function () {
+            var rec=this.sm.getSelected();
+            rec.data.nombreVista = this.nombreVista;
+            Phx.CP.loadWindows('../../../sis_reclamo/vista/reclamo/CorreosFail.php',
+                'Correos No Enviados ',
+                {
+                    width:'80%',
+                    height:'80%'
+                },
+                rec.data,
+                this.idContenedor,
+                'CorreosFail'
+            )
         },
 
         vista: new Ext.Window({
