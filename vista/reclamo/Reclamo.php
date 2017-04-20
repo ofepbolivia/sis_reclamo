@@ -76,7 +76,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				handler:diagramGantt,
 				tooltip: '<b>Diagrama Gantt de proceso macro</b>'
 		});
-		
+
 		function diagramGantt(){
 			var data=this.sm.getSelected().data.id_proceso_wf;
 			Phx.CP.loadingShow();
@@ -1253,7 +1253,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	bdel: true,
 	bedit: true,
 	btest: false,
-	fwidth: '75%',
+	fwidth: '70%',
 	fheight : '95%',
 	bodyStyle: 'padding:0 10px 0;',
 	Grupos: [
@@ -1334,11 +1334,11 @@ header("content-type: text/javascript; charset=UTF-8");
 			cls:'RespuestaDetalle'
 		}
 	],
-		
+
 	preparaMenu: function(n)
 	{	var rec = this.getSelectedData();
 		var tb =this.tbar;
-		
+
 		this.getBoton('btnChequeoDocumentosWf').setDisabled(false);
 		Phx.vista.Reclamo.superclass.preparaMenu.call(this,n);
 		this.getBoton('diagrama_gantt').enable();
@@ -1486,7 +1486,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 	onSaveWizard:function(wizard,resp){
 		var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-		
+
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/siguienteEstadoReclamo',
@@ -1563,7 +1563,6 @@ header("content-type: text/javascript; charset=UTF-8");
 	},*/
 
 	onButtonNew : function () {
-        this.momento = 'new';
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_workflow/control/TipoColumna/listarColumnasFormulario',
@@ -1585,8 +1584,9 @@ header("content-type: text/javascript; charset=UTF-8");
 		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
 		Phx.vista.Reclamo.superclass.onButtonNew.call(this);
-
-		var fecha = new Date();
+        this.momento = 'new';
+        console.log(this.momento);
+        var fecha = new Date();
 		this.armarFormularioFromArray(objRes.datos);
 
 		this.Cmp.id_subtipo_incidente.disable();
@@ -1608,7 +1608,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 				this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
 				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
-				console.log('ofi: ',this.Cmp.id_oficina_registro_incidente.getValue());
+				//console.log('ofi: ',this.Cmp.id_oficina_registro_incidente.getValue());
                 this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
 			},
 			failure: this.conexionFailure,
@@ -1764,9 +1764,9 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.reload();
 	},
 
-	onButtonEdit: function() {
+	onButtonEdit: function(){
+
 		var rec = this.sm.getSelected();
-        this.momento = 'edit';
 		console.log('onButtonEdit: '+rec);
 		this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', rec.data.id_tipo_incidente);
 		Phx.CP.loadingShow();
@@ -1782,6 +1782,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			scope:this
 		});
 		Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
+        this.momento = 'edit';
+        console.log(this.momento);
 	},
 
 	editCampos: function(resp){

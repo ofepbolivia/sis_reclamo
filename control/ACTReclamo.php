@@ -382,7 +382,9 @@ class ACTReclamo extends ACTbase{
     }
 
     function listarFails(){
-
+		$this->objFunc=$this->create('MODReclamo');
+		$this->res=$this->objFunc->listarFails($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
     }
 
 }

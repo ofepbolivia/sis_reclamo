@@ -14,8 +14,8 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase:'Phx.vista.Reclamo',
         title:'Reclamo',
         nombreVista: 'RegistroReclamos',
-        fwidth: '60%',
-        fheight : '75%',
+        fwidth: '65%',
+        fheight : '80%',
     constructor: function(config){
         this.maestro=config.maestro;
         this.mycls = config.mycls;

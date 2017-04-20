@@ -43,7 +43,10 @@ header("content-type: text/javascript; charset=UTF-8");
 						gwidth: 150,
 						maxLength:50,
 
-						style:'text-transform:uppercase;'
+						style:'text-transform:uppercase;',
+
+						regex: /\s/,
+						regexText: 'Tiene Espacios en Blanco'
 					},
 					type:'TextField',
 					filters:{pfiltro:'cli.nombre',type:'string'},

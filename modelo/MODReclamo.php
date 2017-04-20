@@ -778,8 +778,25 @@ class MODReclamo extends MODbase
         return $this->respuesta;
     }
 
-    function listarFails(){
+	function listarFails(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='rec.ft_reclamo_sel';
+		$this->transaccion='REC_FAILS_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);
 
-    }
+
+		$this->captura('nro_tramite','varchar');
+		$this->captura('id_cliente','int4');
+		$this->captura('falla','varchar');
+		$this->captura('desc_funcionario','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		//var_dump($this->respuesta); exit;
+		$this->ejecutarConsulta();
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 
 }
