@@ -115,6 +115,8 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         onButtonEdit: function() {
             Phx.vista.Reclamo.superclass.onButtonEdit.call(this);
+            this.momento = 'edit';
+            console.log(this.momento);
         }
     };
 </script>
