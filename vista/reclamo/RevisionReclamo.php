@@ -256,6 +256,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.load({params:{start:0, limit:this.tam_pag}});
             this.finCons = true;
 
+            this.addButton('feriado',{
+                grupo:[0,1,2,3,4,5],
+                text :'Dias Feriados',
+                iconCls : 'bfolder',
+                disabled: false,
+                handler : this.winFeriados,
+                tooltip : '<b>Feriados,</b><br/><b>Nos permite fijar, dias feriados.</b>'
+            });
+
             Ext.Ajax.request({
                 url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
                 params:{id_usuario:0},
@@ -382,11 +391,13 @@ header("content-type: text/javascript; charset=UTF-8");
                 
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
+                this.getBoton('feriado').enable();
                 this.disableTabRespuesta();
             }
             else{
                 this.getBoton('sig_estado').setVisible(false);
                 this.getBoton('ant_estado').enable();
+                this.getBoton('feriado').enable();
                 this.disableTabRespuesta();
             }
             //this.enableTabRespuesta();
@@ -398,36 +409,271 @@ header("content-type: text/javascript; charset=UTF-8");
             if(tb){
                 this.getBoton('ant_estado').disable();
                 this.getBoton('sig_estado').disable();
+                this.getBoton('feriado').disable();
 
             }
             this.disableTabRespuesta();
             return tb
-        }/*,
-        onButtonEdit: function() {
-            var rec = this.sm.getSelected();
-            //this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', rec.data.id_tipo_incidente);
-            Phx.CP.loadingShow();
-            Ext.Ajax.request({
-                url:'../../sis_workflow/control/TipoColumna/listarColumnasFormulario',
-                params:{
-
-                    id_estado_wf: rec.data['id_estado_wf']
-                },
-                success:this.editCampos,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
-            //alert(rec.data['id_estado_wf']);
-            Phx.vista.RevisionReclamo.superclass.onButtonEdit.call(this);
         },
 
-        editCampos: function(resp){
-            Phx.CP.loadingHide();
-            var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            //console.log('campos Edit: '+objRes);
-            //Phx.vista.RevisionReclamo.superclass.onButtonEdit.call(this);
-            this.armarFormularioFromArray(objRes.datos);
-        }*/
+        winFeriados: function (){
+            console.log('positivo');
+            this.formDiasFeriados();
+            this.wFeriados.show();
+            console.log(Ext.getCmp('app-nav-1').setValue(new Date('2017-04-22')));
+        },
+
+        formDiasFeriados: function () {
+            console.log('parece');
+
+            this.formFeriados = new Ext.form.FormPanel({
+                baseCls: 'x-plain',
+                autoDestroy: true,
+                layout: {
+                    type:'table', columns:4
+                },
+                items: [
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-1',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-2',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-3',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-4',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-5',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-6',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-7',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-8',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-9',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-10',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-11',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function (dp, dt) {
+                                    console.log('select ');
+                                },
+                                scope: this
+                            },
+
+                            'eventclick': {
+                                fn: function (vw, rec, el) {
+                                    console.log('vw', vw, 'rec', rec, 'el', el)
+                                },
+                                scope: this
+                            },
+
+
+                            'dayclick': {
+                                fn: function (vw, dt, ad, el) {
+                                    console.log('day')
+                                },
+                                scope: this
+                            }
+                            ,
+                            selectedDate : new Date('2017-04-22'),
+                            showToday: true
+
+                        }
+                    },
+                    {
+                        xtype: 'datepicker',
+                        id: 'app-nav-12',
+                        cls: 'ext-cal-nav-picker',
+                        listeners: {
+                            'select': {
+                                fn: function(dp, dt) {
+                                    //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            }
+                        }
+
+                    }
+                ]
+            });
+
+            this.wFeriados = new Ext.Window({
+                title: 'Dias Feriados',
+                collapsible: false,
+                maximizable: false,
+                autoDestroy: true,
+                width: 735,
+                height: 590,
+                layout: 'fit',
+                plain: true,
+                bodyStyle: 'padding:5px;',
+                buttonAlign: 'center',
+                items: this.formFeriados,
+                modal:true,
+                closeAction: 'hide'/*,
+                buttons: [{
+                    text: 'Guardar',
+                    handler:this.onSubmitFeriados,
+                    scope:this
+
+                },{
+                    text: 'Cancelar',
+                    handler:function(){this.wFeriados.hide()},
+                    scope:this
+                }]*/
+            });
+            console.log('fallas');
+        },
+
+        onSubmitFeriados : function(){
+            Ext.Msg.alert('funciona');
+
+            this.wFeriados.hide();
+            this.reload();
+            /*var d= this.sm.getSelected().data;
+
+             this.DataSelected = d
+
+             Phx.CP.loadingShow();
+
+             Ext.Ajax.request({
+             url:'../../sis_adquisiciones/control/Cotizacion/siguienteEstadoCotizacion',
+             params:{id_cotizacion:d.id_cotizacion,
+             fecha_oc: this.cmpFechaOC.getValue().dateFormat('d/m/Y'),
+             operacion:'verificar'},
+
+             //params:{id_cotizacion:d.id_cotizacion,operacion:'sol_apro'},
+             success:this.successSinc,
+             failure: this.conexionFailure,
+             timeout:this.timeout,
+             scope:this
+             });*/
+        }
+
     };
 </script>

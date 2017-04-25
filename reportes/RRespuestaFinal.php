@@ -154,7 +154,7 @@ class RRespuestaFinal extends ReportePDF
             'module_width' => 1, // width of a single module in points
             'module_height' => 1 // height of a single module in points
         );
-        $this->write2DBarcode($html, 'QRCODE,L',20, 230, 25, 25, $style, 'N');
+        $this->write2DBarcode($html, 'QRCODE,L', 11, 230, 25, 25, $style, 'N');
         
         if($this->datos[0]["prodedente"] != 'ninguno' && $this->datos[0]["tipo_respuesta"] == 'respuesta_final') {
             //var_dump('a');exit;

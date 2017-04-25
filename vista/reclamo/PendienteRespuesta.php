@@ -460,24 +460,39 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ant_estado').enable();
                 //this.getBoton('reportes').enable();
                 this.getBoton('verificar_estado').enable();
+                this.getBoton('fails').enable();
 
             }else if(data.estado =='pendiente_respuesta'){
                 this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').enable();
                 //this.getBoton('reportes').enable();
                 this.getBoton('verificar_estado').enable();
+                this.getBoton('fails').enable();
                 this.enableTabRespuesta();
             }else if(data.estado =='respuesta_parcial'){
                 this.getBoton('sig_estado').disable();
                 this.getBoton('ant_estado').disable();
                 this.getBoton('verificar_estado').enable();
+                this.getBoton('fails').enable();
                 this.enableTabRespuesta();
-            }
-            else if(data.estado =='archivo_con_respuesta' ){
+            }else if(data.estado == 'respuesta_parcial' ){
+                this.getBoton('sig_estado').enable();
+                if(data.administrador ==1){
+                    this.getBoton('ant_estado').enable();
+                }
+                else{
+                    this.getBoton('ant_estado').disable();
+                }
+                this.getBoton('verificar_estado').enable();
+                this.getBoton('fails').enable();
+                //this.getBoton('reportes').enable();
+                this.enableTabRespuesta();
+            }else if(data.estado =='archivo_con_respuesta' ){
                 if (this.nombreVista == 'PendienteRespuesta' && data.administrador ==1){
                     this.getBoton('sig_estado').enable();
                     this.getBoton('ant_estado').enable();
                     this.getBoton('verificar_estado').enable();
+                    this.getBoton('fails').enable();
                     //this.getBoton('reportes').enable();
                     this.enableTabRespuesta();
                 }
@@ -485,6 +500,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.getBoton('sig_estado').enable();
                     this.getBoton('ant_estado').disable();
                     this.getBoton('verificar_estado').enable();
+                    this.getBoton('fails').enable();
                     //this.getBoton('reportes').enable();
                     this.enableTabRespuesta();
                 }
@@ -497,6 +513,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.getBoton('ant_estado').disable();
                 }
                 this.getBoton('verificar_estado').enable();
+                this.getBoton('fails').enable();
                 //this.getBoton('reportes').enable();
                 this.enableTabRespuesta();
             }else if(data.estado == 'archivado_concluido'){
@@ -508,6 +525,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.getBoton('ant_estado').disable();
                 }
                 this.getBoton('verificar_estado').enable();
+                this.getBoton('fails').enable();
                 //this.getBoton('reportes').enable();
                 this.enableTabRespuesta();
             }
@@ -529,6 +547,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ant_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('verificar_estado').disable();
+                this.getBoton('fails').disable();
                 //this.getBoton('reportes').disable();
 
             }
