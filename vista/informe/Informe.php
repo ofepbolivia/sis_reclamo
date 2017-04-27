@@ -475,7 +475,7 @@ header("content-type: text/javascript; charset=UTF-8");
             copiarInf: function () {
                 var rec = this.sm.getSelected();
                 //console.log(rec.data.id_informe);
-                /*this.objWizard = Phx.CP.loadWindows('../../../sis_reclamo/vista/informe/Copiar.php',
+                this.objWizard = Phx.CP.loadWindows('../../../sis_reclamo/vista/informe/Copiar.php',
                     'Copiar Informe',
                     {
                         modal: true,
@@ -486,17 +486,17 @@ header("content-type: text/javascript; charset=UTF-8");
                         data: {
                             id_informe: rec.data.id_informe
                         }
-                    }, this.idContenedor, 'Copiar'/!*,
+                    }, this.idContenedor, 'Copiar'/*,
                     {
                         config: [{
                             event: 'beforesave',
                             delegate: this.onExito,
                         }],
                         scope: this
-                    }*!/
-                );*/
-                this.crearFormCopiarRec();
-                this.wReclamos.show();
+                    }*/
+                );
+                /*this.crearFormCopiarRec();
+                this.wReclamos.show();*/
             },
 
             /*onExito : function () {

@@ -439,8 +439,16 @@ header("content-type: text/javascript; charset=UTF-8");
                         cls: 'ext-cal-nav-picker',
                         listeners: {
                             'select': {
-                                fn: function(dp, dt) {
+                                fn: function (dp, dt) {
                                     //App.calendarPanel.setStartDate(dt);
+                                },
+                                scope: this
+                            },
+
+                            'eventclick': {
+                                element: 'el',
+                                fn: function () {
+                                    Ext.getCmp('app-nav-1').getDatePicker().setValue(new Date());//set today
                                 },
                                 scope: this
                             }

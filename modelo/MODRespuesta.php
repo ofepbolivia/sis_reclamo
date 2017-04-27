@@ -46,6 +46,9 @@ class MODRespuesta extends MODbase{
 		$this->captura('nro_respuesta','varchar');
 		$this->captura('email', 'varchar');
 		$this->captura('admin', 'int4');
+		$this->captura('codigo_medio', 'varchar');
+		$this->captura('nro_att', 'int4');
+
 
         $this->setParametro('tipo_interfaz', 'tipo_interfaz', 'varchar');
 

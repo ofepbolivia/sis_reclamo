@@ -502,7 +502,9 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'estado', type: 'string'},
 		{name: 'nro_respuesta', type: 'numeric'},
 		{name: 'email', type: 'string'},
-		{name: 'admin', type: 'numeric'}
+		{name: 'admin', type: 'numeric'},
+		{name: 'codigo_medio', type: 'string'},
+		{name: 'nro_att', type: 'numeric'}
 
 	],
 	sortInfo: {
@@ -601,27 +603,33 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	sigEstado: function(){
 
 		var rec = this.sm.getSelected();
-		this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
-			'Estado de Wf',
-			{
-				modal:true,
-				width:700,
-				height:450
-			},
-			{
-				data:{
-					id_estado_wf:rec.data.id_estado_wf,
-					id_proceso_wf:rec.data.id_proceso_wf
+		if(rec.data.codigo_medio=='CAU' && (rec.data.nro_att == null || rec.data.nro_att == '')) {
+			Ext.Msg.alert(
+				'Alerta','El Reclamo es CENATIN - Mi Reclamo, necesita llenar el campo Nro. Att Canalizado.'
+			);
+		}else{
+			this.objWizard = Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/FormEstadoWf.php',
+				'Estado de Wf',
+				{
+					modal: true,
+					width: 700,
+					height: 450
+				},
+				{
+					data: {
+						id_estado_wf: rec.data.id_estado_wf,
+						id_proceso_wf: rec.data.id_proceso_wf
+					}
+				}, this.idContenedor, 'FormEstadoWf',
+				{
+					config: [{
+						event: 'beforesave',
+						delegate: this.onSaveWizard,
+					}],
+					scope: this
 				}
-			}, this.idContenedor,'FormEstadoWf',
-			{
-				config:[{
-					event:'beforesave',
-					delegate: this.onSaveWizard,
-				}],
-				scope:this
-			}
-		);
+			);
+		}
 
 	},
 
