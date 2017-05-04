@@ -18,7 +18,6 @@ header("content-type: text/javascript; charset=UTF-8");
         ActList:'../../sis_reclamo/control/Reclamo/listarFails',
         constructor:function(config){
             this.maestro=config;
-            console.log('configuracion',config);
             //llama al constructor de la clase padre
             Phx.vista.CorreosFail.superclass.constructor.call(this,config);
             this.init();
@@ -60,7 +59,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Nombre Cliente',
                     allowBlank: false,
                     anchor: '40%',
-                    gwidth: 100,
+                    gwidth: 300,
                     renderer:function (value, p, record){return String.format('{0}', record.data['desc_funcionario']);}
                 },
                 type:'TextField',
@@ -76,7 +75,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: true,
                     anchor: '80%',
                     height: 80,
-                    gwidth: 100,
+                    gwidth: 400,
                     maxLength:100
                 },
                 type:'TextField',
