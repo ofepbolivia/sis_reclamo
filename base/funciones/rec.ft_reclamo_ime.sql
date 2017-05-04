@@ -150,6 +150,8 @@ DECLARE
     v_contador integer;
     v_fecha_limite_mod date;
 
+    v_valid	varchar;
+
 BEGIN
 
     v_nombre_funcion = 'rec.ft_reclamo_ime';
@@ -1453,6 +1455,31 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Numero de Respuestas de un Reclamo');
             v_resp = pxp.f_agrega_clave(v_resp,'v_contador',v_contador::varchar);
 
+            --Devuelve la respuesta
+            return v_resp;
+         END;
+    /*********************************
+    #TRANSACCION:  'REC_VALIDAR_GET'
+    #DESCRIPCION:	VERIFICA LA DUPLICIDAD DE RECLAMOS
+    #AUTOR:		Franklin Espinoza
+    #FECHA:		18-04-2017 14:58:16
+    ***********************************/
+    elsif(p_transaccion='REC_VALIDAR_GET')then
+
+          BEGIN
+
+            select count(tr.id_reclamo)
+            INTO v_contador
+            from rec.treclamo tr
+            where tr.correlativo_preimpreso_frd = trim(both ' ' from v_parametros.correlativo)::integer AND tr.nro_frd = trim(both ' ' from v_parametros.frd);
+            IF(v_contador>=1)THEN
+        		v_valid = 'true';
+            ELSE
+            	v_valid = 'false';
+			      END IF;
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Existe el Reclamo');
+            v_resp = pxp.f_agrega_clave(v_resp,'v_valid',v_valid);
             --Devuelve la respuesta
             return v_resp;
          END;

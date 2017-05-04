@@ -12,16 +12,29 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
     Phx.vista.CorreosFail=Ext.extend(Phx.gridInterfaz,{
 
+        bnew : false,
+        bedit : false,
+        bdel : false,
+        ActList:'../../sis_reclamo/control/Reclamo/listarFails',
         constructor:function(config){
-            this.maestro=config.maestro;
+            this.maestro=config;
+            console.log('configuracion',config);
             //llama al constructor de la clase padre
             Phx.vista.CorreosFail.superclass.constructor.call(this,config);
-
             this.init();
-            //this.iniciarEventos();
+            this.load({params:{start:0, limit: 50}});
 
         },
         Atributos:[
+            {
+                config:{
+                    labelSeparator:'',
+                    inputType:'hidden',
+                    name: 'id_reclamo'
+                },
+                type:'Field',
+                form:false
+            },
             {
                 config:{
                     name: 'nro_tramite',
@@ -36,10 +49,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     }
                 },
                 type:'TextField',
-                filters:{pfiltro:'rec.nro_tramite',type:'string'},
-                id_grupo:1,
-                grid:true/*,
-                form:true*/
+                filters:{pfiltro:'trec.nro_tramite',type:'string'},
+                id_grupo:0,
+                grid:true,
+                form:false
             },
             {
                 config:{
@@ -48,14 +61,13 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank: false,
                     anchor: '40%',
                     gwidth: 100,
-                    format: 'd/m/Y',
-                    renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}
+                    renderer:function (value, p, record){return String.format('{0}', record.data['desc_funcionario']);}
                 },
                 type:'TextField',
-                filters:{pfiltro:'c.nombre_completo2',type:'string'},
+                filters:{pfiltro:'trec.id_cliente',type:'string'},
                 id_grupo:0,
-                grid:true/*,
-                form:true*/
+                grid:true,
+                form:false
             },
             {
                 config:{
@@ -68,33 +80,27 @@ header("content-type: text/javascript; charset=UTF-8");
                     maxLength:100
                 },
                 type:'TextField',
-                filters:{pfiltro:'param.antecedentes_informe',type:'string'},
-                id_grupo:1,
-                grid:true/*,
-                form:true*/
+                filters:{pfiltro:'falla',type:'string'},
+                id_grupo:0,
+                grid:true,
+                form:false
             }
         ],
         tam_pag:50,
         title:'CorreosFail',
-        ActList:'../../sis_reclamo/control/Reclamo/listarFails',
-        id_store:'id_cliente',
+        id_store:'id_reclamo',
         fields: [
 
+            {name:'id_reclamo', type: 'numeric'},
             {name:'nro_tramite', type: 'string'},
             {name:'id_cliente', type: 'numeric'},
-            {name:'conclusion_recomendacion', type: 'string'},
-            {name:'fecha_informe', type: 'date',dateFormat:'Y-m-d'},
-
-
-            //{name:'desc_nombre_compensacion', type: 'string'},
-            /*{name:'desc_fun', type: 'string'},
-            {name:'lista', type: 'string'}*/
+            {name:'falla', type: 'string'},
+            {name:'desc_funcionario', type: 'string'}
         ],
         sortInfo:{
-            field: 'id_cliente',
+            field: 'id_reclamo',
             direction: 'ASC'
         },
-        bdel:true,
         bsave:false,
         btest: false
 

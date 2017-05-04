@@ -766,6 +766,32 @@ BEGIN
 			return v_consulta;
 
       end;
+  /*********************************
+      #TRANSACCION:  'REC_FAILS_SEL'
+      #DESCRIPCION:	Permite recuperar las alarmas que fallaron al momento de enviar la respuesta de un reclamo.
+      #AUTOR:		FEA
+      #FECHA:		27-04-2017 18:32:59
+      ***********************************/
+     ELSIF(p_transaccion = 'REC_FAILS_SEL')THEN
+      BEGIN
+          v_consulta = 'select
+          				trec.nro_tramite,
+                        trec.id_cliente,
+                        case when substring(ta.desc_falla, position(''D'' in ta.desc_falla), position(''!'' in ta.desc_falla)-8) like ''Domain Email address % is invalid -- aborting!'' then ''Dominio de Correo no Existe, Consulte con el Cliente via Telefono''
+						else ''Cuenta de Correo no existe, Consulte con el Cliente via Telefono''
+						end as falla,
+                        vc.nombre_completo2::varchar as desc_funcionario
+						from rec.trespuesta tr
+						inner join param.talarma ta on ta.id_proceso_wf = tr.id_proceso_wf
+						inner join rec.treclamo trec on trec.id_reclamo = tr.id_reclamo
+						inner join rec.vcliente vc on vc.id_cliente = trec.id_cliente
+						where (ta.estado_envio = ''falla'' or ta.pendiente <> ''no'' ) and (ta.fecha_reg::date between now()::date-1 and now()::date+1)';
+
+          v_consulta:=v_consulta||v_parametros.filtro;
+          v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+          return v_consulta;
+      END;
 	else
 
 		raise exception 'Transaccion inexistente';

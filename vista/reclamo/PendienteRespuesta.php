@@ -564,7 +564,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
         verificarFails: function () {
             var rec=this.sm.getSelected();
-            rec.data.nombreVista = this.nombreVista;
+            //rec.data.nombreVista = this.nombreVista;
+
+            console.log('this.idContenedor',this.idContenedor,rec.data, 'padre', this.idContenedorPadre);
             Phx.CP.loadWindows('../../../sis_reclamo/vista/reclamo/CorreosFail.php',
                 'Correos No Enviados ',
                 {
@@ -574,7 +576,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 rec.data,
                 this.idContenedor,
                 'CorreosFail'
-            )
+            );
         },
 
         vista: new Ext.Window({

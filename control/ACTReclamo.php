@@ -382,6 +382,18 @@ class ACTReclamo extends ACTbase{
     }
 
     function listarFails(){
+
+        $this->objParam->defecto('ordenacion','id_reclamo');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        if($this->objParam->getParametro('id_reclamo') != '' ) {
+            $this->objParam->addFiltro(" rec.id_reclamo = " . $this->objParam->getParametro('id_reclamo'));
+        }
+
+        /*if($this->objParam->getParametro('nro_tramite')!=''){
+            $this->objParam->addFiltro("rec.nro_tramite ilike ''%".$this->objParam->getParametro('nro_tramite')."%''");
+        }*/
+
 		$this->objFunc=$this->create('MODReclamo');
 		$this->res=$this->objFunc->listarFails($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());

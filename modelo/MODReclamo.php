@@ -785,7 +785,7 @@ class MODReclamo extends MODbase
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		$this->setCount(false);
 
-
+		$this->captura('id_reclamo', 'int4');
 		$this->captura('nro_tramite','varchar');
 		$this->captura('id_cliente','int4');
 		$this->captura('falla','varchar');
