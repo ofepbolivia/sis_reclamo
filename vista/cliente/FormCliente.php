@@ -433,11 +433,44 @@ header("content-type: text/javascript; charset=UTF-8");
             /*if (this.form.getForm().isValid()) {
                 this.fireEvent('beforesave', this, this.getValues());
             }*/
+            Ext.Ajax.request({
+                url: '../../sis_reclamo/control/Cliente/validarCliente',
+                params: {
+                    nombre: this.Cmp.nombre.getValue(),
+                    apellido: this.Cmp.apellido_paterno.getValue(),
+                    genero: this.Cmp.genero.getValue(),
+                    ci: this.Cmp.ci.getValue()
+                },
+                argument: {},
+                success: function (resp) {
+                    var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
+                    //console.log('EXISTE:',reg.ROOT.datos.v_valid);
+                    if (reg.ROOT.datos.v_valid == 'true') {
+                        Ext.Msg.alert('Alerta','El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' ya fue registrado, desea continuar el registro ');
+                        /*Ext.Msg.confirm('Confirmación', 'El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' ya fue registrado, desea continuar el registro ',
+                         function (btn) {
+                         if (btn === 'yes') {
+                         Phx.vista.Cliente.superclass.onSubmit.call(this, o);
 
-            this.Cmp.nombre.setValue((this.Cmp.nombre.getValue()).trim());
-            this.Cmp.apellido_paterno.setValue((this.Cmp.apellido_paterno.getValue()).trim());
-            this.Cmp.apellido_materno.setValue((this.Cmp.apellido_materno.getValue()).trim());
-            Phx.vista.FormCliente.superclass.onSubmit.call(this,o);
+                         } else {
+
+                         }
+                         }, this);*/
+                    }
+                    else {
+                        this.Cmp.nombre.setValue((this.Cmp.nombre.getValue()).trim());
+                        this.Cmp.apellido_paterno.setValue((this.Cmp.apellido_paterno.getValue()).trim());
+                        this.Cmp.apellido_materno.setValue((this.Cmp.apellido_materno.getValue()).trim());
+                        Phx.vista.FormCliente.superclass.onSubmit.call(this, o);
+                    }
+
+                },
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });
+
+            //Phx.vista.FormCliente.superclass.onSubmit.call(this,o);
         },
 
 

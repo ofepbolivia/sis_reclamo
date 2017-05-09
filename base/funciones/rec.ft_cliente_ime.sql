@@ -213,7 +213,7 @@ BEGIN
 			select count(tc.ci)
             INTO v_contador
             from rec.tcliente tc
-            where tc.nombre = trim(both ' ' from upper(v_parametros.nombre)) AND tc.apellido_paterno=trim(both ' ' from upper(v_parametros.apellido)) AND tc.ci=trim(both ' ' from v_parametros.ci);
+            where tc.nombre = trim(both ' ' from upper(v_parametros.nombre)) AND tc.apellido_paterno=trim(both ' ' from upper(v_parametros.apellido)) OR tc.ci=trim(both ' ' from v_parametros.ci);
             IF(v_contador>=1)THEN
         		v_valid = 'true';
             ELSE
