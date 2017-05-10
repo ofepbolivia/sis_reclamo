@@ -112,7 +112,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         root: 'datos',
                         sortInfo: {
                             field: 'nombre',
-                            direction: 'ASC'
+                            direction: 'DESC'
                         },
                         totalProperty: 'total',
                         fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],

@@ -6,6 +6,7 @@
  *@date 17-10-2016 10:22:05
  *@Interface para el inicio de Revision de un Reclamo
  */
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -434,6 +435,67 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 items: [
                     {
+                        xtype: 'datepickerplus',
+//					disabled:true,
+                        value: new Date(2017, 3, 30),	//only the month counts here and is used as starting month to be displayed
+                        noOfMonth : 4, //(Ext.lib.Dom.getViewHeight()>600?9:4), //9 ,
+                        noOfMonthPerRow : (Ext.lib.Dom.getViewWidth()>1024?3:2), //4,
+                        multiSelection: true,
+//					allowMouseWheel:false,
+                        showWeekNumber: true,
+                        weekendText: "Este día es parte de un fin de semana",
+//					disabledDates: [new Date(2008,4,5).format(dform).replace(/\./g,"\\."),new Date(2008,4,6).format(dform).replace(/\./g,"\\."),new Date(2008,4,7).format(dform).replace(/\./g,"\\.")],
+                        showActiveDate:true,
+                        summarizeHeader:true,
+//					prevNextDaysView:"nomark",
+//					prevNextDaysView:false,
+                        listeners: {
+                            select: function(dp,date) {
+
+                                console.log('maradona');
+                                var allStringDates=[];
+                                if (Ext.isDate(date)) {
+                                    allStringDates.push(date.format('M j, Y'));
+                                }
+                                else {
+                                    Ext.each(date,function(c){
+                                        allStringDates.push(c.format('M j, Y'));
+                                    },this);
+                                }
+
+                                Ext.MessageBox.alert('Date(s) Selected', 'You have chosen the following day(s):<br>'+allStringDates.join('<br>'));
+                            }
+                        },
+                        eventDates : function(year) {
+                            var dates = [
+                                {
+                                    date: new Date(year,4,1),
+                                    text: "Dia del Trabajador",
+                                    cls: "x-datepickerplus-eventdates"
+                                },
+                                {
+                                    date: new Date(year,4,9),
+                                    text: "Cumpleanos Gerente",
+                                    cls: "x-datepickerplus-eventdates"
+                                },
+                                {
+                                    date: new Date(year,4,31),
+                                    text: "Ultimo dia del Mes",
+                                    cls: "x-datepickerplus-eventdates"
+                                },
+
+                                {
+                                    date: new Date(year,4,5),
+                                    text: "",
+                                    cls: "Cumpleanos Abuelita."
+                                }
+
+                            ];
+                            return dates;
+                        }
+                    }
+
+                    /*{
                         xtype: 'datepicker',
                         id: 'app-nav-1',
                         cls: 'ext-cal-nav-picker',
@@ -626,7 +688,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             }
                         }
 
-                    }
+                    }*/
                 ]
             });
 
@@ -635,8 +697,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 collapsible: false,
                 maximizable: false,
                 autoDestroy: true,
-                width: 735,
-                height: 590,
+                width: 630,
+                height: 402,
                 layout: 'fit',
                 plain: true,
                 bodyStyle: 'padding:5px;',

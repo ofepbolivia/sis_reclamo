@@ -156,7 +156,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('btnObs').enable();
                 this.getBoton('btnChequeoDocumentosWf').enable();
                 this.getBoton('del').disable();
-                this.getBoton('edit').disable();
+                this.getBoton('edit').enable();
                 this.getBoton('new').disable();
             }else{
                 this.getBoton('sig_estado').enable();

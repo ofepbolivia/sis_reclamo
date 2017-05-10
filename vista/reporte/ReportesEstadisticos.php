@@ -49,7 +49,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         name: 'reportes',
                         id: 'reportes',
                         fieldLabel: 'Tipo Reporte',
-                        allowBlank:false,
+                        allowBlank:true,
                         emptyText:'Tipo...',
                         width: 150,
                         maxLength:25,
@@ -69,7 +69,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         name: 'id_gestion',
                         id: 'id_gestion',
                         fieldLabel: 'Gestion',
-                        allowBlank: false,
+                        allowBlank: true,
                         emptyText:'Gestion...',
                         blankText: 'Año',
                         store:new Ext.data.JsonStore(
@@ -92,11 +92,69 @@ header("content-type: text/javascript; charset=UTF-8");
                         displayField: 'gestion',
                         hiddenName: 'id_gestion',
                         mode:'remote',
-                        pageSize:50,
+                        pageSize:5,
                         queryDelay:500,
-                        listWidth:'280',
+                        listWidth:'225',
                         width:150
                 },
+                {
+
+                    name: 'desde',
+                    id: 'desde',
+                    fieldLabel: 'Desde',
+                    allowBlank: true,
+                    format: 'd/m/Y',
+                    width: 150,
+                    xtype: 'datefield',
+                    id_grupo: 0,
+                    form: true
+                },
+                {
+
+                    name: 'hasta',
+                    id: 'hasta',
+                    fieldLabel: 'Hasta',
+                    allowBlank: true,
+                    format: 'd/m/Y',
+                    width: 150,
+                    xtype: 'datefield',
+                    id_grupo: 0,
+                    form: true
+                },
+                {
+                    xtype:'combo',
+                    name: 'id_oficina',
+                    id: 'id_oficina',
+                    fieldLabel: 'Oficina',
+                    allowBlank: true,
+                    emptyText:'Oficina...',
+                    blankText: 'Oficina',
+                    store:new Ext.data.JsonStore(
+                    {
+                        url: '../../sis_organigrama/control/Oficina/listarOficina',
+                        id: 'id_oficina',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'nombre',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
+                        // turn on remote sorting
+                        remoteSort: true,
+                        baseParams:{par_filtro:'nombre'}
+                    }),
+                    valueField: 'id_oficina',
+                    triggerAction: 'all',
+                    displayField: 'nombre',
+                    hiddenName: 'id_oficina',
+                    mode:'remote',
+                    pageSize:10,
+                    queryDelay:500,
+                    resizable: true,
+                    listWidth:'225',
+                    width:150
+                }/*,
                 {
                        xtype:'combo',
                        name: 'id_periodo',
@@ -131,7 +189,7 @@ header("content-type: text/javascript; charset=UTF-8");
                        hidden:false,
                        width:150,
                        disabled:true
-                   }
+                   }*/
 
                 ],
 
@@ -187,9 +245,9 @@ header("content-type: text/javascript; charset=UTF-8");
             
             Ext.getCmp('id_gestion').on('select', function(cmb, rec, ind){
 
-                Ext.getCmp('id_periodo').reset();
-                Ext.getCmp('id_periodo').enable();
-                Ext.getCmp('id_periodo').store.baseParams.id_gestion = rec.data.id_gestion;
+                //Ext.getCmp('id_periodo').reset();
+                //Ext.getCmp('id_periodo').enable();
+                //Ext.getCmp('id_periodo').store.baseParams.id_gestion = rec.data.id_gestion;
             },this);
         },
 
@@ -201,10 +259,14 @@ header("content-type: text/javascript; charset=UTF-8");
             //var item = getFieldValues(Ext.getCmp('id_gestion'), 'id_gestion', 'gestion');
             var comboG = Ext.getCmp('id_gestion');
             var comboP = Ext.getCmp('id_periodo');
-
             var tipoGrafico = Ext.getCmp('reportes').getValue();
+            var desde = Ext.getCmp('desde').getValue();
+            var hasta = Ext.getCmp('hasta').getValue();
+
             var gestion = comboG.getValue();
             var periodo = comboP.getRawValue();
+
+            //if()
 
 
             this.reportPanel.removeAll();

@@ -55,6 +55,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(data.estado =='registrado_ripat'){
                 this.getBoton('sig_estado').disable();
+                this.getBoton('sig_estado').enable();
                 this.getBoton('ant_estado').disable();
                 this.getBoton('diagrama_gantt').enable();
                 this.getBoton('btnObs').disable();
