@@ -13,6 +13,11 @@ class ACTOficinaReclamo extends ACTbase{
         $this->objParam->defecto('ordenacion','id_oficina');
 
         $this->objParam->defecto('dir_ordenacion','asc');
+
+        if ($this->objParam->getParametro('activo') != '') {
+            $this->objParam->addFiltro(" OR ofi.estado_reg  = ''". $this->objParam->getParametro('activo')."''");
+        }
+
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);
             $this->res = $this->objReporte->generarReporteListado('MODOficinaReclamo','listarOficina');

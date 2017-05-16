@@ -109,7 +109,7 @@ class MODReclamo extends MODbase
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
-        //echo $this->consulta;exit;
+        //var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -444,12 +444,17 @@ class MODReclamo extends MODbase
 		$this->transaccion = 'REC_STADISTICA_GET';
 		$this->tipo_procedimiento = 'IME';
 
-		$this->setParametro('tipo', 'tipo', 'varchar');
-		$this->setParametro('p_gestion', 'p_gestion', 'varchar');
-		$this->setParametro('p_periodo', 'p_periodo', 'varchar');
+
+		$this->setParametro('p_tipo', 'p_tipo', 'varchar');
+		$this->setParametro('id_gestion', 'id_gestion', 'varchar');
+		$this->setParametro('p_desde', 'p_desde', 'varchar');
+		$this->setParametro('p_hasta', 'p_hasta', 'varchar');
+		$this->setParametro('id_oficina', 'id_oficina', 'varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
+
+		//var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -798,5 +803,28 @@ class MODReclamo extends MODbase
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+    /*function prueba()
+    {
+
+        $this->procedimiento = 'rec.ft_reporte_sel';
+        $this->transaccion = 'REC_REP_SEL';
+        $this->tipo_procedimiento = 'SEL';
+
+        $this->setParametro('p_tipo', 'p_tipo', 'varchar');
+        $this->setParametro('id_gestion', 'id_gestion', 'varchar');
+        $this->setParametro('p_desde', 'p_desde', 'varchar');
+        $this->setParametro('p_hasta', 'p_hasta', 'varchar');
+        $this->setParametro('id_oficina', 'id_oficina', 'varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+
+        //var_dump($this->consulta);exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }*/
 
 }

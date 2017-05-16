@@ -57,14 +57,91 @@ header("content-type: text/javascript; charset=UTF-8");
                         forceSelection: true,
                         triggerAction:'all',
                         mode:'local',
-                        store:['Tipo Incidente','Ciudad de Reclamo','Lugar de Reclamo','Genero','Ambiente del Incidente','Estado del Reclamo']
+                        store:['Tipo Incidente','Ciudad de Reclamo','Lugar de Reclamo','Genero','Ambiente del Incidente','Estado del Reclamo', 'Todos']
 
 
                     /*filters:{pfiltro:'cli.genero',type:'string'},
                     id_grupo:0,
                     grid:true,
                     form:true*/
-                },{
+                },
+                {
+                    xtype: 'combo',
+                    id: 'id_tipo_incidente',
+                    name: 'id_tipo_incidente',
+                    fieldLabel: 'Tipo de Incidente',
+                    allowBlank: true,
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_reclamo/control/TipoIncidente/listarTipoIncidente',
+                        id: 'id_tipo_incidente',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'nombre_incidente',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_tipo_incidente', 'nombre_incidente','fk_tipo_incidente'],
+                        remoteSort: true,
+                        baseParams: {par_filtro: 'tip.nombre_incidente', nivel:'1', fk_tipo_incidente:'1'}
+                    }),
+                    valueField: 'id_tipo_incidente',
+                    displayField: 'nombre_incidente',
+                    gdisplayField: 'desc_nombre_incidente',
+                    hiddenName: 'id_tipo_incidente',
+                    forceSelection: true,
+                    typeAhead: false,
+                    editable: true,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    width: 150,
+                    resizable:true,
+                    listWidth:'232',
+                    hidden : true
+                },
+
+                {
+                    xtype:'combo',
+                    name: 'id_oficina',
+                    id: 'id_oficina',
+                    fieldLabel: 'Oficina',
+                    allowBlank: true,
+                    emptyText:'Oficina...',
+                    blankText: 'Oficina',
+                    store:new Ext.data.JsonStore(
+                        {
+                            url: '../../sis_reclamo/control/Reclamo/listarOficinas',
+                            id: 'id_oficina',
+                            root: 'datos',
+                            sortInfo: {
+                                field: 'nombre',
+                                direction: 'ASC'
+                            },
+                            totalProperty: 'total',
+                            fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
+                            remoteSort: true,
+                            baseParams:{par_filtro:'ofi.nombre', activo:'inactivo'}
+                        }),
+                    valueField: 'id_oficina',
+                    triggerAction: 'all',
+                    displayField: 'nombre',
+                    hiddenName: 'id_oficina',
+                    forceSelection: true,
+                    typeAhead: false,
+                    editable: true,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 10,
+                    queryDelay: 1000,
+                    width: 150,
+                    resizable:true,
+                    listWidth:'232'
+                },
+                    /*{
                         xtype:'combo',
                         name: 'id_gestion',
                         id: 'id_gestion',
@@ -94,14 +171,16 @@ header("content-type: text/javascript; charset=UTF-8");
                         mode:'remote',
                         pageSize:5,
                         queryDelay:500,
-                        listWidth:'225',
-                        width:150
-                },
+                        listWidth:'232',
+                        width:150,
+                        resizable: true
+                },*/
                 {
 
                     name: 'desde',
                     id: 'desde',
                     fieldLabel: 'Desde',
+                    emptyText:'Inicio...',
                     allowBlank: true,
                     format: 'd/m/Y',
                     width: 150,
@@ -114,46 +193,13 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'hasta',
                     id: 'hasta',
                     fieldLabel: 'Hasta',
+                    emptyText:'Fin...',
                     allowBlank: true,
                     format: 'd/m/Y',
                     width: 150,
                     xtype: 'datefield',
                     id_grupo: 0,
                     form: true
-                },
-                {
-                    xtype:'combo',
-                    name: 'id_oficina',
-                    id: 'id_oficina',
-                    fieldLabel: 'Oficina',
-                    allowBlank: true,
-                    emptyText:'Oficina...',
-                    blankText: 'Oficina',
-                    store:new Ext.data.JsonStore(
-                    {
-                        url: '../../sis_organigrama/control/Oficina/listarOficina',
-                        id: 'id_oficina',
-                        root: 'datos',
-                        sortInfo: {
-                            field: 'nombre',
-                            direction: 'ASC'
-                        },
-                        totalProperty: 'total',
-                        fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
-                        // turn on remote sorting
-                        remoteSort: true,
-                        baseParams:{par_filtro:'nombre'}
-                    }),
-                    valueField: 'id_oficina',
-                    triggerAction: 'all',
-                    displayField: 'nombre',
-                    hiddenName: 'id_oficina',
-                    mode:'remote',
-                    pageSize:10,
-                    queryDelay:500,
-                    resizable: true,
-                    listWidth:'225',
-                    width:150
                 }/*,
                 {
                        xtype:'combo',
@@ -243,11 +289,23 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.cargarTipo(rec.data.field1);
             },this);*/
             
-            Ext.getCmp('id_gestion').on('select', function(cmb, rec, ind){
+            /*Ext.getCmp('id_gestion').on('select', function(cmb, rec, ind){
 
                 //Ext.getCmp('id_periodo').reset();
                 //Ext.getCmp('id_periodo').enable();
                 //Ext.getCmp('id_periodo').store.baseParams.id_gestion = rec.data.id_gestion;
+            },this);*/
+
+            Ext.getCmp('reportes').on('select', function(cmb, rec, ind){
+                console.log('combo',cmb,'rec', rec);
+                if(cmb.value == 'Tipo Incidente') {
+                    Ext.getCmp('id_tipo_incidente').reset();
+                    Ext.getCmp('id_tipo_incidente').setVisible(true);
+                }else{
+                    Ext.getCmp('id_tipo_incidente').setVisible(false);
+
+                }
+                //Ext.getCmp('id_tipo_incidente').store.baseParams.id_gestion = rec.data.id_gestion;
             },this);
         },
 
@@ -257,16 +315,38 @@ header("content-type: text/javascript; charset=UTF-8");
 
         cargarTipo: function(){
             //var item = getFieldValues(Ext.getCmp('id_gestion'), 'id_gestion', 'gestion');
-            var comboG = Ext.getCmp('id_gestion');
-            var comboP = Ext.getCmp('id_periodo');
+            //var comboP = Ext.getCmp('id_periodo');
+            //var periodo = comboP.getRawValue();
             var tipoGrafico = Ext.getCmp('reportes').getValue();
+            //var comboG = Ext.getCmp('id_gestion').getValue();
+
             var desde = Ext.getCmp('desde').getValue();
             var hasta = Ext.getCmp('hasta').getValue();
+            var oficina = Ext.getCmp('id_oficina').getRawValue();
 
-            var gestion = comboG.getValue();
-            var periodo = comboP.getRawValue();
+            //var gestion = comboG.getValue();
 
-            //if()
+
+
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/stadistica',
+                params:{
+                    p_tipo:tipoGrafico,
+                    id_gestion: gestion,
+                    p_desde: desde,
+                    p_hasta: hasta,
+                    id_oficina:oficina
+
+                },
+                success:function(resp){
+                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    console.log(reg.ROOT.datos);
+
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
 
 
             this.reportPanel.removeAll();

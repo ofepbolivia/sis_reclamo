@@ -219,7 +219,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     hiddenName: 'id_subtipo_incidente',
                     forceSelection: true,
                     typeAhead: false,
-                    editable: false,
+                    editable: true,
                     triggerAction: 'all',
                     lazyRender: true,
                     mode: 'remote',
@@ -238,6 +238,70 @@ header("content-type: text/javascript; charset=UTF-8");
                 bottom_filter:true,
                 id_grupo: 3,
                 filters: {pfiltro: 't.nombre_incidente', type: 'string'},
+                grid: true,
+                form: true
+            },
+
+            {
+                config: {
+                    name: 'origen',
+                    fieldLabel: 'Origen',
+                    allowBlank: true,
+                    anchor: '70%',
+                    gwidth: 100,
+                    maxLength: 25,
+                    typeAhead:true,
+                    forceSelection: true,
+                    triggerAction:'all',
+                    mode:'local',
+                    store:[ 'BCN', 'BUE', 'BYC', 'CBB', 'CCA',  'LPB', 'CIJ', 'MAD', 'MIA', 'ORU', 'POI', 'RIB', 'RBQ', 'SAO', 'SLA', 'S.RE', 'SRZ', 'TDD', 'TJA', 'UYU'],
+                    style:'text-transform:uppercase;'
+                },
+                type: 'ComboBox',
+                filters: {pfiltro: 'rec.origen', type: 'string'},
+                id_grupo: 2,
+                grid: true,
+                form: true
+            },{
+                config: {
+                    name: 'transito',
+                    fieldLabel: 'Transito',
+                    allowBlank: true,
+                    anchor: '70%',
+                    gwidth: 100,
+                    maxLength: 25,
+                    typeAhead:true,
+                    forceSelection: true,
+                    triggerAction:'all',
+                    mode:'local',
+                    store:['BCN', 'BUE', 'BYC', 'CBB', 'CCA',  'LPB', 'CIJ', 'MAD', 'MIA', 'ORU', 'POI', 'RIB', 'RBQ', 'SAO', 'SLA', 'S.RE', 'SRZ', 'TDD', 'TJA', 'UYU'],
+                    style:'text-transform:uppercase;'
+                },
+                type: 'ComboBox',
+                filters: {pfiltro: 'rec.transito', type: 'string'},
+                id_grupo: 2,
+                grid: true,
+                form: true
+            },
+            {
+                config: {
+                    name: 'destino',
+                    fieldLabel: 'Destino',
+                    allowBlank: true,
+                    anchor: '70%',
+                    gwidth: 100,
+                    maxLength: 25,
+                    typeAhead:true,
+                    forceSelection: true,
+                    triggerAction:'all',
+                    mode:'local',
+                    store:['BCN', 'BUE', 'BYC', 'CBB', 'CCA',  'LPB', 'CIJ', 'MAD', 'MIA', 'ORU', 'POI', 'RIB', 'RBQ', 'SAO', 'SLA', 'S.RE', 'SRZ', 'TDD', 'TJA', 'UYU'],
+                    style:'text-transform:uppercase;'
+
+                },
+                type: 'ComboBox',
+                filters: {pfiltro: 'rec.destino', type: 'string'},
+                id_grupo: 2,
                 grid: true,
                 form: true
             }

@@ -698,7 +698,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 maximizable: false,
                 autoDestroy: true,
                 width: 630,
-                height: 402,
+                height: 550,//402
                 layout: 'fit',
                 plain: true,
                 bodyStyle: 'padding:5px;',

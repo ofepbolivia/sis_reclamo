@@ -724,7 +724,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
 					//url: '../../sis_reclamo/control/Reclamo/listarOficinas',
-					url: '../../sis_reclamo/control/Reclamo/listarOficinas',
+					url: '../../sis_reclamo/control/OficinaReclamo/listarOficina',
 					id: 'id_oficina',
 					root: 'datos',
 					sortInfo: {
@@ -854,7 +854,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				emptyText: 'Elija una opción...',
                 qtip: 'Oficina Fisica donde se hace el registro en el ERP, de un Reclamo,se rellena por Defecto.',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_reclamo/control/Reclamo/listarOficinas',// ../../sis_organigrama/control/Oficina/listarOficina
+					url: '../../sis_reclamo/control/OficinaReclamo/listarOficina',// ../../sis_organigrama/control/Oficina/listarOficina
 					id: 'id_oficina',
 					root: 'datos',
 					sortInfo: {

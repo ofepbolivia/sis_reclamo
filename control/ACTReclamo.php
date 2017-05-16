@@ -56,6 +56,16 @@ class ACTReclamo extends ACTbase{
 			$this->objParam->addFiltro("rec.id_subtipo_incidente = ". $this->objParam->getParametro('id_subtipo_incidente'));
 		}
 
+        if($this->objParam->getParametro('origen')!=''){
+            $this->objParam->addFiltro("rec.origen = ''". $this->objParam->getParametro('origen')."''");
+        }
+        if($this->objParam->getParametro('transito')!=''){
+            $this->objParam->addFiltro("rec.transito = ''". $this->objParam->getParametro('transito')."''");
+        }
+        if($this->objParam->getParametro('destino')!=''){
+            $this->objParam->addFiltro("rec.destino = ''". $this->objParam->getParametro('destino')."''");
+        }
+
 		
 
 		switch($this->objParam->getParametro('pes_estado')){
@@ -398,6 +408,12 @@ class ACTReclamo extends ACTbase{
 		$this->res=$this->objFunc->listarFails($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
     }
+
+    /*function prueba(){
+        $this->objFunc=$this->create('MODReclamo');
+        $this->res=$this->objFunc->prueba($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }*/
 
 }
 

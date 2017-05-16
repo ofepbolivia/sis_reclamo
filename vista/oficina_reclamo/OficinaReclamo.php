@@ -315,8 +315,8 @@ header("content-type: text/javascript; charset=UTF-8");
             loadValoresIniciales:function()
             {
                 this.Cmp.aeropuerto.setValue('no');
-                this.Cmp.zona_franca.setValue('no');
-                this.Cmp.frontera.setValue('no');
+                //this.Cmp.zona_franca.setValue('no');
+                //this.Cmp.frontera.setValue('no');
                 Phx.vista.OficinaReclamo.superclass.loadValoresIniciales.call(this);
             },
             preparaMenu:function()
