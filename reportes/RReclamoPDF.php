@@ -27,19 +27,12 @@ class RReclamoPDF extends  ReportePDF{
 
     function  reporteReclamo()
     {  // $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-<<<<<<< HEAD
+
         $this->AddPage();
         //$this->SetHeaderMargin(10);
         $this->SetMargins(15, 25, 15,true);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-=======
-        $this->AddPage('tamano','LETTER');
-        //$this->SetHeaderMargin(10);
-        $this->SetMargins(15, 25, 15,true);
-        $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-
->>>>>>> b4a5ca08c5dbc249e153c60b6a930dcc34a060a7
         $height = 5;
         $width2 = 5;
         $width3 = 46;
@@ -159,42 +152,26 @@ class RReclamoPDF extends  ReportePDF{
         $this->Cell($width3+25, $height, 'FECHA Y HORA DE INCIDENTE:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $this->SetFont('', '');
         $this->Cell($width3+$width2-10, $height, $this->datos[0][" fecha_hora_incidente"], $white, 0, 'L', false, '', 0, false, 'T', 'C');
-<<<<<<< HEAD
+
         $this->Ln();
         $this->SetFont('', 'B',11);
-        $this->Cell($width3, 10 , 'DETALLE INCIDENTE', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-=======
-        $this->ln();
 
-        $this->SetFont('', 'B',11);
         $this->Cell($width3, 10 , 'DETALLE INCIDENTE', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-        //$this->writeHTML('<p>&nbsp;DETALLE INCIDENTE</p>',true);
->>>>>>> b4a5ca08c5dbc249e153c60b6a930dcc34a060a7
+
         $this->Ln();
         $this->SetFont('', '',9);
         $this->MultiCell($width4*2, $height, $this->datos[0]["detalle_incidente"]."\n",'l', 0, '' ,'');
-        //$this->writeHTML('<p style="text-align: justify; ">&nbsp;'.$this->datos[0]['detalle_incidente'].'</p>',true);
         $this->Ln();
         $this->SetFont('', 'B',11);
         $this->Cell($width3, 10 , 'OBSERVACIONES INCIDENTE', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-<<<<<<< HEAD
+
         $this->Ln();
         $this->SetFont('', '',9);
         $this->MultiCell($width4*2, $height, $this->datos[0]["observaciones_incidente"]."\n",0, 'J', 0 ,1);
 
         $this->SetFont('', 'B',11);
         $this->Cell($width3, 10 , 'DATOS DE RECEPCIÓN', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-=======
-        //$this->writeHTML('<p>&nbsp;OBSERVACIONES INCIDENTE</p>',true);
-        $this->Ln();
-        $this->SetFont('', '',9);
-        $this->MultiCell($width4*2, $height, $this->datos[0]["observaciones_incidente"]."\n",'l', 0, '' ,'');
-        //$this->writeHTML('<p style="text-align: justify; ">'.$this->datos[0]['observaciones_incidente'].'</p>',true);
-        $this->Ln();
-        $this->SetFont('', 'B',11);
-        $this->Cell($width3, 10 , 'DATOS DE RECEPCIÓN', 0, 0, 'L', false, '', 0, false, 'T', 'C');
-        //$this->writeHTML('<p>&nbsp;DATOS DE RECEPCIÓN</p>',true);
->>>>>>> b4a5ca08c5dbc249e153c60b6a930dcc34a060a7
+        
         $this->Ln();
         $this->SetFont('', 'B',9);
         $this->Cell($width3+25, $height, 'OFICINA RECLAMO:', 0, 0, 'L', false, '', 0, false, 'T', 'C');
