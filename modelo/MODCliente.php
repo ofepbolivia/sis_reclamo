@@ -197,14 +197,15 @@ class MODCliente extends MODbase{
         $this->procedimiento='rec.ft_cliente_ime';
         $this->transaccion='CLI_VALIDAR_GET';
         $this->tipo_procedimiento='IME';//tipo de transaccion
-
+        $this->setCount(false);
         $this->setParametro('nombre','nombre','varchar');
         $this->setParametro('apellido','apellido','varchar');
         $this->setParametro('genero','genero','varchar');
         $this->setParametro('ci','ci','varchar');
-        $this->setCount(false);
 
-        $this->captura('valido','boolean');
+
+        $this->captura('v_valid','varchar');
+        $this->captura('v_desc_func','varchar');
 
 
         //Ejecuta la instruccion

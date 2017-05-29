@@ -546,19 +546,14 @@ header("content-type: text/javascript; charset=UTF-8");
                             var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
                             //console.log('EXISTE:',reg.ROOT.datos.v_valid);
                             if (reg.ROOT.datos.v_valid == 'true') {
-                                Ext.Msg.alert('Alerta','El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' ya fue registrado, desea continuar el registro ');
-                                /*Ext.Msg.confirm('Confirmación', 'El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' ya fue registrado, desea continuar el registro ',
-                                    function (btn) {
-                                        if (btn === 'yes') {
-                                            Phx.vista.Cliente.superclass.onSubmit.call(this, o);
-
-                                        } else {
-
-                                        }
-                                    }, this);*/
+                                Ext.Msg.alert('Alerta','El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' anteriormente ya fue registrado en la BD del ERP por el funcionari@ '+reg.ROOT.datos.v_desc_func);
                             }
-                            else
+                            else {
+                                this.Cmp.nombre.setValue((this.Cmp.nombre.getValue()).trim());
+                                this.Cmp.apellido_paterno.setValue((this.Cmp.apellido_paterno.getValue()).trim());
+                                this.Cmp.apellido_materno.setValue((this.Cmp.apellido_materno.getValue()).trim());
                                 Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+                            }
 
                         },
                         failure: this.conexionFailure,

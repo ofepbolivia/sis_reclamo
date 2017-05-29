@@ -12,7 +12,7 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 	Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
     momento: '',
-	nombreVista: 'Reclamo',
+	nombreVista: 'Reclamo', 
 	constructor: function (config) {
 		this.idContenedor = config.idContenedor;
 		//console.log('maestro_reclamo: '+this.idContenedor);
