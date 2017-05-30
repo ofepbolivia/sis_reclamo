@@ -477,73 +477,76 @@ BEGIN
 	elsif(p_transaccion='REC_REC_ELI')then
 
 		begin
-        select
-            	tr.id_estado_wf,
-            	tr.id_proceso_wf,
-            	tr.estado,
-                tr.id_reclamo,
-                tr.nro_tramite,
-                tr.id_funcionario_recepcion,
-                tr.nro_tramite
+		    select
+              tr.id_estado_wf,
+              tr.id_proceso_wf,
+              tr.estado,
+              tr.id_reclamo,
+              tr.nro_tramite,
+              tr.id_funcionario_recepcion,
+              tr.nro_tramite
         into
-            	v_id_estado_wf,
-                v_id_proceso_wf,
-                v_codigo_estado,
-                v_id_reclamo,
-                v_nro_tramite,
-                v_funcionario,
-                v_nro_tramite
+              v_id_estado_wf,
+              v_id_proceso_wf,
+              v_codigo_estado,
+              v_id_reclamo,
+              v_nro_tramite,
+              v_funcionario,
+              v_nro_tramite
         from rec.treclamo tr
         where tr.id_reclamo = v_parametros.id_reclamo;
+		    IF (p_administrador = 1)THEN
 
-        if v_codigo_estado != 'borrador' then
-        	raise exception 'Solo pueden anularce reclamos del estado borrador';
-        end if;
+            if v_codigo_estado != 'borrador' then
+              raise exception 'Solo pueden anularce reclamos del estado borrador';
+            end if;
 
-        -- obtenemos el tipo del estado anulado
+            -- obtenemos el tipo del estado anulado
 
-        select
-        	te.id_tipo_estado
-        into
-        	v_id_tipo_estado
-        from wf.tproceso_wf pw
-        inner join wf.ttipo_proceso tp on pw.id_tipo_proceso = tp.id_tipo_proceso
-        inner join wf.ttipo_estado te on te.id_tipo_proceso = tp.id_tipo_proceso and te.codigo = 'anulado'
-        where pw.id_proceso_wf = v_id_proceso_wf;
-
-
-        if v_id_tipo_estado is null  then
-        	raise exception 'No se parametrizo el estado "anulado" para reclamos';
-        end if;
+            select
+              te.id_tipo_estado
+            into
+              v_id_tipo_estado
+            from wf.tproceso_wf pw
+            inner join wf.ttipo_proceso tp on pw.id_tipo_proceso = tp.id_tipo_proceso
+            inner join wf.ttipo_estado te on te.id_tipo_proceso = tp.id_tipo_proceso and te.codigo = 'anulado'
+            where pw.id_proceso_wf = v_id_proceso_wf;
 
 
-        -- pasamos el reclamo  al siguiente anulado
-        --raise exception 'revisado: %', v_id_tipo_estado;
-        v_id_estado_actual =  wf.f_registra_estado_wf(
-        	v_id_tipo_estado,
-        	v_funcionario,
-            v_id_estado_wf,
-            v_id_proceso_wf,
-            p_id_usuario,
-            v_parametros._id_usuario_ai,
-            v_parametros._nombre_usuario_ai,
-            v_id_depto,
-            'Eliminacion de Reclamo'|| COALESCE(v_nro_tramite,'--')
-        );
+            if v_id_tipo_estado is null  then
+              raise exception 'No se parametrizo el estado "anulado" para reclamos';
+            end if;
 
-        -- actualiza estado en el reclamo
 
-        update rec.treclamo  set
-        	id_estado_wf =  v_id_estado_actual,
-        	estado = 'anulado',
-        	id_usuario_mod=p_id_usuario,
-        	fecha_mod=now()
-        where id_reclamo  = v_parametros.id_reclamo;
+            -- pasamos el reclamo  al siguiente anulado
+            --raise exception 'revisado: %', v_id_tipo_estado;
+            v_id_estado_actual =  wf.f_registra_estado_wf(
+              v_id_tipo_estado,
+              v_funcionario,
+                v_id_estado_wf,
+                v_id_proceso_wf,
+                p_id_usuario,
+                v_parametros._id_usuario_ai,
+                v_parametros._nombre_usuario_ai,
+                v_id_depto,
+                'Eliminacion de Reclamo'|| COALESCE(v_nro_tramite,'--')
+            );
 
-            --Sentencia de la eliminacion
-			/*delete from rec.treclamo
-            where id_reclamo=v_parametros.id_reclamo;*/
+            -- actualiza estado en el reclamo
 
+            update rec.treclamo  set
+              id_estado_wf =  v_id_estado_actual,
+              estado = 'anulado',
+              id_usuario_mod=p_id_usuario,
+              fecha_mod=now()
+            where id_reclamo  = v_parametros.id_reclamo;
+
+                --Sentencia de la eliminacion
+          /*delete from rec.treclamo
+                where id_reclamo=v_parametros.id_reclamo;*/
+        ELSE
+        	RAISE EXCEPTION 'No es posible eliminar el reclamo %, dirijase a su bandeja, ubique el reclamo creado y haga los cambios necesarios haciendo click en el bóton Editar, o contactese con las Responsables de S.A.C.',v_nro_tramite;
+        END IF;
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Reclamos eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_reclamo',v_parametros.id_reclamo::varchar);
@@ -1471,7 +1474,7 @@ BEGIN
             select count(tr.id_reclamo)
             INTO v_contador
             from rec.treclamo tr
-            where tr.correlativo_preimpreso_frd = trim(both ' ' from v_parametros.correlativo)::integer AND tr.nro_frd = trim(both ' ' from v_parametros.frd);
+            where tr.correlativo_preimpreso_frd = trim(both ' ' from v_parametros.correlativo)::integer AND tr.nro_frd = trim(both ' ' from v_parametros.frd) AND tr.id_oficina_registro_incidente = v_parametros.oficina::integer;
             IF(v_contador>=1)THEN
         		v_valid = 'true';
             ELSE

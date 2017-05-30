@@ -446,7 +446,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
                     //console.log('EXISTE:',reg.ROOT.datos.v_valid);
                     if (reg.ROOT.datos.v_valid == 'true') {
-                        Ext.Msg.alert('Alerta','El cliente ' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + ' con Documento N° ' + this.Cmp.ci.getValue() + ' anteriormente ya fue registrado en la BD del ERP por el funcionari@ '+reg.ROOT.datos.v_desc_func+ '');
+                        Ext.Msg.alert('Alerta','El cliente <b>' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + '</b> con Documento N° <b>' + this.Cmp.ci.getValue() + '</b> anteriormente ya fue registrado en la BD del ERP por el funcionari@ <b>'+reg.ROOT.datos.v_desc_func)+'</b>';
                     }
                     else {
                         this.Cmp.nombre.setValue((this.Cmp.nombre.getValue()).trim());

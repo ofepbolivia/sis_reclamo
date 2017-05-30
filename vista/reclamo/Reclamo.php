@@ -1650,13 +1650,14 @@ header("content-type: text/javascript; charset=UTF-8");
                 url: '../../sis_reclamo/control/Reclamo/validarReclamo',
                 params: {
                     correlativo: this.Cmp.correlativo_preimpreso_frd.getValue(),
-                    frd: this.Cmp.nro_frd.getValue()
+                    frd: this.Cmp.nro_frd.getValue(),
+					oficina: this.Cmp.id_oficina_registro_incidente.getValue()
                 },
                 success: function (resp) {
                     var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
                     //console.log('EXISTE:',reg.ROOT.datos.v_valid);
                     if (reg.ROOT.datos.v_valid == 'true') {
-                        Ext.Msg.alert('Alerta','El Reclamo con Correlativo Preimpreso  Nro.' + this.Cmp.correlativo_preimpreso_frd.getValue()+ ' y F.R.D. Nro.' + this.Cmp.nro_frd.getValue() + ' ya fue registrado, Verifique los Reclamos de su Oficina');
+                        Ext.Msg.alert('Alerta','El Reclamo con Correlativo Preimpreso  Nro. <b>' + this.Cmp.correlativo_preimpreso_frd.getValue()+ '</b> y F.R.D. Nro.<b>' + this.Cmp.nro_frd.getValue() + '</b> ya fue registrado en la <b>'+this.Cmp.id_oficina_registro_incidente.getRawValue()+'</b>, verifique los reclamos registrados en esta oficina.');
                     }
                     else
                         Phx.vista.Reclamo.superclass.onSubmit.call(this, o);

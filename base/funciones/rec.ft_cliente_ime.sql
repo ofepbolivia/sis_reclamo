@@ -33,6 +33,7 @@ DECLARE
     v_nombre				varchar;
     v_contador				integer;
     v_valid					varchar;
+    v_func  				varchar='';
 
 BEGIN
 
@@ -213,15 +214,23 @@ BEGIN
 			select count(tc.ci)
             INTO v_contador
             from rec.tcliente tc
-            where tc.nombre = trim(both ' ' from upper(v_parametros.nombre)) AND tc.apellido_paterno=trim(both ' ' from upper(v_parametros.apellido)) OR tc.ci=trim(both ' ' from v_parametros.ci);
+            where tc.nombre % trim(both ' ' from upper(v_parametros.nombre)) AND tc.apellido_paterno % trim(both ' ' from upper(v_parametros.apellido)) OR tc.ci % trim(both ' ' from v_parametros.ci);
             IF(v_contador>=1)THEN
-        		v_valid = 'true';
+        		    v_valid = 'true';
+
+        		    SELECT vf.desc_funcionario1
+                INTO v_func
+                FROM rec.tcliente tcl
+                INNER JOIN segu.tusuario tu ON tu.id_usuario = tcl.id_usuario_reg
+                INNER JOIN orga.vfuncionario_persona vf ON vf.id_persona = tu.id_persona
+                WHERE tcl.nombre % trim(both ' ' from upper(v_parametros.nombre)) AND tcl.apellido_paterno % trim(both ' ' from upper(v_parametros.apellido)) AND tcl.ci % trim(both ' ' from v_parametros.ci);
             ELSE
-            	v_valid = 'false';
-			END IF;
+            	  v_valid = 'false';
+			      END IF;
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Existe el Cliente');
             v_resp = pxp.f_agrega_clave(v_resp,'v_valid',v_valid);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_desc_func',v_func::varchar);
             --Devuelve la respuesta
             return v_resp;
 

@@ -770,6 +770,7 @@ class MODReclamo extends MODbase
 
         $this->setParametro('correlativo','correlativo','varchar');
         $this->setParametro('frd','frd','varchar');
+        $this->setParametro('oficina','oficina','int4');
 
 
         $this->captura('v_valid','varchar');
