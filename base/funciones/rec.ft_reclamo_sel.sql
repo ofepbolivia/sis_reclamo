@@ -39,6 +39,15 @@ DECLARE
     va_id_depto 		integer[];
     v_gestion		integer;
 
+    --Modifica las alarmas que fallaron
+	  v_ids_alarma		INTEGER[];
+    v_index				integer = 1;
+    v_nro_tramites		varchar[];
+    v_titulo_correo		varchar[];
+    v_correo			varchar[];
+    v_fecha_reg			TIMESTAMP[];
+    v_cadena			varchar;
+
 
 BEGIN
 
@@ -774,11 +783,56 @@ BEGIN
       ***********************************/
      ELSIF(p_transaccion = 'REC_FAILS_SEL')THEN
       BEGIN
+
+          FOR v_record IN  (SELECT ta.id_alarma, ta.titulo_correo, ta.fecha_reg, ta.correos, tr.nro_respuesta
+                              FROM rec.trespuesta tr
+                              INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
+                              WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
+                              (ta.fecha_reg::date BETWEEN now()::date-1 and now()::date+1)) LOOP
+
+        	v_ids_alarma[v_index] = v_record.id_alarma;
+            v_nro_tramites[v_index] = v_record.nro_respuesta;
+            v_titulo_correo[v_index] = v_record.titulo_correo;
+            v_correo[v_index] = v_record.correos;
+            v_fecha_reg[v_index] = v_record.fecha_reg;
+
+            v_index = v_index + 1;
+        END LOOP;
+
+        FOR v_index IN 1..array_length(v_ids_alarma,1) LOOP
+        	v_cadena = substr(v_correo[v_index], 1, position(',' IN v_correo[v_index])-1);
+       		UPDATE param.talarma  SET
+              descripcion ='<div  style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
+              					<p>
+                                	<span>De: <b>Sistema ERP BOA</b></span><br>
+                                    <span>Fecha: '||v_fecha_reg[v_index]||'</span><br>
+                                    <span>Asunto: '||v_titulo_correo[v_index]||'</span><br>
+                                    <span>Para: "'||v_cadena||'" </span><br>
+                                    <span>Cc: "sac@boa.bo" </span>
+                                </p>
+              				</div><br><br>
+              				<div style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
+                                <span><b>Estimados Señores:</b></span><br><br>
+                                <p><img src="../../../sis_reclamo/reportes/sac.png"></p><br><br>
+                                <span>Se presento un error al enviar el correo.</span><br><br>
+                                <p><img src="../../../sis_reclamo/media/error_mail.png"></p><br><br><br>
+                                <span>La falla se debe a un error de nombre de correo, pongase en contacto </span><br>
+                                <span>con el cliente para confirmar la veracidad del correo al que se envio la respuesta.</span><br><br>
+                                <span><b>Nro. Tramite:</b> </span>'||v_nro_tramites[v_index]||'
+							</div>',
+              titulo_correo = regexp_replace(titulo_correo,'Respuesta al Reclamo','Error al enviar el correo,'),
+              estado_envio = 'exito',
+              desc_falla = '',
+              pendiente = 'no'
+            WHERE id_alarma = v_ids_alarma[v_index]::integer;
+        END LOOP;
+        
           v_consulta = 'select
-          				trec.nro_tramite,
+          				trec.id_reclamo,
+          				 trec.nro_tramite,
                         trec.id_cliente,
-                        case when substring(ta.desc_falla, position(''D'' in ta.desc_falla), position(''!'' in ta.desc_falla)-8) like ''Domain Email address % is invalid -- aborting!'' then ''Dominio de Correo no Existe, Consulte con el Cliente via Telefono''
-						else ''Cuenta de Correo no existe, Consulte con el Cliente via Telefono''
+                        case when substring(ta.desc_falla, position(''D'' in ta.desc_falla), position(''!'' in ta.desc_falla)-8) like ''Domain Email address % is invalid -- aborting!'' then ''Dominio de Correo no Existe, Consulte con el Cliente via Telefono''::VARCHAR
+						else ''Cuenta de Correo no existe, Consulte con el Cliente via Telefono''::VARCHAR
 						end as falla,
                         vc.nombre_completo2::varchar as desc_funcionario
 						from rec.trespuesta tr
