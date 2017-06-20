@@ -229,3 +229,24 @@ WITH (oids = false);
 
 
 /***********************************F-SCP-FEA-REC-1-07/01/2017****************************************/
+
+
+/***********************************I-SCP-FEA-REC-2-20/06/2017****************************************/
+
+CREATE TABLE rec.tlogs_reclamo (
+  id_logs_reclamo SERIAL,
+  descripcion TEXT,
+  id_reclamo INTEGER,
+  id_funcionario INTEGER,
+  CONSTRAINT tlogs_reclamo_pkey PRIMARY KEY(id_logs_reclamo)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE rec.tlogs_reclamo
+  ALTER COLUMN id_logs_reclamo SET STATISTICS 0;
+
+ALTER TABLE rec.tlogs_reclamo
+  ALTER COLUMN descripcion SET STATISTICS 0;
+
+/***********************************F-SCP-FEA-REC-2-20/06/2017****************************************/

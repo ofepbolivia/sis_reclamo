@@ -26,3 +26,8 @@ select pxp.f_insert_tgui ('<i class="fa fa-clipboard fa-2x"></i>Libro de Respues
 
 /***********************************F-DAT-FEA-REC-1-27/01/2017****************************************/
 
+
+/***********************************I-DAT-FEA-REC-2-20/06/2017****************************************/
+select pxp.f_insert_tgui ('<i class="fa fa-search fa-2x"></i>Consulta Faltas', 'CONFAL', 'CONFAL', 'si', 9, 'sis_reclamo/vista/logs/LogsFaltas.php', 3, '', 'LogsFaltas', 'REC');
+
+/***********************************F-DAT-FEA-REC-2-20/06/2017****************************************/

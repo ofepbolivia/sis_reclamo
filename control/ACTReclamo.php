@@ -9,6 +9,7 @@
 require_once(dirname(__FILE__).'/../reportes/RReclamoPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RLibroRespuestaPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RReporteGrafico.php');
+require_once(dirname(__FILE__).'/../reportes/RFrdFaltante.php');
 
 class ACTReclamo extends ACTbase{
 			
@@ -409,11 +410,73 @@ class ACTReclamo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
     }
 
-    /*function prueba(){
-        $this->objFunc=$this->create('MODReclamo');
-        $this->res=$this->objFunc->prueba($this->objParam);
+
+    function listarControlFRD(){
+
+        $this->objParam->defecto('ordenacion','nro_frd');
+        $this->objParam->defecto('dir_ordenacion','ASC');
+
+        if($this->objParam->getParametro('id_oficina') != '' ) {
+            $this->objParam->addFiltro(" tof.id_oficina = " . $this->objParam->getParametro('id_oficina'));
+        }
+
+        if ($this->objParam->getParametro('id_gestion') != '') {
+            $this->objParam->addFiltro("tr.id_gestion = ". $this->objParam->getParametro('id_gestion'));
+        }
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODReclamo','listarControlFRD');
+        }else {
+
+            $this->objFunc = $this->create('MODReclamo');
+            $this->res = $this->objFunc->listarControlFRD($this->objParam);
+        }
         $this->res->imprimirRespuesta($this->res->generarJson());
-    }*/
+
+    }
+
+    function reporteFRDFaltantes(){
+        $this->objFunc=$this->create('MODReclamo');
+        $dataSource = $this->objFunc->reporteFRDFaltantes();
+        $this->dataSource=$dataSource->getDatos();
+
+        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-FRDS Faltantes]').'.pdf';
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+
+        $this->objReporte = new RFrdFaltante($this->objParam);
+
+        $this->objReporte->setDatos($this->dataSource);
+        $this->objReporte->generarReporte();
+        $this->objReporte->output($this->objReporte->url_archivo,'F');
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function insertarLog(){
+        $this->objFunc=$this->create('MODReclamo');
+        $this->res=$this->objFunc->insertarLog($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function listarLogsFaltas(){
+        $this->objParam->defecto('ordenacion','id_logs_reclamo');
+        $this->objParam->defecto('dir_ordenacion','desc');
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODReclamo','listarLogsFaltas');
+        }else {
+            $this->objFunc = $this->create('MODReclamo');
+            $this->res = $this->objFunc->listarLogsFaltas($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
 }
 

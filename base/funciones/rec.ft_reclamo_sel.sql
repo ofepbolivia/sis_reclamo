@@ -37,17 +37,23 @@ DECLARE
     v_id_usuario_pen	integer;
 
     va_id_depto 		integer[];
-    v_gestion		integer;
+    v_gestion			integer;
 
     --Modifica las alarmas que fallaron
-	  v_ids_alarma		INTEGER[];
+	v_ids_alarma		INTEGER[];
     v_index				integer = 1;
     v_nro_tramites		varchar[];
     v_titulo_correo		varchar[];
     v_correo			varchar[];
     v_fecha_reg			TIMESTAMP[];
     v_cadena			varchar;
+    v_cont				integer;
 
+    --reportes de frds fatantes
+    v_max				integer;
+    v_min				integer;
+    v_frd_faltantes		integer[];
+    v_frds				integer[];
 
 BEGIN
 
@@ -578,7 +584,7 @@ BEGIN
                         inner join rec.vcliente cli on cli.id_cliente = rec.id_cliente
                         inner join rec.tcliente cl on cl.id_cliente =rec.id_cliente
                         join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
-                        inner join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                        left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
                       	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
                         inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
@@ -775,7 +781,7 @@ BEGIN
 			return v_consulta;
 
       end;
-  /*********************************
+    /*********************************
       #TRANSACCION:  'REC_FAILS_SEL'
       #DESCRIPCION:	Permite recuperar las alarmas que fallaron al momento de enviar la respuesta de un reclamo.
       #AUTOR:		FEA
@@ -783,69 +789,237 @@ BEGIN
       ***********************************/
      ELSIF(p_transaccion = 'REC_FAILS_SEL')THEN
       BEGIN
+        SELECT count(ta.id_alarma)
+        INTO v_cont
+        FROM rec.trespuesta tr
+        INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
+        WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
+        (ta.fecha_reg::date BETWEEN now()::date-1 and now()::date+1);
 
+        IF(v_cont>0)THEN
           FOR v_record IN  (SELECT ta.id_alarma, ta.titulo_correo, ta.fecha_reg, ta.correos, tr.nro_respuesta
-                              FROM rec.trespuesta tr
-                              INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
-                              WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
-                              (ta.fecha_reg::date BETWEEN now()::date-1 and now()::date+1)) LOOP
+                                FROM rec.trespuesta tr
+                                INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
+                                WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
+                                (ta.fecha_reg::date BETWEEN now()::date-1 and now()::date+1)) LOOP
 
-        	v_ids_alarma[v_index] = v_record.id_alarma;
-            v_nro_tramites[v_index] = v_record.nro_respuesta;
-            v_titulo_correo[v_index] = v_record.titulo_correo;
-            v_correo[v_index] = v_record.correos;
-            v_fecha_reg[v_index] = v_record.fecha_reg;
+              v_ids_alarma[v_index] = v_record.id_alarma;
+              v_nro_tramites[v_index] = v_record.nro_respuesta;
+              v_titulo_correo[v_index] = v_record.titulo_correo;
+              v_correo[v_index] = v_record.correos;
+              v_fecha_reg[v_index] = v_record.fecha_reg;
 
-            v_index = v_index + 1;
-        END LOOP;
+              v_index = v_index + 1;
+          END LOOP;
 
-        FOR v_index IN 1..array_length(v_ids_alarma,1) LOOP
-        	v_cadena = substr(v_correo[v_index], 1, position(',' IN v_correo[v_index])-1);
-       		UPDATE param.talarma  SET
-              descripcion ='<div  style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
-              					<p>
-                                	<span>De: <b>Sistema ERP BOA</b></span><br>
-                                    <span>Fecha: '||v_fecha_reg[v_index]||'</span><br>
-                                    <span>Asunto: '||v_titulo_correo[v_index]||'</span><br>
-                                    <span>Para: "'||v_cadena||'" </span><br>
-                                    <span>Cc: "sac@boa.bo" </span>
-                                </p>
-              				</div><br><br>
-              				<div style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
-                                <span><b>Estimados Señores:</b></span><br><br>
-                                <p><img src="../../../sis_reclamo/reportes/sac.png"></p><br><br>
-                                <span>Se presento un error al enviar el correo.</span><br><br>
-                                <p><img src="../../../sis_reclamo/media/error_mail.png"></p><br><br><br>
-                                <span>La falla se debe a un error de nombre de correo, pongase en contacto </span><br>
-                                <span>con el cliente para confirmar la veracidad del correo al que se envio la respuesta.</span><br><br>
-                                <span><b>Nro. Tramite:</b> </span>'||v_nro_tramites[v_index]||'
-							</div>',
-              titulo_correo = regexp_replace(titulo_correo,'Respuesta al Reclamo','Error al enviar el correo,'),
-              estado_envio = 'exito',
-              desc_falla = '',
-              pendiente = 'no'
-            WHERE id_alarma = v_ids_alarma[v_index]::integer;
-        END LOOP;
-        
+          FOR v_index IN 1..array_length(v_ids_alarma,1) LOOP
+              v_cadena = substr(v_correo[v_index], 1, position(',' IN v_correo[v_index])-1);
+              UPDATE param.talarma  SET
+                descripcion ='<div  style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
+                                  <p>
+                                      <span>De: <b>Sistema ERP BOA</b></span><br>
+                                      <span>Fecha: '||v_fecha_reg[v_index]||'</span><br>
+                                      <span>Asunto: '||v_titulo_correo[v_index]||'</span><br>
+                                      <span>Para: "'||v_cadena||'" </span><br>
+                                      <span>Cc: "sac@boa.bo" </span>
+                                  </p>
+                              </div><br><br>
+                              <div style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
+                                  <span><b>Estimados Señores:</b></span><br><br>
+                                  <p><img src="../../../sis_reclamo/reportes/sac.png"></p><br><br>
+                                  <span>Se presento un error al enviar el correo.</span><br><br>
+                                  <p><img src="../../../sis_reclamo/media/error_mail.png"></p><br><br><br>
+                                  <span>La falla se debe a un error de nombre de correo, pongase en contacto </span><br>
+                                  <span>con el cliente para confirmar la veracidad del correo al que se envio la respuesta.</span><br><br>
+                                  <span><b>Nro. Tramite:</b> </span>'||v_nro_tramites[v_index]||'
+                              </div>',
+                titulo_correo = regexp_replace(titulo_correo,'Respuesta al Reclamo','Error al enviar correo,'),
+                estado_envio = 'exito',
+                desc_falla = '',
+                pendiente = 'no',
+                correos = 'sac@boa.bo,(gvelasquez@boa.bo;franklin.espinoza@boa.bo)'
+              WHERE id_alarma = v_ids_alarma[v_index]::integer;
+          END LOOP;
+        END IF;
           v_consulta = 'select
           				trec.id_reclamo,
-          				 trec.nro_tramite,
+          				trec.nro_tramite,
                         trec.id_cliente,
-                        case when substring(ta.desc_falla, position(''D'' in ta.desc_falla), position(''!'' in ta.desc_falla)-8) like ''Domain Email address % is invalid -- aborting!'' then ''Dominio de Correo no Existe, Consulte con el Cliente via Telefono''::VARCHAR
-						else ''Cuenta de Correo no existe, Consulte con el Cliente via Telefono''::VARCHAR
+                        case when substring(ta.desc_falla, position(''D'' in ta.desc_falla), position(''!'' in ta.desc_falla)-8) like ''Domain Email address % is invalid -- aborting!'' then ''Dominio de Correo no Existe, Consulte con el Cliente via Telefono''::varchar
+						else ''Cuenta de Correo no existe, Consulte con el Cliente via Telefono''::varchar
 						end as falla,
                         vc.nombre_completo2::varchar as desc_funcionario
 						from rec.trespuesta tr
 						inner join param.talarma ta on ta.id_proceso_wf = tr.id_proceso_wf
 						inner join rec.treclamo trec on trec.id_reclamo = tr.id_reclamo
 						inner join rec.vcliente vc on vc.id_cliente = trec.id_cliente
-						where (ta.estado_envio = ''falla'' or ta.pendiente <> ''no'' ) and (ta.fecha_reg::date between now()::date-1 and now()::date+1)';
+						where (ta.estado_envio = ''falla'' or ta.pendiente <> ''no'' ) and (ta.fecha_reg::date between now()::date-1 and now()::date+1) and ';
 
           v_consulta:=v_consulta||v_parametros.filtro;
           v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-
+		  raise notice 'v_consulta %',v_consulta;
           return v_consulta;
       END;
+    /*********************************
+    #TRANSACCION:  'REC_NUM_FRD_SEL'
+    #DESCRIPCION:	Recupera los nros frds de una oficina en especifico.
+    #AUTOR:		FEA
+    #FECHA:		01-06-2017 18:32:59
+    ***********************************/
+   	ELSIF(p_transaccion = 'REC_NUM_FRD_SEL')THEN
+      BEGIN
+
+          v_consulta = 'SELECT
+                        tr.id_reclamo,
+                        tr.nro_tramite,
+                        tr.nro_frd,
+                        tr.correlativo_preimpreso_frd AS nro_correlativo,
+                        tof.nombre as oficina,
+                        tof.id_oficina,
+                        tr.id_gestion,
+                        vc.nombre_completo1::varchar as nombre_cliente,
+                        vf.desc_funcionario1::varchar as nombre_funcionario
+                        FROM rec.treclamo tr
+                        INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+                        INNER JOIN rec.vcliente vc ON vc.id_cliente = tr.id_cliente
+                        INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = tr.id_funcionario_recepcion
+                        WHERE ';
+
+          v_consulta:=v_consulta||v_parametros.filtro;
+          v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+		  raise notice 'v_consulta: %',v_consulta;
+          RETURN v_consulta;
+      END;
+    /*********************************
+ 	#TRANSACCION:  'REC_NUM_FRD_CONT'
+ 	#DESCRIPCION:	Conteo de registros reporte FRDS.
+ 	#AUTOR:		admin
+ 	#FECHA:		10-08-2016 18:32:59
+	***********************************/
+
+	elsif(p_transaccion='REC_NUM_FRD_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='SELECT count(tr.id_reclamo)
+			   			FROM rec.treclamo tr
+                        INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+                        INNER JOIN rec.vcliente vc ON vc.id_cliente = tr.id_cliente
+                        INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = tr.id_funcionario_recepcion
+                        WHERE ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+    /*********************************
+    #TRANSACCION:  'REC_REP_FRD_SEL'
+    #DESCRIPCION:	REPORTE DE LOS FRDS FALTANTES EN UNA OFICINA
+    #AUTOR:		Franklin Espinoza
+    #FECHA:		12-06-2017 14:58:16
+    ***********************************/
+    elsif(p_transaccion='REC_REP_FRD_SEL')then
+
+          BEGIN
+
+          	create temp table tnro_frds(
+              nro_frd numeric
+           	)on commit drop;
+
+            insert into tnro_frds(
+            	SELECT to_number(tr.nro_frd,'9999999')
+            	FROM rec.treclamo tr
+            	INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+            	WHERE tr.id_oficina_registro_incidente = v_parametros.id_oficina and tr.id_gestion = v_parametros.id_gestion
+            );
+
+
+            SELECT max(nro_frd),min(nro_frd)
+            INTO v_max, v_min
+            FROM tnro_frds ;
+
+            v_cont = 0;
+            FOR v_index IN (SELECT nro_frd FROM tnro_frds)LOOP
+              v_frds[v_cont] = v_index;
+              v_cont = v_cont + 1;
+            END LOOP;
+
+            v_cont = 0;
+            FOR v_index IN 1..v_max LOOP
+              IF v_index = ANY (v_frds) THEN
+              ELSE
+                  v_frd_faltantes[v_cont] = v_index;
+                  v_cont = v_cont + 1;
+              END IF;
+            END LOOP;
+            --Definicion de la respuesta
+            v_consulta = 'SELECT
+                                tof.nombre,
+                                '''||array_to_string(v_frds,',')||'''::varchar as frds,
+            					'''||case when array_length(v_frd_faltantes, 1) >= 1 then array_to_string(v_frd_faltantes,',') else '' end||'''::varchar as frd_faltantes
+			   				FROM rec.toficina tof
+                            WHERE tof.id_oficina = '||v_parametros.id_oficina;
+			raise notice 'v_consulta %',v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+         END;
+    /*********************************
+ 	#TRANSACCION:  'REC_LOGS_FAL_SEL'
+ 	#DESCRIPCION:	Listar faltas de los funcionarios de los funcionarios que hacen caso omiso de las advertencias.
+ 	#AUTOR:		f.e.a
+ 	#FECHA:		16-06-2017 18:32:59
+	***********************************/
+
+	elsif(p_transaccion='REC_LOGS_FAL_SEL')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='SELECT
+            			tlr.id_logs_reclamo,
+                        tlr.descripcion,
+                        tlr.id_reclamo,
+                        tlr.id_funcionario,
+                        vf.desc_funcionario1 as nombre_funcionario,
+                        tr.nro_tramite
+			   			FROM rec.tlogs_reclamo tlr
+                        INNER JOIN rec.treclamo tr ON tr.id_reclamo = tlr.id_reclamo
+                        INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = tlr.id_funcionario
+                        WHERE ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+    /*********************************
+ 	#TRANSACCION:  'REC_LOGS_FAL_CONT'
+ 	#DESCRIPCION:	Conteo de registros Log Reclamo.
+ 	#AUTOR:		admin
+ 	#FECHA:		10-08-2016 18:32:59
+	***********************************/
+
+	elsif(p_transaccion='REC_LOGS_FAL_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='SELECT count(tlr.id_logs_reclamo)
+			   			FROM rec.tlogs_reclamo tlr
+                        INNER JOIN rec.treclamo tr ON tr.id_reclamo = tlr.id_reclamo
+                        INNER JOIN orga.vfuncionario vf ON vf.id_funcionario = tlr.id_funcionario
+                        WHERE ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
 	else
 
 		raise exception 'Transaccion inexistente';

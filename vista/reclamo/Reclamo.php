@@ -29,7 +29,9 @@ header("content-type: text/javascript; charset=UTF-8");
 		//this.store.baseParams = {tipo_interfaz: this.nombreVista, id_reclamo: this.maestro.id_reclamo};
 		this.load({params: {start: 0, limit: this.tam_pag}});
 		this.finCons = true;
-
+        this.bandera_log = false;//bandera para controlar las faltas de un funcionario
+        this.titulo = '';
+        this.mensaje = '';
 		this.addButton('ant_estado',{
 				grupo: [0,1,2,3,4,5],
 				argument: {estado: 'anterior'},
@@ -871,7 +873,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				gdisplayField: 'desc_oficina_registro_incidente',
 				hiddenName: 'id_oficina',
 				forceSelection: true,
-				typeAhead: false,
+				typeAhead: true,
 				triggerAction: 'all',
 				lazyRender: true,
 				mode: 'remote',
@@ -937,7 +939,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				gdisplayField: 'desc_nombre_funcionario',
 				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_funcionario1}</p><p style="color: green">{nombre_cargo}<br>{email_empresa}</p><p style="color:green">{oficina_nombre} - {lugar_nombre}</p></div></tpl>',
 				hiddenName: 'id_funcionario_recepcion',
-				forceSelection: true,
+				forceSelection: false,
 				typeAhead: false,
 				triggerAction: 'all',
 				lazyRender: true,
@@ -1253,7 +1255,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	bdel: true,
 	bedit: true,
 	btest: false,
-	fwidth: '70%',
+	fwidth: '75%',
 	fheight : '95%',
 	bodyStyle: 'padding:0 10px 0;',
 	Grupos: [
@@ -1518,7 +1520,14 @@ header("content-type: text/javascript; charset=UTF-8");
 		var estado = reg.ROOT.datos.v_codigo_estado_siguiente;
 
 		if(estado=='pendiente_revision' ){
-			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">72 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
+			//Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">72 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
+            Ext.Msg.show({
+                title: 'Información',
+                msg: '<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">72 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>',
+                buttons: Ext.Msg.OK,
+                width: 512,
+                icon: Ext.Msg.INFO
+            });
 		}
 
 		/*if(estado=='registrado_ripat' && rec.data.nro_ripat_att==null){
@@ -1545,21 +1554,37 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		}, this);
 
-		/*this.Cmp.id_cliente.on('select',function(cmb, record, index){
-			var v_cliente = new Cliente();
-			v_cliente.
-			//alert('Chau');
-			//Ext.Msg.alert('hola');
-		},this);*/
+        /*this.Cmp.id_oficina_registro_incidente.on('focus', function () {
+            console.log('foco');
+             Ext.Ajax.request({
+             url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
+             params:{
+             id_usuario: 0
+             },
+             success:function(resp){
+             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                console.log('foco datos',reg.ROOT.datos);
+                 this.Cmp.id_oficina_registro_incidente.setValue(reg.ROOT.datos.id_oficina);
+                 this.Cmp.id_oficina_registro_incidente.setRawValue(reg.ROOT.datos.oficina_nombre);
+
+                 this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
+                 this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
+
+             },
+             failure: this.conexionFailure,
+             timeout:this.timeout,
+             scope:this
+             });
+
+        }, this);*/
+
 
 		/*that = this;
 		setInterval(function(){ that.reload();},30000);*/
 	},
 
 	/*onButtonAct : function(){
-		alert('entra');
 		Phx.vista.Reclamo.superclass.onButtonAct.call(this);
-
 	},*/
 
 	onButtonNew : function () {
@@ -1608,7 +1633,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
 				this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
 				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
-				//console.log('ofi: ',this.Cmp.id_oficina_registro_incidente.getValue());
+
+				//console.log('ofi: ',this.Cmp.id_oficina_registro_incidente.getValue(), this.Cmp.id_oficina_registro_incidente.getRawValue());
                 this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
 			},
 			failure: this.conexionFailure,
@@ -1641,6 +1667,8 @@ header("content-type: text/javascript; charset=UTF-8");
     },*/
     onSubmit: function (o,x, force) {
         //Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+
+        console.log('probando',this.Cmp.id_oficina_registro_incidente.getValue(), this.Cmp.id_oficina_registro_incidente.getRawValue());
         if(this.momento == 'edit'){
             console.log(this.momento);
             Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
@@ -1655,9 +1683,83 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 success: function (resp) {
                     var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
-                    //console.log('EXISTE:',reg.ROOT.datos.v_valid);
+
+                    var bandera = reg.ROOT.datos.v_band_frds;
+
+                    var cad_aux = reg.ROOT.datos.v_cad_frds.replace(/<br>/gi,'');
+
                     if (reg.ROOT.datos.v_valid == 'true') {
-                        Ext.Msg.alert('Alerta','El Reclamo con Correlativo Preimpreso  Nro. <b>' + this.Cmp.correlativo_preimpreso_frd.getValue()+ '</b> y F.R.D. Nro.<b>' + this.Cmp.nro_frd.getValue() + '</b> ya fue registrado en la <b>'+this.Cmp.id_oficina_registro_incidente.getRawValue()+'</b>, verifique los reclamos registrados en esta oficina.');
+                        //Ext.Msg.alert('','El Reclamo con Correlativo Preimpreso  Nro. <b>' + this.Cmp.correlativo_preimpreso_frd.getValue()+ '</b> y F.R.D. Nro.<b>' + this.Cmp.nro_frd.getValue() + '</b> ya fue registrado en la <b>'+this.Cmp.id_oficina_registro_incidente.getRawValue()+'</b>, verifique los reclamos registrados en esta oficina.');
+                        Ext.Msg.show({
+                            title: 'Alerta',
+                            msg: '<div>El Reclamo con Correlativo Preimpreso  Nro. <b>' + this.Cmp.correlativo_preimpreso_frd.getValue()+ '</b> y F.R.D. Nro.<b>' + this.Cmp.nro_frd.getValue() + '</b> ya fue registrado en la <b>'+this.Cmp.id_oficina_registro_incidente.getRawValue()+'</b>, verifique los reclamos registrados en esta oficina.</div>',
+                            buttons: Ext.Msg.OK,
+                            width: 600,
+							maxWidth:1024,
+                            icon: Ext.Msg.WARNING
+                        });
+                    }else if(bandera == 'duplicado'){
+
+                        this.titulo = 'Duplicidad';
+                        this.mensaje = 'Señor usuario esta tratando de insertar un numero de frd que ya existe en su oficina, se le suguiere verificar los frds de su oficina.<br><br> ' +
+                            'Haga click en <b>Aceptar</b> para pasar por alto la suguerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>'+
+                            '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas suguerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
+
+                        if(reg.ROOT.datos.v_cad_frds != ''){
+                            this.mensaje = '<br><div> Señor usuario esta tratando de insertar un numero de frd que ya existe en su oficina, a continuación le mostramos la lista de frds que no se utilizaron, por algun motivo se pasaron por alto,' +
+                                ' le suguerimos usar algun numero de frd de esta lista para el registro que esta realizando, la finalidad es tener un control correlativo de los reclamos de su oficina.<br><br>'+reg.ROOT.datos.v_cad_frds+'</div>'+
+                                '<br><br> Haga click en <b>Aceptar</b> para pasar por alto la suguerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
+                                '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas suguerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>'
+                        }
+
+                        Ext.Msg.show({
+                            title: this.titulo,
+                            msg: this.mensaje,
+                            fn: function (btn){
+                                if(btn == 'ok'){
+                                    Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+                                    this.bandera_log = true;
+                                }
+                            },
+                            buttons: Ext.Msg.OKCANCEL,
+                            width: 800,
+                            maxWidth:1024,
+                            icon: Ext.Msg.WARNING,
+                            scope:this
+                        });
+                    }else if(bandera == 'nuevo'){
+
+                        if(reg.ROOT.datos.v_cad_frds != ''){
+
+                            if(cad_aux.indexOf(parseInt(this.Cmp.nro_frd.getValue()))>=0){
+                                Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+                            }else{
+                                console.log('entra b');
+                                this.titulo = 'Disponibilidad';
+                                this.mensaje = 'Señor usuario esta tratando de insertar un numero de frd que no existe en su oficina,pero tenga en conocimiento que tiene numeros de frds que no se utilizaron en su oficina'+
+                                    ' le suguerimos usar algun numero de frd de esta lista para el registro que esta realizando, la finalidad es tener un control correlativo de los reclamos de su oficina.<br><br>'+reg.ROOT.datos.v_cad_frds+'</div><br>'+
+                                    ' <br>Haga click en <b>Aceptar</b> para pasar por alto la suguerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
+                                    '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas suguerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
+                                Ext.Msg.show({
+                                    title: this.titulo,
+                                    msg: this.mensaje,
+                                    fn: function (btn) {
+                                        if(btn == 'ok'){
+                                            Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+                                            this.bandera_log = true;
+                                        }
+                                    },
+                                    buttons: Ext.Msg.OKCANCEL,
+                                    width: 800,
+                                    maxWidth:1024,
+                                    icon: Ext.Msg.WARNING,
+                                    scope:this
+                                });
+                            }
+
+                        }else{
+                            Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+                        }
                     }
                     else
                         Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
@@ -1674,7 +1776,26 @@ header("content-type: text/javascript; charset=UTF-8");
 		Phx.vista.Reclamo.superclass.successSave.call(this,resp);
 
 		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-        console.log(objRes);
+        //console.log('objRes',objRes);
+        if(this.bandera_log){
+            var fecha_hora = new Date();
+            Ext.Ajax.request({
+                url: '../../sis_reclamo/control/Reclamo/insertarLog',
+                params: {
+                    descripcion: 'En fecha <b>'+fecha_hora.getDate() + '/' + (fecha_hora.getMonth() + 1) + '/' + fecha_hora.getFullYear()+' '+fecha_hora.getHours() + ':' + fecha_hora.getMinutes() + ':' + fecha_hora.getSeconds()+'</b> el funcionario <b>'+this.Cmp.id_funcionario_recepcion.getRawValue()+'</b> hizo caso omiso a los mensajes de suguerencia. <br>Detalle: <br> Titulo: <b>'+this.titulo+'</b>, <br> Mensaje: <br>'+this.mensaje,
+                    id_reclamo: objRes.ROOT.datos.id_reclamo,
+                    id_funcionario: this.Cmp.id_funcionario_recepcion.getValue()
+                },
+                success:function (resp) {
+                    var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    //Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+                    console.log('se Guardo con exito el log: ',objRes.ROOT.datos.id_logs_reclamo)
+                },
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });
+        }
 
 		if(objRes.ROOT.datos.v_momento == 'new'){
 			this.sigEstado2(objRes.ROOT.datos.v_id_estado_wf, objRes.ROOT.datos.v_id_proceso_wf);
@@ -1740,14 +1861,14 @@ header("content-type: text/javascript; charset=UTF-8");
 		resp.argument.wizard.panel.destroy();
 
 		if(estado=='pendiente_revision'){
-			/*Ext.Msg.show({
-				title: 'ATENCION !!!',
-				msg: '<b>A partir de este momento usted tiene ' + '\n' + ' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>',
-				width: 600,
-				buttons: Ext.Msg.YESNO,
-				icon : Ext.Msg.WARNING
-			});*/
-			Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
+            Ext.Msg.show({
+                title: 'Información',
+                msg: '<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">72 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>',
+                buttons: Ext.Msg.OK,
+                width: 512,
+                icon: Ext.Msg.INFO
+            });
+			//Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">48 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
 
 		}
 
@@ -1797,26 +1918,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	cargarCliente : function (id_cliente, nombre_cliente) {
 		this.Cmp.id_cliente.setValue(id_cliente);
 		this.Cmp.id_cliente.setRawValue(nombre_cliente.toUpperCase());
-	}/*,
-	reportes: function(){
-		Phx.CP.loadingShow();
-		Ext.Ajax.request({
-			url:'../../sis_reclamo/control/Reclamo/generarReporte',
-			params:{
-				codigo_proceso:  'REC',
-				proceso_macro:   'REC'
-			},
-			success:this.guardarReporte,
-			failure: this.conexionFailure,
-			timeout:this.timeout,
-			scope:this
-		});	
-	},
-
-	guardarReporte: function(resp){
-		Phx.CP.loadingHide();
-		var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-	}*/
-	});
+	}
+});
 </script>
 

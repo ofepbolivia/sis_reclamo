@@ -69,6 +69,7 @@ header("content-type: text/javascript; charset=UTF-8");
         aux = this.Atributos[16]
         this.Atributos[16] = this.Atributos[31];
         this.Atributos[31] = aux;
+
         Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
         //this.store.baseParams.func_estado = 'oficina';
         this.store.baseParams.tipo_interfaz=this.nombreVista;
@@ -92,11 +93,37 @@ header("content-type: text/javascript; charset=UTF-8");
             scope:this
         });
 
+        this.addButton('control_frds',{
+            grupo:[0,1,2,3,4,5],
+            text :'Control FRDS',
+            iconCls : 'bfolder',
+            disabled: false,
+            handler : this.winFRD,
+            tooltip : '<b>Control FRDS,</b><br/><b>Nos permite llevar un seguimiento de los frd que no se registran.</b>'
+        });
+
         this.cmbGestion.on('select',this.capturarEventos, this);
         //this.padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
-
-        console.log(this.Atributos);
+        this.getBoton('ant_estado').setVisible(false);
     },
+
+    winFRD: function (){
+        var rec=this.sm.getSelected();
+        console.log('rec',rec);
+        rec.data.nombreVista = 'RegistroReclamos';
+        Phx.CP.loadWindows(
+            '../../../sis_reclamo/vista/reclamo/ControlFRD.php',
+            'Control de FRDS',
+            {
+                width:'80%',
+                height:'80%'
+            },
+            rec.data,
+            this.idContenedor,
+            'ControlFRD'
+        );
+    },
+
     cmbGestion: new Ext.form.ComboBox({
         name: 'gestion',
         id: 'gestion_reg',
@@ -181,7 +208,7 @@ header("content-type: text/javascript; charset=UTF-8");
         //habilitar reporte de colicitud de comrpa y preorden de compra
         //var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
 
-
+        this.getBoton('control_frds').enable();
         //console.log('papa: '+this.padre);
         if(data['estado'] ==  'borrador'){
             this.getBoton('sig_estado').setVisible(true);
@@ -219,6 +246,7 @@ header("content-type: text/javascript; charset=UTF-8");
         var tb = Phx.vista.RegistroReclamos.superclass.liberaMenu.call(this);
         //var data = this.getSelectedData();
         if(tb){
+            this.getBoton('control_frds').disable();
             this.getBoton('sig_estado').disable();
             this.getBoton('sig_estado').disable();
             /*estados = 'pendiente_asignacion, pendiente_respuesta, en_avenimiento, archivo_con_respuesta, respuesta_registrado_ripatt, archivado_concluido';

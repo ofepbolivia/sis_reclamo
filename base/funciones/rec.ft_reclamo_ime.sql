@@ -72,6 +72,7 @@ DECLARE
     v_dias				integer;
 
     v_fecha_mod 		timestamp;
+    v_fecha_mod_r		timestamp;
     v_anulado			integer=null;
     v_motivo_anulado	varchar;
     v_id_medio_reclamo	integer;
@@ -149,9 +150,27 @@ DECLARE
     v_frd varchar;
     v_contador integer;
     v_fecha_limite_mod date;
+    v_valid varchar;
 
-    v_valid	varchar;
+    --Variables para cambiar a estado archivado_concluido
+    v_fecha				date;
+	v_id_usuario		integer;
+    --
+    v_id_incidente		integer;
+    v_band_incidente	boolean;
 
+    --control de frds fatantes
+    v_max				integer;
+    v_min				integer;
+    v_frd_faltantes		varchar[];
+    v_frds				integer[];
+    v_frds_aux			INTEGER[];
+    v_cont				integer;
+    v_index				integer;
+    v_cad_frds			varchar;
+    v_band_frds			varchar;
+
+    v_id_logs_reclamo		integer;
 BEGIN
 
     v_nombre_funcion = 'rec.ft_reclamo_ime';
@@ -212,7 +231,7 @@ BEGIN
                 	v_dias = 7;
                 END IF;
 
-                v_fecha_mod = v_parametros.fecha_hora_recepcion;
+                v_fecha_mod = v_parametros.fecha_hora_recepcion::date;
 
                 IF(date_part('dow',v_fecha_mod) IN (1, 2, 3, 4, 5) AND v_dias=10)THEN
                 	v_dias = v_dias + 4;
@@ -362,35 +381,37 @@ BEGIN
             --begin
 
 
-            SELECT r.fecha_hora_recepcion
-            INTO v_fecha_mod
+            SELECT r.fecha_hora_recepcion, r.id_tipo_incidente
+            INTO v_fecha_mod_r, v_id_incidente
             FROM rec.treclamo r
     		WHERE r.id_reclamo = v_parametros.id_reclamo;
 
-            IF (v_fecha_mod <> v_parametros.fecha_hora_recepcion) THEN
+			IF(v_id_incidente<>v_parametros.id_tipo_incidente)THEN
+            	v_band_incidente = TRUE;
+            END IF;
+
+            IF ((v_fecha_mod_r::date <> v_parametros.fecha_hora_recepcion::date) OR v_band_incidente) THEN
             --raise exception 'a';
-            	IF 	(select v_parametros.id_tipo_incidente IN (4,6,37,38,48,50))THEN
+            	v_fecha_mod = v_parametros.fecha_hora_recepcion::date;
+                IF 	(select v_parametros.id_tipo_incidente IN (4,6,37,38,48,50))THEN
                 	v_dias = 10;
                 ELSIF v_parametros.id_tipo_incidente=36 THEN
                 	v_dias = 7;
                 END IF;
 
-                IF (select date_part('dow',v_parametros.fecha_hora_recepcion) IN (1, 2, 3, 4, 5)  AND v_dias=10) THEN
-
+                IF (select date_part('dow',v_fecha_mod) IN (1, 2, 3, 4, 5)  AND v_dias=10) THEN
                     v_dias = v_dias + 4;
-                  	v_fecha_limite =  v_parametros.fecha_hora_recepcion + (v_dias||' day')::interval;
-                ELSIF(select date_part('dow',v_parametros.fecha_hora_recepcion) IN (1, 2, 3) AND v_dias=7) THEN
-
+                  	v_fecha_limite =  v_fecha_mod + (v_dias||' day')::interval;
+                ELSIF(select date_part('dow',v_fecha_mod) IN (1, 2, 3) AND v_dias=7) THEN
                 	v_dias = v_dias + 2;
-                    v_fecha_limite = v_parametros.fecha_hora_recepcion + (v_dias||' day')::interval;
-                ELSIF(select date_part('dow',v_parametros.fecha_hora_recepcion) IN (4, 5) AND v_dias=7) THEN
-
+                    v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
+                ELSIF(select date_part('dow',v_fecha_mod) IN (4, 5) AND v_dias=7) THEN
                 	v_dias = v_dias + 4;
-                    v_fecha_limite = v_parametros.fecha_hora_recepcion + (v_dias||' day')::interval;
-                ELSIF(select date_part('dow',v_parametros.fecha_hora_recepcion) = 6)THEN
+                    v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
+                ELSIF(select date_part('dow',v_fecha_mod) = 6)THEN
                     IF(v_dias = 10 OR v_dias = 7)THEN
                         v_dias = v_dias + 3;
-                        v_fecha_limite = v_parametros.fecha_hora_recepcion + (v_dias||' day')::interval;
+                        v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
                     END IF;
                 ELSIF(select date_part('dow',v_parametros.fecha_hora_recepcion) = 0)THEN
                     IF(v_dias = 10 OR v_dias = 7)THEN
@@ -417,6 +438,8 @@ BEGIN
             	v_anulado =  v_parametros.id_motivo_anulado;
             END IF;
             --end
+			--Control para el Nro. de dias de Respuesta si se cambia el tipo de incidente.
+
 
 			update rec.treclamo set
 			id_tipo_incidente = v_parametros.id_tipo_incidente,
@@ -438,7 +461,7 @@ BEGIN
 			origen = upper(v_parametros.origen),
 			nro_frd = v_parametros.nro_frd,
             correlativo_preimpreso_frd = v_parametros.correlativo_preimpreso_frd,
-            fecha_limite_respuesta = CASE WHEN v_fecha_mod <> v_parametros.fecha_hora_recepcion THEN v_fecha_limite ELSE v_fecha_limite_mod END ,
+            fecha_limite_respuesta = CASE WHEN ((v_fecha_mod_r::date <> v_parametros.fecha_hora_recepcion::date) OR v_band_incidente) THEN v_fecha_limite ELSE v_fecha_limite_mod END ,
 			observaciones_incidente = v_parametros.observaciones_incidente,
 			destino = upper(v_parametros.destino),
 			nro_pir = v_parametros.nro_pir,
@@ -477,36 +500,37 @@ BEGIN
 	elsif(p_transaccion='REC_REC_ELI')then
 
 		begin
-		    select
-              tr.id_estado_wf,
-              tr.id_proceso_wf,
-              tr.estado,
-              tr.id_reclamo,
-              tr.nro_tramite,
-              tr.id_funcionario_recepcion,
-              tr.nro_tramite
+
+        select
+                tr.id_estado_wf,
+                tr.id_proceso_wf,
+                tr.estado,
+                tr.id_reclamo,
+                tr.nro_tramite,
+                tr.id_funcionario_recepcion,
+                tr.nro_tramite
         into
-              v_id_estado_wf,
-              v_id_proceso_wf,
-              v_codigo_estado,
-              v_id_reclamo,
-              v_nro_tramite,
-              v_funcionario,
-              v_nro_tramite
+                v_id_estado_wf,
+                v_id_proceso_wf,
+                v_codigo_estado,
+                v_id_reclamo,
+                v_nro_tramite,
+                v_funcionario,
+                v_nro_tramite
         from rec.treclamo tr
         where tr.id_reclamo = v_parametros.id_reclamo;
-		    IF (p_administrador = 1)THEN
+        IF (p_administrador = 1)THEN
 
             if v_codigo_estado != 'borrador' then
-              raise exception 'Solo pueden anularce reclamos del estado borrador';
+                raise exception 'Solo pueden anularce reclamos del estado borrador';
             end if;
 
             -- obtenemos el tipo del estado anulado
 
             select
-              te.id_tipo_estado
+                te.id_tipo_estado
             into
-              v_id_tipo_estado
+                v_id_tipo_estado
             from wf.tproceso_wf pw
             inner join wf.ttipo_proceso tp on pw.id_tipo_proceso = tp.id_tipo_proceso
             inner join wf.ttipo_estado te on te.id_tipo_proceso = tp.id_tipo_proceso and te.codigo = 'anulado'
@@ -514,15 +538,15 @@ BEGIN
 
 
             if v_id_tipo_estado is null  then
-              raise exception 'No se parametrizo el estado "anulado" para reclamos';
+                raise exception 'No se parametrizo el estado "anulado" para reclamos';
             end if;
 
 
             -- pasamos el reclamo  al siguiente anulado
             --raise exception 'revisado: %', v_id_tipo_estado;
             v_id_estado_actual =  wf.f_registra_estado_wf(
-              v_id_tipo_estado,
-              v_funcionario,
+                v_id_tipo_estado,
+                v_funcionario,
                 v_id_estado_wf,
                 v_id_proceso_wf,
                 p_id_usuario,
@@ -535,18 +559,18 @@ BEGIN
             -- actualiza estado en el reclamo
 
             update rec.treclamo  set
-              id_estado_wf =  v_id_estado_actual,
-              estado = 'anulado',
-              id_usuario_mod=p_id_usuario,
-              fecha_mod=now()
+                id_estado_wf =  v_id_estado_actual,
+                estado = 'anulado',
+                id_usuario_mod=p_id_usuario,
+                fecha_mod=now()
             where id_reclamo  = v_parametros.id_reclamo;
-
-                --Sentencia de la eliminacion
-          /*delete from rec.treclamo
-                where id_reclamo=v_parametros.id_reclamo;*/
         ELSE
-        	RAISE EXCEPTION 'No es posible eliminar el reclamo %, dirijase a su bandeja, ubique el reclamo creado y haga los cambios necesarios haciendo click en el bóton Editar, o contactese con las Responsables de S.A.C.',v_nro_tramite;
+        	RAISE EXCEPTION 'No es posible eliminar el reclamo %, dirijase a su bandeja, ubique el reclamo creado y haga los cambios necesarios haciendo click en el bóton Editar.',v_nro_tramite;
         END IF;
+            --Sentencia de la eliminacion
+			/*delete from rec.treclamo
+            where id_reclamo=v_parametros.id_reclamo;*/
+
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Reclamos eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_reclamo',v_parametros.id_reclamo::varchar);
@@ -976,11 +1000,28 @@ BEGIN
     elsif(p_transaccion='REC_STADISTICA_GET')then
 
 		begin
-			--raise exception 'gestion % periodo %',v_parametros.p_gestion,v_parametros.p_periodo;
-        	select p.fecha_fin, p.fecha_ini
+
+        	/*IF()THEN
+
+            ELSIF()THEN
+            ELSIF()THEN
+            ELSIF()THEN
+            ELSIF()THEN
+            ELSIF()THEN
+            ELSIF()THEN
+            END IF;*/
+
+        	/*SELECT tr.nro_tramite
+			FROM rec.treclamo tr
+			WHERE (tr.fecha_hora_recepcion::date BETWEEN date('01-04-2017') AND date('01-05-2017')) OR
+			tr.id_gestion = '' OR tr.id_oficina_registro_incidente = 15*/
+			--raise exception 'tipo % gestion % desde % hast % oficina %',v_parametros.p_tipo,v_parametros.id_gestion,v_parametros.p_desde, v_parametros.p_hasta, v_parametros.id_oficina;
+
+            /*select p.fecha_fin, p.fecha_ini
             into v_fecha_hasta
             from param.tperiodo p
             where p.id_gestion = v_parametros.p_gestion::integer AND p.periodo = v_parametros.p_periodo::integer;
+
 
 			FOR v_stadistica IN (SELECT * FROM rec.treclamo  WHERE fecha_hora_incidente::date BETWEEN v_fecha_hasta.fecha_ini AND v_fecha_hasta.fecha_fin) LOOP
 
@@ -1306,7 +1347,7 @@ BEGIN
                 v_resp = pxp.f_agrega_clave(v_resp,'contencioso_administrativo',contencioso_administrativo::varchar);
                 v_resp = pxp.f_agrega_clave(v_resp,'pendiente_asignacion',pendiente_asignacion::varchar);
             	v_resp = pxp.f_agrega_clave(v_resp,'respuesta_registro_ripat',respuesta_registro_ripat::varchar);
-            END IF;
+            END IF;*/
 
             /*IF (v_parametros.tipo='tipo_incidente')THEN
             	v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transaccion Exitosa');
@@ -1470,22 +1511,205 @@ BEGIN
     elsif(p_transaccion='REC_VALIDAR_GET')then
 
           BEGIN
+           --RAISE EXCEPTION 'v_parametros.oficina %',v_parametros.oficina;
+          	select g.id_gestion
+           	into v_gestion
+           	from param.tgestion g
+           	where g.gestion = EXTRACT(YEAR FROM current_date);
 
+            --encontramos la lista de frd faltantes
+            --begin
+            create temp table tnro_frds(
+              nro_frd numeric
+           	)on commit drop;
+
+            insert into tnro_frds(
+            	SELECT to_number(tr.nro_frd,'9999999')
+            	FROM rec.treclamo tr
+            	INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+            	WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion
+            );
+            SELECT max(nro_frd),min(nro_frd)
+            INTO v_max, v_min
+            FROM tnro_frds ;
+
+            v_cont = 1;
+            FOR v_index IN (SELECT nro_frd FROM tnro_frds)LOOP
+              v_frds[v_cont] = v_index;
+              v_cont = v_cont + 1;
+            END LOOP;
+
+            v_cont = 1;
+            FOR v_index IN 1..v_max LOOP
+              IF v_index = ANY (v_frds) THEN
+
+              ELSE
+              	 v_frds_aux[v_cont] = v_index;
+              	 IF(v_cont::integer % 10 = 0)THEN
+                  	v_frd_faltantes[v_cont] = v_index::varchar||'<br>';
+                 ELSE
+                 	v_frd_faltantes[v_cont] = v_index;
+                 END IF;
+                  v_cont = v_cont + 1;
+              END IF;
+            END LOOP;
+            v_cad_frds = case when array_length(v_frd_faltantes, 1) >= 1 then array_to_string(v_frd_faltantes,',') else '' end;
+            --v_index = v_parametros.frd;
+              --raise exception 'v_parametros.frd: %',v_parametros.frd;
+              IF (v_parametros.frd = ANY(SELECT ltrim(tr.nro_frd,'0')
+                                          FROM rec.treclamo tr
+                                          INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+                                          WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion))THEN
+                  v_band_frds = 'duplicado';
+              ELSIF (v_parametros.frd <> ALL(SELECT ltrim(tr.nro_frd,'0')
+                                              FROM rec.treclamo tr
+                                              INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+                                              WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion))THEN
+                  v_band_frds = 'nuevo';
+              END IF;
+          	--end
+
+            --validar reclamo
             select count(tr.id_reclamo)
             INTO v_contador
             from rec.treclamo tr
-            where tr.correlativo_preimpreso_frd = trim(both ' ' from v_parametros.correlativo)::integer AND tr.nro_frd = trim(both ' ' from v_parametros.frd) AND tr.id_oficina_registro_incidente = v_parametros.oficina::integer;
+            where (tr.correlativo_preimpreso_frd = trim(both ' ' from v_parametros.correlativo)::integer AND tr.nro_frd = trim(both ' ' from v_parametros.frd)) AND tr.id_oficina_registro_incidente = v_parametros.oficina::integer AND tr.id_gestion = v_gestion;
             IF(v_contador>=1)THEN
         		v_valid = 'true';
             ELSE
             	v_valid = 'false';
-			      END IF;
+			END IF;
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Existe el Reclamo');
             v_resp = pxp.f_agrega_clave(v_resp,'v_valid',v_valid);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_cad_frds',v_cad_frds);
+            v_resp = pxp.f_agrega_clave(v_resp,'v_band_frds',v_band_frds::varchar);
             --Devuelve la respuesta
             return v_resp;
          END;
+	 /*********************************
+    #TRANSACCION:  'REC_LOG_FAL_IME'
+ 	#DESCRIPCION:	Registro de faltas.
+ 	#AUTOR:		Franklin Espinoza Alvarez
+ 	#FECHA:		16-6-2017 10:01:08
+	***********************************/
+    elseif (p_transaccion='REC_LOG_FAL_IME')then
+   		begin
+
+        	--Sentencia de la insercion
+        	insert into rec.tlogs_reclamo(
+			descripcion,
+            id_reclamo,
+            id_funcionario,
+			estado_reg,
+			fecha_reg,
+			usuario_ai,
+			id_usuario_reg,
+			id_usuario_ai,
+			id_usuario_mod,
+			fecha_mod
+          	) values(
+            v_parametros.descripcion,
+            v_parametros.id_reclamo,
+            v_parametros.id_funcionario,
+			'activo',
+			now(),
+			v_parametros._nombre_usuario_ai,
+			p_id_usuario,
+			v_parametros._id_usuario_ai,
+			null,
+			null
+			)RETURNING id_logs_reclamo into v_id_logs_reclamo;
+
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Registro de Logs de Faltas Exitoso');
+            v_resp = pxp.f_agrega_clave(v_resp,'id_logs_reclamo	',v_id_logs_reclamo::varchar);
+
+
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
+    /*********************************
+    #TRANSACCION:  'REC_ARCH_CONCL'
+    #DESCRIPCION:	ENVIA LOS RECLAMOS DES ESTADO respuesta_registrado_rippat a archivado_concluido
+    #AUTOR:		Franklin Espinoza
+    #FECHA:		01-02-2017 14:58:16
+    ***********************************/
+    elsif(p_transaccion='REC_ARCH_CONCL')then
+    	 BEGIN
+         	 --Procesamos todos los reclamos que tiene estado respuesta_registrado_ripat
+             v_acceso_directo = '';
+             v_clase = '';
+             v_parametros_ad = '';
+             v_tipo_noti = 'notificacion';
+             v_titulo  = 'Archivo Concluido';
+
+             IF ((SELECT count(*) FROM rec.treclamo r WHERE  r.estado = 'respuesta_registrado_ripat')>0)THEN
+
+                FOR	v_record IN
+                SELECT r.*
+                FROM rec.treclamo r
+                WHERE  r.estado = 'respuesta_registrado_ripat' LOOP
+
+                    SELECT tr.fecha_mod INTO v_fecha
+                    FROM rec.trespuesta tr
+                    WHERE tr.tipo_respuesta='respuesta_final' AND tr.id_reclamo=v_record.id_reclamo;
+
+                    IF (rec.f_dias_respuesta(now()::date, v_fecha,'CONT_DIAS')>=15) THEN
+
+                        SELECT 	te.id_funcionario
+                        INTO v_id_funcionario
+                        FROM wf.testado_wf te
+                        WHERE te.id_estado_wf=v_record.id_estado_wf;
+
+                        --id tipo_estado
+                        SELECT te.id_tipo_estado
+                        INTO v_codigo_estado
+                        FROM wf.ttipo_estado te
+                        WHERE te.codigo = 'archivado_concluido';
+
+                        SELECT tu.id_usuario INTO v_id_usuario
+                        FROM wf.testado_wf te
+                        inner join orga.tfuncionario tf on tf.id_funcionario = te.id_funcionario
+                        inner join segu.tpersona tp on tp.id_persona = tf.id_persona
+                        inner join segu.tusuario tu on tu.id_persona = tp.id_persona
+                        WHERE te.id_estado_wf=v_record.id_estado_wf;
+                        v_id_estado_actual =  wf.f_registra_estado_wf(
+                                                v_codigo_estado,
+                                                v_id_funcionario,
+                                                v_record.id_estado_wf,
+                                                v_record.id_proceso_wf,
+                                                v_id_usuario,
+                                                v_record.id_usuario_ai,
+                                                v_record.usuario_ai,
+                                                NULL,
+                                                COALESCE(v_record.nro_tramite,'--')||' Obs:'||'ARCHIVADO DESPUES DE 15 DIAS',
+                                                v_acceso_directo,
+                                                v_clase,
+                                                v_parametros_ad,
+                                                v_tipo_noti,
+                                                v_titulo);
+
+                        update rec.treclamo r set
+                        revisado = 'concluido',
+                        id_estado_wf =  v_id_estado_actual,
+                        estado = 'archivado_concluido',
+                        id_usuario_mod=v_id_usuario,
+                        id_usuario_ai = v_record.id_usuario_ai,
+                        usuario_ai = v_record.usuario_ai,
+                        fecha_mod=now()
+                        where id_proceso_wf = v_record.id_proceso_wf;
+
+                    END IF;
+                END LOOP;
+            END IF;
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Transacción Exitosa, se cambio a estado archivado_concluido');
+            --Devuelve la respuesta
+            return v_resp;
+         END;
+
 	else
 
     	raise exception 'Transaccion inexistente: %',p_transaccion;

@@ -805,27 +805,114 @@ class MODReclamo extends MODbase
 		return $this->respuesta;
 	}
 
-    /*function prueba()
-    {
+	function cambiarArchivadoConcluido(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='rec.ft_reclamo_ime.sql';
+		$this->transaccion='REC_ARCH_CONCL';
+		$this->tipo_procedimiento='IME';
+		//definicion de variables
+		$this->tipo_conexion = 'seguridad';
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
 
-        $this->procedimiento = 'rec.ft_reporte_sel';
-        $this->transaccion = 'REC_REP_SEL';
-        $this->tipo_procedimiento = 'SEL';
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 
-        $this->setParametro('p_tipo', 'p_tipo', 'varchar');
-        $this->setParametro('id_gestion', 'id_gestion', 'varchar');
-        $this->setParametro('p_desde', 'p_desde', 'varchar');
-        $this->setParametro('p_hasta', 'p_hasta', 'varchar');
-        $this->setParametro('id_oficina', 'id_oficina', 'varchar');
+    function listarControlFRD(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_reclamo_sel';
+        $this->transaccion='REC_NUM_FRD_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        //$this->setCount(true);
+
+        $this->captura('id_reclamo', 'int4');
+        $this->captura('nro_tramite','varchar');
+        $this->captura('nro_frd','varchar');
+        $this->captura('nro_correlativo','integer');
+        $this->captura('oficina','varchar');
+        $this->captura('id_oficina','int4');
+        $this->captura('id_gestion','int4');
+        $this->captura('nombre_cliente','varchar');
+        $this->captura('nombre_funcionario','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
+        //var_dump($this->consulta); exit;
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 
-        //var_dump($this->consulta);exit;
+    function reporteFRDFaltantes(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_reclamo_sel';
+        $this->transaccion='REC_REP_FRD_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setCount(true);
+
+        $this->setParametro('id_oficina','id_oficina','int4');
+        $this->setParametro('id_gestion','id_gestion','int4');
+
+
+        $this->captura('nombre','varchar');
+        $this->captura('frds','varchar');
+        $this->captura('frd_faltantes','varchar');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //var_dump($this->consulta); exit;
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function insertarLog(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_reclamo_ime';
+        $this->transaccion='REC_LOG_FAL_IME';
+        $this->tipo_procedimiento='IME';//tipo de transaccion
+        //$this->setCount(true);
+
+        $this->setParametro('descripcion','descripcion','codigo_html');
+        $this->setParametro('id_reclamo','id_reclamo','int4');
+        $this->setParametro('id_funcionario','id_funcionario','int4');
+
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //var_dump($this->consulta); exit;
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function listarLogsFaltas()
+    {
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento = 'rec.ft_reclamo_sel';
+        $this->transaccion = 'REC_LOGS_FAL_SEL';
+        $this->tipo_procedimiento = 'SEL';//tipo de transaccion
+        //$this->setCount(false);
+
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_logs_reclamo', 'int4');
+        $this->captura('descripcion', 'text');
+        $this->captura('id_reclamo', 'int4');
+        $this->captura('id_funcionario', 'int4');
+        $this->captura('nombre_funcionario', 'text');
+        $this->captura('nro_tramite', 'varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo $this->consulta;exit;
         $this->ejecutarConsulta();
 
         //Devuelve la respuesta
         return $this->respuesta;
-    }*/
-
+    }
 }

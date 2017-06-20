@@ -197,3 +197,14 @@ AS
    JOIN orga.tuo uo ON uo.id_uo = orga.f_get_uo_gerencia(uof.id_uo, NULL::integer, NULL::date);
 
 /***********************************F-DEP-FEA-REC-1-07/01/2017****************************************/
+
+/***********************************I-DEP-FEA-REC-2-20/06/2017****************************************/
+select pxp.f_insert_testructura_gui ('CONFAL', 'PROC2');
+select pxp.f_insert_tprocedimiento_gui ('REC_LOGS_FAL_SEL', 'CONFAL', 'no');
+
+select pxp.f_insert_tgui_rol ('CONFAL', 'REC - Administrador Reclamos');
+select pxp.f_insert_tgui_rol ('CONFAL', 'REC - Tecnico SAC');
+
+select pxp.f_insert_trol_procedimiento_gui ('REC - Administrador Reclamos', 'REC_LOGS_FAL_SEL', 'CONFAL');
+select pxp.f_insert_trol_procedimiento_gui ('REC - Tecnico SAC', 'REC_LOGS_FAL_SEL', 'CONFAL');
+/***********************************F-DEP-FEA-REC-2-20/06/2017****************************************/

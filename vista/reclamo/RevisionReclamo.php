@@ -30,6 +30,9 @@ header("content-type: text/javascript; charset=UTF-8");
         
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
+                if(name == 'anulado'){
+                    this.getBoton('sig_estado').setVisible(false);
+                }
                 this.store.baseParams.pes_estado = name;
                 this.load({params:{start:0, limit:this.tam_pag}});
             }
@@ -266,6 +269,15 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip : '<b>Feriados,</b><br/><b>Nos permite fijar, dias feriados.</b>'
             });
 
+            this.addButton('control_frds',{
+                grupo:[0,1,2,3,4,5],
+                text :'Control FRDS',
+                iconCls : 'bfolder',
+                disabled: false,
+                handler : this.winFRD,
+                tooltip : '<b>Control FRDS,</b><br/><b>Nos permite llevar un seguimiento de los frd que no se registran.</b>'
+            });
+
             Ext.Ajax.request({
                 url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
                 params:{id_usuario:0},
@@ -387,7 +399,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             var tb =this.tbar;
             Phx.vista.RevisionReclamo.superclass.preparaMenu.call(this,n);
-
+            this.getBoton('control_frds').enable();
             if(data.estado =='pendiente_revision' || data.estado =='registrado_ripat' || data.estado =='derivado'){
                 
                 this.getBoton('sig_estado').enable();
@@ -411,7 +423,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('ant_estado').disable();
                 this.getBoton('sig_estado').disable();
                 this.getBoton('feriado').disable();
-
+                this.getBoton('control_frds').disable();
             }
             this.disableTabRespuesta();
             return tb
@@ -421,7 +433,7 @@ header("content-type: text/javascript; charset=UTF-8");
             console.log('positivo');
             this.formDiasFeriados();
             this.wFeriados.show();
-            console.log(Ext.getCmp('app-nav-1').setValue(new Date('2017-04-22')));
+            //console.log(Ext.getCmp('app-nav-1').setValue(new Date('2017-04-22')));
         },
 
         formDiasFeriados: function () {
@@ -725,24 +737,22 @@ header("content-type: text/javascript; charset=UTF-8");
 
             this.wFeriados.hide();
             this.reload();
-            /*var d= this.sm.getSelected().data;
+        },
 
-             this.DataSelected = d
-
-             Phx.CP.loadingShow();
-
-             Ext.Ajax.request({
-             url:'../../sis_adquisiciones/control/Cotizacion/siguienteEstadoCotizacion',
-             params:{id_cotizacion:d.id_cotizacion,
-             fecha_oc: this.cmpFechaOC.getValue().dateFormat('d/m/Y'),
-             operacion:'verificar'},
-
-             //params:{id_cotizacion:d.id_cotizacion,operacion:'sol_apro'},
-             success:this.successSinc,
-             failure: this.conexionFailure,
-             timeout:this.timeout,
-             scope:this
-             });*/
+        winFRD: function (){
+            var rec=this.sm.getSelected();
+            console.log('rec',rec);
+            Phx.CP.loadWindows(
+                '../../../sis_reclamo/vista/reclamo/ControlFRD.php',
+                'Control de FRDS',
+                {
+                    width:'80%',
+                    height:'80%'
+                },
+                rec.data,
+                this.idContenedor,
+                'ControlFRD'
+            );
         }
 
     };

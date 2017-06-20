@@ -116,7 +116,7 @@ BEGIN
                         inner join rec.treclamo tr on tr.id_reclamo = res.id_reclamo
                         inner join rec.vcliente vc on vc.id_cliente = tr.id_cliente
                         left join wf.testado_wf tew on tew.id_estado_wf = res.id_estado_wf
-                        left join rec.tmedio_reclamo tmr on tmr.id_medio_reclamo = tr.id_reclamo
+                        left join rec.tmedio_reclamo tmr on tmr.id_medio_reclamo = tr.id_medio_reclamo
                         LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tew.id_funcionario
 				        where '||v_filtro;
 
@@ -147,7 +147,7 @@ BEGIN
                         inner join rec.treclamo tr on tr.id_reclamo = res.id_reclamo
                         inner join rec.vcliente vc on vc.id_cliente = tr.id_cliente
                         left join wf.testado_wf tew on tew.id_estado_wf = res.id_estado_wf
-                        left join rec.tmedio_reclamo tmr on tmr.id_medio_reclamo = tr.id_reclamo
+                        left join rec.tmedio_reclamo tmr on tmr.id_medio_reclamo = tr.id_medio_reclamo
                         LEFT JOIN orga.vfuncionario_cargo_lugar vfc on vfc.id_funcionario =  tew.id_funcionario
 					    where ';
 
