@@ -109,8 +109,15 @@ header("content-type: text/javascript; charset=UTF-8");
 
     winFRD: function (){
         var rec=this.sm.getSelected();
-        console.log('rec',rec);
-        rec.data.nombreVista = 'RegistroReclamos';
+
+
+        if(rec == undefined){
+            rec = {data:{nombreVista:'RegistroReclamos'}}
+            console.log('rec 1',rec.data);
+        }else{
+            rec.data.nombreVista = 'RegistroReclamos';
+            console.log('rec 2',rec.data);
+        }
         Phx.CP.loadWindows(
             '../../../sis_reclamo/vista/reclamo/ControlFRD.php',
             'Control de FRDS',
@@ -208,7 +215,7 @@ header("content-type: text/javascript; charset=UTF-8");
         //habilitar reporte de colicitud de comrpa y preorden de compra
         //var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
 
-        this.getBoton('control_frds').enable();
+        //this.getBoton('control_frds').enable();
         //console.log('papa: '+this.padre);
         if(data['estado'] ==  'borrador'){
             this.getBoton('sig_estado').setVisible(true);
@@ -246,7 +253,7 @@ header("content-type: text/javascript; charset=UTF-8");
         var tb = Phx.vista.RegistroReclamos.superclass.liberaMenu.call(this);
         //var data = this.getSelectedData();
         if(tb){
-            this.getBoton('control_frds').disable();
+            //this.getBoton('control_frds').disable();
             this.getBoton('sig_estado').disable();
             this.getBoton('sig_estado').disable();
             /*estados = 'pendiente_asignacion, pendiente_respuesta, en_avenimiento, archivo_con_respuesta, respuesta_registrado_ripatt, archivado_concluido';

@@ -1734,7 +1734,6 @@ header("content-type: text/javascript; charset=UTF-8");
                             if(cad_aux.indexOf(parseInt(this.Cmp.nro_frd.getValue()))>=0){
                                 Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
                             }else{
-                                console.log('entra b');
                                 this.titulo = 'Disponibilidad';
                                 this.mensaje = 'Señor usuario esta tratando de insertar un numero de frd que no existe en su oficina,pero tenga en conocimiento que tiene numeros de frds que no se utilizaron en su oficina'+
                                     ' le suguerimos usar algun numero de frd de esta lista para el registro que esta realizando, la finalidad es tener un control correlativo de los reclamos de su oficina.<br><br>'+reg.ROOT.datos.v_cad_frds+'</div><br>'+
@@ -1760,6 +1759,27 @@ header("content-type: text/javascript; charset=UTF-8");
                         }else{
                             Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
                         }
+                    }else if(bandera == 'mayor'){
+                        this.titulo = 'Excediendo';
+                        this.mensaje = 'Señor usuario el sistema le genera automaticamente el numero frd correspondiente, efectivamente el numero de frd que esta utilizando  no existe en su oficina,pero tenga en conocimiento que el numero es excesivamente mayor a lo sugerido.'+
+                            '<br> Para cualquier consulta sobre los numeros de frds haga click en el boton "Control FRDS".'+
+                            ' <br><br>Haga click en <b>Aceptar</b> para pasar por alto la sugerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
+                            '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas sugerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
+                        Ext.Msg.show({
+                            title: this.titulo,
+                            msg: this.mensaje,
+                            fn: function (btn) {
+                                if(btn == 'ok'){
+                                    Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
+                                    this.bandera_log = true;
+                                }
+                            },
+                            buttons: Ext.Msg.OKCANCEL,
+                            width: 800,
+                            maxWidth:1024,
+                            icon: Ext.Msg.WARNING,
+                            scope:this
+                        });
                     }
                     else
                         Phx.vista.Reclamo.superclass.onSubmit.call(this, o);

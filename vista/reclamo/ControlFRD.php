@@ -25,31 +25,48 @@ header("content-type: text/javascript; charset=UTF-8");
 
             if(config.nombreVista == 'RegistroReclamos'){
                 this.cmbOficina.disabled =  true;
+                Ext.Ajax.request({
+                    url: '../../sis_reclamo/control/Reclamo/getDatosOficina',
+                    params: {id_usuario: 0},
+                    success: function (resp) {
+                        var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
+                        this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
+                        this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
+                        this.cmbOficina.setValue(reg.ROOT.datos.id_oficina);
+                        this.cmbOficina.setRawValue(reg.ROOT.datos.oficina_nombre);
+                        this.store.baseParams.id_gestion = reg.ROOT.datos.id_gestion;
+                        this.store.baseParams.id_oficina = reg.ROOT.datos.id_oficina;
+                        this.load({params: {start: 0, limit: this.tam_pag}});
+                    },
+                    failure: this.conexionFailure,
+                    timeout: this.timeout,
+                    scope: this
+                });
+            }else {
+                Ext.Ajax.request({
+                    url: '../../sis_reclamo/control/Reclamo/getDatosOficina',
+                    params: {id_usuario: 0},
+                    success: function (resp) {
+                        var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
+                        this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
+                        this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
+                        this.cmbOficina.setValue(this.maestro.id_oficina_registro_incidente);
+                        this.cmbOficina.setRawValue(this.maestro.desc_oficina_registro_incidente);
+                        this.store.baseParams.id_gestion = reg.ROOT.datos.id_gestion;
+                        this.store.baseParams.id_oficina = this.maestro.id_oficina_registro_incidente;
+                        this.load({params: {start: 0, limit: this.tam_pag}});
+                    },
+                    failure: this.conexionFailure,
+                    timeout: this.timeout,
+                    scope: this
+                });
             }
             //llama al constructor de la clase padre
             Phx.vista.ControlFRD.superclass.constructor.call(this,config);
-            this.maestro=config;
-            //console.log('maestro de hoy: '+JSON.stringify(this.maestro));
+            console.log('maestro de hoy: '+JSON.stringify(config));
             this.init();
             //this.load({params:{start:0, limit: this.tam_pag}});
 
-            Ext.Ajax.request({
-                url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
-                params:{id_usuario:0},
-                success:function(resp){
-                    var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
-                    this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
-                    this.cmbGestion.setRawValue(reg.ROOT.datos.gestion);
-                    this.cmbOficina.setValue(this.maestro.id_oficina_registro_incidente);
-                    this.cmbOficina.setRawValue(this.maestro.desc_oficina_registro_incidente);
-                    this.store.baseParams.id_gestion=reg.ROOT.datos.id_gestion;
-                    this.store.baseParams.id_oficina=this.maestro.id_oficina_registro_incidente;
-                    this.load({params:{start:0, limit: this.tam_pag}});
-                },
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });
 
             this.addButton('frds_faltante',{
                 grupo:[0,1,2,3,4,5],

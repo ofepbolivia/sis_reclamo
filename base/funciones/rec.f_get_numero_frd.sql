@@ -97,7 +97,7 @@ BEGIN
 
     v_max_actual = rec.f_procesar_frds(p_id_oficina,'0','FRD_MAX');
 
-   IF (v_num_siguiente<=v_max_actual::integer)THEN
+   IF (v_num_siguiente<=v_max_actual::integer AND rec.f_procesar_frds(p_id_oficina, '0', 'FRD_FALTANTES') IS NOT NULL)THEN
    		v_num_siguiente = v_max_actual::integer + 1;
    ELSE
    		v_num_siguiente = v_num_siguiente + 1;
