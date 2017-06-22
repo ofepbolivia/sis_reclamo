@@ -25,7 +25,7 @@ DECLARE
   v_id_gestion integer;
   v_cont_gestion integer;
   v_codigo_siguiente VARCHAR(30);
-
+  v_max_actual			varchar;
 BEGIN
 
 
@@ -95,17 +95,23 @@ BEGIN
    END IF;
 
 
---p_codigo_proceso
+    v_max_actual = rec.f_procesar_frds(p_id_oficina,'0','FRD_MAX');
+
+   IF (v_num_siguiente<=v_max_actual::integer)THEN
+   		v_num_siguiente = v_max_actual::integer + 1;
+   ELSE
+   		v_num_siguiente = v_num_siguiente + 1;
+   END IF;
 
 
 
 
         UPDATE rec.tnumero_frd set
-            numero = v_num_siguiente + 1
+            numero = v_num_siguiente
         WHERE id_gestion = p_id_gestion AND id_oficina = p_id_oficina;
 
 
-        raise notice 'codigo_proceso = %',p_id_oficina;
+        raise notice 'p_id_oficina = %',p_id_oficina;
         raise notice 'numero = %',v_num_siguiente;
         raise notice 'gestion = %',v_gestion;
 

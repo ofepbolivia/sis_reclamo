@@ -939,7 +939,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				gdisplayField: 'desc_nombre_funcionario',
 				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{desc_funcionario1}</p><p style="color: green">{nombre_cargo}<br>{email_empresa}</p><p style="color:green">{oficina_nombre} - {lugar_nombre}</p></div></tpl>',
 				hiddenName: 'id_funcionario_recepcion',
-				forceSelection: false,
+				forceSelection: true,
 				typeAhead: false,
 				triggerAction: 'all',
 				lazyRender: true,
@@ -1634,7 +1634,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
 				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
 
-				//console.log('ofi: ',this.Cmp.id_oficina_registro_incidente.getValue(), this.Cmp.id_oficina_registro_incidente.getRawValue());
+
                 this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
 			},
 			failure: this.conexionFailure,
@@ -1702,14 +1702,14 @@ header("content-type: text/javascript; charset=UTF-8");
 
                         this.titulo = 'Duplicidad';
                         this.mensaje = 'Señor usuario esta tratando de insertar un numero de frd que ya existe en su oficina, se le suguiere verificar los frds de su oficina.<br><br> ' +
-                            'Haga click en <b>Aceptar</b> para pasar por alto la suguerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>'+
-                            '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas suguerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
+                            'Haga click en <b>Aceptar</b> para pasar por alto la sugerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>'+
+                            '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas sugerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
 
                         if(reg.ROOT.datos.v_cad_frds != ''){
                             this.mensaje = '<br><div> Señor usuario esta tratando de insertar un numero de frd que ya existe en su oficina, a continuación le mostramos la lista de frds que no se utilizaron, por algun motivo se pasaron por alto,' +
                                 ' le suguerimos usar algun numero de frd de esta lista para el registro que esta realizando, la finalidad es tener un control correlativo de los reclamos de su oficina.<br><br>'+reg.ROOT.datos.v_cad_frds+'</div>'+
-                                '<br><br> Haga click en <b>Aceptar</b> para pasar por alto la suguerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
-                                '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas suguerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>'
+                                '<br><br> Haga click en <b>Aceptar</b> para pasar por alto la sugerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
+                                '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas sugerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>'
                         }
 
                         Ext.Msg.show({
@@ -1738,8 +1738,8 @@ header("content-type: text/javascript; charset=UTF-8");
                                 this.titulo = 'Disponibilidad';
                                 this.mensaje = 'Señor usuario esta tratando de insertar un numero de frd que no existe en su oficina,pero tenga en conocimiento que tiene numeros de frds que no se utilizaron en su oficina'+
                                     ' le suguerimos usar algun numero de frd de esta lista para el registro que esta realizando, la finalidad es tener un control correlativo de los reclamos de su oficina.<br><br>'+reg.ROOT.datos.v_cad_frds+'</div><br>'+
-                                    ' <br>Haga click en <b>Aceptar</b> para pasar por alto la suguerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
-                                    '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas suguerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
+                                    ' <br>Haga click en <b>Aceptar</b> para pasar por alto la sugerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
+                                    '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas sugerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
                                 Ext.Msg.show({
                                     title: this.titulo,
                                     msg: this.mensaje,
@@ -1782,7 +1782,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Ext.Ajax.request({
                 url: '../../sis_reclamo/control/Reclamo/insertarLog',
                 params: {
-                    descripcion: 'En fecha <b>'+fecha_hora.getDate() + '/' + (fecha_hora.getMonth() + 1) + '/' + fecha_hora.getFullYear()+' '+fecha_hora.getHours() + ':' + fecha_hora.getMinutes() + ':' + fecha_hora.getSeconds()+'</b> el funcionario <b>'+this.Cmp.id_funcionario_recepcion.getRawValue()+'</b> hizo caso omiso a los mensajes de suguerencia. <br>Detalle: <br> Titulo: <b>'+this.titulo+'</b>, <br> Mensaje: <br>'+this.mensaje,
+                    descripcion: 'En fecha <b>'+fecha_hora.getDate() + '/' + (fecha_hora.getMonth() + 1) + '/' + fecha_hora.getFullYear()+' '+fecha_hora.getHours() + ':' + fecha_hora.getMinutes() + ':' + fecha_hora.getSeconds()+'</b> el funcionario <b>'+this.Cmp.id_funcionario_recepcion.getRawValue()+'</b> hizo caso omiso a los mensajes de sugerencia. <br>Detalle: <br> Titulo: <b>'+this.titulo+'</b>, <br> Mensaje: <br>'+this.mensaje,
                     id_reclamo: objRes.ROOT.datos.id_reclamo,
                     id_funcionario: this.Cmp.id_funcionario_recepcion.getValue()
                 },
