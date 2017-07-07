@@ -454,7 +454,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					fields: ['id_cliente','nombre_completo2','nombre_completo1','ci','email'],
 					// turn on remote sorting
 					remoteSort: true,
-					baseParams:{par_filtro:'c.nombre_completo2'}
+					baseParams:{par_filtro:'c.nombre_completo2#c.ci#c.email'}
 				}),
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
@@ -487,7 +487,6 @@ header("content-type: text/javascript; charset=UTF-8");
 				pfiltro:'c.nombre_completo2',
 				type:'string'
 			},
-
 			grid:true,
 			form:true
 		},

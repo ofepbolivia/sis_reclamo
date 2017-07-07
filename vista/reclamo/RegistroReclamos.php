@@ -174,8 +174,15 @@ header("content-type: text/javascript; charset=UTF-8");
     tam_pag:50,
     actualizarSegunTab: function(name, indice){
         if(this.finCons){
-            this.store.baseParams.pes_estado = name;
-            this.load({params:{start:0, limit:this.tam_pag}});
+
+            if(name == 'pendiente_revision'){
+                this.store.baseParams.pes_estado = 'pendiente_informe';
+                this.load({params:{start:0, limit:this.tam_pag}});
+            }else{
+                this.store.baseParams.pes_estado = name;
+                this.load({params:{start:0, limit:this.tam_pag}});
+            }
+            
         }
     },
     beditGroups: [0],

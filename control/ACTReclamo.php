@@ -136,6 +136,9 @@ class ACTReclamo extends ACTbase{
             case 'concluidos':
 				$this->objParam->addFiltro("rec.estado in (''archivo_con_respuesta'',''respuesta_registrado_ripatt'',''archivado_concluido'')");
 				break;
+            case 'pendiente_informe':
+                $this->objParam->addFiltro("rec.estado in (''pendiente_revision'',''registrado_ripat'')");
+                break;
 		}
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
