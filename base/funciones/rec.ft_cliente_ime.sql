@@ -34,6 +34,7 @@ DECLARE
     v_contador				integer;
     v_valid					varchar;
     v_func  				varchar='';
+    v_record        record;
 
 BEGIN
 
