@@ -195,17 +195,20 @@ BEGIN
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
-						left join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
-                        left join rec.vcliente c on c.id_cliente = rec.id_cliente
-                        inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+
+                        INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+                        LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
+                        INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
                         left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
-                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+                      	INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        LEFT join param.tlugar tlug ON tlug.id_lugar = of.id_lugar
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
                         inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
                         left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
-                        	left join param.tgestion gest on gest.id_gestion = rec.id_gestion
+                        	INNER join param.tgestion gest on gest.id_gestion = rec.id_gestion
                             left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
-                            left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+                            LEFT join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
                             LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
@@ -238,20 +241,24 @@ BEGIN
 			   			from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
-						left join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
-                        left join rec.vcliente c on c.id_cliente = rec.id_cliente
-                        inner join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+
+                        INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+                        LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
+                        INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
                         left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
-                      	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+                      	INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        LEFT join param.tlugar tlug ON tlug.id_lugar = of.id_lugar
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
                         inner join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
                         left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
-                        	left join param.tgestion gest on gest.id_gestion = rec.id_gestion
+                        	INNER join param.tgestion gest on gest.id_gestion = rec.id_gestion
                             left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
-                            left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+                            LEFT join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
                             LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
+                            LEFT JOIN rec.treclamo_informe tri ON tri.id_reclamo = rec.id_reclamo
 					    where ';
 
 			--Definicion de la respuesta
@@ -477,7 +484,9 @@ BEGIN
 						LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
 						INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
 						left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                        left join param.tlugar lug ON lug.id_lugar = of.id_lugar
 						INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
 						INNER join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
 						INNER join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
 						left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
@@ -512,7 +521,9 @@ BEGIN
 						LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
 						INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
 						left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+                        left join param.tlugar lug ON lug.id_lugar = of.id_lugar
 						INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+                        left join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
 						INNER join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
 						INNER join orga.vfuncionario fun on fun.id_funcionario = rec.id_funcionario_recepcion
 						left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
