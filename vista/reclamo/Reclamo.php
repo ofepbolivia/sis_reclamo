@@ -865,7 +865,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					totalProperty: 'total',
 					fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'ofi.nombre#ofi.codigo#lug.nombre'}
+					baseParams: {par_filtro: 'ofi.nombre#ofi.codigo#tlug.nombre'}
 				}),
 				valueField: 'id_oficina',
 				displayField: 'nombre',
@@ -889,7 +889,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type: 'ComboBox',
 			id_grupo: 4,
-			filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
+			filters: {pfiltro: 'ofi.nombre#ofi.codigo#tlug.nombre', type: 'string'},
 			grid: true,
 			form: true
 		},

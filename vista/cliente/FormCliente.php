@@ -22,8 +22,6 @@ header("content-type: text/javascript; charset=UTF-8");
             console.log(config);
             Phx.vista.FormCliente.superclass.constructor.call(this,config);
             this.init();
-            this.loadValoresIniciales();
-            
         },
         Atributos:[
             {
@@ -134,7 +132,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'lugar_expedicion',
                     fieldLabel: 'Lugar de Expedición',
-                    allowBlank: true,
+                    allowBlank: false,
                     anchor: '100%',
                     gwidth: 100,
                     maxLength:10,
@@ -154,7 +152,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'nacionalidad',
                     fieldLabel: 'Nacionalidad',
-                    allowBlank: true,
+                    allowBlank: false,
                     anchor: '100%',
                     gwidth: 100,
                     maxLength:30,
@@ -421,15 +419,9 @@ header("content-type: text/javascript; charset=UTF-8");
             }
         ],
         title:'Clientes',
-
-        /*loadValoresIniciales:function()
-        {
-            Phx.vista.FormCliente.superclass.loadValoresIniciales.call(this);
-        },*/
+        
         onSubmit:function(o){
-            //TODO passar los datos obtenidos del wizard y pasar  el evento save
-            
-            
+
             /*if (this.form.getForm().isValid()) {
                 this.fireEvent('beforesave', this, this.getValues());
             }*/
@@ -471,16 +463,6 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.CP.getPagina(this.idContenedorPadre).cargarCliente(reg.ROOT.datos.id_cliente, this.Cmp.apellido_paterno.getValue() +
                                                                     ' ' + this.Cmp.apellido_materno.getValue() +
                                                                     ' ' + this.Cmp.nombre.getValue());
-            /*Ext.Ajax.request({
-                url:'../../sis_reclamo/control/Cliente/getNombreCliente',
-                params:{id_cliente: reg.ROOT.datos.id_cliente},
-                success:this.successName,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });*/
-
-
             Phx.CP.loadingHide();
             this.close();
             this.onDestroy();

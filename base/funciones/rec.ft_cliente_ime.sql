@@ -235,6 +235,75 @@ BEGIN
             return v_resp;
 
 		end;
+		/*********************************
+ 	#TRANSACCION:  'REC_CLI_GET'
+ 	#DESCRIPCION:	OBTENER DATOS DE CLIENTE PARA EDITARLO EN EL FORMULARIO DE RESPUESTA
+ 	#AUTOR:		Franklin Espinoza
+ 	#FECHA:		31-12-2016 14:29:16
+	***********************************/
+
+	elsif(p_transaccion='REC_CLI_GET')then
+
+		begin
+			select
+              cli.id_cliente,
+              cli.genero,
+              cli.ci,
+              cli.email,
+              cli.direccion,
+              cli.celular,
+              cli.nombre,
+              cli.lugar_expedicion,
+              cli.apellido_paterno,
+              cli.telefono,
+              cli.ciudad_residencia,
+              cli.id_pais_residencia,
+              cli.nacionalidad,
+              cli.barrio_zona,
+              cli.estado_reg,
+              cli.apellido_materno,
+              cli.id_usuario_ai,
+              cli.fecha_reg,
+              cli.usuario_ai,
+              cli.id_usuario_reg,
+              cli.fecha_mod,
+              cli.id_usuario_mod,
+              usu1.cuenta as usr_reg,
+              usu2.cuenta as usr_mod,
+              c.nombre_completo1 as completo,
+              c.nombre_completo2,
+              lug.nombre as pais_residencia
+              into v_record
+              from rec.tcliente cli
+              inner join segu.tusuario usu1 on usu1.id_usuario = cli.id_usuario_reg
+              left join segu.tusuario usu2 on usu2.id_usuario = cli.id_usuario_mod
+              inner join rec.vcliente c on c.id_cliente = cli.id_cliente
+              left join param.tlugar lug on lug.id_lugar = cli.id_pais_residencia::integer
+              where cli.id_cliente = v_parametros.id_cliente;
+
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'id_cliente', v_record.id_cliente::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'genero', v_record.genero::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'ci', v_record.ci::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'email', v_record.email::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'direccion', v_record.direccion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'celular', v_record.celular::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'nombre', v_record.nombre::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'lugar_expedicion', v_record.lugar_expedicion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'apellido_paterno', v_record.apellido_paterno::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'telefono', v_record.telefono::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'ciudad_residencia', v_record.ciudad_residencia::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'id_pais_residencia', v_record.id_pais_residencia::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'nacionalidad', v_record.nacionalidad::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'barrio_zona', v_record.barrio_zona::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'apellido_materno', v_record.apellido_materno::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'completo',v_record.completo::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'nombre_completo2',v_record.nombre_completo2::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'pais_residencia',v_record.pais_residencia::varchar);
+            --Devuelve la respuesta
+            return v_resp;
+
+		end;
 	else
 
     	raise exception 'Transaccion inexistente: %',p_transaccion;

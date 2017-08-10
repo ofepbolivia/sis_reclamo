@@ -30,7 +30,7 @@ class ACTCliente extends ACTbase{
 				
 	function insertarCliente(){
 		$this->objFunc=$this->create('MODCliente');
-		//var_dump('alto');exit;
+		//var_dump($this->objFunc);exit;
 		if($this->objParam->insertar('id_cliente')){
 			$this->res=$this->objFunc->insertarCliente($this->objParam);			
 		} else{			
@@ -96,6 +96,16 @@ class ACTCliente extends ACTbase{
     function listarPais(){
         $this->objFunc=$this->create('MODCliente');
         $this->res=$this->objFunc->listarPais();
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function loadClienteForm(){
+
+        if ($this->objParam->getParametro('id_cliente') != '') {
+            $this->objParam->addFiltro("cli.id_cliente = ". $this->objParam->getParametro('id_cliente'));
+        }
+        $this->objFunc=$this->create('MODCliente');
+        $this->res=$this->objFunc->loadClienteForm();
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 	

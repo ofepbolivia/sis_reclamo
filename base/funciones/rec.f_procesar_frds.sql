@@ -41,68 +41,23 @@ BEGIN
     where g.gestion = EXTRACT(YEAR FROM current_date);
     --encontramos la lista de frd faltantes
     --begin
-    /*create temp table tnro_frds(
-      nro_frd numeric
-    )on commit drop;
-
-    insert into tnro_frds(
-        SELECT to_number(tr.nro_frd,'9999999')
-        FROM rec.treclamo tr
-        INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
-        WHERE tr.id_oficina_registro_incidente = p_id_oficina::integer and tr.id_gestion = v_id_gestion
-    ); */
-   --raise exception 'p_id_oficina %',p_id_oficina;
-   /* v_cont = 1;
-    FOR v_index IN (SELECT nro_frd FROM tnro_frds)LOOP
-      v_frds[v_cont] = v_index;
-      v_cont = v_cont + 1;
-    END LOOP;
-
-
-   	SELECT max(nro_frd)
-   	INTO v_max
-   	FROM tnro_frds ;
-
-    v_cont = 1;
-    FOR v_index IN 1..v_max LOOP
-      IF v_index = ANY (v_frds) THEN
-
-      ELSE
-         v_frds_aux[v_cont] = v_index;
-         IF(v_cont::integer % 10 = 0)THEN
-            v_frd_faltantes[v_cont] = v_index::varchar||'<br>';
-         ELSE
-            v_frd_faltantes[v_cont] = v_index;
-         END IF;
-          v_cont = v_cont + 1;
-      END IF;
-    END LOOP;*/
-
-    /*v_cad_frds = case when array_length(v_frd_faltantes, 1) >= 1 then array_to_string(v_frd_faltantes,',') else '' end;
-    v_index = to_number(v_parametros.frd,'9999999');
-      IF (v_index = ANY(v_frds))THEN
-          v_band_frds = 'duplicado';
-      ELSIF (v_index <> ALL(v_frds))THEN
-          v_band_frds = 'nuevo';
-      END IF;*/
-    --end
-
     IF(p_transaccion = 'FRD_FALTANTES')THEN
     	v_cont = 1;
         v_frds = string_to_array(rec.f_procesar_frds(p_id_oficina,'15','FRD_REGISTRADOS'),',');
-        FOR v_index IN 1..rec.f_procesar_frds(p_id_oficina,'15','FRD_MAX') LOOP
-          IF v_index = ANY (v_frds) THEN
+        IF (v_frds IS NOT NULL)THEN
+          FOR v_index IN 1..rec.f_procesar_frds(p_id_oficina,'15','FRD_MAX') LOOP
+            IF v_index = ANY (v_frds) THEN
 
-          ELSE
-             --v_frds_aux[v_cont] = v_index;
-             IF(v_cont::integer % 10 = 0)THEN
-                v_frd_faltantes[v_cont] = v_index::varchar||'<br>';
-             ELSE
-                v_frd_faltantes[v_cont] = v_index;
-             END IF;
-              v_cont = v_cont + 1;
-          END IF;
-        END LOOP;
+            ELSE
+               --v_frds_aux[v_cont] = v_index;
+               IF(v_cont::integer % 10 = 0)THEN
+                  v_frd_faltantes[v_cont] = v_index::varchar||'<br>';
+               ELSE
+                  v_frd_faltantes[v_cont] = v_index;
+               END IF;
+                v_cont = v_cont + 1;
+            END IF;
+          END LOOP;
         return array_to_string(v_frd_faltantes,',');
     ELSIF(p_transaccion = 'FRD_REGISTRADOS')THEN
     	v_cont = 1;

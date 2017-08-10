@@ -250,5 +250,79 @@ class MODCliente extends MODbase{
         return $this->respuesta;
     }
 
+	function loadClienteForm(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='rec.ft_cliente_ime';
+		$this->transaccion='REC_CLI_GET';//'
+		$this->tipo_procedimiento='IME';//tipo de transaccion
+
+		$this->setParametro('id_cliente','id_cliente','int4');
+
+		$this->captura('v_valor','varchar');
+		$this->captura('genero','varchar');
+		$this->captura('ci','varchar');
+		$this->captura('email','varchar');
+		$this->captura('direccion','varchar');
+		$this->captura('celular','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('lugar_expedicion','varchar');
+		$this->captura('apellido_paterno','varchar');
+		$this->captura('telefono','varchar');
+		$this->captura('ciudad_residencia','varchar');
+		$this->captura('id_pais_residencia','int4');
+		$this->captura('nacionalidad','varchar');
+		$this->captura('barrio_zona','varchar');
+		$this->captura('estado_reg','varchar');
+		$this->captura('apellido_materno','varchar');
+		$this->captura('id_usuario_ai','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('usuario_ai','varchar');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');
+
+		$this->captura('nombre_completo1','text');
+		$this->captura('nombre_completo2','text');
+		$this->captura('pais_residencia','varchar');
+		//Definicion de la lista del resultado del query
+		/*$this->captura('v_id_cliente','int4');
+		$this->captura('v_genero','varchar');
+		$this->captura('v_ci','varchar');
+		$this->captura('v_email','varchar');
+		$this->captura('v_direccion','varchar');
+		$this->captura('v_celular','varchar');
+		$this->captura('v_nombre','varchar');
+		$this->captura('v_lugar_expedicion','varchar');
+		$this->captura('v_apellido_paterno','varchar');
+		$this->captura('v_telefono','varchar');
+		$this->captura('v_ciudad_residencia','varchar');
+		$this->captura('v_id_pais_residencia','int4');
+		$this->captura('v_nacionalidad','varchar');
+		$this->captura('v_barrio_zona','varchar');
+		//$this->captura('estado_reg','varchar');
+		$this->captura('v_apellido_materno','varchar');
+		//$this->captura('id_usuario_ai','int4');
+		//$this->captura('fecha_reg','timestamp');
+		//$this->captura('usuario_ai','varchar');
+		//$this->captura('id_usuario_reg','int4');
+		//$this->captura('fecha_mod','timestamp');
+		//$this->captura('id_usuario_mod','int4');
+		//$this->captura('usr_reg','varchar');
+		//$this->captura('usr_mod','varchar');
+
+		$this->captura('v_completo','text');
+		$this->captura('v_nombre_completo2','text');
+		$this->captura('v_pais_residencia','varchar');*/
+		//$this->captura('nombre','varchar');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
 }
 ?>

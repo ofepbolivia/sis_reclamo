@@ -1529,54 +1529,57 @@ BEGIN
             	INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
             	WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion
             );
-            SELECT max(nro_frd),min(nro_frd)
-            INTO v_max, v_min
+            SELECT max(nro_frd),min(nro_frd),count(nro_frd)
+            INTO v_max, v_min, v_cont
             FROM tnro_frds ;
 
-            v_cont = 1;
-            FOR v_index IN (SELECT nro_frd FROM tnro_frds)LOOP
-              v_frds[v_cont] = v_index;
-              v_cont = v_cont + 1;
-            END LOOP;
+            IF (v_cont >= 1) THEN
+              v_cont = 1;
+              FOR v_index IN (SELECT nro_frd FROM tnro_frds)LOOP
+                v_frds[v_cont] = v_index;
+                v_cont = v_cont + 1;
+              END LOOP;
 
-            v_cont = 1;
-            FOR v_index IN 1..v_max LOOP
-              IF v_index = ANY (v_frds) THEN
+              v_cont = 1;
+              FOR v_index IN 1..v_max LOOP
+                IF v_index = ANY (v_frds) THEN
 
-              ELSE
-              	 v_frds_aux[v_cont] = v_index;
-              	 IF(v_cont::integer % 10 = 0)THEN
-                  	v_frd_faltantes[v_cont] = v_index::varchar||'<br>';
-                 ELSE
-                 	v_frd_faltantes[v_cont] = v_index;
-                 END IF;
-                  v_cont = v_cont + 1;
-              END IF;
-            END LOOP;
-            v_cad_frds = case when array_length(v_frd_faltantes, 1) >= 1 then array_to_string(v_frd_faltantes,',') else '' end;
-            --v_index = v_parametros.frd;
-              --raise exception 'v_parametros.frd: %',v_parametros.frd;
-              IF (v_parametros.frd = ANY(SELECT ltrim(tr.nro_frd,'0')
-                                          FROM rec.treclamo tr
-                                          INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
-                                          WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion))THEN
-                  v_band_frds = 'duplicado';
-              ELSIF (v_parametros.frd <> ALL(SELECT ltrim(tr.nro_frd,'0')
-                                              FROM rec.treclamo tr
-                                              INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
-                                              WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion))THEN
-                  v_band_frds = 'nuevo';
-              END IF;
+                ELSE
+                   v_frds_aux[v_cont] = v_index;
+                   IF(v_cont::integer % 10 = 0)THEN
+                      v_frd_faltantes[v_cont] = v_index::varchar||'<br>';
+                   ELSE
+                    v_frd_faltantes[v_cont] = v_index;
+                   END IF;
+                    v_cont = v_cont + 1;
+                END IF;
+              END LOOP;
+              v_cad_frds = case when array_length(v_frd_faltantes, 1) >= 1 then array_to_string(v_frd_faltantes,',') else '' end;
+              --v_index = v_parametros.frd;
+                --raise exception 'v_parametros.frd: %',v_parametros.frd;
+                IF (v_parametros.frd = ANY(SELECT ltrim(tr.nro_frd,'0')
+                                            FROM rec.treclamo tr
+                                            INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+                                            WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion))THEN
+                    v_band_frds = 'duplicado';
+                ELSIF (v_parametros.frd <> ALL(SELECT ltrim(tr.nro_frd,'0')
+                                                FROM rec.treclamo tr
+                                                INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
+                                                WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion))THEN
+                    v_band_frds = 'nuevo';
+                END IF;
 
-              IF (v_band_frds = 'nuevo' AND v_parametros.frd::integer > rec.f_procesar_frds(v_parametros.oficina,'0','FRD_MAX')::INTEGER + 1)THEN
-              	v_band_frds = 'mayor';
-              END IF;
-              
-              IF (v_band_frds = 'nuevo' AND to_number(v_parametros.frd,'9999999')::integer > rec.f_procesar_frds(v_parametros.oficina,'0','FRD_MAX')::INTEGER + 1)THEN
-              	v_band_frds = 'mayor';
-              END IF;
-          	--end
+                IF (v_band_frds = 'nuevo' AND v_parametros.frd::integer > rec.f_procesar_frds(v_parametros.oficina,'0','FRD_MAX')::INTEGER + 1)THEN
+                  v_band_frds = 'mayor';
+                END IF;
 
+                IF (v_band_frds = 'nuevo' AND to_number(v_parametros.frd,'9999999')::integer > rec.f_procesar_frds(v_parametros.oficina,'0','FRD_MAX')::INTEGER + 1)THEN
+                  v_band_frds = 'mayor';
+                END IF;
+              --end
+          ELSE
+            	v_band_frds = 'nuevo';
+          END IF;
             --validar reclamo
             select count(tr.id_reclamo)
             INTO v_contador

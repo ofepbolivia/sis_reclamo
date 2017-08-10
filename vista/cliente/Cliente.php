@@ -201,6 +201,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						maxLength:50
 					},
 					type:'TextField',
+					bottom_filter:true,
 					filters:{pfiltro:'cli.email',type:'string'},
 					id_grupo:2,
 					grid:true,
