@@ -1,0 +1,547 @@
+
+<?php
+/**
+ *@package pXP
+ *@file    formCliente.php
+ *@author  Espinoza Alvarez
+ *@date    14-11-2016
+ *@description permite mostrar formulario de registro de Clientes
+ */
+header("content-type: text/javascript; charset=UTF-8");
+?>
+<script>
+    Phx.vista.ClienteFormEdit=Ext.extend(Phx.frmInterfaz,{
+        ActSave:'../../sis_reclamo/control/Cliente/insertarCliente',
+        layout: 'fit',
+        breset: false,
+        bcancel: true,
+        autoScroll: false,
+        labelSubmit: '<i class="fa fa-check"></i> Guardar',
+        constructor:function(config){
+            this.maestro = config.maestro;
+            Phx.vista.ClienteFormEdit.superclass.constructor.call(this,config);
+
+            this.init();
+            //this.loadValoresIniciales();
+
+        },
+        Atributos:[
+            {
+                //configuracion del componente
+                config:{
+                    labelSeparator:'',
+                    inputType:'hidden',
+                    name: 'id_cliente'
+                },
+                type:'Field',
+                id_grupo:1,
+                form:true
+            },
+            {
+                config:{
+                    name: 'nombre',
+                    fieldLabel: 'Nombres',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 150,
+                    maxLength:50,
+                    style:'text-transform:uppercase; white-space: pre-line;',
+                    /*regex:/^\s+|\s+$/g,
+                     maskRe: /\s/g*/
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.nombre',type:'string'},
+                id_grupo:1,
+                bottom_filter:true,
+                grid:true,
+                form:true,
+            },
+            {
+                config:{
+                    name: 'apellido_paterno',
+                    fieldLabel: 'Primer Apellido',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 150,
+                    maxLength:30,
+                    style:'text-transform:uppercase; white-space: pre-line;',
+                    /*regex:/^\s+|\s+$/g,
+                     maskRe: /\s/g*/
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.apellido_paterno',type:'string'},
+                id_grupo:1,
+                bottom_filter:true,
+                grid:true,
+                form:true
+            }
+            ,{
+                config:{
+                    name: 'apellido_materno',
+                    fieldLabel: 'Segundo Apellido',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:30,
+                    style:'text-transform:uppercase; white-space: pre-line;',
+                    /*regex:/^\s+|\s+$/g,
+                     maskRe: /\s/g*/
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.apellido_materno',type:'string'},
+                id_grupo:1,
+                bottom_filter:true,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'genero',
+                    fieldLabel: 'Genero',
+                    allowBlank:false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:10,
+                    typeAhead:true,
+                    forceSelection: true,
+                    triggerAction:'all',
+                    mode:'local',
+                    store:['VARON','MUJER']
+                },
+                type:'ComboBox',
+                filters:{pfiltro:'cli.genero',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'ci',
+                    fieldLabel: 'Nro. Doc. Identificación',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:15
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.ci',type:'string'},
+                id_grupo:1,
+                bottom_filter:true,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'lugar_expedicion',
+                    fieldLabel: 'Lugar de Expedición',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:10,
+                    typeAhead:true,
+                    forceSelection: true,
+                    triggerAction:'all',
+                    mode: 'local',
+                    store:['CB','SC','LP','BN','CJ','TJ','OR','PT','CH', 'OTRO']
+                },
+                type:'ComboBox',
+                filters:{pfiltro:'cli.lugar_expedicion',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'nacionalidad',
+                    fieldLabel: 'Nacionalidad',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:30,
+                    style:'text-transform:uppercase;'
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.nacionalidad',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'celular',
+                    fieldLabel: 'Celular',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:20
+                },
+                type:'NumberField',
+                filters:{pfiltro:'cli.celular',type:'numeric'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'telefono',
+                    fieldLabel: 'Telefono',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:20
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.telefono',type:'numeric'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'email',
+                    fieldLabel: 'Email',
+                    vtype:'email',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:50
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.email',type:'string'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'direccion',
+                    fieldLabel: 'Direccion,   (Calle/Av./No.)',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:200
+                },
+                type:'TextArea',
+                filters:{pfiltro:'cli.direccion',type:'string'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'id_pais_residencia',
+                    fieldLabel: 'Pais de Residencia',
+                    allowBlank: false,
+                    emptyText: 'Elija una opcion...',
+
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_parametros/control/Lugar/listarLugar',
+                        id: 'id_lugar',
+                        root: 'datos',
+                        sortInfo:{
+                            field: 'nombre',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_lugar','nombre'],
+                        remoteSort: true,
+                        baseParams:{par_filtro:'lug.nombre',tipo:'pais'}
+                    }),
+                    valueField: 'id_lugar',
+                    displayField: 'nombre',
+                    gdisplayField: 'pais_residencia',
+                    hiddenName: 'id_pais_residencia',
+                    forceSelection: true,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    queryMode: 'remote',
+                    pageSize: 20,
+                    minChars:2,
+                    queryDelay: 250,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:30,
+                    style:'text-transform:uppercase;',
+                    /*turl:'../../../sis_parametros/vista/lugar/Lugar.php',
+                     ttitle:'Lugar',
+                     // tconfig:{width:1800,height:500},
+                     tdata:{},
+                     tcls:'Lugar',*/
+                    renderer: function(value, p, record){
+                        return String.format('{0}', record.data['pais_residencia']);
+                    }
+                },
+                //type:'TrigguerCombo',
+                type:'ComboBox',
+                bottom_filter:false,
+                filters:{pfiltro:'lug.nombre',type:'string'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'ciudad_residencia',
+                    fieldLabel: 'Ciudad de Residencia',
+                    allowBlank: false,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:30,
+                    style:'text-transform:uppercase;'
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.ciudad_residencia',type:'string'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'barrio_zona',
+                    fieldLabel: 'Zona/Barrio',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:200,
+                    style:'text-transform:uppercase;'
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.barrio_zona',type:'string'},
+                id_grupo:2,
+                grid:true,
+                form:true
+            },
+            {
+                config:{
+                    name: 'estado_reg',
+                    fieldLabel: 'Estado Reg.',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength:10
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.estado_reg',type:'string'},
+                id_grupo:1,
+                grid:true,
+                form:false
+            },
+            {
+                config:{
+                    name: 'id_usuario_ai',
+                    fieldLabel: '',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    maxLength:4
+                },
+                type:'Field',
+                filters:{pfiltro:'cli.id_usuario_ai',type:'numeric'},
+                id_grupo:1,
+                grid:false,
+                form:false
+            },
+            {
+                config:{
+                    name: 'fecha_reg',
+                    fieldLabel: 'Fecha creación',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'cli.fecha_reg',type:'date'},
+                id_grupo:1,
+                grid:false,
+                form:false
+            },
+            {
+                config:{
+                    name: 'usuario_ai',
+                    fieldLabel: 'Funcionario AI',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    maxLength:300
+                },
+                type:'TextField',
+                filters:{pfiltro:'cli.usuario_ai',type:'string'},
+                id_grupo:1,
+                grid:false,
+                form:false
+            },
+            {
+                config:{
+                    name: 'usr_reg',
+                    fieldLabel: 'Creado por',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    maxLength:4
+                },
+                type:'Field',
+                filters:{pfiltro:'usu1.cuenta',type:'string'},
+                id_grupo:1,
+                grid:false,
+                form:false
+            },
+            {
+                config:{
+                    name: 'fecha_mod',
+                    fieldLabel: 'Fecha Modif.',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    format: 'd/m/Y',
+                    renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+                },
+                type:'DateField',
+                filters:{pfiltro:'cli.fecha_mod',type:'date'},
+                id_grupo:1,
+                grid:false,
+                form:false
+            },
+            {
+                config:{
+                    name: 'usr_mod',
+                    fieldLabel: 'Modificado por',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 100,
+                    maxLength:4
+                },
+                type:'Field',
+                filters:{pfiltro:'usu2.cuenta',type:'string'},
+                id_grupo:1,
+                grid:false,
+                form:false
+            }
+        ],
+        title:'Clientes',
+
+        loadValoresIniciales: function(){
+            Phx.vista.ClienteFormEdit.superclass.loadValoresIniciales.call(this);
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Cliente/loadClienteForm',
+                params:{'id_cliente':this.maestro.id_cliente},
+                success:function (resp) {
+                    var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                        this.Cmp.id_cliente.setValue(this.maestro.id_cliente);
+                        this.Cmp.genero.setValue(reg.ROOT.datos.genero);
+                        this.Cmp.ci.setValue(reg.ROOT.datos.ci);
+                        this.Cmp.email.setValue(reg.ROOT.datos.email);
+                        this.Cmp.direccion.setValue(reg.ROOT.datos.direccion);
+                        this.Cmp.celular.setValue(reg.ROOT.datos.celular);
+                        this.Cmp.nombre.setValue(reg.ROOT.datos.nombre);
+                        this.Cmp.lugar_expedicion.setValue(reg.ROOT.datos.lugar_expedicion);
+                        this.Cmp.apellido_paterno.setValue(reg.ROOT.datos.apellido_paterno);
+                        this.Cmp.telefono.setValue(reg.ROOT.datos.telefono);
+                        this.Cmp.ciudad_residencia.setValue(reg.ROOT.datos.ciudad_residencia);
+                        this.Cmp.id_pais_residencia.setValue(reg.ROOT.datos.id_pais_residencia);
+                        this.Cmp.id_pais_residencia.setRawValue(reg.ROOT.datos.pais_residencia);
+                        this.Cmp.nacionalidad.setValue(reg.ROOT.datos.nacionalidad);
+                        this.Cmp.barrio_zona.setValue(reg.ROOT.datos.barrio_zona);
+                        this.Cmp.apellido_materno.setValue(reg.ROOT.datos.apellido_materno);
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+
+        },
+        onSubmit:function(o){
+            //TODO passar los datos obtenidos del wizard y pasar  el evento save
+
+
+            /*if (this.form.getForm().isValid()) {
+             this.fireEvent('beforesave', this, this.getValues());
+             }*/
+            /*Ext.Ajax.request({
+                url: '../../sis_reclamo/control/Cliente/validarCliente',
+                params: {
+                    nombre: this.Cmp.nombre.getValue(),
+                    apellido: this.Cmp.apellido_paterno.getValue(),
+                    genero: this.Cmp.genero.getValue(),
+                    ci: this.Cmp.ci.getValue()
+                },
+                argument: {},
+                success: function (resp) {
+                    var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
+                    //console.log('EXISTE:',reg.ROOT.datos.v_valid);
+                    if (reg.ROOT.datos.v_valid == 'true') {
+                        Ext.Msg.alert('Alerta','El cliente <b>' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + '</b> con Documento N° <b>' + this.Cmp.ci.getValue() + '</b> anteriormente ya fue registrado en la BD del ERP por el funcionari@ <b>'+reg.ROOT.datos.v_desc_func)+'</b>';
+                    }
+                    else {
+                        this.Cmp.nombre.setValue((this.Cmp.nombre.getValue()).trim());
+                        this.Cmp.apellido_paterno.setValue((this.Cmp.apellido_paterno.getValue()).trim());
+                        this.Cmp.apellido_materno.setValue((this.Cmp.apellido_materno.getValue()).trim());
+                        Phx.vista.ClienteFormEdit.superclass.onSubmit.call(this, o);
+                    }
+
+                },
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });*/
+
+            Phx.vista.ClienteFormEdit.superclass.onSubmit.call(this,o);
+            //this.Cmp.id_cliente.setValue();
+        },
+
+
+        successSave:function(resp)
+        {
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            /*Phx.CP.getPagina(this.idContenedorPadre).cargarCliente(reg.ROOT.datos.id_cliente, this.Cmp.apellido_paterno.getValue() +
+                ' ' + this.Cmp.apellido_materno.getValue() +
+                ' ' + this.Cmp.nombre.getValue());*/
+
+
+            /*Ext.Ajax.request({
+             url:'../../sis_reclamo/control/Cliente/getNombreCliente',
+             params:{id_cliente: reg.ROOT.datos.id_cliente},
+             success:this.successName,
+             failure: this.conexionFailure,
+             timeout:this.timeout,
+             scope:this
+             });*/
+
+
+            Phx.CP.loadingHide();
+            this.close();
+            this.onDestroy();
+
+
+        },
+
+        successName: function(resp){
+            var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+            console.log('nombre: '+reg.ROOT.datos.nombre_completo1);
+
+            //Ext.getCmp('id_cliente').setRawValue(reg.ROOT.datos.nombre_completo1);
+        },
+
+        getValues:function(){
+            var resp = {
+                nombre: this.Cmp.nombre.getValue(),
+                apellido_paterno: this.Cmp.apellido_paterno.getValue(),
+                apellido_materno: this.Cmp.apellido_materno.getValue(),
+                genero: this.Cmp.genero.getValue(),
+                ci: this.Cmp.ci.getValue(),
+                lugar_expedicion: this.Cmp.lugar_expedicion.getValue(),
+                nacionalidad: this.Cmp.nacionalidad.getValue(),
+                celular: this.Cmp.celular.getValue(),
+                telefono: this.Cmp.telefono.getValue(),
+                email: this.Cmp.email.getValue(),
+                direccion: this.Cmp.direccion.getValue(),
+                id_pais_residencia: this.Cmp.id_pais_residencia.getValue(),
+                ciudad_residencia: this.Cmp.ciudad_residencia.getValue(),
+                barrio_zona: this.Cmp.barrio_zona.getValue()
+            };
+            return resp;
+        }
+    });
+</script>
