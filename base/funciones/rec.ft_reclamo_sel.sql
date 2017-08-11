@@ -800,58 +800,6 @@ BEGIN
       ***********************************/
      ELSIF(p_transaccion = 'REC_FAILS_SEL')THEN
       BEGIN
-        SELECT count(ta.id_alarma)
-        INTO v_cont
-        FROM rec.trespuesta tr
-        INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
-        WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
-        (ta.fecha_reg::date BETWEEN now()::date-1 and now()::date+1);
-
-        IF(v_cont>0)THEN
-          FOR v_record IN  (SELECT ta.id_alarma, ta.titulo_correo, ta.fecha_reg, ta.correos, tr.nro_respuesta
-                                FROM rec.trespuesta tr
-                                INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
-                                WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
-                                (ta.fecha_reg::date BETWEEN now()::date-1 and now()::date+1)) LOOP
-
-              v_ids_alarma[v_index] = v_record.id_alarma;
-              v_nro_tramites[v_index] = v_record.nro_respuesta;
-              v_titulo_correo[v_index] = v_record.titulo_correo;
-              v_correo[v_index] = v_record.correos;
-              v_fecha_reg[v_index] = v_record.fecha_reg;
-
-              v_index = v_index + 1;
-          END LOOP;
-
-          FOR v_index IN 1..array_length(v_ids_alarma,1) LOOP
-              v_cadena = substr(v_correo[v_index], 1, position(',' IN v_correo[v_index])-1);
-              UPDATE param.talarma  SET
-                descripcion ='<div  style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
-                                  <p>
-                                      <span>De: <b>Sistema ERP BOA</b></span><br>
-                                      <span>Fecha: '||v_fecha_reg[v_index]||'</span><br>
-                                      <span>Asunto: '||v_titulo_correo[v_index]||'</span><br>
-                                      <span>Para: "'||v_cadena||'" </span><br>
-                                      <span>Cc: "sac@boa.bo" </span>
-                                  </p>
-                              </div><br><br>
-                              <div style="font-size: 12px; color: #000080; font-family: Verdana, Arial;">
-                                  <span><b>Estimados Señores:</b></span><br><br>
-                                  <p><img src="../../../sis_reclamo/reportes/sac.png"></p><br><br>
-                                  <span>Se presento un error al enviar el correo.</span><br><br>
-                                  <p><img src="../../../sis_reclamo/media/error_mail.png"></p><br><br><br>
-                                  <span>La falla se debe a un error de nombre de correo, pongase en contacto </span><br>
-                                  <span>con el cliente para confirmar la veracidad del correo al que se envio la respuesta.</span><br><br>
-                                  <span><b>Nro. Tramite:</b> </span>'||v_nro_tramites[v_index]||'
-                              </div>',
-                titulo_correo = regexp_replace(titulo_correo,'Respuesta al Reclamo','Error al enviar correo,'),
-                estado_envio = 'exito',
-                desc_falla = '',
-                pendiente = 'no',
-                correos = 'sac@boa.bo,(gvelasquez@boa.bo;franklin.espinoza@boa.bo)'
-              WHERE id_alarma = v_ids_alarma[v_index]::integer;
-          END LOOP;
-        END IF;
           v_consulta = 'select
           				trec.id_reclamo,
           				trec.nro_tramite,

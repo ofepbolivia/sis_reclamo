@@ -1555,8 +1555,8 @@ BEGIN
                 END IF;
               END LOOP;
               v_cad_frds = case when array_length(v_frd_faltantes, 1) >= 1 then array_to_string(v_frd_faltantes,',') else '' end;
-              --v_index = v_parametros.frd;
-                --raise exception 'v_parametros.frd: %',v_parametros.frd;
+
+               IF NOT(v_parametros.frd % '0/%') THEN
                 IF (v_parametros.frd = ANY(SELECT ltrim(tr.nro_frd,'0')
                                             FROM rec.treclamo tr
                                             INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
@@ -1576,6 +1576,9 @@ BEGIN
                 IF (v_band_frds = 'nuevo' AND to_number(v_parametros.frd,'9999999')::integer > rec.f_procesar_frds(v_parametros.oficina,'0','FRD_MAX')::INTEGER + 1)THEN
                   v_band_frds = 'mayor';
                 END IF;
+              ELSE
+              	v_band_frds = 'nuevo';
+              END IF;
               --end
           ELSE
             	v_band_frds = 'nuevo';

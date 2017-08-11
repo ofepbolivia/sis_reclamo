@@ -20,10 +20,7 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor:function(config){
             this.maestro = config.maestro;
             Phx.vista.ClienteFormEdit.superclass.constructor.call(this,config);
-
             this.init();
-            //this.loadValoresIniciales();
-
         },
         Atributos:[
             {
@@ -46,8 +43,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 150,
                     maxLength:50,
                     style:'text-transform:uppercase; white-space: pre-line;',
-                    /*regex:/^\s+|\s+$/g,
-                     maskRe: /\s/g*/
                 },
                 type:'TextField',
                 filters:{pfiltro:'cli.nombre',type:'string'},
@@ -263,11 +258,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 100,
                     maxLength:30,
                     style:'text-transform:uppercase;',
-                    /*turl:'../../../sis_parametros/vista/lugar/Lugar.php',
-                     ttitle:'Lugar',
-                     // tconfig:{width:1800,height:500},
-                     tdata:{},
-                     tcls:'Lugar',*/
                     renderer: function(value, p, record){
                         return String.format('{0}', record.data['pais_residencia']);
                     }
@@ -453,75 +443,19 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         onSubmit:function(o){
-            //TODO passar los datos obtenidos del wizard y pasar  el evento save
-
-
-            /*if (this.form.getForm().isValid()) {
-             this.fireEvent('beforesave', this, this.getValues());
-             }*/
-            /*Ext.Ajax.request({
-                url: '../../sis_reclamo/control/Cliente/validarCliente',
-                params: {
-                    nombre: this.Cmp.nombre.getValue(),
-                    apellido: this.Cmp.apellido_paterno.getValue(),
-                    genero: this.Cmp.genero.getValue(),
-                    ci: this.Cmp.ci.getValue()
-                },
-                argument: {},
-                success: function (resp) {
-                    var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
-                    //console.log('EXISTE:',reg.ROOT.datos.v_valid);
-                    if (reg.ROOT.datos.v_valid == 'true') {
-                        Ext.Msg.alert('Alerta','El cliente <b>' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + '</b> con Documento N° <b>' + this.Cmp.ci.getValue() + '</b> anteriormente ya fue registrado en la BD del ERP por el funcionari@ <b>'+reg.ROOT.datos.v_desc_func)+'</b>';
-                    }
-                    else {
-                        this.Cmp.nombre.setValue((this.Cmp.nombre.getValue()).trim());
-                        this.Cmp.apellido_paterno.setValue((this.Cmp.apellido_paterno.getValue()).trim());
-                        this.Cmp.apellido_materno.setValue((this.Cmp.apellido_materno.getValue()).trim());
-                        Phx.vista.ClienteFormEdit.superclass.onSubmit.call(this, o);
-                    }
-
-                },
-                failure: this.conexionFailure,
-                timeout: this.timeout,
-                scope: this
-            });*/
-
             Phx.vista.ClienteFormEdit.superclass.onSubmit.call(this,o);
-            //this.Cmp.id_cliente.setValue();
         },
 
 
-        successSave:function(resp)
-        {
+        successSave:function(resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            /*Phx.CP.getPagina(this.idContenedorPadre).cargarCliente(reg.ROOT.datos.id_cliente, this.Cmp.apellido_paterno.getValue() +
-                ' ' + this.Cmp.apellido_materno.getValue() +
-                ' ' + this.Cmp.nombre.getValue());*/
-
-
-            /*Ext.Ajax.request({
-             url:'../../sis_reclamo/control/Cliente/getNombreCliente',
-             params:{id_cliente: reg.ROOT.datos.id_cliente},
-             success:this.successName,
-             failure: this.conexionFailure,
-             timeout:this.timeout,
-             scope:this
-             });*/
-
-
             Phx.CP.loadingHide();
             this.close();
             this.onDestroy();
-
-
         },
 
         successName: function(resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            console.log('nombre: '+reg.ROOT.datos.nombre_completo1);
-
-            //Ext.getCmp('id_cliente').setRawValue(reg.ROOT.datos.nombre_completo1);
         },
 
         getValues:function(){

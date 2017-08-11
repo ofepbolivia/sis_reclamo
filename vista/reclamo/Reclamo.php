@@ -9,16 +9,25 @@
 //Hola
 header("content-type: text/javascript; charset=UTF-8");
 ?>
+<style type="text/css">
+    .uno{
+        background-color: #00FF00 !important;
+    }
+    .dos{
+        background-color: #FF0000 !important;
+    }
+
+</style>
+
 <script>
 	Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
     momento: '',
 	nombreVista: 'Reclamo', 
 	constructor: function (config) {
 		this.idContenedor = config.idContenedor;
-		//console.log('maestro_reclamo: '+this.idContenedor);
 		this.maestro = config.maestro;
-		//console.log(config);
 		//llama al constructor de la clase padre
+
 		Phx.vista.Reclamo.superclass.constructor.call(this, config);
 
 		this.init();
@@ -26,7 +35,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.iniciarEvento();
 		this.store.baseParams = {tipo_interfaz:this.nombreVista};
 		this.store.baseParams.pes_estado = 'borrador';
-		//this.store.baseParams = {tipo_interfaz: this.nombreVista, id_reclamo: this.maestro.id_reclamo};
 		this.load({params: {start: 0, limit: this.tam_pag}});
 		this.finCons = true;
         this.bandera_log = false;//bandera para controlar las faltas de un funcionario
@@ -95,6 +103,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 	},
 
+
 	compositeFields : function(){  //step 1
 		return{
 			xtype	        : "compositefield", //step 2
@@ -153,7 +162,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				anchor: '50%',
 				gwidth: 60,
 				renderer:function (value, p, record){
-				    //console.log('revisado',record.data['revisado']);
+
 					if(record.data['revisado'] == 'si') {
                         return String.format('{0}', "<div style='text-align:center'><img title='Reclamo con Respuesta'  src = '../../../lib/imagenes/ball_green.png' align='center' width='24' height='24'/></div>");
                     }else {
@@ -178,6 +187,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				gwidth: 120,
 				maxLength:100,
 				renderer: function(value, p, record) {
+				    //p.style = "background-color:#EAA8A8";
 					var fecha_actual = new Date();
 					var dias = record.data.dias_respuesta;
 					var diasDif = record.data.fecha_limite_respuesta - fecha_actual;
@@ -1398,7 +1408,6 @@ header("content-type: text/javascript; charset=UTF-8");
 	},
 
 	antEstado:function(res){
-		//alert('anterior');
 		var rec=this.sm.getSelected();
 		Phx.CP.loadWindows('../../../sis_workflow/vista/estado_wf/AntFormEstadoWf.php',
 			'Estado de Wf',
@@ -1406,7 +1415,11 @@ header("content-type: text/javascript; charset=UTF-8");
 				modal:true,
 				width:450,
 				height:250
-			}, { data:rec.data, estado_destino: res.argument.estado }, this.idContenedor,'AntFormEstadoWf',
+			}, {
+		        data:rec.data,
+                estado_destino: res.argument.estado
+		    },
+            this.idContenedor,'AntFormEstadoWf',
 			{
 				config:[{
 					event:'beforesave',
@@ -1418,6 +1431,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	},
 
 	onAntEstado: function(wizard,resp){
+
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/anteriorEstadoReclamo',
@@ -1542,6 +1556,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		this.reload();
 	},
+
 
 	iniciarEvento:function() {
 

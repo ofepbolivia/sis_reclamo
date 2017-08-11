@@ -18,8 +18,7 @@ header("content-type: text/javascript; charset=UTF-8");
         fheight : '80%',
     constructor: function(config){
         this.maestro=config.maestro;
-        this.mycls = config.mycls;
-        //this.Atributos.splice(3,1);
+
         this.tbarItems = ['-',
             this.cmbGestion,'-'
 
@@ -34,8 +33,6 @@ header("content-type: text/javascript; charset=UTF-8");
              maxLength: 100,
              renderer: function(value, p, record) {
              var dias = record.data.dias_informe;
-             console.log('dias: '+record.data.dias_informe);
-             //console.log('dias_informe: '+JSON.stringify(record.data));
              if(record.data.revisado == 'con_informe')
                  return  String.format('{0}',"<div style='text-align:center'><img title='El Reclamo ya tiene Informe'  src = '../../../sis_reclamo/media/respondido.png' align='center' width='24' height='24'/></div>");
              else if (dias == 3) {
@@ -71,10 +68,9 @@ header("content-type: text/javascript; charset=UTF-8");
         this.Atributos[31] = aux;
 
         Phx.vista.RegistroReclamos.superclass.constructor.call(this,config);
-        //this.store.baseParams.func_estado = 'oficina';
         this.store.baseParams.tipo_interfaz=this.nombreVista;
-        console.log('padre: '+this.mycls);
-        console.log('maestro: '+JSON.stringify(config));
+
+        //Cargamos gestion del que se mostraran los registros.
         Ext.Ajax.request({
             url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
             params:{id_usuario:0},
@@ -99,11 +95,10 @@ header("content-type: text/javascript; charset=UTF-8");
             iconCls : 'bfolder',
             disabled: false,
             handler : this.winFRD,
-            tooltip : '<b>Control FRDS,</b><br/><b>Nos permite llevar un seguimiento de los frd que no se registran.</b>'
+            tooltip : '<b>Control FRDS</b><br/>Nos permite llevar un seguimiento de los frd que no se registran.'
         });
 
         this.cmbGestion.on('select',this.capturarEventos, this);
-        //this.padre = Phx.CP.getPagina(this.idContenedorPadre).nombreVista;
         this.getBoton('ant_estado').setVisible(false);
     },
 
@@ -113,10 +108,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
         if(rec == undefined){
             rec = {data:{nombreVista:'RegistroReclamos'}}
-            console.log('rec 1',rec.data);
         }else{
             rec.data.nombreVista = 'RegistroReclamos';
-            console.log('rec 2',rec.data);
         }
         Phx.CP.loadWindows(
             '../../../sis_reclamo/vista/reclamo/ControlFRD.php',
@@ -174,8 +167,18 @@ header("content-type: text/javascript; charset=UTF-8");
     tam_pag:50,
     actualizarSegunTab: function(name, indice){
         if(this.finCons){
-
-            if(name == 'pendiente_revision'){
+            if(name == 'borrador'){
+                this.getBoton('ant_estado').setVisible(false);
+                this.store.baseParams.pes_estado = name;
+                this.load({params:{start:0, limit:this.tam_pag}});
+            }else if(name == 'en_proceso' || name == 'concluidos'){
+                this.getBoton('sig_estado').setVisible(false);
+                this.getBoton('ant_estado').setVisible(false);
+                this.store.baseParams.pes_estado = name;
+                this.load({params:{start:0, limit:this.tam_pag}});
+            }else if(name == 'pendiente_revision'){
+                this.getBoton('sig_estado').setVisible(false);
+                this.getBoton('ant_estado').setVisible(false);
                 this.store.baseParams.pes_estado = 'pendiente_informe';
                 this.load({params:{start:0, limit:this.tam_pag}});
             }else{
@@ -231,9 +234,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('sig_estado').enable();
             this.disableTabRespuesta();
 
-        }else if(data['estado'] ==  'pendiente_revision' /*&& this.mycls == 'RegistroReclamos'*/){
-            this.getBoton('sig_estado').setVisible(true);
-            this.getBoton('ant_estado').setVisible(true);
+        }else if(data['estado'] ==  'pendiente_revision' || data['estado'] ==  'registrado_ripat'){
+
             this.getBoton('btnObs').setVisible(true);
             this.getBoton('sig_estado').disable();
             this.getBoton('ant_estado').disable();

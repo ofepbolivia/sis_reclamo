@@ -16,12 +16,9 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
     momento: '',
 	constructor: function (config) {
 		this.maestro = config.maestro;
-		console.log('contenedor: '+this.idContenedorPadre);
-		console.log('configuracion: ',config);
 
 		//llama al constructor de la clase padre
 		Phx.vista.Respuesta.superclass.constructor.call(this, config);
-		//this.setAutoScroll(false);
 
 		this.init();
 		this.store.baseParams.pes_estado = 'elaboracion_respuesta';
@@ -41,7 +38,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			text:'Siguiente',
 			iconCls: 'badelante',
 			disabled:true,
-			/*hidden:true,*/
 			handler:this.sigEstado,
 			tooltip: '<b>Pasar al Siguiente Estado</b>'
 		});
@@ -217,7 +213,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
                 fieldLabel:'Correos',
                 allowBlank:true,
                 disabled:true,
-                //emptyText:'Elija una opción...',
                 dato: 'reclamo',
                 qtip:'Correo del Destinatario.',
                 store: new Ext.data.JsonStore({
@@ -249,11 +244,11 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
                 width:315,
                 gwidth:320,
                 minChars:1,
-                turl:'../../../sis_reclamo/vista/cliente/Cliente.php',
-                ttitle:'Clientes',
-                tconfig:{width: '45%' ,height:'60%'},
+                turl:'../../../sis_reclamo/vista/cliente/ClienteFormEdit.php',
+                ttitle:'Editar Cliente',
+                tconfig:{width: '45%' ,height:'90%'},
                 tdata:{},
-                tcls:'Cliente',
+                tcls:'ClienteFormEdit',
                 //pid:this.idContenedor,
 
                 renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}
@@ -521,6 +516,7 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		this.Cmp.nro_cite.on('blur', function(field) {
 			this.generarCite();
 		},this);
+
 	},
 	onOpenObs: function() {
 		var rec=this.sm.getSelected();
@@ -660,14 +656,12 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
         var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
 
         var estado = reg.ROOT.datos.v_codigo_estado_siguiente;
-        console.log('BORRACHERA',estado);
         if(estado == 'respuesta_enviada'){
             Phx.CP.getPagina(this.idContenedorPadre).reload();
         }
         if(estado == 'vobo_respuesta' || estado == 'respuesta_aprobada'){
             this.reload();
         }
-        //Phx.CP.getPagina('docs-PENRES-south-1').reload();
 
 		Phx.CP.loadingHide();
 		resp.argument.wizard.panel.destroy();
@@ -675,15 +669,17 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 	},
 
 	onButtonNew : function () {
+		
 		Phx.vista.Respuesta.superclass.onButtonNew.call(this);
 	    this.momento  = 'new';
-        //console.log('probando Momento',this.momento);
+		//mandamos al componente los datos para cargar al cliente.
+		this.Cmp.correos.tdata = {maestro: this.maestro};
+
 		var fecha = this.sumarDias(new Date(),parseInt(this.maestro.tiempo_respuesta));
 		this.Cmp.fecha_respuesta.setValue(new Date());
 		this.Cmp.asunto.setValue('Respuesta a Reclamo');
-		this.Cmp.recomendaciones.setValue('Ninguna');
+		this.Cmp.recomendaciones.setValue('Ninguna.');
 
-		//console.log('YO SOY TU MAESTRO', this.maestro);
 		this.Cmp.correos.setValue(this.maestro.email);
         this.Cmp.destinatario.setValue(this.maestro.desc_nom_cliente);
         //this.Cmp.correo_cli.setValue(this.maestro.email);
@@ -741,42 +737,10 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
         this.Cmp.correos.setValue(this.maestro.email);
         this.Cmp.destinatario.setValue(this.maestro.desc_nom_cliente);
         this.momento = 'edit';
-        //console.log('probando Momento',this.momento);
+        //mandamos al componente los datos para cargar al cliente.
+        this.Cmp.correos.tdata = {maestro: this.maestro};
 	}
-	/*preparaMenu: function(n){
 
-		var data = this.getSelectedData();
-		var tb =this.tbar;
-		Phx.vista.Respuesta.superclass.preparaMenu.call(this,n);
-		
-		this.getBoton('sig_estado').setVisible(true);
-		this.getBoton('ant_estado').setVisible(true);
-		if (data['estado'] == 'elaboracion_respuesta'){
-			this.getBoton('sig_estado').setVisible(true);
-			this.getBoton('ant_estado').setVisible(false);
-			this.getBoton('sig_estado').enable();
-			this.getBoton('diagrama_gantt').enable();
-			this.getBoton('btnObs').enable();
-		}else if(data['estado'] == 'revision_legal' || data['estado'] == 'vobo_respuesta' || data['estado'] == 'respuesta_aprobada'){
-			this.getBoton('sig_estado').enable();
-			this.getBoton('ant_estado').setVisible(true);
-			this.getBoton('diagrama_gantt').enable();
-			this.getBoton('btnObs').enable();
-		}else if(data['estado'] == 'respuesta_enviada'){
-			this.getBoton('sig_estado').setVisible(false);
-		}
-
-		return tb;
-	},
-	liberaMenu: function(){
-		var tb = Phx.vista.Respuesta.superclass.liberaMenu.call(this);
-		if(tb){
-			this.getBoton('diagrama_gantt').disable();
-			this.getBoton('sig_estado').disable();
-			this.getBoton('btnObs').disable();
-		}
-		return tb;
-	}*/
 });
 </script>
 		

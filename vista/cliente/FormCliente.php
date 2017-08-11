@@ -15,7 +15,6 @@ header("content-type: text/javascript; charset=UTF-8");
         layout: 'fit',
         breset: false,
         bcancel: true,
-        dedo: 'dedo',
         autoScroll: false,
         labelSubmit: '<i class="fa fa-check"></i> Guardar',
         constructor:function(config){
@@ -43,9 +42,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '100%',
                     gwidth: 150,
                     maxLength:50,
-                    style:'text-transform:uppercase; white-space: pre-line;',
-                    /*regex:/^\s+|\s+$/g,
-                    maskRe: /\s/g*/
+                    style:'text-transform:uppercase; white-space: pre-line;'
                 },
                 type:'TextField',
                 filters:{pfiltro:'cli.nombre',type:'string'},
@@ -62,9 +59,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '100%',
                     gwidth: 150,
                     maxLength:30,
-                    style:'text-transform:uppercase; white-space: pre-line;',
-                    /*regex:/^\s+|\s+$/g,
-                    maskRe: /\s/g*/
+                    style:'text-transform:uppercase; white-space: pre-line;'
                 },
                 type:'TextField',
                 filters:{pfiltro:'cli.apellido_paterno',type:'string'},
@@ -81,9 +76,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     anchor: '100%',
                     gwidth: 100,
                     maxLength:30,
-                    style:'text-transform:uppercase; white-space: pre-line;',
-                    /*regex:/^\s+|\s+$/g,
-                    maskRe: /\s/g*/
+                    style:'text-transform:uppercase; white-space: pre-line;'
                 },
                 type:'TextField',
                 filters:{pfiltro:'cli.apellido_materno',type:'string'},
@@ -261,11 +254,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 100,
                     maxLength:30,
                     style:'text-transform:uppercase;',
-                    /*turl:'../../../sis_parametros/vista/lugar/Lugar.php',
-                    ttitle:'Lugar',
-                    // tconfig:{width:1800,height:500},
-                    tdata:{},
-                    tcls:'Lugar',*/
                     renderer: function(value, p, record){
                         return String.format('{0}', record.data['pais_residencia']);
                     }
@@ -422,9 +410,6 @@ header("content-type: text/javascript; charset=UTF-8");
         
         onSubmit:function(o){
 
-            /*if (this.form.getForm().isValid()) {
-                this.fireEvent('beforesave', this, this.getValues());
-            }*/
             Ext.Ajax.request({
                 url: '../../sis_reclamo/control/Cliente/validarCliente',
                 params: {
@@ -436,7 +421,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 argument: {},
                 success: function (resp) {
                     var reg = Ext.decode(Ext.util.Format.trim(resp.responseText));
-                    //console.log('EXISTE:',reg.ROOT.datos.v_valid);
                     if (reg.ROOT.datos.v_valid == 'true') {
                         Ext.Msg.alert('Alerta','El cliente <b>' + (this.Cmp.nombre.getValue()).toUpperCase() + ' ' + (this.Cmp.apellido_paterno.getValue()).toUpperCase() + '</b> con Documento N° <b>' + this.Cmp.ci.getValue() + '</b> anteriormente ya fue registrado en la BD del ERP por el funcionari@ <b>'+reg.ROOT.datos.v_desc_func)+'</b>';
                     }
@@ -472,9 +456,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         successName: function(resp){
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-            console.log('nombre: '+reg.ROOT.datos.nombre_completo1);
 
-            //Ext.getCmp('id_cliente').setRawValue(reg.ROOT.datos.nombre_completo1);
         },
 
         getValues:function(){
