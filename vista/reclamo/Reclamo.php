@@ -22,7 +22,9 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 	Phx.vista.Reclamo=Ext.extend(Phx.gridInterfaz, {
     momento: '',
-	nombreVista: 'Reclamo', 
+	nombreVista: 'Reclamo',
+	val_oficina: '',
+	val_funcionario: '',
 	constructor: function (config) {
 		this.idContenedor = config.idContenedor;
 		this.maestro = config.maestro;
@@ -875,7 +877,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					totalProperty: 'total',
 					fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'ofi.nombre#ofi.codigo#tlug.nombre'}
+					baseParams: {par_filtro: 'ofi.nombre#ofi.codigo#lug.nombre'}
 				}),
 				valueField: 'id_oficina',
 				displayField: 'nombre',
@@ -1533,7 +1535,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		var estado = reg.ROOT.datos.v_codigo_estado_siguiente;
 
 		if(estado=='pendiente_revision' ){
-			//Ext.Msg.alert('ATENCION !!!','<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">72 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>');
             Ext.Msg.show({
                 title: 'Información',
                 msg: '<b>A partir de este momento usted tiene '+'\n'+' <span style="color: red">72 horas</span> para registrar el informe correspondiente y Adjuntar Documentacion de Respaldo.</b>',
@@ -1543,12 +1544,6 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 		}
 
-		/*if(estado=='registrado_ripat' && rec.data.nro_ripat_att==null){
-			//Ext.Msg.alert('ATENCION !!!','<b>Olvido N° Ripatt, verifique si asigno numero  de Registro Ripatt al Reclamo</b>');
-			this.onButtonEdit();
-		}*/
-
-		console.log('v_codigo_estado_siguiente: '+reg.ROOT.datos.v_codigo_estado_siguiente);
 		//Elegir el motivo de anulacion.
 		if(estado=='anulado'){
 			this.onButtonEdit();
@@ -1568,30 +1563,27 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		}, this);
 
-        /*this.Cmp.id_oficina_registro_incidente.on('focus', function () {
-            console.log('foco');
-             Ext.Ajax.request({
-             url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
-             params:{
-             id_usuario: 0
-             },
-             success:function(resp){
-             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-                console.log('foco datos',reg.ROOT.datos);
-                 this.Cmp.id_oficina_registro_incidente.setValue(reg.ROOT.datos.id_oficina);
-                 this.Cmp.id_oficina_registro_incidente.setRawValue(reg.ROOT.datos.oficina_nombre);
+		this.Cmp.id_oficina_registro_incidente.on('focus', function () {
+			this.val_oficina = this.Cmp.id_oficina_registro_incidente.getRawValue();
+		},this);
+		this.Cmp.id_funcionario_recepcion.on('focus', function () {
+			this.val_funcionario = this.Cmp.id_funcionario_recepcion.getRawValue();
+		},this);
 
-                 this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
-                 this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
+		this.Cmp.id_oficina_registro_incidente.on('select', function () {
+			this.val_oficina = this.Cmp.id_oficina_registro_incidente.getRawValue();
+		},this);
+		this.Cmp.id_funcionario_recepcion.on('select', function () {
+			this.val_funcionario = this.Cmp.id_funcionario_recepcion.getRawValue();
+		},this);
 
-             },
-             failure: this.conexionFailure,
-             timeout:this.timeout,
-             scope:this
-             });
 
-        }, this);*/
-
+		this.Cmp.id_oficina_registro_incidente.on('blur', function () {
+			this.Cmp.id_oficina_registro_incidente.setRawValue(this.val_oficina);
+		},this);
+		this.Cmp.id_funcionario_recepcion.on('blur', function () {
+			this.Cmp.id_funcionario_recepcion.setRawValue(this.val_funcionario);
+		},this);
 
 		/*that = this;
 		setInterval(function(){ that.reload();},30000);*/
@@ -1615,6 +1607,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			scope:this
 		});
 
+
 		//Phx.vista.Reclamo.superclass.onButtonNew.call(this);
 	},
 
@@ -1624,15 +1617,17 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		Phx.vista.Reclamo.superclass.onButtonNew.call(this);
         this.momento = 'new';
-        console.log(this.momento);
+
         var fecha = new Date();
 		this.armarFormularioFromArray(objRes.datos);
 
 		this.Cmp.id_subtipo_incidente.disable();
-		this.Cmp.observaciones_incidente.setValue('Ninguna');
+		this.Cmp.observaciones_incidente.setValue('Ninguna.');
 		this.Cmp.fecha_hora_vuelo.setValue(new Date((fecha.getMonth()+1)+'/'+fecha.getDate()+'/'+fecha.getFullYear()));
 		this.Cmp.fecha_hora_incidente.setValue(new Date((fecha.getMonth()+1)+'/'+fecha.getDate()+'/'+fecha.getFullYear()));
 		this.Cmp.fecha_hora_recepcion.setValue(fecha);
+
+
 
 		Ext.Ajax.request({
 			url:'../../sis_reclamo/control/Reclamo/getDatosOficina',
@@ -1648,13 +1643,15 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.Cmp.id_funcionario_recepcion.setValue(reg.ROOT.datos.id_funcionario);
 				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
 
-
                 this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
 			},
 			failure: this.conexionFailure,
 			timeout:this.timeout,
 			scope:this
 		});
+
+
+
 
 	},
 
@@ -1681,13 +1678,14 @@ header("content-type: text/javascript; charset=UTF-8");
     },*/
     onSubmit: function (o,x, force) {
         //Phx.vista.Cliente.superclass.onSubmit.call(this, o);
+		console.log('tres',this.Cmp.id_oficina_registro_incidente.getValue(),
+			this.Cmp.id_oficina_registro_incidente.getRawValue(),
 
-        console.log('probando',this.Cmp.id_oficina_registro_incidente.getValue(), this.Cmp.id_oficina_registro_incidente.getRawValue());
+			this.Cmp.id_funcionario_recepcion.getValue(),
+			this.Cmp.id_funcionario_recepcion.getRawValue());
         if(this.momento == 'edit'){
-            console.log(this.momento);
             Phx.vista.Reclamo.superclass.onSubmit.call(this, o);
         }else if(this.momento == 'new') {
-            console.log(this.momento);
             Ext.Ajax.request({
                 url: '../../sis_reclamo/control/Reclamo/validarReclamo',
                 params: {

@@ -804,9 +804,7 @@ BEGIN
           				trec.id_reclamo,
           				trec.nro_tramite,
                         trec.id_cliente,
-                        case when substring(ta.desc_falla, position(''D'' in ta.desc_falla), position(''!'' in ta.desc_falla)-8) like ''Domain Email address % is invalid -- aborting!'' then ''Dominio de Correo no Existe, Consulte con el Cliente via Telefono''::varchar
-						else ''Cuenta de Correo no existe, Consulte con el Cliente via Telefono''::varchar
-						end as falla,
+                        ta.desc_falla::varchar as falla,
                         vc.nombre_completo2::varchar as desc_funcionario
 						from rec.trespuesta tr
 						inner join param.talarma ta on ta.id_proceso_wf = tr.id_proceso_wf

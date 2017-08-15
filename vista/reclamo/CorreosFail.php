@@ -23,7 +23,31 @@ header("content-type: text/javascript; charset=UTF-8");
             this.init();
             this.load({params:{start:0, limit: 50}});
 
+            this.addButton('falla_envio',{
+                grupo:[0,1,2,3,4,5],
+                text :'<b style="color: green">Reenviar Respuesta</b>',
+                iconCls : 'bemail',
+                disabled: false,
+                handler : this.fallaEnvio,
+                tooltip : '<b>Reenviar</b><br/>Verifica el origen de falla, si es el nombre de correo del cliente o conexión del servidor. Reenvia los correos respectivos, error de nombre de correo del cliente envia a sac@boa.bo un mail informando del incidente, error en conexion espera a que haya conexión, <b>pero no se olvide hacer click en este botón.</b>'
+            });
         },
+
+        fallaEnvio: function () {
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/reenviarCorreos',
+                params:{id_usuario: 0},
+                success:function (resp) {
+                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    Phx.CP.getPagina(this.idContenedorPadre).reload();
+                    this.reload();
+                },
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+
         Atributos:[
             {
                 config:{

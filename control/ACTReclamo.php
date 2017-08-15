@@ -481,6 +481,12 @@ class ACTReclamo extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
+	function reenviarCorreos(){
+		$this->objFunc=$this->create('MODReclamo');
+		$this->res=$this->objFunc->reenviarCorreos($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
 }
 
 ?>

@@ -101,6 +101,8 @@ class MODReclamo extends MODbase
 		$this->captura('administrador', 'int4');
 		$this->captura('id_informe', 'int4');
 
+		//$this->captura('nombre', 'varchar');
+
 
 
 		$this->setParametro('id_usuario', 'id_usuario', 'int4');
@@ -915,4 +917,19 @@ class MODReclamo extends MODbase
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
+	function reenviarCorreos(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento = 'rec.f_verificar_alerta_falla';
+		$this->transaccion = 'FAILED_MAILS';
+		$this->tipo_procedimiento = 'IME';//tipo de transaccion
+	
+		$this->setParametro('id_usuario','id_usuario','int4');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 }
