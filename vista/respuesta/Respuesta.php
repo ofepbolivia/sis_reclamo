@@ -68,6 +68,15 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			handler:diagramGantt,
 			tooltip: '<b>Diagrama Gantt de proceso macro</b>'
 		});
+
+		/*this.addButton('vista_previa',{
+			grupo:[0,1,2,3],
+			text:'Vista Previa',
+			iconCls: 'btemplate',
+			disabled:true,
+			handler:this.vistaPrevia,
+			tooltip: '<b>Permite visualizar la respuesta en PDF.</b>'
+		});*/
 		
 		function diagramGantt(){
 			var data=this.sm.getSelected().data.id_proceso_wf;
@@ -254,7 +263,6 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
                 renderer:function (value, p, record){return String.format('{0}', record.data['desc_nom_cliente']);}
             },
             type:'TrigguerCombo',
-            bottom_filter:true,
             id_grupo:1
         },
 		{
@@ -464,7 +472,22 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 			id_grupo: 1,
 			grid: true,
 			form: false
-		}
+		}/*,
+		{
+			config: {
+				name: 'url_resp',
+				fieldLabel: 'Url Resp.',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength: 10
+			},
+			type: 'TextField',
+			filters: {pfiltro: 'res.url_resp', type: 'string'},
+			id_grupo: 1,
+			grid: false,
+			form: false
+		},*/
 	],
 	tam_pag: 50,
 	title: 'Respuesta',
@@ -499,7 +522,8 @@ Phx.vista.Respuesta=Ext.extend(Phx.gridInterfaz, {
 		{name: 'email', type: 'string'},
 		{name: 'admin', type: 'numeric'},
 		{name: 'codigo_medio', type: 'string'},
-		{name: 'nro_att', type: 'numeric'}
+		{name: 'nro_att', type: 'numeric'}/*,
+		{name: 'url_resp', type: 'string'}*/
 
 	],
 	sortInfo: {
