@@ -274,6 +274,7 @@ class MODReclamo extends MODbase
         $this->captura('nro_guia_aerea', 'varchar');//
         //$this->captura('nombre_cargo', 'varchar');
         $this->captura('nombre_completo2', 'text');
+        $this->captura('nro_cite', 'varchar');
 
         $this->setParametro('id_usuario', 'id_usuario', 'int4');
 
