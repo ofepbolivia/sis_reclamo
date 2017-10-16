@@ -7,25 +7,23 @@ class RRespuestaFinal extends ReportePDF
     var $datos2;
 
     function setDatos($datos,$datos2) {
+
+        /*$this->SetHeaderMargin(8);
+        $this->SetAutoPageBreak(TRUE, 12);
+        $this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
+        $this->SetMargins(15, 40, 15);*/
         $this->datos = $datos;
         $this->datos2 = $datos2;
     }
 
     function Header() {
-        // get the current page break margin
-        //$bMargin = $this->getBreakMargin();
-        // get current auto-page-break mode
-        //$auto_page_break = $this->AutoPageBreak;
-        // disable auto-page-break
-        //$this->SetAutoPageBreak(false, 0);
-        // set bacground image
 
         $this->SetHeaderMargin(10);
-        //var_dump(K_PATH_IMAGES);exit;
-        //$img_file = K_PATH_IMAGES.'MEMBRETE BOA.jpg';
 
-        $img_file = dirname(__FILE__).'/../media/direcciones.jpg';
+
+        $img_file = dirname(__FILE__).'/../media/direcciones1.jpg';
         $img_agua = dirname(__FILE__).'/../media/marcaAgua.jpg';
+
 
         //$this->Image($img_file, 0, 0, 250, 260, '', '', '', false, 300, '', false, false, 0);
         $this->Image($img_file, 7, 2, 52, 260, '', '', '', false, 300, '', false, false, 0);
@@ -37,12 +35,6 @@ class RRespuestaFinal extends ReportePDF
         $this->SetFont('helvetica','B',11);
         $this->Cell(190, 25, $this->datos[0]['num_cite'], '', 0, 'R');
         $this->Ln(1);
-        // restore auto-page-break status
-        //Set auto page breaks
-
-        // set the starting point for the page content
-        //$this->setPageMark();
-        //$this->generarRespuesta();
 
     }
 
@@ -87,29 +79,6 @@ class RRespuestaFinal extends ReportePDF
         $this->writeHTML($this->datos[0]['respuesta'], true, 0, true, true);
         $this->ln();
 
-        /*$nro_Cite = $this->datos2[0]['num_cite'];
-        $nro_frd = $this->datos2[0]['nro_frd'];
-        $oficina = $this->datos2[0]['oficina'];
-        $ini_rep = $this->datos2[0]['iniciales_fun_reg'];
-        $ini_vis = $this->datos2[0]['iniciales_fun_vis'];
-
-        $html = 'Numero Cite: '.$nro_Cite."\n".'Numero FRD: '.$nro_frd."\n".'Lugar de Reclamo: '.$oficina."\n".'Elaborado por: '.$ini_rep."\n".'Revisado por: '.$ini_vis;*/
-
-
-
-        // set style for barcode
-        /*$style = array(
-            'border' => 2,
-            'vpadding' => 'auto',
-            'hpadding' => 'auto',
-            'fgcolor' => array(0,0,0),
-            'bgcolor' => false, //array(255,255,255)
-            'module_width' => 1, // width of a single module in points
-            'module_height' => 1 // height of a single module in points
-        );*/
-
-        //$this->write2DBarcode($html, 'QRCODE,L',115, $this->GetY(), 20, 20, $style, 'N');
-
         $this->Text(100, $this->GetY()+10, 'Atención al Cliente BoA');
 
 
@@ -131,7 +100,9 @@ class RRespuestaFinal extends ReportePDF
     }
 
     public function Footer() {
-        $this->SetMargins(50, 35, 25);
+
+        $img_call = dirname(__FILE__).'/../media/pie.jpg';
+        $this->SetMargins(50, 35, 25);//$this->SetMargins(50, 35, 25);
         //$this->SetHeaderMargin(10);
         $height = 5;
         $width4 = 75;
@@ -155,6 +126,11 @@ class RRespuestaFinal extends ReportePDF
             'module_height' => 1 // height of a single module in points
         );
         $this->write2DBarcode($html, 'QRCODE,L', 11, 230, 25, 25, $style, 'N');
+        //$this->MultiCell(50, 5, 'Texto',0,'R',false, 1, '' ,'');
+
+
+
+
         
         if($this->datos[0]["prodedente"] != 'ninguno' && $this->datos[0]["tipo_respuesta"] == 'respuesta_final') {
             //var_dump('a');exit;
@@ -172,9 +148,39 @@ class RRespuestaFinal extends ReportePDF
             $tex2 = 'Artículo 59º del Decreto Supremo Nº 27172, si usted no está conforme con la respuesta obtenida, tiene derecho a presentar una Reclamación Administrativa ante la Autoridad de Regulación y Fiscalización de Telecomunicación y Transporte en el plazo de 15 días hábiles, a ser computables a partir de la recepción de la respuesta."';
             $procedente = '';
         }
-            $this->SetFont('helvetica', 'I', 7);
+
+        $this->SetFont('helvetica', 'I', 7);
         $this->MultiCell($width4*2, $height, $tex."\t".$procedente.'.'."\n".$tex2."\n",'J', 0, '' ,'');
+
+        /*$table = '<table border="1">
+                    <tr>
+                        <td width="45%" rowspan="2">hola</td>
+                        <td width="65%" colspan="2"><img src="'.$img_call.'" width="5" height="20"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">'.$tex.' '.$procedente.' '.$tex2.'</td>
+                    </tr>
+                    </table>';
+        $this->writeHTML($table,true);*/
     }
+
+    /*function generarImagen($html){
+        $cadena_qr = $html;
+        $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
+        $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
+        $im = imagecreatefromstring($png);
+        if ($im !== false) {
+            header('Content-Type: image/png');
+            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $nom . ".png");
+            imagedestroy($im);
+
+        } else {
+            echo 'A ocurrido un Error.';
+        }
+        $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $nom . ".png";
+
+        return $url_archivo;
+    }*/
 
 
 }
