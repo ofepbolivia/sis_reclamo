@@ -476,7 +476,8 @@ BEGIN
         					rec.transito,
         					ma.motivo as motivo_anulado,
         					rec.nro_guia_aerea,
-                            c.nombre_completo2
+                            c.nombre_completo2,
+                            res.nro_cite
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
@@ -492,6 +493,8 @@ BEGIN
 						left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
 						inner join param.tgestion gest on gest.id_gestion = rec.id_gestion
 						left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
+
+						LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 				        WHERE ';
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -529,6 +532,8 @@ BEGIN
 						left join orga.vfuncionario fu on fu.id_funcionario = rec.id_funcionario_denunciado
 						inner join param.tgestion gest on gest.id_gestion = rec.id_gestion
 						left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
+
+						LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 					    where ';
 
 			--Definicion de la respuesta

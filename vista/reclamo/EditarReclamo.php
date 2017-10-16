@@ -25,11 +25,26 @@ header("content-type: text/javascript; charset=UTF-8");
 
             ];
 
+            this.Atributos.splice(7,0, {
+                config:{
+                    name: 'nro_cite',
+                    fieldLabel: 'Nro. Cite',
+                    allowBlank: false,
+                    anchor: '80%',
+                    gwidth: 80,
+                    maxLength:100,
+                    renderer: function (value, p, record) {
+                        return String.format('<b style="color: green;">{0}</b>', value);
+                    }
+                },
+                type:'TextField',
+                grid:true,
+                form:false
+            });
 
             Phx.vista.EditarReclamo.superclass.constructor.call(this,config);
 
-            //this.getBoton('btnObs').setVisible(false);
-            //this.getBoton('btnChequeoDocumentosWf').setVisible(false);
+            
             this.getBoton('sig_estado').setVisible(false);
             this.getBoton('ant_estado').setVisible(false);
             this.store.baseParams={tipo_interfaz:this.nombreVista};

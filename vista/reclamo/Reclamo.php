@@ -1255,7 +1255,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'email', type: 'string'},
 		{name: 'nombre_completo2', type: 'string'},
 		{name: 'administrador', type: 'numeric'},
-		{name: 'id_informe', type: 'numeric'}
+		{name: 'id_informe', type: 'numeric'},
+		{name: 'nro_cite', type: 'string'}
 
 
 	],
@@ -1563,6 +1564,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		}, this);
 
+        
 		this.Cmp.id_oficina_registro_incidente.on('focus', function () {
 			this.val_oficina = this.Cmp.id_oficina_registro_incidente.getRawValue();
 		},this);
