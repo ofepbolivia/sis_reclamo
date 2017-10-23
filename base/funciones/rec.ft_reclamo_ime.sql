@@ -935,7 +935,8 @@ BEGIN
                                             v_parametros._nombre_usuario_ai,
                                             v_id_estado_actual,
                                             v_parametros.id_proceso_wf_act,
-                                            v_codigo_estado_siguiente) THEN
+                                            v_codigo_estado_siguiente,
+                                            p_administrador) THEN
 
          			RAISE NOTICE 'PASANDO DE ESTADO';
 
@@ -1567,10 +1568,6 @@ BEGIN
                                                 INNER JOIN rec.toficina tof ON tof.id_oficina = tr.id_oficina_registro_incidente
                                                 WHERE tr.id_oficina_registro_incidente = v_parametros.oficina and tr.id_gestion = v_gestion))THEN
                     v_band_frds = 'nuevo';
-                END IF;
-
-                IF (v_band_frds = 'nuevo' AND v_parametros.frd::integer > rec.f_procesar_frds(v_parametros.oficina,'0','FRD_MAX')::INTEGER + 1)THEN
-                  v_band_frds = 'mayor';
                 END IF;
 
                 IF (v_band_frds = 'nuevo' AND to_number(v_parametros.frd,'9999999')::integer > rec.f_procesar_frds(v_parametros.oficina,'0','FRD_MAX')::INTEGER + 1)THEN
