@@ -4,7 +4,8 @@ CREATE OR REPLACE FUNCTION rec.f_procesar_estados_reclamo (
   p_usuario_ai varchar,
   p_id_estado_wf integer,
   p_id_proceso_wf integer,
-  p_codigo_estado varchar
+  p_codigo_estado varchar,
+  p_administrador integer
 )
 RETURNS boolean AS
 $body$
@@ -128,7 +129,7 @@ BEGIN
             end if;
 
         end loop;
-        if (v_cont = v_cont_resp and v_cont_resp>0) then
+        if ((v_cont = v_cont_resp and v_cont_resp>0) OR p_administrador=1) then
     		update rec.treclamo r set
             	revisado = 'con_respuesta',
        			id_estado_wf =  p_id_estado_wf,

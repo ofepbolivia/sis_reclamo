@@ -1019,7 +1019,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type: 'ComboBox',
 			id_grupo: 4,
-			filters: {pfiltro: 'mera.nombre_medio', type: 'string'},
+			filters: {pfiltro: 'med.nombre_medio', type: 'string'},
 			grid: true,
 			form: true
 		},{
