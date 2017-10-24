@@ -154,20 +154,43 @@ class RReclamoPDF extends  ReportePDF{
         $this->Cell($width3+$width2-10, $height, $this->datos[0][" fecha_hora_incidente"], $white, 0, 'L', false, '', 0, false, 'T', 'C');
 
         $this->Ln();
-        $this->SetFont('', 'B',11);
 
-        $this->Cell($width3, 10 , 'DETALLE INCIDENTE', 0, 0, 'L', false, '', 0, false, 'T', 'C');
 
-        $this->Ln();
-        $this->SetFont('', '',9);
-        $this->MultiCell($width4*2, $height, $this->datos[0]["detalle_incidente"]."\n",'l', 0, '' ,'');
-        $this->Ln();
-        $this->SetFont('', 'B',11);
-        $this->Cell($width3, 10 , 'OBSERVACIONES INCIDENTE', 0, 0, 'L', false, '', 0, false, 'T', 'C');
+        $tbl = '<table border="0">
+                    <tr>
+                        <td style="text-align: left; font-family: Calibri; font-size: 14px;"><b>&nbsp;DETALLE INCIDENTE:</b></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table border="0">
+                                <tr>
+                                    <td style="width: 0.5%"></td>
+                                    <td style="width: 97.5%; text-align: justify; font-family: Calibri; font-size: 11px;"><br><br>'.$this->datos[0]["detalle_incidente"].'<br></td>
+                                    <td style="width: 2%"> </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="text-align: left; font-family: Calibri; font-size: 14px;"><b>&nbsp;OBSERVACIONES INCIDENTE:</b></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table border="0">
+                                <tr>
+                                    <td style="width: 0.5%"></td>
+                                    <td style="width: 97.5%; text-align: justify; font-family: Calibri; font-size: 10px;"><br><br>'.$this->datos[0]["observaciones_incidente"].'<br></td>
+                                    <td style="width: 2%"> </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                    
+                ';
 
-        $this->Ln();
-        $this->SetFont('', '',9);
-        $this->MultiCell($width4*2, $height, $this->datos[0]["observaciones_incidente"]."\n",0, 'J', 0 ,1);
+        $this->writeHTML($tbl, true, false, false, false, '');
 
         $this->SetFont('', 'B',11);
         $this->Cell($width3, 10 , 'DATOS DE RECEPCIÓN', 0, 0, 'L', false, '', 0, false, 'T', 'C');
