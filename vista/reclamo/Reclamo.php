@@ -994,7 +994,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					totalProperty: 'total',
 					fields: ['id_medio_reclamo', 'nombre_medio'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'mera.nombre_medio'}
+					baseParams: {par_filtro: 'med.nombre_medio'}
 				}),
 				valueField: 'id_medio_reclamo',
 				displayField: 'nombre_medio',
