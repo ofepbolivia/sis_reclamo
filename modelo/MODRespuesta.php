@@ -272,5 +272,36 @@ class MODRespuesta extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
+	function reporteConstanciaEnvio(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_respuesta_sel';
+        $this->transaccion='RES_RECONENV_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        //Definicion de la lista del resultado del query
+        //$this->setCount(false);
+        $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
+	
+		$this->captura('email','varchar');
+		$this->captura('nombre_cliente','text');
+		$this->captura('titulo_correo','varchar');
+		$this->captura('fecha_respuesta','text');		
+		$this->captura('estado','varchar');
+		$this->captura('asunto','varchar');
+		$this->captura('correos_extras','varchar');
+		$this->captura('descripcion','varchar');
+		$this->captura('cc','varchar[]');
+		$this->captura('bcc','varchar[]');
+		$this->captura('tipo_respuesta','varchar');
+		$this->captura('procedente','varchar');
+		$this->captura('correos','text');
+        //Ejecuta la instruccion            
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //echo($this->consulta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;		
+	}
 			
 }

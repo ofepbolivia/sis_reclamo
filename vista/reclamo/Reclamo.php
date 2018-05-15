@@ -209,6 +209,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         }
 
 					}else if(record.data.id_tipo_incidente==36){
+						console.log('tipo:', record.data.id_tipo_incidente, 'dias',record.data.dias_respuesta, 'value', value);
                         if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido'){
                             return String.format('<div ext:qtip="Con Respuesta"><b><font color="black">{0}</font></b><br></div>', value);
                         }else if (dias >=1  && dias <= 7) {
