@@ -374,8 +374,41 @@ v_consulta:='select
             return v_consulta;
 
 		end;
-
-
+      /*********************************
+      #TRANSACCION:  'REC_RECONENV_SEL'
+      #DESCRIPCION:	Reporte Constancia de Envio
+      #AUTOR:		BVP
+      #FECHA:		11-05-2018 16:01:08
+      ***********************************/        
+	elsif(p_transaccion='RES_RECONENV_SEL')then
+      begin 
+      --raise notice '%',v_parametros.id_proceso_wf;
+		v_consulta ='
+              select 
+                 res.email,
+                 res.nombre_cliente,
+                 al.titulo_correo,
+                 pxp.f_fecha_literal(res.fecha_respuesta) as fecha_respuesta,
+                 res.estado,
+                 res.asunto,
+                 res.correos_extras,
+                 al.descripcion,
+                 plan.cc,
+                 plan.bcc,
+                 res.tipo_respuesta ,  
+                 res.procedente,
+                 al.correos                  
+          from rec.vrespuesta res
+               inner join wf.testado_wf tes on tes.id_estado_wf = res.id_estado_wf
+               inner join wf.tplantilla_correo plan on plan.id_tipo_estado =tes.id_tipo_estado
+               inner join rec.treclamo re on re.id_reclamo = res.id_reclamo
+               inner join rec.trespuesta respu on respu.id_respuesta = res.id_respuesta
+               inner join param.talarma al on al.id_proceso_wf = res.id_proceso_wf
+               where res.id_proceso_wf ='||v_parametros.id_proceso_wf;
+            
+            --raise notice '%',v_consulta;
+	     return v_consulta;                                  
+      end;
 	else
 
 		raise exception 'Transaccion inexistente';
