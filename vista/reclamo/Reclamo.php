@@ -209,6 +209,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         }
 
 					}else if(record.data.id_tipo_incidente==36){
+						console.log('tipo:', record.data.id_tipo_incidente, 'dias',record.data.dias_respuesta, 'value', value);
                         if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido'){
                             return String.format('<div ext:qtip="Con Respuesta"><b><font color="black">{0}</font></b><br></div>', value);
                         }else if (dias >=1  && dias <= 7) {
@@ -463,7 +464,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_cliente','nombre_completo2','nombre_completo1','ci','email'],
+					fields: ['id_cliente','nombre_completo2','nombre_completo1','ci','email','email2'],
 					// turn on remote sorting
 					remoteSort: true,
 					baseParams:{par_filtro:'c.nombre_completo2#c.ci#c.email'}
@@ -471,7 +472,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
 				gdisplayField:'nombre_completo2',//mapea al store del grid
-				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p><p style= "color : green;" >email:{email}</p></div></tpl>',
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p><p style= "color : green;" >Email:{email}</p><p style= "color : green;" >Email 2:{email2}</p></div></tpl>',
 				hiddenName: 'id_cliente',
 				forceSelection:true,
 				typeAhead: false,
@@ -1253,6 +1254,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'nombre_cargo', type: 'string'},
 		{name: 'cargo', type: 'string'},
 		{name: 'email', type: 'string'},
+		{name: 'email2', type: 'string'},
 		{name: 'nombre_completo2', type: 'string'},
 		{name: 'administrador', type: 'numeric'},
 		{name: 'id_informe', type: 'numeric'},
@@ -1714,16 +1716,16 @@ header("content-type: text/javascript; charset=UTF-8");
                         });
                     }else if(bandera == 'duplicado'){
 
-                        this.titulo = 'Duplicidad';
-                        this.mensaje = 'Señor usuario esta tratando de insertar un numero de frd que ya existe en su oficina, se le suguiere verificar los frds de su oficina.<br><br> ' +
-                            'Haga click en <b>Aceptar</b> para pasar por alto la sugerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>'+
-                            '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas sugerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>';
+                        this.titulo = 'Duplicidad de Numero FRD';
+                        this.mensaje = 'Estimado usuario, esta tratando de insertar un numero de FRD que ya fue registrado anteriormente en el sistema, favor verificar los numeros FRDS de su oficina mediante la opcion Control de FRDS.<br><br> ' +
+                            'Haga click en <b>Aceptar</b> para pasar por alto la alerta o <b>Cancelar</b> para revisar y correguir el Numero de FRD.<br>'+
+                            '<br><div><b>Advertencia:</b> Al pasar por alto esta alerta, se guardara un registro de omision de revision. Esta seguro de continuar?.</div>';
 
                         if(reg.ROOT.datos.v_cad_frds != ''){
-                            this.mensaje = '<br><div> Señor usuario esta tratando de insertar un numero de frd que ya existe en su oficina, a continuación le mostramos la lista de frds que no se utilizaron, por algun motivo se pasaron por alto,' +
-                                ' le suguerimos usar algun numero de frd de esta lista para el registro que esta realizando, la finalidad es tener un control correlativo de los reclamos de su oficina.<br><br>'+reg.ROOT.datos.v_cad_frds+'</div>'+
-                                '<br><br> Haga click en <b>Aceptar</b> para pasar por alto la sugerencia,o <b>Cancelar</b> para poder correguir o cambiar lo suguerido.<br>' +
-                                '<br><div><b>Advertencia:</b>Señor usuario tenga en conocimiento que al pasar por alto estas sugerencias, se guardara un registro de sus faltas, esta seguro de registrar el reclamo.</div>'
+                            this.mensaje = '<br><div> Estimado usuario, esta tratando de insertar un numero de FRD que ya fue registrado anteriormente en el sistema, a continuación le mostramos la lista de FRDS que no se utilizaron: <br><br>'+reg.ROOT.datos.v_cad_frds+'</div>' +
+                                ' Le suguerimos usar algun numero de frd de esta lista para el registro que esta realizando, la finalidad es tener un control correlativo de los FRDS de su oficina.'+
+                                '<br><br> Haga click en <b>Aceptar</b> para pasar por alto esta alerta o <b>Cancelar</b> para poder revisar y correguir el Numero de FRD.<br>' +
+                                '<br><div><b>Advertencia:</b> Al pasar por alto esta alerta, se guardara un registro de su omision. Esta seguro de continuar?.</div>'
                         }
 
                         Ext.Msg.show({

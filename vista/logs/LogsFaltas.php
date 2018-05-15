@@ -81,7 +81,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     height: 80,
                     gwidth: 220,
                     maxLength:100,
-                    renderer:function (value, p, record){return String.format('<b><font color="green">{0}</font></b>', record.data['nombre_funcionario']);}
+                    renderer:function (value, p, record)
+                    {return String.format('<b><font color="green">{0}</font></b>', record.data['nombre_funcionario']);}
                 },
                 type:'TextField',
                 filters:{pfiltro:'vf.desc_funcionario1',type:'string'},

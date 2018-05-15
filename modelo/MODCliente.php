@@ -24,6 +24,7 @@ class MODCliente extends MODbase{
 		$this->captura('genero','varchar');
 		$this->captura('ci','varchar');
 		$this->captura('email','varchar');
+		$this->captura('email2','varchar');
 		$this->captura('direccion','varchar');
 		$this->captura('celular','varchar');
 		$this->captura('nombre','varchar');
@@ -72,6 +73,7 @@ class MODCliente extends MODbase{
 		$this->setParametro('genero','genero','varchar');
 		$this->setParametro('ci','ci','varchar');
 		$this->setParametro('email','email','varchar');
+		$this->setParametro('email2','email2','varchar');
 		$this->setParametro('direccion','direccion','varchar');
 		$this->setParametro('celular','celular','varchar');
 		$this->setParametro('nombre','nombre','varchar');
@@ -104,6 +106,7 @@ class MODCliente extends MODbase{
 		$this->setParametro('genero','genero','varchar');
 		$this->setParametro('ci','ci','varchar');
 		$this->setParametro('email','email','varchar');
+		$this->setParametro('email2','email2','varchar');
 		$this->setParametro('direccion','direccion','varchar');
 		$this->setParametro('celular','celular','varchar');
 		$this->setParametro('nombre','nombre','varchar');
@@ -262,6 +265,7 @@ class MODCliente extends MODbase{
 		$this->captura('genero','varchar');
 		$this->captura('ci','varchar');
 		$this->captura('email','varchar');
+		$this->captura('email2','varchar');
 		$this->captura('direccion','varchar');
 		$this->captura('celular','varchar');
 		$this->captura('nombre','varchar');

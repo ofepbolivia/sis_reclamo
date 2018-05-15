@@ -13,6 +13,23 @@ header("content-type: text/javascript; charset=UTF-8");
 	Phx.vista.Informe=Ext.extend(Phx.gridInterfaz,{
 
 			constructor:function(config){
+
+                var fecha = new Date();
+                Ext.Ajax.request({
+                    url:'../../sis_parametros/control/Gestion/obtenerGestionByFecha',
+                    params:{fecha:fecha.getDate()+'/'+(fecha.getMonth()+1)+'/'+fecha.getFullYear()},
+                    success:function(resp){
+                        var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                        this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
+                        this.cmbGestion.setRawValue(fecha.getFullYear());
+                        this.store.baseParams.id_gestion=reg.ROOT.datos.id_gestion;
+                        this.load({params:{start:0, limit:this.tam_pag}});
+                    },
+                    failure: this.conexionFailure,
+                    timeout:this.timeout,
+                    scope:this
+                });
+
 				this.maestro=config.maestro;
 				console.log('informe: '+config);
 				//llama al constructor de la clase padre
@@ -31,6 +48,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     handler : this.copiarInf,
                     tooltip : '<b>Copiar</b><br/><b>Nos permite copiar, un Informe similar para varios Reclamos.</b>'
                 });
+
 			},
 			Atributos:[
 				{
@@ -87,7 +105,8 @@ header("content-type: text/javascript; charset=UTF-8");
 					filters:{pfiltro:'infor.fecha_informe',type:'date'},
 					id_grupo:0,
 					grid:true,
-					form:true
+					form:true,
+                    bottom_filter : true
 				},
 				{
 					config: {
@@ -131,7 +150,8 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_grupo: 1,
 					filters: {pfiltro: 'PERSON.nombre_completo1', type: 'string'},
 					grid: true,
-					form: true
+					form: true,
+                    bottom_filter : true
 				},
 				{
 					config: {
@@ -164,7 +184,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						pageSize: 15,
 						queryDelay: 1000,
 						anchor: '50%',
-						gwidth: 300,
+						gwidth: 270,
 						minChars: 2,
 						enableMultiSelect: true,
 						renderer: function (value, p, record) {
@@ -174,7 +194,8 @@ header("content-type: text/javascript; charset=UTF-8");
 					type: 'AwesomeCombo',
 					id_grupo: 0,
 					grid: true,
-					form: true
+					form: true,
+                    bottom_filter : true
 				},
 				{
 					config:{
@@ -189,8 +210,9 @@ header("content-type: text/javascript; charset=UTF-8");
 					type:'TextArea',
 					filters:{pfiltro:'infor.antecedentes_informe',type:'string'},
 					id_grupo:1,
-					grid:true,
-					form:true
+					grid:false,
+					form:true,
+                    bottom_filter : true
 				},
 				{
 					config:{
@@ -206,7 +228,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					filters:{pfiltro:'infor.analisis_tecnico',type:'string'},
 					bottom_filter:true,
 					id_grupo:1,
-					grid:true,
+					grid:false,
 					form:true
 				},
 				{
@@ -222,8 +244,9 @@ header("content-type: text/javascript; charset=UTF-8");
 					type:'TextArea',
 					filters:{pfiltro:'infor.conclusion_recomendacion',type:'string'},
 					id_grupo:1,
-					grid:true,
-					form:true
+					grid:false,
+					form:true,
+                    bottom_filter : true
 				},
 				{
 					config:{
@@ -238,8 +261,9 @@ header("content-type: text/javascript; charset=UTF-8");
 					type:'TextArea',
 					filters:{pfiltro:'infor.sugerencia_respuesta',type:'string'},
 					id_grupo:1,
-					grid:true,
-					form:true
+					grid:false,
+					form:true,
+                    bottom_filter : true
 				},
 				{
 					config:{
@@ -368,6 +392,22 @@ header("content-type: text/javascript; charset=UTF-8");
 				field: 'id_informe',
 				direction: 'ASC'
 			},
+        
+        rowExpander: new Ext.ux.grid.RowExpander({
+            tpl : new Ext.Template(
+                //'<br>','<h1 style="text-align: center">DATOS DE CONTACTO</h1>',
+
+                '<p>&nbsp;&nbsp;&nbsp;<b>ANTECEDENTES:&nbsp;</b> {antecedentes_informe}</p>',
+                '<p>&nbsp;&nbsp;&nbsp;<b>ANALISIS TECNICO:&nbsp;</b> {analisis_tecnico}</p>',
+                '<p>&nbsp;&nbsp;&nbsp;<b>CONCLUSIONES Y RECOMENDACIONES:&nbsp;</b> {conclusion_recomendacion}</p>',
+                '<p>&nbsp;&nbsp;&nbsp;<b>SUGERENCIA DE RESPUESTA:&nbsp;</b> {sugerencia_respuesta}</p>',
+                )
+        }),
+        capturarEventos: function () {
+
+            this.store.baseParams.id_gestion = this.cmbGestion.getValue();
+            this.load({params: {start: 0, limit: this.tam_pag}});
+        },
 			bdel:true,
 			bsave:false,
 			btest: false,
@@ -388,6 +428,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
 						this.Cmp.id_funcionario.setValue(reg.ROOT.datos.id_funcionario);;
 						this.Cmp.id_funcionario.setRawValue(reg.ROOT.datos.desc_funcionario1);
+
+                        this.Cmp.id_gestion.setValue(this.cmbGestion.getValue());
+                        this.Cmp.id_gestion.setRawValue(this.cmbGestion.getRawValue());
 					},
 					failure: this.conexionFailure,
 					timeout:this.timeout,

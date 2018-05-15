@@ -45,9 +45,11 @@ class MODRespuesta extends MODbase{
 		$this->captura('estado','varchar');
 		$this->captura('nro_respuesta','varchar');
 		$this->captura('email', 'varchar');
+		//$this->captura('email2', 'varchar');
 		$this->captura('admin', 'int4');
 		$this->captura('codigo_medio', 'varchar');
 		$this->captura('nro_att', 'int4');
+		//$this->captura('correlativo_preimpreso_frd', 'int4');
 
 
         $this->setParametro('tipo_interfaz', 'tipo_interfaz', 'varchar');
@@ -272,5 +274,60 @@ class MODRespuesta extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
+    function listarConsulta()
+    {
+//Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='rec.ft_respuesta_sel';
+        $this->transaccion='REC_CONSULTA_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        //$this->setParametro('tipo_interfaz', 'tipo_interfaz', 'varchar');
+        //Definicion de la lista del resultado del query
+        $this->captura('id_respuesta','int4');
+        $this->captura('id_reclamo','int4');
+        $this->captura('recomendaciones','varchar');
+        $this->captura('nro_cite','varchar');
+        $this->captura('respuesta','varchar');
+        $this->captura('fecha_respuesta','date');
+        $this->captura('estado_reg','varchar');
+        $this->captura('procedente','varchar');
+        $this->captura('fecha_notificacion','date');
+        $this->captura('id_usuario_ai','int4');
+        $this->captura('id_usuario_reg','int4');
+        $this->captura('usuario_ai','varchar');
+        $this->captura('fecha_reg','timestamp');
+        $this->captura('fecha_mod','timestamp');
+        $this->captura('id_usuario_mod','int4');
+        $this->captura('usr_reg','varchar');
+        $this->captura('usr_mod','varchar');
+
+        $this->captura('tipo_respuesta','varchar');
+        $this->captura('asunto','varchar');
+        $this->captura('id_proceso_wf','int4');
+        $this->captura('id_estado_wf','int4');
+        $this->captura('estado','varchar');
+        $this->captura('nro_respuesta','varchar');
+        //$this->captura('email', 'varchar');
+        //$this->captura('admin', 'int4');
+        //$this->captura('codigo_medio', 'varchar');
+        //$this->captura('nro_att', 'int4');
+        $this->captura('correlativo_preimpreso_frd', 'int4');
+        $this->captura('nro_frd', 'varchar');
+        $this->captura('detalle_incidente', 'text');
+
+        $this->captura('nombre_completo1', 'varchar');
+
+
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //var_dump($this->consulta);exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 			
 }
