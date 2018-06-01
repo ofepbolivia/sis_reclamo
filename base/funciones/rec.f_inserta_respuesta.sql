@@ -141,10 +141,13 @@ BEGIN
                                 'RESP',
                                 v_codigo);
 
+
                     SELECT  tr.nro_cite
                     INTO v_num_cite
                     FROM rec.trespuesta tr
-                    WHERE tr.nro_cite = (p_hstore_respuesta->'nro_cite')::varchar;
+                    inner join rec.treclamo trec on trec.id_reclamo = tr.id_reclamo
+                    WHERE tr.nro_cite = (p_hstore_respuesta->'nro_cite')::varchar and trec.id_gestion = v_reclamo.id_gestion;
+
                     IF v_num_cite = (p_hstore_respuesta->'nro_cite')THEN
                     	v_num_cite = (v_num_cite::integer + 1)::varchar;
                     ELSE

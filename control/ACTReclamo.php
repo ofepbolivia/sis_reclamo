@@ -10,6 +10,7 @@ require_once(dirname(__FILE__).'/../reportes/RReclamoPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RLibroRespuestaPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RReporteGrafico.php');
 require_once(dirname(__FILE__).'/../reportes/RFrdFaltante.php');
+require_once(dirname(__FILE__).'/../reportes/REstadisticasXls.php');
 
 class ACTReclamo extends ACTbase{
 			
@@ -47,7 +48,11 @@ class ACTReclamo extends ACTbase{
 		}
 
 		if($this->objParam->getParametro('id_oficina_registro_incidente')!=''){
-			$this->objParam->addFiltro("rec.id_oficina_registro_incidente = ". $this->objParam->getParametro('id_oficina_registro_incidente'));
+			$this->objParam->addFiltro("rec.id_oficina_registro_incidente in (". $this->objParam->getParametro('id_oficina_registro_incidente').")");
+		}
+
+		if($this->objParam->getParametro('oficina')!=''){
+			$this->objParam->addFiltro("tlug.id_lugar in (". $this->objParam->getParametro('oficina').")");
 		}
 
 		if($this->objParam->getParametro('id_tipo_incidente')!=''){
@@ -486,6 +491,29 @@ class ACTReclamo extends ACTbase{
 		$this->res=$this->objFunc->reenviarCorreos($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+    function reporteEstadistico(){
+
+        /*$this->objFunc=$this->create('MODReporte');
+        $this->res=$this->objFunc->reporteCorreosEmpleadosBoa($this->objParam);
+
+        $this->datos=$this->res->getDatos();*/
+        $titulo_archivo = 'Estadistica';
+        $nombreArchivo = /*uniqid(md5(session_id()).*/$titulo_archivo.'.xls';
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        $this->objParam->addParametro('titulo_archivo',$titulo_archivo);
+        //$this->objParam->addParametro('datos',$this->datos);
+
+        $this->objReporte = new REstadisticasXls($this->objParam);
+        $this->objReporte->generarReporte();
+
+
+        $mensajeExito = new Mensaje();
+        $mensajeExito->setMensaje('EXITO', 'Reporte.php', 'Reporte generado', 'Se generó con éxito el reporte: ' . $nombreArchivo, 'control');
+        $mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->res = $mensajeExito;
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
 }
 

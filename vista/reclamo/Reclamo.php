@@ -209,6 +209,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         }
 
 					}else if(record.data.id_tipo_incidente==36){
+						console.log('tipo:', record.data.id_tipo_incidente, 'dias',record.data.dias_respuesta, 'value', value);
                         if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido'){
                             return String.format('<div ext:qtip="Con Respuesta"><b><font color="black">{0}</font></b><br></div>', value);
                         }else if (dias >=1  && dias <= 7) {
@@ -1596,6 +1597,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	},*/
 
 	onButtonNew : function () {
+
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_workflow/control/TipoColumna/listarColumnasFormulario',
@@ -1646,6 +1648,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
 
                 this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
+
+                /*this.Cmp.id_oficina_registro_incidente.reset();
+                this.Cmp.id_oficina_registro_incidente.modificado = true;
+                this.Cmp.id_oficina_registro_incidente.store.setBaseParam('id_funcionario', reg.ROOT.datos.id_funcionario);*/
 			},
 			failure: this.conexionFailure,
 			timeout:this.timeout,
