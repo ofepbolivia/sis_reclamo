@@ -88,7 +88,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.RespuestaDetalle.superclass.preparaMenu.call(this,n);
             this.getBoton('sig_estado').disable();
             this.getBoton('ant_estado').disable();
-
+this.getBoton('btnChequeoDocumentosWf').enable();
             if (data['estado'] == 'elaboracion_respuesta'){
                 this.getBoton('ant_estado').disable();
                 this.getBoton('sig_estado').enable();

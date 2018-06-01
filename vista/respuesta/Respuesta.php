@@ -17,12 +17,16 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
             this.maestro = config.maestro;
 
+
             //llama al constructor de la clase padre
             Phx.vista.Respuesta.superclass.constructor.call(this, config);
+
 
             this.init();
             this.store.baseParams.pes_estado = 'elaboracion_respuesta';
             this.iniciarEventos();
+
+
             this.addButton('ant_estado', {
                 grupo: [0, 1, 2, 3],
                 argument: {estado: 'anterior'},
@@ -133,6 +137,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 form: false,
                 bottom_filter: true
             },
+            //
+
             {
                 config: {
                     name: 'estado',
@@ -801,4 +807,3 @@ header("content-type: text/javascript; charset=UTF-8");
 
     });
 </script>
-

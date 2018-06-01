@@ -22,6 +22,7 @@ class ACTInforme extends ACTbase{
             $this->objParam->addFiltro("infor.id_informe = " . $this->objParam->getParametro('id_informe'));
         }*/
 
+
         if($this->objParam->getParametro('id_reclamo') != '') {
             if ($this->objParam->getParametro('id_informe') != null || $this->objParam->getParametro('id_informe') != ''){
                 $this->objParam->addFiltro("(infor.id_reclamo = ".$this->objParam->getParametro('id_reclamo')." or infor.id_informe = ".$this->objParam->getParametro('id_informe').")");

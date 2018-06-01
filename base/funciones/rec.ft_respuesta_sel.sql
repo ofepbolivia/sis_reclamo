@@ -106,6 +106,7 @@ BEGIN
 						res.id_estado_wf,
                         res.estado,
                         res.nro_respuesta,
+
                         vc.email,
                         '||p_administrador||'::integer AS admin,
                         tmr.codigo as codigo_medio,
@@ -123,7 +124,7 @@ BEGIN
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-			raise notice '%',v_consulta;
+			--raise notice '%',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -208,7 +209,7 @@ BEGIN
                         inner join wf.ttipo_estado tip on tip.id_tipo_estado = eswf.id_tipo_estado
                     	where res.id_proceso_wf ='||v_parametros.id_proceso_wf;
 
-                        raise notice '%', v_consulta;
+                        --raise notice '%', v_consulta;
 
             return v_consulta;
 
@@ -306,6 +307,99 @@ v_consulta:='select
 
 		end;
 
+/*********************************
+ 	#TRANSACCION:  'REC_CONSULTA_SEL'
+ 	#DESCRIPCION:	Consulta PARA LA VISTA CONSULTA RESPUESTA
+ 	#AUTOR:		admin
+ 	#FECHA:		09-05-2018 12:00:59
+	***********************************/
+
+        elsif(p_transaccion='REC_CONSULTA_SEL')then
+
+    	begin
+--RAISE EXCEPTION 'v_filtro: %', v_filtro;
+v_consulta:='select
+						res.id_respuesta,
+						res.id_reclamo,
+						res.recomendaciones,
+						res.nro_cite,
+						res.respuesta,
+						res.fecha_respuesta,
+						res.estado_reg,
+						res.procedente,
+						res.fecha_notificacion,
+						res.id_usuario_ai,
+						res.id_usuario_reg,
+						res.usuario_ai,
+						res.fecha_reg,
+						res.fecha_mod,
+						res.id_usuario_mod,
+						usu1.cuenta as usr_reg,
+						usu2.cuenta as usr_mod,
+                        res.tipo_respuesta,
+                        res.asunto,
+                        res.id_proceso_wf,
+						res.id_estado_wf,
+                        res.estado,
+                        res.nro_respuesta,
+                        tr.correlativo_preimpreso_frd,
+                        tr.nro_frd,
+                        tr.detalle_incidente,
+                        vc.nombre_completo1::varchar
+
+						from rec.trespuesta res
+						inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = res.id_usuario_mod
+                        inner join rec.treclamo tr on tr.id_reclamo = res.id_reclamo
+                        inner join rec.vcliente vc on vc.id_cliente = tr.id_cliente
+                        left join wf.testado_wf tew on tew.id_estado_wf = res.id_estado_wf
+                        left join rec.tmedio_reclamo tmr on tmr.id_medio_reclamo = tr.id_medio_reclamo
+
+				        where ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			--raise notice '%',v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+			end;
+/*********************************
+ 	#TRANSACCION:  'REC_CONSULTA_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin
+ 	#FECHA:		10-08-2016 18:32:59
+	***********************************/
+
+	elseif(p_transaccion='REC_CONSULTA_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select count(res.id_reclamo)
+			   			from rec.trespuesta res
+						inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = res.id_usuario_mod
+                        inner join rec.treclamo tr on tr.id_reclamo = res.id_reclamo
+                        inner join rec.vcliente vc on vc.id_cliente = tr.id_cliente
+                        left join wf.testado_wf tew on tew.id_estado_wf = res.id_estado_wf
+                        left join rec.tmedio_reclamo tmr on tmr.id_medio_reclamo = tr.id_medio_reclamo
+
+				        where ';
+
+
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+
+        raise notice '%',v_consulta;
+        --raise EXCEPTION 'miexceppppcion';
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
     /*********************************
  	#TRANSACCION:  'REC_RES_QR_SEL'
  	#DESCRIPCION:  Generarar codigo QR doc
@@ -372,17 +466,21 @@ v_consulta:='select
             return v_consulta;
 
 		end;
-	/*********************************
+
+      /*********************************
+
       #TRANSACCION:  'REC_RECONENV_SEL'
       #DESCRIPCION:	Reporte Constancia de Envio
       #AUTOR:		BVP
       #FECHA:		11-05-2018 16:01:08
-      ***********************************/
+
+      ***********************************/        
 	elsif(p_transaccion='RES_RECONENV_SEL')then
-      begin
+      begin 
       --raise notice '%',v_parametros.id_proceso_wf;
 		v_consulta ='
-              select
+              select 
+
                  res.email,
                  res.nombre_cliente,
                  al.titulo_correo,
@@ -393,9 +491,10 @@ v_consulta:='select
                  al.descripcion,
                  plan.cc,
                  plan.bcc,
-                 res.tipo_respuesta ,
+                 res.tipo_respuesta ,  
                  res.procedente,
-                 al.correos
+                 al.correos                  
+
           from rec.vrespuesta res
                inner join wf.testado_wf tes on tes.id_estado_wf = res.id_estado_wf
                inner join wf.tplantilla_correo plan on plan.id_tipo_estado =tes.id_tipo_estado
@@ -405,7 +504,8 @@ v_consulta:='select
                where res.id_proceso_wf ='||v_parametros.id_proceso_wf;
 
             --raise notice '%',v_consulta;
-	     return v_consulta;
+	     return v_consulta;                                  
+
       end;
 	else
 

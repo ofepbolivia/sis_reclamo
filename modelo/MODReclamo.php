@@ -90,6 +90,7 @@ class MODReclamo extends MODbase
 		$this->captura('ci', 'varchar');//
 		$this->captura('telefono', 'varchar');//
 		$this->captura('email', 'varchar');//
+		$this->captura('email2', 'varchar');//
 		$this->captura('ciudad_residencia', 'varchar');//
 		$this->captura('nro_guia_aerea', 'varchar');//
 

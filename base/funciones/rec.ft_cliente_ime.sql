@@ -58,6 +58,7 @@ BEGIN
 			genero,
 			ci,
 			email,
+            email2,
 			direccion,
 			celular,
 			nombre,
@@ -80,6 +81,7 @@ BEGIN
 			v_parametros.genero,
 			v_parametros.ci,
 			v_parametros.email,
+            v_parametros.email2,
 			v_parametros.direccion,
 			v_parametros.celular,
 			upper(v_parametros.nombre),
@@ -129,6 +131,7 @@ BEGIN
 			genero = v_parametros.genero,
 			ci = v_parametros.ci,
 			email = v_parametros.email,
+            email2 = v_parametros.email2,
 			direccion = v_parametros.direccion,
 			celular = v_parametros.celular,
 			nombre = upper(v_parametros.nombre),
@@ -251,6 +254,7 @@ BEGIN
               cli.genero,
               cli.ci,
               cli.email,
+              cli.email2,
               cli.direccion,
               cli.celular,
               cli.nombre,
@@ -287,6 +291,7 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'genero', v_record.genero::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'ci', v_record.ci::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'email', v_record.email::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'email2', v_record.email2::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'direccion', v_record.direccion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'celular', v_record.celular::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'nombre', v_record.nombre::varchar);
