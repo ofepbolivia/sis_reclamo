@@ -45,7 +45,7 @@ class RConstanciaEnvioPDF extends ReportePDF
         $this->ln();
         $this->Cell($width3+20, $height, 'Enviado el: ', 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $this->SetFont('', '');
-        $this->Cell($width3+$width2, $height, $this->datos[0]['fecha_respuesta'], $white, 0, 'L', false, '', 0, false, 'T', 'C');
+        $this->Cell($width3+$width2, $height, $this->datos[0]['dia'].', '.$this->datos[0]['fecha_respuesta'].' '.date('G:i a',strtotime($this->datos[0]['hora'])).'.', $white, 0, 'L', false, '', 0, false, 'T', 'C');
         $this->ln();
         $this->SetFont('', 'B',9);
         $this->Cell($width3+20, $height, 'Para: ', 0, 0, 'L', false, '', 0, false, 'T', 'C');

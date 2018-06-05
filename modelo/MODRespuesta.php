@@ -286,7 +286,9 @@ class MODRespuesta extends MODbase{
 		$this->captura('email','varchar');
 		$this->captura('nombre_cliente','text');
 		$this->captura('titulo_correo','varchar');
-		$this->captura('fecha_respuesta','text');		
+		$this->captura('fecha_respuesta','text');
+		$this->captura('hora','text');
+		$this->captura('dia','text');		
 		$this->captura('estado','varchar');
 		$this->captura('asunto','varchar');
 		$this->captura('correos_extras','varchar');

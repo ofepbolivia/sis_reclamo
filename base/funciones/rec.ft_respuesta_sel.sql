@@ -295,6 +295,8 @@ BEGIN
                  res.nombre_cliente,
                  al.titulo_correo,
                  pxp.f_fecha_literal(res.fecha_respuesta) as fecha_respuesta,
+                 to_char(al.fecha_reg,''HH24:MI'') as hora,
+                 pxp.f_dia_literal(res.fecha_respuesta) dia,
                  res.estado,
                  res.asunto,
                  res.correos_extras,
