@@ -422,7 +422,8 @@ BEGIN
  	#AUTOR:		admin
  	#FECHA:		01-02-2017 12:00:59
 	***********************************/
-	elseif(p_transaccion='REC_CONSULTA_SEL')then
+
+	elsif(p_transaccion='REC_CONSULTA_SEL')then
 
     	begin
 
@@ -510,8 +511,7 @@ BEGIN
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
-        	raise notice 'Revisando la consulta maylee: %',v_consulta;
-
+        	raise notice 'que esta pasando: %',v_consulta;
 			return v_consulta;
 
 		end;
@@ -522,7 +522,7 @@ BEGIN
  	#FECHA:		10-08-2016 18:32:59
 	***********************************/
 
-	elseif(p_transaccion='REC_CONSULTA_CONT')then
+	elsif(p_transaccion='REC_CONSULTA_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
@@ -550,10 +550,6 @@ BEGIN
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-
-
-        raise notice '%',v_consulta;
-        raise EXCEPTION 'miexceppppcion';
 
 			--Devuelve la respuesta
 			return v_consulta;

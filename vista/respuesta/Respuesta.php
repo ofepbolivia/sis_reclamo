@@ -13,14 +13,13 @@ header("content-type: text/javascript; charset=UTF-8");
     Phx.vista.Respuesta = Ext.extend(Phx.gridInterfaz, {
 
         nombreVista: 'Respuesta',
-        momento: '',
+
         constructor: function (config) {
             this.maestro = config.maestro;
 
-
             //llama al constructor de la clase padre
             Phx.vista.Respuesta.superclass.constructor.call(this, config);
-
+            this.momento= '';
 
             this.init();
             this.store.baseParams.pes_estado = 'elaboracion_respuesta';
@@ -97,6 +96,71 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
 
+        Grupos : [
+            {
+                layout: 'column',
+                //bodyStyle: 'padding-right:10px;',
+                labelWidth: 80,
+                labelAlign: 'top',
+                border: false,
+                items: [
+                    {
+                        columnWidth: .30,
+                        border: false,
+                        layout: 'fit',
+                        bodyStyle: 'padding-right:10px;',
+                        items: [
+                            {
+                                xtype: 'fieldset',
+                                title: 'DATOS RESPUESTA',
+
+                                autoHeight: true,
+                                items: [
+                                    {
+                                        layout: 'form',
+                                        anchor: '100%',
+                                        //bodyStyle: 'padding-right:10px;',
+                                        border: false,
+                                        padding: '0 5 0 5',
+                                        //bodyStyle: 'padding-left:5px;',
+                                        id_grupo: 1,
+                                        items: []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        columnWidth: .70,
+                        border: false,
+                        layout: 'fit',
+                        bodyStyle: 'padding-right:10px;',
+                        items: [
+                            {
+                                xtype: 'fieldset',
+                                title: '-',
+
+                                autoHeight: true,
+                                items: [
+                                    {
+                                        layout: 'form',
+                                        anchor: '100%',
+                                        //bodyStyle: 'padding-right:10px;',
+                                        border: false,
+                                        padding: '0 5 0 5',
+                                        //bodyStyle: 'padding-left:5px;',
+                                        id_grupo: 2,
+                                        items: []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+
+                ]
+            }
+        ],
+
         Atributos: [
             {
                 //configuracion del componente
@@ -106,7 +170,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'id_respuesta'
                 },
                 type: 'Field',
-                form: true
+                form: true,
+                id_grupo:1
             },
             {
 
@@ -116,7 +181,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'id_reclamo'
                 },
                 type: 'Field',
-                form: true
+                form: true,
+                id_grupo:1
             },
             {
                 config: {
@@ -233,6 +299,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Correos',
                     allowBlank: true,
                     disabled: true,
+                    anchor: '95%',
                     dato: 'reclamo',
                     qtip: 'Correo del Destinatario.',
                     store: new Ext.data.JsonStore({
@@ -279,7 +346,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo: 1,
                 bottom_filter: false
             },
-            {
+            /*{
                 config: {
                     name: 'respuesta',
                     fieldLabel: 'Contenido de la Respuesta',
@@ -297,6 +364,28 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'HtmlEditor',
                 filters: {pfiltro: 'res.respuesta', type: 'string'},
                 id_grupo: 1,
+                grid: false,
+                form: true,
+                bottom_filter: true
+            },*/
+
+            {
+                config: {
+                    name: 'respuesta',
+                    fieldLabel: 'Respuesta',
+                    allowBlank: false,
+                    //anchor: '100%',
+                    qtip: 'Definimos una Respuesta Formateada',
+                    gwidth: 200,
+                    height: '600',
+                    CKConfig: {
+
+                    }
+
+                },
+                type: 'CKEditor',
+                filters: {pfiltro: 'res.respuesta', type: 'string'},
+                id_grupo: 2,
                 grid: false,
                 form: true,
                 bottom_filter: true
@@ -569,7 +658,7 @@ header("content-type: text/javascript; charset=UTF-8");
         bdel: true,
         bsave: false,
         btest: false,
-        fwidth: '49%',
+        fwidth: '95%',
         fheight: '95%',
         collapsible: true,
         iniciarEventos: function () {
@@ -732,6 +821,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             Phx.vista.Respuesta.superclass.onButtonNew.call(this);
             this.momento = 'new';
+            this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
             //mandamos al componente los datos para cargar al cliente.
             this.Cmp.correos.tdata = {maestro: this.maestro};
 
@@ -746,14 +836,20 @@ header("content-type: text/javascript; charset=UTF-8");
             //this.Cmp.correo_cli.setValue(this.maestro.email);
             this.generarCite();
 
-            /*Ext.Ajax.request({
-                url:'../../sis_reclamo/control/Respuesta/getDiasRespuesta',
-                params:{id_tipo_incidente:this.store.baseParams.id_tipo_incidente},
-                success:this.successTI,
-                failure: this.conexionFailure,
-                timeout:this.timeout,
-                scope:this
-            });*/
+        },
+
+
+
+        onButtonEdit: function () {
+            Phx.vista.Respuesta.superclass.onButtonEdit.call(this);
+
+            this.Cmp.correos.setValue(this.maestro.email+','+this.maestro.email2);
+
+            this.Cmp.destinatario.setValue(this.maestro.desc_nom_cliente);
+            this.momento = 'edit';
+            this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
+            //mandamos al componente los datos para cargar al cliente.
+            this.Cmp.correos.tdata = {maestro: this.maestro};
         },
 
         generarCite: function () {
@@ -791,18 +887,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
             }
             return fecha;
-        },
-
-        onButtonEdit: function () {
-            Phx.vista.Respuesta.superclass.onButtonEdit.call(this);
-
-            this.Cmp.correos.setValue(this.maestro.email+','+this.maestro.email2);
-
-            this.Cmp.destinatario.setValue(this.maestro.desc_nom_cliente);
-            this.momento = 'edit';
-            //mandamos al componente los datos para cargar al cliente.
-            this.Cmp.correos.tdata = {maestro: this.maestro};
-
         }
 
     });
