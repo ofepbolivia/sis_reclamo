@@ -18,7 +18,6 @@ header("content-type: text/javascript; charset=UTF-8");
         bdel:true,
         bedit:true,
         constructor: function(config) {
-            this.maestro = config.maestro;
 
             Phx.vista.RespuestaDetalle.superclass.constructor.call(this,config);
 
@@ -30,6 +29,7 @@ header("content-type: text/javascript; charset=UTF-8");
             //this.load({params:{start:0, limit: 50}});
             this.finCons = true;
             var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
+
             if(dataPadre){
                 this.onEnablePanel(this, dataPadre);
             }
@@ -48,9 +48,8 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         loadValoresIniciales: function () {
-            this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
             Phx.vista.RespuestaDetalle.superclass.loadValoresIniciales.call(this);
-
+            this.Cmp.id_reclamo.setValue(this.maestro.id_reclamo);
         },
         successSave:function(resp){
             Phx.vista.RespuestaDetalle.superclass.successSave.call(this,resp);
@@ -58,6 +57,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         onSubmit: function (o,x, force) {
+
             if(this.momento == 'edit'){
                 Phx.vista.RespuestaDetalle.superclass.onSubmit.call(this, o);
             }else if(this.momento == 'new') {
@@ -88,7 +88,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.RespuestaDetalle.superclass.preparaMenu.call(this,n);
             this.getBoton('sig_estado').disable();
             this.getBoton('ant_estado').disable();
-this.getBoton('btnChequeoDocumentosWf').enable();
+            this.getBoton('btnChequeoDocumentosWf').enable();
             if (data['estado'] == 'elaboracion_respuesta'){
                 this.getBoton('ant_estado').disable();
                 this.getBoton('sig_estado').enable();
