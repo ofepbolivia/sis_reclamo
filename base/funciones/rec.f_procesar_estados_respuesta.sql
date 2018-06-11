@@ -189,7 +189,8 @@ BEGIN
                                             p_usuario_ai,
                                             v_id_estado_actual,
                                             v_record.id_proceso_wf,
-                                            v_codigo_estado_sig) THEN
+                                            v_codigo_estado_sig,
+                                            1) THEN
                 	RAISE NOTICE 'PASANDO ESTADO CON EXITO';
 
           		END IF;

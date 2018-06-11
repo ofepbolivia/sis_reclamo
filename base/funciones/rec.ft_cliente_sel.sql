@@ -51,6 +51,7 @@ BEGIN
 						cli.genero,
 						cli.ci,
 						cli.email,
+                        cli.email2,
 						cli.direccion,
 						cli.celular,
 						cli.nombre,

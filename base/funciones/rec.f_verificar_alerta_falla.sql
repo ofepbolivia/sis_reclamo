@@ -70,9 +70,9 @@ BEGIN
                                   FROM rec.trespuesta tr
                                   INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
                                   WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
-                                  (ta.fecha_reg::date BETWEEN now()::date-1 AND now()::date+1)
+                                  (ta.fecha_reg::date BETWEEN now()::date-5 AND now()::date+2)
                                   GROUP BY tr.id_respuesta, ta.desc_falla)LOOP
-
+		
             IF(v_record_ids.desc_falla <> 'SMTP connect() failed.')THEN
               --reclamo
               /*===================================================================================================*/
@@ -90,7 +90,7 @@ BEGIN
               ELSIF(v_record_rec.estado = 'archivo_con_respuesta')THEN
               	v_cont_estados = 1;
               END IF;
-
+				
 			  FOR v_cont IN 1..v_cont_estados LOOP
 
                 SELECT rec.nro_tramite, rec.id_proceso_wf, rec.id_estado_wf, rec.estado
@@ -186,7 +186,7 @@ BEGIN
                                 FROM rec.trespuesta tr
                                 INNER JOIN param.talarma ta ON ta.id_proceso_wf = tr.id_proceso_wf
                                 WHERE (ta.estado_envio = 'falla' OR ta.pendiente <> 'no' ) AND
-                                (ta.fecha_reg::date BETWEEN now()::date-1 AND now()::date+1)) LOOP
+                                (ta.fecha_reg::date BETWEEN now()::date-5 AND now()::date+1)) LOOP
 
               v_ids_alarma[v_index] = v_record.id_alarma;
               v_nro_tramites[v_index] = v_record.nro_respuesta;
@@ -231,7 +231,7 @@ BEGIN
                   estado_envio = 'exito',
                   desc_falla = '',
                   pendiente = 'no',
-                  correos = 'sac@boa.bo,(gvelasquez@boa.bo;franklin.e.a777@boa.bo)'
+                  correos = 'sac@boa.bo,(gvelasquez@boa.bo;franklin.e.a777@gmail.com)'
                 WHERE id_alarma = v_ids_alarma[v_index]::integer;
               END IF;
           END LOOP;

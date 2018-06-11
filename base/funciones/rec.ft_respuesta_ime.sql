@@ -40,7 +40,7 @@ DECLARE
     v_codigo_estado 		varchar;
     v_codigo_tipo_proceso	varchar;
     v_id_proceso_macro		integer;
-	v_id_gestion	  		record;
+	v_id_gestion	  		integer;
 
     v_respuesta 			record;
 
@@ -82,113 +82,12 @@ BEGIN
  	#AUTOR:		admin
  	#FECHA:		11-08-2016 16:01:08
 	***********************************/
-	--raise exception 'tabla: %, transaccion: %, p_administrador: %, p_id_usuario: %',p_tabla,p_transaccion, p_administrador,p_id_usuario;
+	
 	if(p_transaccion='REC_RES_INS')then
-        begin
-
+        begin 
+        	--raise exception 'INSERT';
         	v_resp = rec.f_inserta_respuesta(p_administrador, p_id_usuario,hstore(v_parametros));
             return v_resp;
-
-        	/*--Inicio del workflow
-            select * into v_reclamo
-            from rec.treclamo r
-            where r.id_reclamo = v_parametros.id_reclamo;
-
-            --select r.id_gestion,r.nro_tramite into v_id_gestion from rec.treclamo r where r.id_reclamo = v_parametros.id_reclamo;
-
-            select   tp.codigo, pm.id_proceso_macro
-           	into v_codigo_tipo_proceso, v_id_proceso_macro
-           	from  wf.tproceso_macro pm, wf.ttipo_proceso tp
-           	where pm.id_proceso_macro=38 and tp.tabla='rec.trespuesta' and tp.estado_reg = 'activo' and tp.inicio = 'no';
-
-
-
-            /*v_num_respuesta =   param.f_obtener_correlativo(
-	                  v_reclamo.nro_tramite,
-	                  v_reclamo.id_gestion,-- par_id,
-	                  null, --id_uo
-	                  null,    -- id_depto
-	                  p_id_usuario,
-	                  'RESP',
-	                  null );*/
-            --raise exception 'v_codigo_tipo_proceso: % ::: v_id_proceso_macro: %',v_codigo_tipo_proceso, v_id_proceso_macro;
-            --raise exception 'gestion: %',v_codigo_tipo_proceso;
-            SELECT
-                 ps_num_tramite,
-                 ps_id_proceso_wf,
-                 ps_id_estado_wf,
-                 ps_codigo_estado
-              into
-                 v_nro_respuesta,
-                 v_id_proceso_wf,
-                 v_id_estado_wf,
-                 v_codigo_estado
-
-            FROM wf.f_inicia_tramite(
-                 p_id_usuario,
-                 v_parametros._id_usuario_ai,
-                 v_parametros._nombre_usuario_ai,
-                 14,
-                 v_codigo_tipo_proceso,
-                 v_reclamo.id_funcionario_recepcion,
-                 null,
-                 'RESPUESTA',
-                 'SAC-RES'
-            );
-
-            --raise exception 'v_nro_respuesta: % ::: v_codigo_estado: % ::: v_id_proceso_wf: %',v_nro_respuesta, v_codigo_estado, v_id_proceso_wf;
-        	--Sentencia de la insercion
-        	insert into rec.trespuesta(
-			id_reclamo,
-			recomendaciones,
-			nro_cite,
-			respuesta,
-			fecha_respuesta,
-			estado_reg,
-			procedente,
-			fecha_notificacion,
-			id_usuario_ai,
-			id_usuario_reg,
-			usuario_ai,
-			fecha_reg,
-			fecha_mod,
-			id_usuario_mod,
-            asunto,
-            tipo_respuesta,
-            id_proceso_wf,
-            id_estado_wf,
-            estado,
-            nro_respuesta
-          	) values(
-			v_parametros.id_reclamo,
-			v_parametros.recomendaciones,
-			upper(v_parametros.nro_cite),
-			v_parametros.respuesta,
-			v_parametros.fecha_respuesta,
-			'activo',
-			v_parametros.procedente,
-			v_parametros.fecha_notificacion,
-			v_parametros._id_usuario_ai,
-			p_id_usuario,
-			v_parametros._nombre_usuario_ai,
-			now(),
-			null,
-			null,
-            v_parametros.asunto,
-            v_parametros.tipo_respuesta,
-            v_id_proceso_wf,
-            v_id_estado_wf,
-            v_codigo_estado,
-            v_nro_respuesta
-			)RETURNING id_respuesta into v_id_respuesta;
-
-			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Respuesta almacenado(a) con exito (id_respuesta'||v_id_respuesta||')');
-            v_resp = pxp.f_agrega_clave(v_resp,'id_respuesta',v_id_respuesta::varchar);
-
-            --Devuelve la respuesta
-            return v_resp;*/
-
 		end;
 
 	/*********************************
@@ -201,7 +100,7 @@ BEGIN
 	elsif(p_transaccion='REC_RES_MOD')then
 
 		begin
-
+			--RAISE EXCEPTION 'UPDATE';
         	v_res = replace(v_parametros.respuesta,' align="right" ',' ');
             v_res = replace(v_res,' align="center" ',' ');
             v_res = replace(v_res,' align="left" ',' ');
@@ -608,9 +507,15 @@ BEGIN
 
 		begin
 
+        	select tg.id_gestion
+            into v_id_gestion
+            from param.tgestion tg
+            where tg.gestion = extract('year' from current_date);
+
 			SELECT count(tr.id_respuesta) AS contador, tr.nro_respuesta INTO v_record
             FROM rec.trespuesta tr
-            WHERE tr.nro_cite = v_parametros.nro_cite
+            INNER JOIN rec.treclamo trec on trec.id_reclamo = tr.id_reclamo
+            WHERE tr.nro_cite = v_parametros.nro_cite and trec.id_gestion = v_id_gestion
             GROUP BY tr.nro_respuesta;
 
             IF(v_record.contador >= 1)THEN

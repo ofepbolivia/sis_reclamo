@@ -75,7 +75,7 @@ class RRespuestaFinal extends ReportePDF
         $this->ln(4);
         $this->SetFont('helvetica','',9);
 
-
+        //var_dump($this->datos[0]['respuesta']);exit;
         $this->writeHTML($this->datos[0]['respuesta'], true, 0, true, true);
         $this->ln();
 

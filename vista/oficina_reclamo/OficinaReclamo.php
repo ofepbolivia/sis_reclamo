@@ -12,14 +12,38 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
     Phx.vista.OficinaReclamo=Ext.extend(Phx.gridInterfaz,{
 
-            constructor:function(config){
-                this.maestro=config.maestro;
-                //llama al constructor de la clase padre
-                Phx.vista.OficinaReclamo.superclass.constructor.call(this,config);
-                this.init();
-                this.load({params:{start:0, limit:this.tam_pag}})
-            },
+        constructor:function(config){
+            this.maestro=config.maestro;
+            //llama al constructor de la clase padre
+            Phx.vista.OficinaReclamo.superclass.constructor.call(this,config);
+            this.init();
+            this.load({params:{start:0, limit:this.tam_pag}});
+            this.addButton('btnCorreo',{
 
+                text:'Lista Correos',
+                iconCls: 'bemail',
+                disabled: true,
+                handler: this.onCorreoOficina,
+                tooltip: '<b>Correos Empleados</b><br><p>Permite definir correos extras para una oficina.</p>'
+            });
+
+
+        },
+
+        onCorreoOficina: function(){
+            var rec = this.getSelectedData();
+
+            Phx.CP.loadWindows('../../../sis_reclamo/vista/correo_oficina/CorreoOficina.php',
+                'Lista Correos',
+                {
+                    width:'90%',
+                    height:500
+                },
+                rec,
+                this.idContenedor,
+                'CorreoOficina'
+            )
+        },
             Atributos:[
                 {
                     //configuracion del componente
@@ -323,10 +347,12 @@ header("content-type: text/javascript; charset=UTF-8");
             {
 
                 Phx.vista.OficinaReclamo.superclass.preparaMenu.call(this);
+                this.getBoton('btnCorreo').enable();
             },
             liberaMenu:function()
             {
                 Phx.vista.OficinaReclamo.superclass.liberaMenu.call(this);
+                this.getBoton('btnCorreo').disable();
             }
         }
     )

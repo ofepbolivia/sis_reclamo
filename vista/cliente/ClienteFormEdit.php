@@ -208,6 +208,23 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:true
             },
             {
+                config: {
+                    name: 'email2',
+                    fieldLabel: 'Email 2',
+                    vtype: 'email',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 100,
+                    maxLength: 50
+                },
+                type: 'TextField',
+                bottom_filter: true,
+                filters: {pfiltro: 'cli.email2', type: 'string'},
+                id_grupo: 2,
+                grid: true,
+                form: true
+            },
+            {
                 config:{
                     name: 'direccion',
                     fieldLabel: 'Direccion,   (Calle/Av./No.)',
@@ -423,6 +440,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         this.Cmp.genero.setValue(reg.ROOT.datos.genero);
                         this.Cmp.ci.setValue(reg.ROOT.datos.ci);
                         this.Cmp.email.setValue(reg.ROOT.datos.email);
+                        this.Cmp.email2.setValue(reg.ROOT.datos.email2);
                         this.Cmp.direccion.setValue(reg.ROOT.datos.direccion);
                         this.Cmp.celular.setValue(reg.ROOT.datos.celular);
                         this.Cmp.nombre.setValue(reg.ROOT.datos.nombre);
@@ -470,6 +488,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 celular: this.Cmp.celular.getValue(),
                 telefono: this.Cmp.telefono.getValue(),
                 email: this.Cmp.email.getValue(),
+                email2: this.Cmp.email2.getValue(),
                 direccion: this.Cmp.direccion.getValue(),
                 id_pais_residencia: this.Cmp.id_pais_residencia.getValue(),
                 ciudad_residencia: this.Cmp.ciudad_residencia.getValue(),

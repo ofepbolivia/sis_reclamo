@@ -47,13 +47,6 @@ BEGIN
 	 v_nombre_funcion = 'rec.f_inserta_respuesta';
 
 
-     /*
-    HSTORE  PARAMETERS
-
-    (p_hstore_respuesta->'id_reclamo')::integer
-
-    */
-
            --obtener datos del proceso de reclamo
 
            select
@@ -119,7 +112,9 @@ BEGIN
 					FROM segu.tusuario tu
 					INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
 					WHERE tu.id_usuario = p_id_usuario ;
-
+					
+   
+                    
                     SELECT
                                  ps_id_proceso_wf,
                                  ps_id_estado_wf,
@@ -141,10 +136,13 @@ BEGIN
                                 'RESP',
                                 v_codigo);
 
+
                     SELECT  tr.nro_cite
                     INTO v_num_cite
                     FROM rec.trespuesta tr
-                    WHERE tr.nro_cite = (p_hstore_respuesta->'nro_cite')::varchar;
+                    inner join rec.treclamo trec on trec.id_reclamo = tr.id_reclamo
+                    WHERE tr.nro_cite = (p_hstore_respuesta->'nro_cite')::varchar and trec.id_gestion = v_reclamo.id_gestion;
+
                     IF v_num_cite = (p_hstore_respuesta->'nro_cite')THEN
                     	v_num_cite = (v_num_cite::integer + 1)::varchar;
                     ELSE

@@ -29,7 +29,7 @@ DECLARE
   v_index			integer;
   v_cont			integer;
   v_frds			INTEGER[];
-  v_frd_faltantes	varchar[];
+  v_frd_faltantes	integer[];
   v_band_frds		varchar;
   v_max				integer;
 BEGIN
@@ -41,23 +41,26 @@ BEGIN
     where g.gestion = EXTRACT(YEAR FROM current_date);
     --encontramos la lista de frd faltantes
     --begin
+
     IF(p_transaccion = 'FRD_FALTANTES')THEN
     	v_cont = 1;
-        v_frds = string_to_array(rec.f_procesar_frds(p_id_oficina,'15','FRD_REGISTRADOS'),',');
+        v_frds = string_to_array(rec.f_procesar_frds(p_id_oficina,'0','FRD_REGISTRADOS'),',');
         IF (v_frds IS NOT NULL)THEN
-          FOR v_index IN 1..rec.f_procesar_frds(p_id_oficina,'15','FRD_MAX') LOOP
+          FOR v_index IN 1..rec.f_procesar_frds(p_id_oficina,'0','FRD_MAX') LOOP
+
             IF v_index = ANY (v_frds) THEN
 
             ELSE
                --v_frds_aux[v_cont] = v_index;
                IF(v_cont::integer % 10 = 0)THEN
-                  v_frd_faltantes[v_cont] = v_index::varchar||'<br>';
+                  v_frd_faltantes[v_cont] = v_index;
                ELSE
                   v_frd_faltantes[v_cont] = v_index;
                END IF;
                 v_cont = v_cont + 1;
             END IF;
           END LOOP;
+        END IF;
         return array_to_string(v_frd_faltantes,',');
     ELSIF(p_transaccion = 'FRD_REGISTRADOS')THEN
     	v_cont = 1;

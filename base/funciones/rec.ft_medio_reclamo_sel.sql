@@ -45,22 +45,22 @@ BEGIN
     	begin
     		--Sentencia de la consulta
 			v_consulta:='select
-						mera.id_medio_reclamo,
-						mera.codigo,
-						mera.nombre_medio,
-                        mera.estado_reg,
-						mera.id_usuario_reg,
-						mera.fecha_reg,
-						mera.usuario_ai,
-						mera.id_usuario_ai,
-						mera.fecha_mod,
-						mera.id_usuario_mod,
+						med.id_medio_reclamo,
+						med.codigo,
+						med.nombre_medio,
+                        med.estado_reg,
+						med.id_usuario_reg,
+						med.fecha_reg,
+						med.usuario_ai,
+						med.id_usuario_ai,
+						med.fecha_mod,
+						med.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-                        mera.orden
-						from rec.tmedio_reclamo mera
-						inner join segu.tusuario usu1 on usu1.id_usuario = mera.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = mera.id_usuario_mod
+                        med.orden
+						from rec.tmedio_reclamo med
+						inner join segu.tusuario usu1 on usu1.id_usuario = med.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = med.id_usuario_mod
 				        where  ';
 
 			--Definicion de la respuesta
@@ -84,9 +84,9 @@ BEGIN
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_medio_reclamo)
-					    from rec.tmedio_reclamo mera
-					    inner join segu.tusuario usu1 on usu1.id_usuario = mera.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = mera.id_usuario_mod
+					    from rec.tmedio_reclamo med
+					    inner join segu.tusuario usu1 on usu1.id_usuario = med.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = med.id_usuario_mod
 					    where ';
 
 			--Definicion de la respuesta

@@ -464,7 +464,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_cliente','nombre_completo2','nombre_completo1','ci','email'],
+					fields: ['id_cliente','nombre_completo2','nombre_completo1','ci','email','email2'],
 					// turn on remote sorting
 					remoteSort: true,
 					baseParams:{par_filtro:'c.nombre_completo2#c.ci#c.email'}
@@ -472,7 +472,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				valueField: 'id_cliente',
 				displayField: 'nombre_completo2',
 				gdisplayField:'nombre_completo2',//mapea al store del grid
-				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p><p style= "color : green;" >email:{email}</p></div></tpl>',
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo2}</p><p>CI:{ci}</p><p style= "color : green;" >Email:{email}</p><p style= "color : green;" >Email 2:{email2}</p></div></tpl>',
 				hiddenName: 'id_cliente',
 				forceSelection:true,
 				typeAhead: false,
@@ -1254,6 +1254,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		{name: 'nombre_cargo', type: 'string'},
 		{name: 'cargo', type: 'string'},
 		{name: 'email', type: 'string'},
+		{name: 'email2', type: 'string'},
 		{name: 'nombre_completo2', type: 'string'},
 		{name: 'administrador', type: 'numeric'},
 		{name: 'id_informe', type: 'numeric'},
@@ -1597,6 +1598,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	},*/
 
 	onButtonNew : function () {
+
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url:'../../sis_workflow/control/TipoColumna/listarColumnasFormulario',
@@ -1647,6 +1649,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.Cmp.id_funcionario_recepcion.setRawValue(reg.ROOT.datos.desc_funcionario1);
 
                 this.Cmp.nro_frd.setValue(reg.ROOT.datos.v_frd);
+
+                /*this.Cmp.id_oficina_registro_incidente.reset();
+                this.Cmp.id_oficina_registro_incidente.modificado = true;
+                this.Cmp.id_oficina_registro_incidente.store.setBaseParam('id_funcionario', reg.ROOT.datos.id_funcionario);*/
 			},
 			failure: this.conexionFailure,
 			timeout:this.timeout,

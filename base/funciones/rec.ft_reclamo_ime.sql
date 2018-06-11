@@ -157,7 +157,7 @@ DECLARE
 	v_id_usuario		integer;
     --
     v_id_incidente		integer;
-    v_band_incidente	boolean;
+    v_band_incidente	boolean = false;
 
     --control de frds fatantes
     v_max				integer;
@@ -171,6 +171,9 @@ DECLARE
     v_band_frds			varchar;
 
     v_id_logs_reclamo		integer;
+
+    v_cont_rec				integer;
+    v_fecha_aux				integer;
 BEGIN
 
     v_nombre_funcion = 'rec.ft_reclamo_ime';
@@ -194,12 +197,29 @@ BEGIN
 
            --Obtenemos la gestion
 
-           select g.id_gestion
-           into v_gestion
-           from param.tgestion g
-           where g.gestion = EXTRACT(YEAR FROM current_date);
 
-           -- inciar el tramite en el sistema de WF
+          v_fecha_aux =  EXTRACT(YEAR FROM v_parametros.fecha_hora_recepcion::date);
+
+           if( v_fecha_aux > 2017) then
+           	 select g.id_gestion
+             into v_gestion
+             from param.tgestion g
+             where g.gestion = EXTRACT(YEAR FROM current_date);
+           else
+           	 raise exception 'Estimado usuario no puede hacer registros de gestiones pasadas, comuniquese con los responsables SAC.';
+             --v_gestion = 15;
+           end if;
+
+
+            --Control de fecha_limite de una respuesta, mas uno porque se cuenta a partir del dia siguiente habil.
+            v_fecha_mod = v_parametros.fecha_hora_recepcion::date;
+            IF 	(v_parametros.id_tipo_incidente IN (4,6,37,38,48,50))THEN
+                v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 10);
+            ELSIF v_parametros.id_tipo_incidente=36 THEN
+                v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 7);
+            END IF;
+			--raise exception 'v_fecha_limite: %', v_fecha_limite;
+			-- inciar el tramite en el sistema de WF
            SELECT
                  ps_num_tramite ,
                  ps_id_proceso_wf ,
@@ -223,127 +243,105 @@ BEGIN
                  'SAC-REC'
             );
 
-            --Control de fecha_limite de una respuesta, mas uno porque se cuenta a partir del dia siguiente habil.
-
-            	IF 	(select v_parametros.id_tipo_incidente IN (4,6,37,38,48,50))THEN
-                	v_dias = 10;
-                ELSIF v_parametros.id_tipo_incidente=36 THEN
-                	v_dias = 7;
-                END IF;
-
-                v_fecha_mod = v_parametros.fecha_hora_recepcion::date;
-
-                IF(date_part('dow',v_fecha_mod) IN (1, 2, 3, 4, 5) AND v_dias=10)THEN
-                	v_dias = v_dias + 4;
-                  	v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-
-                ELSIF(date_part('dow',v_fecha_mod) IN (1, 2, 3) AND v_dias=7)THEN
-                	v_dias = v_dias + 2;
-                    v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-
-                ELSIF(date_part('dow',v_fecha_mod) IN (4, 5) AND v_dias=7)THEN
-                	v_dias = v_dias + 4;
-                    v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-                ELSIF(date_part('dow',v_fecha_mod) = 6)THEN
-                    IF(v_dias = 10 OR v_dias = 7)THEN
-                        v_dias = v_dias + 3;
-                        v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-                    END IF;
-                ELSIF(date_part('dow',v_fecha_mod) = 0)THEN
-                    IF(v_dias = 10 OR v_dias = 7)THEN
-                        v_dias = v_dias + 2;
-                        v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-                    END IF;
-                END IF;
-			--raise exception 'v_fecha_limite %',v_fecha_limite;
             SELECT tmr.id_medio_reclamo into v_id_medio_reclamo
             FROM rec.tmedio_reclamo tmr
             WHERE tmr.codigo='FRD';
 
-        	--Sentencia de la insercion
-        	insert into rec.treclamo(
-			id_tipo_incidente,
-			id_subtipo_incidente,
-			id_medio_reclamo,
-			id_funcionario_recepcion,
-			id_funcionario_denunciado,
-			id_oficina_incidente,
-			id_oficina_registro_incidente,
-			id_proceso_wf,
-			id_estado_wf,
-			id_cliente,
-			estado,
-			fecha_hora_incidente,
-			nro_ripat_att,
-			nro_hoja_ruta,
-			fecha_hora_recepcion,
-			estado_reg,
-			fecha_hora_vuelo,
-			origen,
-			nro_frd,
-            correlativo_preimpreso_frd,
-            transito,
-            fecha_limite_respuesta,
-			observaciones_incidente,
-			destino,
-			nro_pir,
-			nro_frsa,
-			nro_att_canalizado,
-			nro_tramite,
-			detalle_incidente,
-			pnr,
-			nro_vuelo,
-			id_usuario_reg,
-			fecha_reg,
-			usuario_ai,
-			id_usuario_ai,
-			fecha_mod,
-			id_usuario_mod,
-            id_gestion,
-            id_motivo_anulado
-          	) values(
-			v_parametros.id_tipo_incidente,
-			v_parametros.id_subtipo_incidente,
-			v_id_medio_reclamo,
-			v_parametros.id_funcionario_recepcion,
-			v_parametros.id_funcionario_denunciado,
-			v_parametros.id_oficina_registro_incidente,
-			v_parametros.id_oficina_registro_incidente,
-			v_id_proceso_wf,
-			v_id_estado_wf,
-			v_parametros.id_cliente,
-			v_codigo_estado,
-			v_parametros.fecha_hora_incidente,
-			v_parametros.nro_ripat_att,
-			v_parametros.nro_hoja_ruta,
-			v_parametros.fecha_hora_recepcion,
-			'activo',
-			v_parametros.fecha_hora_vuelo,
-			upper(v_parametros.origen),
-			v_parametros.nro_frd,
-            v_parametros.correlativo_preimpreso_frd,
-            upper(v_parametros.transito),
-            v_fecha_limite,
-			v_parametros.observaciones_incidente,
-			upper(v_parametros.destino),
-			v_parametros.nro_pir,
-			v_parametros.nro_frsa,
-			v_parametros.nro_att_canalizado,
-			v_nro_tramite,
-			v_parametros.detalle_incidente,
-			v_parametros.pnr,
-			v_parametros.nro_vuelo,
-			p_id_usuario,
-			now(),
-			v_parametros._nombre_usuario_ai,
-			v_parametros._id_usuario_ai,
-			null,
-			null,
-            v_gestion,
-            v_anulado
+            select coalesce(count(tr.id_reclamo), 0)
+            into v_cont_rec
+            from rec.treclamo tr
+            where tr.nro_frd = v_parametros.nro_frd::varchar and tr.id_cliente = v_parametros.id_cliente and
+            tr.correlativo_preimpreso_frd = v_parametros.correlativo_preimpreso_frd;
 
-			)RETURNING id_reclamo into v_id_reclamo;
-			v_frd = rec.f_get_numero_frd(v_parametros.id_oficina_registro_incidente::integer,v_gestion,p_id_usuario);
+            if(v_cont_rec = 0)then
+            	--raise exception 'por favor espere unos minutos';
+              --Sentencia de la insercion
+              insert into rec.treclamo(
+              id_tipo_incidente,
+              id_subtipo_incidente,
+              id_medio_reclamo,
+              id_funcionario_recepcion,
+              id_funcionario_denunciado,
+              id_oficina_incidente,
+              id_oficina_registro_incidente,
+              id_proceso_wf,
+              id_estado_wf,
+              id_cliente,
+              estado,
+              fecha_hora_incidente,
+              nro_ripat_att,
+              nro_hoja_ruta,
+              fecha_hora_recepcion,
+              estado_reg,
+              fecha_hora_vuelo,
+              origen,
+              nro_frd,
+              correlativo_preimpreso_frd,
+              transito,
+              fecha_limite_respuesta,
+              observaciones_incidente,
+              destino,
+              nro_pir,
+              nro_frsa,
+              nro_att_canalizado,
+              nro_tramite,
+              detalle_incidente,
+              pnr,
+              nro_vuelo,
+              id_usuario_reg,
+              fecha_reg,
+              usuario_ai,
+              id_usuario_ai,
+              fecha_mod,
+              id_usuario_mod,
+              id_gestion,
+              id_motivo_anulado
+              ) values(
+              v_parametros.id_tipo_incidente,
+              v_parametros.id_subtipo_incidente,
+              v_id_medio_reclamo,
+              v_parametros.id_funcionario_recepcion,
+              v_parametros.id_funcionario_denunciado,
+              v_parametros.id_oficina_registro_incidente,
+              v_parametros.id_oficina_registro_incidente,
+              v_id_proceso_wf,
+              v_id_estado_wf,
+              v_parametros.id_cliente,
+              v_codigo_estado,
+              v_parametros.fecha_hora_incidente,
+              v_parametros.nro_ripat_att,
+              v_parametros.nro_hoja_ruta,
+              v_parametros.fecha_hora_recepcion,
+              'activo',
+              v_parametros.fecha_hora_vuelo,
+              upper(v_parametros.origen),
+              v_parametros.nro_frd,
+              v_parametros.correlativo_preimpreso_frd,
+              upper(v_parametros.transito),
+              v_fecha_limite,
+              v_parametros.observaciones_incidente,
+              upper(v_parametros.destino),
+              v_parametros.nro_pir,
+              v_parametros.nro_frsa,
+              v_parametros.nro_att_canalizado,
+              v_nro_tramite,
+              v_parametros.detalle_incidente,
+              v_parametros.pnr,
+              v_parametros.nro_vuelo,
+              p_id_usuario,
+              now(),
+              v_parametros._nombre_usuario_ai,
+              v_parametros._id_usuario_ai,
+              null,
+              null,
+              v_gestion,
+              v_anulado
+
+              )RETURNING id_reclamo into v_id_reclamo;
+              v_frd = rec.f_get_numero_frd(v_parametros.id_oficina_registro_incidente::integer,v_gestion,p_id_usuario);
+            else
+            	raise exception 'El reclamo que intenta registrar ya se encuentra en el ERP2';
+            end if;
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Reclamos almacenado(a) con exito (id_reclamo'||v_id_reclamo||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_reclamo',v_id_reclamo::varchar);
@@ -390,44 +388,21 @@ BEGIN
             	v_band_incidente = TRUE;
             END IF;
 
-            IF ((v_fecha_mod_r::date <> v_parametros.fecha_hora_recepcion::date) OR v_band_incidente) THEN
-            --raise exception 'a';
-            	v_fecha_mod = v_parametros.fecha_hora_recepcion::date;
+            IF ((v_fecha_mod_r::date != v_parametros.fecha_hora_recepcion::date) OR v_band_incidente) THEN
+            	v_fecha_mod = v_parametros.fecha_hora_recepcion::date; --raise exception 'v_fecha_mod: %',v_fecha_mod;
                 IF 	(select v_parametros.id_tipo_incidente IN (4,6,37,38,48,50))THEN
-                	v_dias = 10;
+                	v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 10);
                 ELSIF v_parametros.id_tipo_incidente=36 THEN
-                	v_dias = 7;
-                END IF;
-
-                IF (select date_part('dow',v_fecha_mod) IN (1, 2, 3, 4, 5)  AND v_dias=10) THEN
-                    v_dias = v_dias + 4;
-                  	v_fecha_limite =  v_fecha_mod + (v_dias||' day')::interval;
-                ELSIF(select date_part('dow',v_fecha_mod) IN (1, 2, 3) AND v_dias=7) THEN
-                	v_dias = v_dias + 2;
-                    v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-                ELSIF(select date_part('dow',v_fecha_mod) IN (4, 5) AND v_dias=7) THEN
-                	v_dias = v_dias + 4;
-                    v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-                ELSIF(select date_part('dow',v_fecha_mod) = 6)THEN
-                    IF(v_dias = 10 OR v_dias = 7)THEN
-                        v_dias = v_dias + 3;
-                        v_fecha_limite = v_fecha_mod + (v_dias||' day')::interval;
-                    END IF;
-                ELSIF(select date_part('dow',v_parametros.fecha_hora_recepcion) = 0)THEN
-                    IF(v_dias = 10 OR v_dias = 7)THEN
-                        v_dias = v_dias + 2;
-                        v_fecha_limite = v_parametros.fecha_hora_recepcion + (v_dias||' day')::interval;
-                    END IF;
+                	v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 7);
                 END IF;
             ELSE
-            	--raise exception 'b';
             	SELECT r.fecha_limite_respuesta
                 INTO v_fecha_limite_mod
                 FROM rec.treclamo r
                 WHERE r.id_reclamo = v_parametros.id_reclamo;
 
             END IF;
-
+			--raise exception 'v_fecha_limite: %, %', v_fecha_limite,v_fecha_limite_mod;
             --end
             -- Para cuando id_motivo_anulado es NULL
             --begin
@@ -449,10 +424,7 @@ BEGIN
 			id_funcionario_denunciado = v_parametros.id_funcionario_denunciado,
 			id_oficina_incidente = v_parametros.id_oficina_incidente,
 			id_oficina_registro_incidente = v_parametros.id_oficina_registro_incidente,
-			--id_proceso_wf = v_parametros.id_proceso_wf,
-			--id_estado_wf = v_parametros.id_estado_wf,
 			id_cliente = v_parametros.id_cliente,
-			--estado = v_parametros.estado,
 			fecha_hora_incidente = v_parametros.fecha_hora_incidente,
 			nro_ripat_att = v_parametros.nro_ripat_att,
 			nro_hoja_ruta = v_parametros.nro_hoja_ruta,
@@ -467,7 +439,6 @@ BEGIN
 			nro_pir = v_parametros.nro_pir,
 			nro_frsa = v_parametros.nro_frsa,
 			nro_att_canalizado = v_parametros.nro_att_canalizado,
-			--nro_tramite = v_parametros.nro_tramite,
             transito = upper(v_parametros.transito),
 			detalle_incidente = v_parametros.detalle_incidente,
 			pnr = v_parametros.pnr,

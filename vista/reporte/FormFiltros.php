@@ -13,8 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
     Phx.vista.FormFiltros=Ext.extend(Phx.frmInterfaz,{
 
         nombreVista: 'FormGlobal',
-        constructor:function(config)
-        {
+        constructor:function(config){
             this.panelResumen = new Ext.Panel({html:''});
             this.Grupos = [{
 
@@ -89,7 +88,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo: 0,
                 form: true
             },
-            {
+            /*{
                 config: {
                     name: 'nro_tramite',
                     allowBlank: true,
@@ -99,11 +98,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'Field',
                 id_grupo: 0,
                 form: true
-            },
+            },*/
             {
                 config: {
                     name: 'id_oficina_registro_incidente',
-                    fieldLabel: 'Oficina',
+                    fieldLabel: 'Oficina Reclamo',
                     allowBlank: true,
                     emptyText: 'Elija una opción...',
                     store: new Ext.data.JsonStore({
@@ -130,21 +129,123 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 10,
                     queryDelay: 1000,
-                    anchor: '70%',
+                    anchor: '100%',
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
                     listWidth:'240',
                     renderer: function (value, p, record) {
                         return String.format('{0}', record.data['desc_oficina_registro_incidente']);
-                    }
+                    },
+                    tpl: new Ext.XTemplate([
+                        '<tpl for=".">',
+                        '<div class="x-combo-list-item">',
+                        '<div class="awesomecombo-item {checked}">',
+                        '<p><b>Código: {codigo}</b></p>',
+                        '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+                        '</div></tpl>'
+                    ]),
+                    enableMultiSelect: true
                 },
-                type: 'ComboBox',
+                type: 'AwesomeCombo',
                 id_grupo: 4,
                 filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
                 grid: true,
                 form: true
             },
+            {
+                config : {
+                    name : 'oficina',
+                    fieldLabel : 'Estación',
+                    allowBlank : true,
+                    emptyText : 'Estación...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_parametros/control/Lugar/listarLugar',
+                        id: 'id_lugar',
+                        root: 'datos',
+                        fields: ['id_lugar','codigo','nombre'],
+                        totalProperty: 'total',
+                        sortInfo: {
+                            field: 'codigo',
+                            direction: 'ASC'
+                        },
+                        baseParams:{par_filtro:'lug.codigo#lug.nombre', es_regional: 'si', _adicionar:'si'}
+                    }),
+                    //tpl : '<tpl for="."><div class="x-combo-list-item"><p style="color: green;">Código: {codigo}</p><p>Nombre: {nombre}</p></div></tpl>',
+                    tpl: new Ext.XTemplate([
+                        '<tpl for=".">',
+                        '<div class="x-combo-list-item">',
+                        '<div class="awesomecombo-item {checked}">',
+                        '<p><b>Código: {codigo}</b></p>',
+                        '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+                        '</div></tpl>'
+                    ]),
+                    valueField: 'id_lugar',
+                    displayField: 'nombre',
+                    forceSelection: false,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    minChars: 2,
+                    anchor : '100%',
+                    enableMultiSelect: true
+                },
+
+                type : 'AwesomeCombo',
+                id_grupo : 0,
+                grid : true,
+                form : true
+            },
+		{
+			config: {
+				name: 'id_oficina_incidente',
+				fieldLabel: 'Ambiente del Incidente',
+				allowBlank: true,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					//url: '../../sis_reclamo/control/Reclamo/listarOficinas',
+					url: '../../sis_reclamo/control/OficinaReclamo/listarOficina',
+					id: 'id_oficina',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_oficina', 'nombre', 'codigo','nombre_lugar'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'ofi.nombre#ofi.codigo#lug.nombre'}
+				}),
+				valueField: 'id_oficina',
+				displayField: 'nombre',
+				gdisplayField: 'desc_nombre_oficina',
+				hiddenName: 'id_oficina_incidente',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 10,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				resizable:true,
+				listWidth:'263',
+				renderer: function (value, p, record) {
+
+					return String.format('{0}', record.data['desc_nombre_oficina']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
+			grid: true,
+			form: true
+		},            
             {
                 config: {
                     name: 'id_tipo_incidente',
@@ -163,7 +264,15 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields: ['id_tipo_incidente', 'nombre_incidente','fk_tipo_incidente'],
                         remoteSort: true,
                         baseParams: {par_filtro: 'tip.nombre_incidente', nivel:'1', fk_tipo_incidente:'1'}
-                    }),
+                    }), 
+                    tpl: new Ext.XTemplate([
+                        '<tpl for=".">',
+                        '<div class="x-combo-list-item">',
+                        '<div class="awesomecombo-item {checked}">',
+                        '<p><b>{nombre_incidente}</b></p>',
+                        '</div></div></tpl>'
+                    ]),
+                    enableMultiSelect: true,                                  
                     valueField: 'id_tipo_incidente',
                     displayField: 'nombre_incidente',
                     gdisplayField: 'desc_nombre_incidente',
@@ -176,17 +285,18 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 15,
                     queryDelay: 1000,
-                    anchor: '70%',
+                    anchor: '100%',
                     /*width: 200,*/
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
-                    listWidth:'240',
+                    listWidth:'240',                    
                     renderer: function (value, p, record) {
                         return String.format('{0}', record.data['desc_nombre_incidente']);
                     }
+                 
                 },
-                type: 'ComboBox',
+                type: 'AwesomeCombo',
                 bottom_filter:true,
                 id_grupo: 3,
                 filters: {pfiltro: 'tip.nombre_incidente', type: 'string'},
@@ -225,7 +335,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 15,
                     queryDelay: 1000,
-                    anchor: '70%',
+                    anchor: '100%',
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
@@ -245,7 +355,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'origen',
-                    fieldLabel: 'Origen',
+                    fieldLabel: 'Ciudad Origen',
                     allowBlank: true,
                     anchor: '70%',
                     gwidth: 100,
@@ -265,7 +375,7 @@ header("content-type: text/javascript; charset=UTF-8");
             },{
                 config: {
                     name: 'transito',
-                    fieldLabel: 'Transito',
+                    fieldLabel: 'Ciudad de Transito',
                     allowBlank: true,
                     anchor: '70%',
                     gwidth: 100,
@@ -286,7 +396,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'destino',
-                    fieldLabel: 'Destino',
+                    fieldLabel: 'Ciudad Destino',
                     allowBlank: true,
                     anchor: '70%',
                     gwidth: 100,
