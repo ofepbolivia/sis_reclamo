@@ -231,6 +231,53 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid: true,
                 form: false
             },
+		{
+			config: {
+				name: 'id_medio_reclamo',
+				fieldLabel: 'Medio Reclamo',
+				allowBlank: false,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_reclamo/control/MedioReclamo/listarMedioReclamo',
+					id: 'id_medio_reclamo',
+					root: 'datos',
+					sortInfo: {
+						field: 'orden',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_medio_reclamo', 'nombre_medio'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'med.nombre_medio'}
+				}),
+				valueField: 'id_medio_reclamo',
+				displayField: 'nombre_medio',
+				gdisplayField: 'desc_nombre_medio',
+				hiddenName: 'id_medio_reclamo',
+				forceSelection: true,
+				typeAhead: false,
+				editable: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				resizable:true,
+				listWidth:'240',
+				renderer: function (value, p, record) {
+					console.log('datosss',record.data['desc_nombre_medio']);
+					return String.format('{0}', record.data['desc_nombre_medio']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {pfiltro: 'med.nombre_medio', type: 'string'},
+			grid: true,
+			form: true
+		},            
             {
                 config: {
                     name: 'id_oficina_registro_incidente',
@@ -930,6 +977,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'usr_mod', type: 'string'},
             {name: 'id_gestion', type: 'int4'},
             {name: 'nombre_completo2', type: 'string'},
+            {name: 'desc_nombre_medio', tyep: 'string'}
         ],
         sortInfo: {
             field: 'fecha_reg',

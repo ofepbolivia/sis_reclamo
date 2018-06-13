@@ -64,8 +64,11 @@ class ACTReclamo extends ACTbase{
 		if($this->objParam->getParametro('id_oficina_incidente')!=''){
 			$this->objParam->addFiltro("rec.id_oficina_incidente = ".$this->objParam->getParametro('id_oficina_incidente'));
 		}
-		if($this->objParam->getParametro('id_subtipo_incidente')!=''){
+		/*if($this->objParam->getParametro('id_subtipo_incidente')!=''){
 			$this->objParam->addFiltro("rec.id_subtipo_incidente = ". $this->objParam->getParametro('id_subtipo_incidente'));
+		}*/
+		if($this->objParam->getParametro('id_subtipo_incidente') !=''){
+			$this->objParam->addFiltro("rec.id_subtipo_incidente in (".$this->objParam->getParametro('id_subtipo_incidente').")");
 		}
 
         if($this->objParam->getParametro('origen')!=''){
@@ -77,6 +80,9 @@ class ACTReclamo extends ACTbase{
         if($this->objParam->getParametro('destino')!=''){
             $this->objParam->addFiltro("rec.destino = ''". $this->objParam->getParametro('destino')."''");
         }
+		if($this->objParam->getParametro('id_medio_reclamo')!=''){
+			$this->objParam->addFiltro("rec.id_medio_reclamo in (".$this->objParam->getParametro('id_medio_reclamo').")");
+		}
 
 		
 

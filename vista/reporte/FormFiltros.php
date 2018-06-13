@@ -33,7 +33,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.FormFiltros.superclass.constructor.call(this,config);
             //this.store.baseParams={tipo_interfaz:'FormGlobal'};
             this.init();
-            this.Cmp.id_subtipo_incidente.disable();
+            this.Cmp.id_subtipo_incidente.enable();
             this.iniciarEventos();
 
 
@@ -245,7 +245,61 @@ header("content-type: text/javascript; charset=UTF-8");
 			filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
 			grid: true,
 			form: true
-		},            
+		},
+		{
+			config: {
+				name: 'id_medio_reclamo',
+				fieldLabel: 'Medio Reclamo',
+				allowBlank: true,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_reclamo/control/MedioReclamo/listarMedioReclamo',
+					id: 'id_medio_reclamo',
+					root: 'datos',
+					sortInfo: {
+						field: 'orden',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_medio_reclamo', 'nombre_medio'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'med.nombre_medio'}
+				}),
+                tpl: new Ext.XTemplate([
+                     '<tpl for=".">',
+                     '<div class="x-combo-list-item">',
+                     '<div class="awesomecombo-item {checked}">',
+                     '<p><b>{nombre_medio}</b></p>',
+                     '</div></div></tpl>'
+                ]),
+                enableMultiSelect: true,				
+				valueField: 'id_medio_reclamo',
+				displayField: 'nombre_medio',
+				gdisplayField: 'desc_nombre_medio',
+				hiddenName: 'id_medio_reclamo',
+				forceSelection: true,
+				typeAhead: false,
+				editable: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				resizable:true,
+				listWidth:'240',
+				renderer: function (value, p, record) {
+					return String.format('{0}', record.data['desc_nombre_medio']);
+				}
+			},
+			type: 'AwesomeCombo',
+			id_grupo: 0,
+			filters: {pfiltro: 'med.nombre_medio', type: 'string'},
+			grid: true,
+			form: true
+		},		            
             {
                 config: {
                     name: 'id_tipo_incidente',
@@ -323,6 +377,14 @@ header("content-type: text/javascript; charset=UTF-8");
                          baseParams: {par_filtro: 'rti.nombre_incidente',  fk_tipo_incidente:'id_tipo_incidente'}*/
 
                     }),
+                    tpl: new Ext.XTemplate([
+                        '<tpl for=".">',
+                        '<div class="x-combo-list-item">',
+                        '<div class="awesomecombo-item {checked}">',
+                        '<p><b>{nombre_incidente}</b></p>',
+                        '</div></div></tpl>'
+                    ]),
+                    enableMultiSelect: true,                      
                     valueField: 'id_tipo_incidente',
                     displayField: 'nombre_incidente',
                     gdisplayField: 'desc_sudnom_incidente',
@@ -344,7 +406,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         return String.format('{0}', record.data['desc_sudnom_incidente']);
                     }
                 },
-                type: 'ComboBox',
+                type: 'AwesomeCombo',
                 bottom_filter:true,
                 id_grupo: 3,
                 filters: {pfiltro: 't.nombre_incidente', type: 'string'},
@@ -438,7 +500,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 this.onEnablePanel(this.idContenedor + '-east', parametros)
             }
-            this.Cmp.id_subtipo_incidente.disable();
+            this.Cmp.id_subtipo_incidente.enable();
         },
         
         iniciarEventos:function(){
@@ -452,11 +514,10 @@ header("content-type: text/javascript; charset=UTF-8");
             },this);
 
             this.Cmp.id_tipo_incidente.on('select', function (cmb, record, index) {
-                this.Cmp.id_subtipo_incidente.reset();
+                //this.Cmp.id_subtipo_incidente.reset();                                                                        
                 this.Cmp.id_subtipo_incidente.modificado = true;
-                this.Cmp.id_subtipo_incidente.setDisabled(false);
-                this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente', record.data.id_tipo_incidente);
-
+                this.Cmp.id_subtipo_incidente.setDisabled(false);                                                                           
+                this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente',record.data.id_tipo_incidente);                                                                          
             }, this);
         }
     })

@@ -113,6 +113,10 @@ BEGIN
                     ELSE
                     	v_filtro = '( rec.id_usuario_mod = '||p_id_usuario||' OR tew.id_depto in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||') OR tew.id_funcionario = '||v_record.id_funcionario||') AND rec.estado_reg <> ''inactivo'' AND ';
                     END IF;
+                    
+                    if(v_record.id_funcionario = 152)then
+                    	v_filtro= '0 = 0 AND ';
+                    end if;
             	--END IF;
             	ELSIF v_parametros.tipo_interfaz='RegistroReclamos' THEN
             		v_filtro = '(rec.id_usuario_reg = '||p_id_usuario||
