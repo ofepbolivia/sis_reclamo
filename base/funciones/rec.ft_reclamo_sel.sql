@@ -121,6 +121,12 @@ BEGIN
             	ELSIF v_parametros.tipo_interfaz='RegistroReclamos' THEN
             		v_filtro = '(rec.id_usuario_reg = '||p_id_usuario||
                	 	' OR rec.id_oficina_registro_incidente = '||v_record.id_oficina||') AND ';
+            	/*ELSE
+            		v_filtro= '0 = 0 AND ';
+            	END IF;*/
+                ELSIF v_parametros.tipo_interfaz='RegistroReclamoAnulado' THEN
+					v_filtro = '(rec.id_usuario_reg = '||p_id_usuario||
+               	 	' OR rec.id_oficina_registro_incidente = '||v_record.id_oficina||') AND ';               	 	
             	ELSE
             		v_filtro= '0 = 0 AND ';
             	END IF;
