@@ -934,4 +934,42 @@ class MODReclamo extends MODbase
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function reporteEstadistico(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento = 'rec.ft_reclamo_sel';
+        $this->transaccion = 'REC_STADISTICAS_SEL';
+        $this->tipo_procedimiento = 'SEL';//tipo de transaccion
+        $this->setCount(false);
+
+        /*$this->setParametro('id_gestion','id_gestion','integer');
+        $this->setParametro('desde','desde','date');
+        $this->setParametro('hasta','hasta','date');
+        $this->setParametro('id_oficina_registro_incidente','id_oficina_registro_incidente','varchar');
+        $this->setParametro('oficina','oficina','varchar');
+        $this->setParametro('id_oficina_incidente','id_oficina_incidente','varchar');
+        $this->setParametro('id_medio_reclamo','id_medio_reclamo','varchar');
+        $this->setParametro('id_tipo_incidente','id_tipo_incidente','varchar');
+        $this->setParametro('id_subtipo_incidente','id_subtipo_incidente','varchar');
+        $this->setParametro('origen','origen','varchar');
+        $this->setParametro('transito','transito','varchar');
+        $this->setParametro('destino','destino','varchar');*/
+
+        //Definicion de la lista del resultado del query
+        $this->captura('tipo_tabla', 'varchar');
+        //$this->captura('ciudad_reclamo', 'text');
+        $this->captura('nombre_detalle', 'varchar');
+        $this->captura('cantidad', 'integer');
+        //$this->captura('medio_reclamo', 'text');
+        //$this->captura('estado_reclamo', 'text');
+        //$this->captura('genero_cliente', 'text');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo $this->consulta;exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 }

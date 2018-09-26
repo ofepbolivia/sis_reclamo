@@ -1004,6 +1004,140 @@ BEGIN
 			return v_consulta;
 
 		end;
+	/*********************************
+ 	#TRANSACCION:  'REC_STADISTICAS_SEL'
+ 	#DESCRIPCION:	Estadisticas Reclamos.
+ 	#AUTOR:		f.e.a
+ 	#FECHA:		20/2/2018 18:32:59
+	***********************************/
+
+	elsif(p_transaccion='REC_STADISTICAS_SEL')then
+
+		begin
+        	create temp table tt_rec_informacion (
+                tipo_tabla 		varchar,
+                nombre_detalle 	varchar,
+                cantidad 		integer
+            ) on commit drop;
+
+			v_consulta = 'insert into tt_rec_informacion
+            select
+            ''tipo_incidente'',
+            tip.nombre_incidente,
+            count(tip.id_tipo_incidente)
+            from rec.treclamo rec
+            INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+            INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+            left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+            left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+            INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+            LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
+            inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+            where '||v_parametros.filtro||'
+            group by tip.nombre_incidente';
+            execute(v_consulta);
+
+            v_consulta = 'insert into tt_rec_informacion
+            select
+            ''oficina_reclamo'',
+            ofi.nombre,
+            count(ofi.id_lugar)
+            from rec.treclamo rec
+            INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+            INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+            left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+            left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+            INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+            LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
+            inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+            where '||v_parametros.filtro||'
+            group by ofi.nombre';
+            execute(v_consulta);
+
+            v_consulta = 'insert into tt_rec_informacion
+            select
+            ''oficina_incidente'',
+            coalesce( of.nombre, ''Oficina Desconocido''),
+            count(coalesce(of.id_lugar,1))
+            from rec.treclamo rec
+            INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+            INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+            left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+            left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+            INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+            LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
+            inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+            where '||v_parametros.filtro||'
+            group by of.nombre';
+            execute(v_consulta);
+
+            v_consulta = 'insert into tt_rec_informacion
+            select
+            ''genero_cliente'',
+            CASE WHEN c.genero = '''' THEN ''No Especifica'' ELSE coalesce(c.genero, ''No Especifica'') END,
+            count(c.genero)
+            from rec.treclamo rec
+            INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+            INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+            left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+            left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+            INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+            LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
+            inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+            LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
+            where '||v_parametros.filtro||'
+            group by c.genero';
+            execute(v_consulta);
+
+            v_consulta = 'insert into tt_rec_informacion
+            select
+            ''estado_reclamo'',
+            coalesce(rec.estado, ''No Especifica''),
+            count(rec.estado)
+            from rec.treclamo rec
+            INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+            INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+            left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+            left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+            INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+            LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
+            inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+            LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
+            where '||v_parametros.filtro||'
+            group by rec.estado';
+            execute(v_consulta);
+
+            v_consulta = 'insert into tt_rec_informacion
+            select
+            ''medio_reclamo'',
+            coalesce(med.nombre_medio, ''No Especifica''),
+            count(med.nombre_medio)
+            from rec.treclamo rec
+            INNER join rec.tmedio_reclamo med on med.id_medio_reclamo = rec.id_medio_reclamo
+            INNER join rec.ttipo_incidente tip on tip.id_tipo_incidente = rec.id_tipo_incidente
+            left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
+            left join param.tlugar lug ON lug.id_lugar = of.id_lugar
+            INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
+            LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
+            inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
+            LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
+            where '||v_parametros.filtro||'
+            group by med.nombre_medio';
+
+
+			--Sentencia de la consulta de conteo de registros
+			v_consulta = 'select
+            			  tri.tipo_tabla,
+                          tri.nombre_detalle,
+                          tri.cantidad
+            			  from tt_rec_informacion tri
+                          order by tri.tipo_tabla, tri.nombre_detalle
+            ';
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
 	else
 
 		raise exception 'Transaccion inexistente';

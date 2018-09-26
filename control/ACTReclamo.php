@@ -504,17 +504,93 @@ class ACTReclamo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
-    function reporteEstadistico(){
+    /*function reporteEstadistico(){
 
-        /*$this->objFunc=$this->create('MODReporte');
+        $this->objFunc=$this->create('MODReporte');
         $this->res=$this->objFunc->reporteCorreosEmpleadosBoa($this->objParam);
 
-        $this->datos=$this->res->getDatos();*/
+        $this->datos=$this->res->getDatos();
         $titulo_archivo = 'Estadistica';
-        $nombreArchivo = /*uniqid(md5(session_id()).*/$titulo_archivo.'.xls';
+        $nombreArchivo = $titulo_archivo.'.xls';
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
         $this->objParam->addParametro('titulo_archivo',$titulo_archivo);
         //$this->objParam->addParametro('datos',$this->datos);
+
+        $this->objReporte = new REstadisticasXls($this->objParam);
+        $this->objReporte->generarReporte();
+
+
+        $mensajeExito = new Mensaje();
+        $mensajeExito->setMensaje('EXITO', 'Reporte.php', 'Reporte generado', 'Se generó con éxito el reporte: ' . $nombreArchivo, 'control');
+        $mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->res = $mensajeExito;
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }*/
+
+    function reporteEstadistico(){
+        //var_dump($this->objParam->getParametro('id_medio_reclamo'));exit;
+        //Gestion
+        if ($this->objParam->getParametro('id_gestion') != '') {
+            $this->objParam->addFiltro("rec.id_gestion = ". $this->objParam->getParametro('id_gestion'));
+        }
+        //Intervalo Desde, Hasta
+        if($this->objParam->getParametro('desde')!='' && $this->objParam->getParametro('hasta')!=''){
+            $this->objParam->addFiltro("(rec.fecha_reg::date  BETWEEN ''%".$this->objParam->getParametro('desde')."%''::date  and ''%".$this->objParam->getParametro('hasta')."%''::date)");
+        }
+
+        if($this->objParam->getParametro('desde')!='' && $this->objParam->getParametro('hasta')==''){
+            $this->objParam->addFiltro("(rec.fecha_reg::date  >= ''%".$this->objParam->getParametro('desde')."%''::date)");
+        }
+
+        if($this->objParam->getParametro('desde')=='' && $this->objParam->getParametro('hasta')!=''){
+            $this->objParam->addFiltro("(rec.fecha_reg::date  <= ''%".$this->objParam->getParametro('hasta')."%''::date)");
+        }
+        //Oficina Reclamo
+        if($this->objParam->getParametro('id_oficina_registro_incidente')!=''){
+            $this->objParam->addFiltro("rec.id_oficina_registro_incidente in (". $this->objParam->getParametro('id_oficina_registro_incidente').")");
+        }
+        //Estacion
+        if($this->objParam->getParametro('oficina')!=''){
+            $this->objParam->addFiltro("tlug.id_lugar in (". $this->objParam->getParametro('oficina').")");
+        }
+        //Ambiente Incidente
+        if($this->objParam->getParametro('id_oficina_incidente')!=''){
+            $this->objParam->addFiltro("rec.id_oficina_incidente in (". $this->objParam->getParametro('id_oficina_incidente').")");
+        }
+
+        //Medio Reclamo
+        if($this->objParam->getParametro('id_medio_reclamo')!=''){
+            $this->objParam->addFiltro("rec.id_medio_reclamo in (". $this->objParam->getParametro('id_medio_reclamo').")");
+        }
+        //Tipo Incidente
+        if($this->objParam->getParametro('id_tipo_incidente')!=''){
+            $this->objParam->addFiltro("rec.id_tipo_incidente in (". $this->objParam->getParametro('id_tipo_incidente').")");
+        }
+        //Subtipo Incidente
+        if($this->objParam->getParametro('id_subtipo_incidente')!=''){
+            $this->objParam->addFiltro("rec.id_subtipo_incidente in (". $this->objParam->getParametro('id_subtipo_incidente').")");
+        }
+
+        if($this->objParam->getParametro('origen')!=''){
+            $this->objParam->addFiltro("rec.origen = ''". $this->objParam->getParametro('origen')."''");
+        }
+        if($this->objParam->getParametro('transito')!=''){
+            $this->objParam->addFiltro("rec.transito = ''". $this->objParam->getParametro('transito')."''");
+        }
+        if($this->objParam->getParametro('destino')!=''){
+            $this->objParam->addFiltro("rec.destino = ''". $this->objParam->getParametro('destino')."''");
+        }
+
+        $this->objFunc=$this->create('MODReclamo');
+        $this->res=$this->objFunc->reporteEstadistico($this->objParam);
+
+        $this->datos=$this->res->getDatos();
+        $titulo_archivo = 'Estadisticas';
+        $nombreArchivo=uniqid(md5(session_id()).$titulo_archivo);
+        $nombreArchivo .='.xls';
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        $this->objParam->addParametro('titulo_archivo','Estadisticas');
+        $this->objParam->addParametro('datos',$this->datos);
 
         $this->objReporte = new REstadisticasXls($this->objParam);
         $this->objReporte->generarReporte();

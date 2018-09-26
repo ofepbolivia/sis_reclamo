@@ -50,7 +50,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'Field',
                 form: true,
-                id_grupo:1
+                id_grupo:0
             },
             {
                 config:{
@@ -58,7 +58,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     origen : 'GESTION',
                     fieldLabel : 'Gestion',
                     allowBlank : true,
-                    width: 150
+                    anchor: '95%',
+                    /*width: 242,
+                    listWidth:'10%'*/
                 },
                 type : 'ComboRec',
                 id_grupo : 0,
@@ -70,7 +72,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Desde',
                     allowBlank: true,
                     format: 'd/m/Y',
-                    width: 150
+                    width: 176
                 },
                 type: 'DateField',
                 id_grupo: 0,
@@ -82,7 +84,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Hasta',
                     allowBlank: true,
                     format: 'd/m/Y',
-                    width: 150
+                    width: 176
                 },
                 type: 'DateField',
                 id_grupo: 0,
@@ -129,11 +131,12 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 10,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '95%',
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
-                    listWidth:'240',
+                    //width: 227,
+                    //listWidth:'240',
                     renderer: function (value, p, record) {
                         return String.format('{0}', record.data['desc_oficina_registro_incidente']);
                     },
@@ -148,7 +151,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     enableMultiSelect: true
                 },
                 type: 'AwesomeCombo',
-                id_grupo: 4,
+                id_grupo: 0,
                 filters: {pfiltro: 'ofi.nombre#ofi.codigo#lug.nombre', type: 'string'},
                 grid: true,
                 form: true
@@ -190,7 +193,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     pageSize: 15,
                     queryDelay: 1000,
                     minChars: 2,
-                    anchor : '100%',
+                    anchor : '95%',
                     enableMultiSelect: true
                 },
 
@@ -230,11 +233,19 @@ header("content-type: text/javascript; charset=UTF-8");
 				mode: 'remote',
 				pageSize: 10,
 				queryDelay: 1000,
-				anchor: '100%',
+				anchor: '95%',
 				gwidth: 150,
 				minChars: 2,
 				resizable:true,
-				listWidth:'263',
+				//listWidth:'263',
+                tpl: new Ext.XTemplate([
+                    '<tpl for=".">',
+                    '<div class="x-combo-list-item">',
+                    '<div class="awesomecombo-item {checked}">',
+                    '<p><b>Código: {codigo}</b></p>',
+                    '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+                    '</div></tpl>'
+                ]),
 				renderer: function (value, p, record) {
 
 					return String.format('{0}', record.data['desc_nombre_oficina']);
@@ -285,11 +296,11 @@ header("content-type: text/javascript; charset=UTF-8");
 				mode: 'remote',
 				pageSize: 15,
 				queryDelay: 1000,
-				anchor: '100%',
+				anchor: '95%',
 				gwidth: 150,
 				minChars: 2,
 				resizable:true,
-				listWidth:'240',
+				//listWidth:'240',
 				renderer: function (value, p, record) {
 					return String.format('{0}', record.data['desc_nombre_medio']);
 				}
@@ -339,12 +350,12 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode: 'remote',
                     pageSize: 15,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '95%',
                     /*width: 200,*/
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
-                    listWidth:'240',                    
+                    //listWidth:'240',
                     renderer: function (value, p, record) {
                         return String.format('{0}', record.data['desc_nombre_incidente']);
                     }
@@ -352,7 +363,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'AwesomeCombo',
                 bottom_filter:true,
-                id_grupo: 3,
+                id_grupo: 0,
                 filters: {pfiltro: 'tip.nombre_incidente', type: 'string'},
                 grid: true,
                 form: true
@@ -391,24 +402,26 @@ header("content-type: text/javascript; charset=UTF-8");
                     hiddenName: 'id_subtipo_incidente',
                     forceSelection: true,
                     typeAhead: false,
-                    editable: true,
+                    //editable: true,
+                    //msgTarget: 'side',
                     triggerAction: 'all',
                     lazyRender: true,
                     mode: 'remote',
                     pageSize: 15,
                     queryDelay: 1000,
-                    anchor: '100%',
+                    anchor: '95%',
                     gwidth: 150,
                     minChars: 2,
                     resizable:true,
-                    listWidth:'240',
+                    disabled: true,
+                    //listWidth:'240',
                     renderer: function (value, p, record) {
                         return String.format('{0}', record.data['desc_sudnom_incidente']);
                     }
                 },
                 type: 'AwesomeCombo',
                 bottom_filter:true,
-                id_grupo: 3,
+                id_grupo: 0,
                 filters: {pfiltro: 't.nombre_incidente', type: 'string'},
                 grid: true,
                 form: true
@@ -431,7 +444,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'ComboBox',
                 filters: {pfiltro: 'rec.origen', type: 'string'},
-                id_grupo: 2,
+                id_grupo: 0,
                 grid: true,
                 form: true
             },{
@@ -451,7 +464,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'ComboBox',
                 filters: {pfiltro: 'rec.transito', type: 'string'},
-                id_grupo: 2,
+                id_grupo: 0,
                 grid: true,
                 form: true
             },
@@ -473,7 +486,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type: 'ComboBox',
                 filters: {pfiltro: 'rec.destino', type: 'string'},
-                id_grupo: 2,
+                id_grupo: 0,
                 grid: true,
                 form: true
             }
@@ -482,7 +495,7 @@ header("content-type: text/javascript; charset=UTF-8");
         east: {
             url: '../../../sis_reclamo/vista/reporte/CRMGlobal.php',
             title: 'Detalle Filtro',
-            width: '70%',
+            width: '65%',
             cls: 'CRMGlobal'
         },
 
@@ -502,6 +515,10 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             this.Cmp.id_subtipo_incidente.enable();
         },
+
+        generarEstadisticas: function(){
+            console.log('generarEstadisticas');
+        },
         
         iniciarEventos:function(){
             this.Cmp.id_gestion.on('select', function(cmb, rec, ind){
@@ -514,7 +531,8 @@ header("content-type: text/javascript; charset=UTF-8");
             },this);
 
             this.Cmp.id_tipo_incidente.on('select', function (cmb, record, index) {
-                //this.Cmp.id_subtipo_incidente.reset();                                                                        
+
+                this.Cmp.id_subtipo_incidente.reset();
                 this.Cmp.id_subtipo_incidente.modificado = true;
                 this.Cmp.id_subtipo_incidente.setDisabled(false);                                                                           
                 this.Cmp.id_subtipo_incidente.store.setBaseParam('fk_tipo_incidente',record.data.id_tipo_incidente);                                                                          

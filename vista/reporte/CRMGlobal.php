@@ -16,13 +16,53 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
             this.idContenedor = config.idContenedor;
             this.maestro = config.maestro;
+            console.log('this.maestro', config);
             //llama al constructor de la clase padre
             Phx.vista.CRMGlobal.superclass.constructor.call(this, config);
             this.grid.getTopToolbar().disable();
             this.grid.getBottomToolbar().disable();
             this.store.baseParams={tipo_interfaz:this.nombreVista};
+
+            this.addButton('rep_estadistico', {
+                text: 'Rep. Estadistico',
+                iconCls: 'bprint_good',
+                disabled: false,
+                handler: this.repEstadistico,
+                tooltip: '<b>Imprimir Reporte</b><br>Genera reporte estadístico del Filtro aplicado.'
+            });
+
             this.init();
         },
+
+        repEstadistico : function () {
+            //console.log(Phx.CP.getPagina(this.idContenedorPadre).generarEstadisticas());
+
+            console.log('estadisticas', this.parametros);
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_reclamo/control/Reclamo/reporteEstadistico',
+                params:{
+                    desde: this.parametros.desde,
+                    destino: this.parametros.destino,
+                    hasta: this.parametros.hasta,
+                    id_gestion: this.parametros.id_gestion,
+                    id_medio_reclamo: this.parametros.id_medio_reclamo,
+                    id_oficina_incidente: this.parametros.id_oficina_incidente,
+                    id_oficina_registro_incidente: this.parametros.id_oficina_registro_incidente,
+                    id_subtipo_incidente: this.parametros.id_subtipo_incidente,
+                    id_tipo_incidente: this.parametros.id_tipo_incidente,
+                    oficina: this.parametros.oficina,
+                    origen: this.parametros.origen,
+                    tipo: "reporte",
+                    transito: this.parametros.transito
+                },
+                success:this.successExport,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
+        },
+
         Atributos: [
             {
                 config:{
@@ -996,6 +1036,7 @@ header("content-type: text/javascript; charset=UTF-8");
         onReloadPage:function(param){
             //Se obtiene la gestión de los Reclamos.
             var me = this;
+            me.parametros = param;
             this.initFiltro(param);
         },
 

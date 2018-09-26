@@ -46,18 +46,20 @@ class REstadisticasXls
         PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
 
         $this->docexcel = new PHPExcel();
-        $this->docexcel->getProperties()->setCreator("PXP")
-            ->setLastModifiedBy("PXP")
+            $this->docexcel->getProperties()->setCreator("BOA")
+            ->setLastModifiedBy("BOA")
             ->setTitle($this->objParam->getParametro('titulo_archivo'))
             ->setSubject($this->objParam->getParametro('titulo_archivo'))
             ->setDescription('Estadistica')
             ->setKeywords("office 2007 openxml php")
-            ->setCategory("Estadistica");
+            ->setCategory("Report File");
 
         //$this->docexcel->setActiveSheetIndex(0);
 
         //$this->docexcel->getActiveSheet()->setTitle($this->objParam->getParametro('titulo_archivo'));
-        $this->docexcel->getActiveSheet()->setTitle($this->objParam->getParametro('nombre_archivo'));
+
+        //$this->docexcel->getActiveSheet()->setTitle($this->objParam->getParametro('titulo_archivo'));
+
         /*$this->equivalencias=array(0=>'A',1=>'B',2=>'C',3=>'D',4=>'E',5=>'F',6=>'G',7=>'H',8=>'I',
             9=>'J',10=>'K',11=>'L',12=>'M',13=>'N',14=>'O',15=>'P',16=>'Q',17=>'R',
             18=>'S',19=>'T',20=>'U',21=>'V',22=>'W',23=>'X',24=>'Y',25=>'Z',
@@ -75,9 +77,10 @@ class REstadisticasXls
     function imprimeDatos(){
 
 
-        //$datos = $this->objParam->getParametro('datos');
+        $datos = $this->objParam->getParametro('datos');
+        //var_dump($datos);exit;
         $columnas = 0;
-        $objWorksheet = $this->docexcel->getActiveSheet();
+        //$objWorksheet = $this->docexcel->getActiveSheet();
         $styleTitulos = array(
             'font'  => array(
                 'bold'  => true,
@@ -98,55 +101,252 @@ class REstadisticasXls
                 )
             ));
 
-        $objWorksheet->fromArray(
-                        array(
-                            array('',	'uno',	'dos',	'tres'),
-                            array('Q1',   12,   15,		21),
-                            array('Q2',   56,   73,		86),
-                            array('Q3',   52,   61,		69),
-                            array('Q4',   30,   32,		10),
-                        )
+        $styleTitulos3 = array(
+            'font'  => array(
+                'bold'  => true,
+                'size'  => 9,
+                'name'  => 'Arial',
+                'color' => array(
+                    'rgb' => 'FFFFFF'
+                )
+
+            ),
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array(
+                    'rgb' => '3287c1'
+                )
+            ),
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            )
+        );
+        $array_estado_reclamo = array();
+        $array_genero_cliente = array();
+        $array_oficina_incidente = array();
+        $array_oficina_reclamo = array();
+        $array_tipo_incidente = array();
+        $array_general = array();
+        $contador_estado_reclamo = 0;
+        $contador_genero_cliente = 0;
+        $contador_oficina_incidente = 0;
+        $contador_oficina_reclamo = 0;
+        $contador_tipo_incidente = 0;
+        $tipo_tabla = '';
+
+        $contador_bloque = 1;
+        $contador_bloque_general = 0;
+        $contador_general = 0;
+        $index = 0;
+        $color_pestana = array('ff0000','1100ff','55ff00','3ba3ff','ff4747','697dff','78edff','ba8cff',
+        'ff80bb','ff792b','ffff5e','52ff97','bae3ff','ffaf9c','bfffc6','b370ff','ffa8b4','7583ff','9aff17','ff30c8');
+        foreach($datos as $value){
+
+            if($tipo_tabla != $value['tipo_tabla']){
+                if($tipo_tabla != ''){
+
+
+                    switch ($tipo_tabla){
+                        case 'estado_reclamo':
+                            $array_general = $array_estado_reclamo;
+                            $contador_bloque_general += $contador_estado_reclamo;
+                            $contador_general = $contador_estado_reclamo;
+                            break;
+                        case 'genero_cliente':
+                            $array_general = $array_genero_cliente;
+                            $contador_bloque_general += $contador_genero_cliente;//10
+                            $contador_general = $contador_genero_cliente;//3
+                            break;
+                        case 'oficina_incidente':
+                            $array_general = $array_oficina_incidente;
+                            $contador_bloque_general += $contador_oficina_incidente;
+                            $contador_general = $contador_oficina_incidente;
+                            break;
+                        case 'oficina_reclamo':
+                            $array_general = $array_oficina_reclamo;
+                            $contador_bloque_general += $contador_oficina_reclamo;
+                            $contador_general = $contador_oficina_reclamo;
+                            break;
+                        case 'tipo_incidente':
+                            $array_general = $array_tipo_incidente;
+                            $contador_bloque_general += $contador_tipo_incidente;
+                            $contador_general = $contador_tipo_incidente;
+                            break;
+                    }
+
+                    $this->addHoja(ucwords(str_replace('_',' ',$tipo_tabla)),$index);
+                    $this->docexcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+                    $this->docexcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+                    $this->docexcel->getActiveSheet()->getTabColor()->setRGB($color_pestana[$index]);
+                    $this->docexcel->getActiveSheet()->getStyle('A1:B'.$contador_general)->getAlignment()->setWrapText(true);
+                    $this->docexcel->getActiveSheet()->getStyle('A1:B1')->applyFromArray($styleTitulos3);
+
+                    //var_dump($array_general);
+                    $this->docexcel->getActiveSheet()->fromArray(
+                        $array_general
                     );
-            //	Set the Labels for each data series we want to plot
-            //		Datatype
-            //		Cell reference for data
-            //		Format Code
-            //		Number of datapoints in series
-            //		Data values
-            //		Data Marker
-            $dataSeriesLabels1 = array(
-                new PHPExcel_Chart_DataSeriesValues('String', '!$C$1', NULL, 1),	//	2011
-            );
-            //	Set the X-Axis Labels
-            //		Datatype
-            //		Cell reference for data
-            //		Format Code
-            //		Number of datapoints in series
-            //		Data values
-            //		Data Marker
-            $xAxisTickValues1 = array(
-                new PHPExcel_Chart_DataSeriesValues('String', '!$A$2:$A$5', NULL, 4),	//	Q1 to Q4
-            );
-            //	Set the Data values for each data series we want to plot
-            //		Datatype
-            //		Cell reference for data
-            //		Format Code
-            //		Number of datapoints in series
-            //		Data values
-            //		Data Marker
-            $dataSeriesValues1 = array(
-                new PHPExcel_Chart_DataSeriesValues('Number', '!$C$2:$C$5', NULL, 4),
-            );
-            //var_dump($dataSeriesValues1); exit;
-            //	Build the dataseries
-            $series1 = new PHPExcel_Chart_DataSeries(
-                PHPExcel_Chart_DataSeries::TYPE_PIECHART,				// plotType
-                null,			                                        // plotGrouping (Pie charts don't have any grouping)
-                range(0, count($dataSeriesValues1)-1),					// plotOrder
-                $dataSeriesLabels1,										// plotLabel
-                $xAxisTickValues1,										// plotCategory
-                $dataSeriesValues1										// plotValues
-            );
+
+                    $dataSeriesLabels1 = array(
+                        new PHPExcel_Chart_DataSeriesValues('String', '!$A1', NULL, 2),    //	2011
+                    );
+
+                    $xAxisTickValues1 = array(
+                        new PHPExcel_Chart_DataSeriesValues('String', '!$A$2:$A$'.$contador_general, NULL, $contador_general-1),    //	Q1 to Q4
+                    );
+
+                    $dataSeriesValues1 = array(
+                        new PHPExcel_Chart_DataSeriesValues('Number', '!$B$2:$B$'.$contador_general, NULL, $contador_general-1),
+                    );
+
+                    //	Build the dataseries
+                    $series1 = new PHPExcel_Chart_DataSeries(
+                        PHPExcel_Chart_DataSeries::TYPE_PIECHART,                // plotType
+                        null,                                                    // plotGrouping (Pie charts don't have any grouping)
+                        range(0, count($dataSeriesValues1) - 1),                    // plotOrder
+                        $dataSeriesLabels1,                                        // plotLabel
+                        $xAxisTickValues1,                                        // plotCategory
+                        $dataSeriesValues1                                        // plotValues
+                    );
+
+                    //	Set up a layout object for the Pie chart
+                    $layout1 = new PHPExcel_Chart_Layout();
+                    $layout1->setShowVal(true);
+                    $layout1->setShowPercent(true);
+                    //	Set the series in the plot area
+                    $plotArea1 = new PHPExcel_Chart_PlotArea($layout1, array($series1));
+                    //	Set the chart legend
+                    $legend1 = new PHPExcel_Chart_Legend(PHPExcel_Chart_Legend::POSITION_RIGHT, NULL, false);
+                    $title1 = new PHPExcel_Chart_Title('Estadisticas '.ucwords(str_replace('_',' ',$tipo_tabla)));
+                    //	Create the chart
+                    $chart1 = new PHPExcel_Chart(
+                        'chart1',        // name
+                        $title1,        // title
+                        $legend1,        // legend
+                        $plotArea1,        // plotArea
+                        true,            // plotVisibleOnly
+                        0,                // displayBlanksAs
+                        NULL,            // xAxisLabel
+                        NULL            // yAxisLabel		- Pie charts don't have a Y-Axis
+                    );
+                    //	Set the position where the chart should appear in the worksheet
+                    $chart1->setTopLeftPosition('G2');
+                    $chart1->setBottomRightPosition('M15');
+
+                    //	Add the chart to the worksheet
+                    $this->docexcel->getActiveSheet()->addChart($chart1);
+
+                    $contador_bloque += $contador_bloque_general;
+                    $index++;
+                }
+
+                switch ($value['tipo_tabla']){
+                    case 'estado_reclamo':
+
+                        array_push($array_estado_reclamo,array(ucwords(str_replace('_',' ',$value['tipo_tabla'])),'Nro Casos'));
+                        array_push($array_estado_reclamo,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_estado_reclamo += 2;
+                        break;
+                    case 'genero_cliente':
+                        array_push($array_genero_cliente,array(ucwords(str_replace('_',' ',$value['tipo_tabla'])),'Nro Casos'));
+                        array_push($array_genero_cliente,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_genero_cliente += 2;
+                        break;
+                    case 'oficina_incidente':
+                        array_push($array_oficina_incidente,array(ucwords(str_replace('_',' ',$value['tipo_tabla'])),'Nro Casos'));
+                        array_push($array_oficina_incidente,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_oficina_incidente += 2;
+                        break;
+                    case 'oficina_reclamo':
+                        array_push($array_oficina_reclamo,array(ucwords(str_replace('_',' ',$value['tipo_tabla'])),'Nro Casos'));
+                        array_push($array_oficina_reclamo,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_oficina_reclamo += 2;
+                        break;
+                    case 'tipo_incidente':
+                        array_push($array_tipo_incidente,array(ucwords(str_replace('_',' ',$value['tipo_tabla'])),'Nro Casos'));
+                        array_push($array_tipo_incidente,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_tipo_incidente += 2;
+                        break;
+                }
+
+                $tipo_tabla = $value['tipo_tabla'];
+            }else{
+
+                switch ($value['tipo_tabla']){
+                    case 'estado_reclamo':
+                        array_push($array_estado_reclamo,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_estado_reclamo += 1;
+                        $array_general = $array_estado_reclamo;
+                        $contador_general = $contador_estado_reclamo;
+                        break;
+                    case 'genero_cliente':
+                        array_push($array_genero_cliente,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_genero_cliente += 1;
+                        $array_general = $array_genero_cliente;
+                        $contador_general = $contador_genero_cliente;
+                        break;
+                    case 'oficina_incidente':
+                        array_push($array_oficina_incidente,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_oficina_incidente += 1;
+                        $array_general = $array_oficina_incidente;
+                        $contador_general = $contador_oficina_incidente;
+                        break;
+                    case 'oficina_reclamo':
+                        array_push($array_oficina_reclamo,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_oficina_reclamo += 1;
+                        $array_general = $array_oficina_reclamo;
+                        $contador_general = $contador_oficina_reclamo;
+                        break;
+                    case 'tipo_incidente':
+                        array_push($array_tipo_incidente,array($value['nombre_detalle'],$value['cantidad']));
+                        $contador_tipo_incidente += 1;
+                        $array_general = $array_tipo_incidente;
+                        $contador_general = $contador_tipo_incidente;
+                        break;
+
+                }
+                $tipo_tabla = $value['tipo_tabla'];
+            }
+
+        }
+
+        $this->addHoja(ucwords(str_replace('_',' ',$tipo_tabla)),$index);
+        $this->docexcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+        $this->docexcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+        $this->docexcel->getActiveSheet()->getTabColor()->setRGB($color_pestana[$index]);
+        $this->docexcel->getActiveSheet()->getStyle('A1:B'.$contador_general)->getAlignment()->setWrapText(true);
+        $this->docexcel->getActiveSheet()->getStyle('A1:B1')->applyFromArray($styleTitulos3);
+
+        $this->docexcel->getActiveSheet()->fromArray(
+            $array_general
+        );
+
+        $dataSeriesLabels1 = array(
+            new PHPExcel_Chart_DataSeriesValues('String', '!$A1', NULL, 2),    //	2011
+        );
+
+        $xAxisTickValues1 = array(
+            new PHPExcel_Chart_DataSeriesValues('String', '!$A$2:$A$'.$contador_general, NULL, $contador_general-1),    //	Q1 to Q4
+        );
+
+        $dataSeriesValues1 = array(
+            new PHPExcel_Chart_DataSeriesValues('Number', '!$B$2:$B$'.$contador_general, NULL, $contador_general-1),
+        );
+
+        //	Build the dataseries
+        $series1 = new PHPExcel_Chart_DataSeries(
+            PHPExcel_Chart_DataSeries::TYPE_PIECHART,                // plotType
+            null,                                                    // plotGrouping (Pie charts don't have any grouping)
+            range(0, count($dataSeriesValues1) - 1),                    // plotOrder
+            $dataSeriesLabels1,                                        // plotLabel
+            $xAxisTickValues1,                                        // plotCategory
+            $dataSeriesValues1                                        // plotValues
+        );
 
         //	Set up a layout object for the Pie chart
         $layout1 = new PHPExcel_Chart_Layout();
@@ -156,250 +356,35 @@ class REstadisticasXls
         $plotArea1 = new PHPExcel_Chart_PlotArea($layout1, array($series1));
         //	Set the chart legend
         $legend1 = new PHPExcel_Chart_Legend(PHPExcel_Chart_Legend::POSITION_RIGHT, NULL, false);
-        $title1 = new PHPExcel_Chart_Title('Estadistica Pie Chart');
+        $title1 = new PHPExcel_Chart_Title('Estadisticas '.ucwords(str_replace('_',' ',$tipo_tabla)));
         //	Create the chart
         $chart1 = new PHPExcel_Chart(
-            'chart1',		// name
-            $title1,		// title
-            $legend1,		// legend
-            $plotArea1,		// plotArea
-            true,			// plotVisibleOnly
-            0,				// displayBlanksAs
-            NULL,			// xAxisLabel
-            NULL			// yAxisLabel		- Pie charts don't have a Y-Axis
+            'chart1',        // name
+            $title1,        // title
+            $legend1,        // legend
+            $plotArea1,        // plotArea
+            true,            // plotVisibleOnly
+            0,                // displayBlanksAs
+            NULL,            // xAxisLabel
+            NULL            // yAxisLabel		- Pie charts don't have a Y-Axis
         );
         //	Set the position where the chart should appear in the worksheet
         $chart1->setTopLeftPosition('G2');
         $chart1->setBottomRightPosition('M15');
+
         //	Add the chart to the worksheet
-        $objWorksheet->addChart($chart1);
-        //	Set the Labels for each data series we want to plot
-        //		Datatype
-        //		Cell reference for data
-        //		Format Code
-        //		Number of datapoints in series
-        //		Data values
-        //		Data Marker
-        /*$dataSeriesLabels2 = array(
-            new PHPExcel_Chart_DataSeriesValues('String', 'Estadistica!$C$1', NULL, 1),	//	2011
-        );
-        //	Set the X-Axis Labels
-        //		Datatype
-        //		Cell reference for data
-        //		Format Code
-        //		Number of datapoints in series
-        //		Data values
-        //		Data Marker
-        $xAxisTickValues2 = array(
-            new PHPExcel_Chart_DataSeriesValues('String', 'Estadistica!$A$2:$A$5', NULL, 4),	//	Q1 to Q4
-        );
-        //	Set the Data values for each data series we want to plot
-        //		Datatype
-        //		Cell reference for data
-        //		Format Code
-        //		Number of datapoints in series
-        //		Data values
-        //		Data Marker
-        $dataSeriesValues2 = array(
-            new PHPExcel_Chart_DataSeriesValues('Number', 'Estadistica!$C$2:$C$5', NULL, 4),
-        );
-        //	Build the dataseries
-        $series2 = new PHPExcel_Chart_DataSeries(
-            PHPExcel_Chart_DataSeries::TYPE_DONUTCHART,		// plotType
-            NULL,			                                // plotGrouping (Donut charts don't have any grouping)
-            range(0, count($dataSeriesValues2)-1),			// plotOrder
-            $dataSeriesLabels2,								// plotLabel
-            $xAxisTickValues2,								// plotCategory
-            $dataSeriesValues2								// plotValues
-        );
-        //	Set up a layout object for the Pie chart
-        $layout2 = new PHPExcel_Chart_Layout();
-        $layout2->setShowVal(TRUE);
-        $layout2->setShowCatName(TRUE);
-        //	Set the series in the plot area
-        $plotArea2 = new PHPExcel_Chart_PlotArea($layout2, array($series2));
-        $title2 = new PHPExcel_Chart_Title('Test Donut Chart');
-        //	Create the chart
-        $chart2 = new PHPExcel_Chart(
-            'chart2',		// name
-            $title2,		// title
-            NULL,			// legend
-            $plotArea2,		// plotArea
-            true,			// plotVisibleOnly
-            0,				// displayBlanksAs
-            NULL,			// xAxisLabel
-            NULL			// yAxisLabel		- Like Pie charts, Donut charts don't have a Y-Axis
-        );
-        //	Set the position where the chart should appear in the worksheet
-        $chart2->setTopLeftPosition('I7');
-        $chart2->setBottomRightPosition('P20');
-        //	Add the chart to the worksheet
-        $objWorksheet->addChart($chart2);*/
-
-        /*$title = 'Types';
-        $chartTitle = 'Distribution of leave types';
-        $label = 'Leave type';
-        $value = 'Number of days';
-
-        $this->docexcel->getActiveSheet()->setCellValue('A1', $label);
-        $this->docexcel->getActiveSheet()->setCellValue('B1', $value);
-        $this->docexcel->getActiveSheet()->getStyle('A1:B1')->getFont()->setBold(true);
-        $this->docexcel->getActiveSheet()->getStyle('A1:B1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-
-        $rows = array(
-            array('name'=>'uno','number'=>1),
-            array('name'=>'dos','number'=>2),
-            array('name'=>'tres','number'=>3),
-            array('name'=>'cuatro','number'=>4)
-            );
-        $line = 2;
-        foreach ($rows as $row) {
-            $this->docexcel->getActiveSheet()->setCellValue('A' . $line, $row['name']);
-            $this->docexcel->getActiveSheet()->setCellValue('B' . $line, $row['number']);
-            $line++;
-        }
-        //Autofit
-        foreach (range('A', 'B') as $colD) {
-            $this->docexcel->getActiveSheet()->getColumnDimension($colD)->setAutoSize(TRUE);
-        }
-        $dataseriesLabels1 = array(new PHPExcel_Chart_DataSeriesValues('String', 'Estadistica!$A$1', null, 1));
-        $xAxisTickValues1 = array(new PHPExcel_Chart_DataSeriesValues('String', 'Estadistica!$A$2:$A$' . $line, null, 4));
-        $dataSeriesValues1 = array(new PHPExcel_Chart_DataSeriesValues('Number', 'Estadistica!$B$2:$B$' . $line, null, 4));
-        //var_dump(count($dataSeriesValues1));exit;
-        $series1 = new PHPExcel_Chart_DataSeries(
-            PHPExcel_Chart_DataSeries::TYPE_PIECHART,
-            PHPExcel_Chart_DataSeries::GROUPING_STANDARD,
-            range(0, count($dataSeriesValues1) - 1),
-            $dataseriesLabels1,
-            $xAxisTickValues1,
-            $dataSeriesValues1
-        );
-        $layout1 = new PHPExcel_Chart_Layout();
-        $layout1->setShowVal(TRUE);
-        $layout1->setShowPercent(TRUE);
-        $plotarea1 = new PHPExcel_Chart_PlotArea($layout1, array($series1));
-        $legend1 = new PHPExcel_Chart_Legend(PHPExcel_Chart_Legend::POSITION_RIGHT, null, false);
-        $title1 = new PHPExcel_Chart_Title($chartTitle);
-        $chart1 = new PHPExcel_Chart('chart1', $title1, $legend1, $plotarea1, true, 0, null, null);
-        $chart1->setTopLeftPosition('E3');
-        $chart1->setBottomRightPosition('K20');
         $this->docexcel->getActiveSheet()->addChart($chart1);
-
-
-        $idind = array("y1","y2","y3","y4");
-        $s1 = array("7","10","25","30");
-
-        $grafico = new Graph(500,500,'auto');
-        $grafico->img->SetImgFormat('jpeg');
-        $grafico -> SetScale("textlin");
-        $grafico -> title -> Set ("GRAFICA DE PRUEBA");
-        $grafico -> yaxis -> title -> Set ("VALOR DE REFERENCIA");
-        $grafico -> xaxis -> title -> Set ("INDICADORES");
-        $grafico->xaxis->SetTickLabels($idind);
-
-        $bp=new BarPlot($s1);
-        $bp->SetFillColor("#00CC00");
-        $bp->SetWidth(50);
-        $bp->value->Show();
-
-        $grafico->Add($bp);
-
-        $grafico->Stroke(_IMG_HANDLER);
-
-        $fileName = dirname(__FILE__) . "/../../reportes_generados/grafico.jpeg";
-        $grafico->img->Stream($fileName);
-
-        $gdImage = imagecreatefromjpeg(dirname(__FILE__) . "/../../reportes_generados/grafico.jpeg");
-        imagescale($gdImage, 500,500);
-        // Add a drawing to the worksheetecho date('H:i:s') . " Add a drawing to the worksheet\n";
-        $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
-        $objDrawing->setName('Sample image');
-        $objDrawing->setDescription('Sample image');
-        $objDrawing->setImageResource($gdImage);
-        $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
-        $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
-        $objDrawing->setCoordinates('E5');
-        $objDrawing->setHeight(150);
-        $objDrawing->setWorksheet($this->docexcel->getActiveSheet());*/
-
-
-
-        // start graphic
-
-        /*$dsl5=array(
-
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'SapVsWB!$B$2:$E$2', NULL, 1),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'SapVsWB!$B$3:$E$3', NULL, 1),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'SapVsWB!$B$4:$E$4', NULL, 1),
-
-        );
-
-        $xal5=array(
-            new \PHPExcel_Chart_DataSeriesValues('String', 'SapVsWB!$A$2:$A$4', NULL, 1),
-        );
-
-        $dsv5=array(
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'SapVsWB!$B$2:$E$2', NULL, 1),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'SapVsWB!$B$3:$E$3', NULL, 1),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'SapVsWB!$B$4:$E$4', NULL, 1),
-
-        );
-
-        $dsK=new \PHPExcel_Chart_DataSeries(
-            \PHPExcel_Chart_DataSeries::TYPE_BARCHART,
-            \PHPExcel_Chart_DataSeries::GROUPING_CLUSTERED,
-            range(0, count($dsv5)-1),
-            $dsl5,
-            $xal5,
-            $dsv5
-        );
-
-// siguiente tipo de grafico
-        $dsl=array(
-            new \PHPExcel_Chart_DataSeriesValues('String', 'SapVsWB!$F$1', NULL, 1),
-        );
-        $xal=array(
-            new \PHPExcel_Chart_DataSeriesValues('String', 'SapVsWB!$F$2:$F$4', NULL, 10),
-
-        );
-        $dsv=array(
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'SapVsWB!$F$2:$F$4', NULL, 10),
-
-        );
-
-        $ds=new \PHPExcel_Chart_DataSeries(
-            \PHPExcel_Chart_DataSeries::TYPE_LINECHART,
-            \PHPExcel_Chart_DataSeries::GROUPING_STANDARD,
-            range(0, count($dsv)-1),
-            $dsl,
-            $xal,
-            $dsv
-        );
-
-        $dsK->setPlotDirection(PHPExcel_Chart_DataSeries::DIRECTION_COL);
-        $pa5=new \PHPExcel_Chart_PlotArea(NULL, array($dsK,$ds));
-        $legend=new \PHPExcel_Chart_Legend(\PHPExcel_Chart_Legend::POSITION_RIGHT, NULL, false);
-        $title=new \PHPExcel_Chart_Title('');
-        $chart2=new \PHPExcel_Chart(
-            'chart1',
-            $title,
-            $legend,
-            $pa5,
-            true,
-            0,
-            NULL,
-            NULL
-        );
-        $col= 10;
-        $col2= $col + 25;
-        $chart2->setTopLeftPosition('E'.$col.'');
-        $chart2->setBottomRightPosition('S'.$col2.'');
-        $this->docexcel->getActiveSheet()->addChart($chart2);*/
 
 
     }
 
-
+    public function addHoja($name,$index){
+        //$index = $this->docexcel->getSheetCount();
+        //echo($index);
+        $this->docexcel->createSheet($index)->setTitle($name);
+        $this->docexcel->setActiveSheetIndex($index);
+        return $this->docexcel;
+    }
 
     function generarReporte(){
 
@@ -421,6 +406,10 @@ class REstadisticasXls
         $this->objWriter->setIncludeCharts(true);
 
         $this->objWriter->save($this->url_archivo);
+
+        /*$this->docexcel->setActiveSheetIndex(0);
+        $this->objWriter = PHPExcel_IOFactory::createWriter($this->docexcel, 'Excel5');
+        $this->objWriter->save($this->url_archivo);*/
 
 
     }

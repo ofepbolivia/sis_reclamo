@@ -388,7 +388,7 @@ BEGIN
             	v_band_incidente = TRUE;
             END IF;
 
-            IF ((v_fecha_mod_r::date != v_parametros.fecha_hora_recepcion::date) OR v_band_incidente) THEN
+            IF ((v_fecha_mod_r::date != v_parametros.fecha_hora_recepcion::date) OR v_band_incidente or v_fecha_mod_r::date = v_parametros.fecha_hora_recepcion::date) THEN
             	v_fecha_mod = v_parametros.fecha_hora_recepcion::date; --raise exception 'v_fecha_mod: %',v_fecha_mod;
                 IF 	(select v_parametros.id_tipo_incidente IN (4,6,37,38,48,50))THEN
                 	v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 10);
@@ -433,7 +433,7 @@ BEGIN
 			origen = upper(v_parametros.origen),
 			nro_frd = v_parametros.nro_frd,
             correlativo_preimpreso_frd = v_parametros.correlativo_preimpreso_frd,
-            fecha_limite_respuesta = CASE WHEN ((v_fecha_mod_r::date <> v_parametros.fecha_hora_recepcion::date) OR v_band_incidente) THEN v_fecha_limite ELSE v_fecha_limite_mod END ,
+            fecha_limite_respuesta = CASE WHEN ((v_fecha_mod_r::date <> v_parametros.fecha_hora_recepcion::date) OR v_band_incidente or (v_fecha_mod_r::date = v_parametros.fecha_hora_recepcion::date)) THEN v_fecha_limite ELSE v_fecha_limite_mod END ,
 			observaciones_incidente = v_parametros.observaciones_incidente,
 			destino = upper(v_parametros.destino),
 			nro_pir = v_parametros.nro_pir,

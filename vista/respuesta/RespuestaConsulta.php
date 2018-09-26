@@ -563,7 +563,7 @@ header("content-type: text/javascript; charset=UTF-8");
             direction: 'ASC'
         },
 
-        rowExpander: new Ext.ux.grid.RowExpander({
+        /*rowExpander: new Ext.ux.grid.RowExpander({
             tpl: new Ext.Template(
                 '<br>', '<h1 style="text-align: center">RESPUESTA  </h1>',
                 '<p>&nbsp;&nbsp;<b>CONTENIDO DE LA RESPUESTA:&nbsp;&nbsp;</b> {respuesta}</p>',
@@ -572,7 +572,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 '<p>&nbsp;&nbsp;<b>RECOMENDACION PARA EVITAR FUTUROS RECLAMOS:&nbsp;&nbsp;</b> {recomendaciones}</p>',
                 '<p>&nbsp;&nbsp;<b>DETALLE  DE INCIDENTE:&nbsp;&nbsp;</b> {detalle_incidente}</p>',
             )
-        }),
+        }),*/
 
 
         bdel: true,
