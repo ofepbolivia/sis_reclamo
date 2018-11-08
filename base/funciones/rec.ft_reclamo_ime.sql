@@ -491,14 +491,12 @@ BEGIN
         from rec.treclamo tr
         where tr.id_reclamo = v_parametros.id_reclamo;
         IF (p_administrador = 1)THEN
-
             if v_codigo_estado != 'borrador' then
                 raise exception 'Solo pueden anularce reclamos del estado borrador';
             end if;
 
             -- obtenemos el tipo del estado anulado
-
-            select
+            /*select
                 te.id_tipo_estado
             into
                 v_id_tipo_estado
@@ -514,7 +512,6 @@ BEGIN
 
 
             -- pasamos el reclamo  al siguiente anulado
-            --raise exception 'revisado: %', v_id_tipo_estado;
             v_id_estado_actual =  wf.f_registra_estado_wf(
                 v_id_tipo_estado,
                 v_funcionario,
@@ -525,15 +522,16 @@ BEGIN
                 v_parametros._nombre_usuario_ai,
                 v_id_depto,
                 'Eliminacion de Reclamo'|| COALESCE(v_nro_tramite,'--')
-            );
+            );*/
 
             -- actualiza estado en el reclamo
 
-            update rec.treclamo  set
-                id_estado_wf =  v_id_estado_actual,
-                estado = 'anulado',
-                id_usuario_mod=p_id_usuario,
-                fecha_mod=now()
+            update rec.treclamo tr set
+                --id_estado_wf =  v_id_estado_actual,
+                --estado = 'anulado',
+                --id_usuario_mod=p_id_usuario,
+                --fecha_mod=now()
+                tr.estado_reg = 'inactivo'
             where id_reclamo  = v_parametros.id_reclamo;
         ELSE
         	RAISE EXCEPTION 'No es posible eliminar el reclamo %, dirijase a su bandeja, ubique el reclamo creado y haga los cambios necesarios haciendo click en el bóton Editar.',v_nro_tramite;

@@ -257,3 +257,83 @@ ALTER TABLE rec.tcliente
   ADD COLUMN email2 VARCHAR(100);
 
 /***********************************F-SCP-MAY-REC-0-10/05/2018****************************************/
+
+/***********************************I-SCP-FEA-REC-0-07/11/2018****************************************/
+
+CREATE TABLE rec.tferiado (
+  id_feriado SERIAL,
+  dia VARCHAR(5),
+  mes VARCHAR(15),
+  CONSTRAINT tferiado_pkey PRIMARY KEY(id_feriado)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE rec.tferiado
+  ALTER COLUMN id_feriado SET STATISTICS 0;
+
+
+CREATE TABLE rec.tferiados (
+  id_origen INTEGER,
+  id_lugar INTEGER,
+  tipo INTEGER,
+  fecha DATE,
+  descripcion VARCHAR(250) NOT NULL,
+  estado VARCHAR(2),
+  id_feriado SERIAL,
+  CONSTRAINT tferiados_pkey PRIMARY KEY(id_feriado)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+CREATE TABLE rec.tnumero_frd (
+  id_numero_frd INTEGER DEFAULT nextval('rec.toficinas_aux_id_oficina_aux_seq'::regclass) NOT NULL,
+  id_oficina INTEGER NOT NULL,
+  id_gestion INTEGER NOT NULL,
+  numero INTEGER,
+  CONSTRAINT toficinas_aux_pkey PRIMARY KEY(id_numero_frd)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE rec.tnumero_frd
+  ALTER COLUMN id_numero_frd SET STATISTICS 0;
+
+ALTER TABLE rec.tnumero_frd
+  ALTER COLUMN id_oficina SET STATISTICS 0;
+
+
+CREATE TABLE rec.toficina (
+  id_oficina INTEGER DEFAULT nextval('rec.toficinas_id_oficina_seq'::regclass) NOT NULL,
+  codigo VARCHAR(20) NOT NULL,
+  nombre VARCHAR(200) NOT NULL,
+  id_lugar INTEGER NOT NULL,
+  aeropuerto VARCHAR(2) NOT NULL,
+  zona_franca VARCHAR(2),
+  frontera VARCHAR(2),
+  correo_oficina VARCHAR(200),
+  direccion VARCHAR(255),
+  CONSTRAINT toficinas_pkey PRIMARY KEY(id_oficina),
+  CONSTRAINT chk__toficina__aeropuerto CHECK (((aeropuerto)::text = 'si'::text) OR ((aeropuerto)::text = 'no'::text)),
+  CONSTRAINT fk__toficina__id_lugar FOREIGN KEY (id_lugar)
+    REFERENCES param.tlugar(id_lugar)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+CREATE TABLE rec.treclamo_informe (
+  id_reclamo INTEGER NOT NULL,
+  id_informe INTEGER NOT NULL
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE rec.treclamo_informe
+  ALTER COLUMN id_informe SET STATISTICS 0;
+
+
+
+/***********************************F-SCP-FEA-REC-0-07/11/2018****************************************/

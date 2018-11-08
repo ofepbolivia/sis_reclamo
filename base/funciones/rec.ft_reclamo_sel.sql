@@ -113,7 +113,7 @@ BEGIN
                     ELSE
                     	v_filtro = '( rec.id_usuario_mod = '||p_id_usuario||' OR tew.id_depto in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||') OR tew.id_funcionario = '||v_record.id_funcionario||') AND rec.estado_reg <> ''inactivo'' AND ';
                     END IF;
-                    
+
                     if(v_record.id_funcionario = 152)then
                     	v_filtro= '0 = 0 AND ';
                     end if;
@@ -126,7 +126,7 @@ BEGIN
             	END IF;*/
                 ELSIF v_parametros.tipo_interfaz='RegistroReclamoAnulado' THEN
 					v_filtro = '(rec.id_usuario_reg = '||p_id_usuario||
-               	 	' OR rec.id_oficina_registro_incidente = '||v_record.id_oficina||') AND ';               	 	
+               	 	' OR rec.id_oficina_registro_incidente = '||v_record.id_oficina||') AND ';
             	ELSE
             		v_filtro= '0 = 0 AND ';
             	END IF;
@@ -224,7 +224,7 @@ BEGIN
                             left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                             LEFT join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
-                            LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
+                            LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo --and res.tipo_respuesta = ''respuesta_final''
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
                             LEFT JOIN rec.treclamo_informe tri ON tri.id_reclamo = rec.id_reclamo
 
@@ -271,7 +271,7 @@ BEGIN
                             left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                             LEFT join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
-                            LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
+                            LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo --and res.tipo_respuesta = ''respuesta_final''
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
                             LEFT JOIN rec.treclamo_informe tri ON tri.id_reclamo = rec.id_reclamo
 					    where ';
@@ -370,21 +370,21 @@ BEGIN
                         left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
                       	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
-                        inner join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
-                        left outer join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
+                        left join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
+                        left join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
                         left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
                         LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
-				        WHERE ';
+				        WHERE rec.estado_reg != ''inactivo'' and ';
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by id_reclamo, ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
-        	raise notice 'que esta pasando: %',v_consulta;
+        	raise notice 'v_consulta: %',v_consulta;
 			return v_consulta;
 
 		end;
@@ -399,7 +399,7 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(rec.id_reclamo)
+			v_consulta:='select count(distinct rec.id_reclamo)
 			   			from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
@@ -409,19 +409,19 @@ BEGIN
                         left join rec.toficina of on of.id_oficina = rec.id_oficina_incidente
                       	inner join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
                         inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
-                        inner join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
-                        left outer join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
+                        left join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario = rec.id_funcionario_recepcion
+                        left join orga.vfuncionario_cargo_lugar fu on fu.id_funcionario = rec.id_funcionario_denunciado
                         left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
                         LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
-					    where ';
+					    where rec.estado_reg != ''inactivo'' and ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-
+			--raise notice 'v_consulta: %',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -1004,7 +1004,7 @@ BEGIN
 			return v_consulta;
 
 		end;
-	/*********************************
+    /*********************************
  	#TRANSACCION:  'REC_STADISTICAS_SEL'
  	#DESCRIPCION:	Estadisticas Reclamos.
  	#AUTOR:		f.e.a
@@ -1033,7 +1033,7 @@ BEGIN
             INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
             LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
             inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
-            where '||v_parametros.filtro||'
+            where rec.estado_reg != ''inactivo'' and '||v_parametros.filtro||'
             group by tip.nombre_incidente';
             execute(v_consulta);
 
@@ -1050,7 +1050,7 @@ BEGIN
             INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
             LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
             inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
-            where '||v_parametros.filtro||'
+            where rec.estado_reg != ''inactivo'' and '||v_parametros.filtro||'
             group by ofi.nombre';
             execute(v_consulta);
 
@@ -1067,7 +1067,7 @@ BEGIN
             INNER join rec.toficina ofi on ofi.id_oficina = rec.id_oficina_registro_incidente
             LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
             inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
-            where '||v_parametros.filtro||'
+            where rec.estado_reg != ''inactivo'' and '||v_parametros.filtro||'
             group by of.nombre';
             execute(v_consulta);
 
@@ -1085,7 +1085,7 @@ BEGIN
             LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
             inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
             LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
-            where '||v_parametros.filtro||'
+            where rec.estado_reg != ''inactivo'' and '||v_parametros.filtro||'
             group by c.genero';
             execute(v_consulta);
 
@@ -1103,7 +1103,7 @@ BEGIN
             LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
             inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
             LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
-            where '||v_parametros.filtro||'
+            where rec.estado_reg != ''inactivo'' and '||v_parametros.filtro||'
             group by rec.estado';
             execute(v_consulta);
 
@@ -1121,7 +1121,7 @@ BEGIN
             LEFT join param.tlugar tlug ON tlug.id_lugar = ofi.id_lugar
             inner join rec.ttipo_incidente t on t.id_tipo_incidente = rec.id_subtipo_incidente
             LEFT join rec.vcliente c on c.id_cliente = rec.id_cliente
-            where '||v_parametros.filtro||'
+            where rec.estado_reg != ''inactivo'' and '||v_parametros.filtro||'
             group by med.nombre_medio';
 
 
