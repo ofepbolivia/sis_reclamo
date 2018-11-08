@@ -197,6 +197,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 					var ids = new Array(4, 6, 37, 38, 48, 50);
 					var id_tipo = parseInt(record.data.id_tipo_incidente);
+
 					if(ids.indexOf(id_tipo) >= 0) {
                         if(record.data.revisado == 'res_ripat' || record.data.revisado == 'con_respuesta' || record.data.revisado == 'concluido'){
                             return String.format('<div ext:qtip="Con Respuesta"><b><font color="black">{0}</font></b><br></div>', value);
@@ -204,7 +205,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value);
 						}else if(dias==0) {
 							return String.format('<div ext:qtip="Malo"><b><font color="orange">{0}</font></b><br></div>', value);
-						}else if(dias == -1) {
+						}else if(dias <= -1) {
                             return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">{0}</font></b><br></div>', value);
                         }
 
@@ -216,7 +217,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value);
 						}else if(dias == 0){
 							return String.format('<div ext:qtip="Critico"><b><font color="orange">{0}</font></b><br></div>', value);
-						}else if(dias == -1) {
+						}else if(dias <= -1) {
                             return String.format('<div ext:qtip="Con Respuesta"><b><font color="red">{0}</font></b><br></div>', value);
                         }
 					}
@@ -587,7 +588,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			config: {
 				name: 'fecha_hora_vuelo',
 				fieldLabel: 'Fecha, Hora de Vuelo',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				format: 'd/m/Y H:i',
@@ -716,7 +717,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			config: {
 				name: 'fecha_hora_incidente',
 				fieldLabel: 'Fecha, Hora del Incidente',
-				allowBlank: true,
+				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				format: 'd/m/Y H:i',
