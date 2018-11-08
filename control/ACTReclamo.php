@@ -198,6 +198,42 @@ class ACTReclamo extends ACTbase{
 		if($this->objParam->getParametro('desde')=='' && $this->objParam->getParametro('hasta')!=''){
 			$this->objParam->addFiltro("(rec.fecha_reg::date  <= ''%".$this->objParam->getParametro('hasta')."%''::date)");
 		}
+        /****************************************************************************************************************************************************************/
+        if($this->objParam->getParametro('id_oficina_registro_incidente')!=''){
+            $this->objParam->addFiltro("rec.id_oficina_registro_incidente in (". $this->objParam->getParametro('id_oficina_registro_incidente').")");
+        }
+
+        if($this->objParam->getParametro('oficina')!=''){
+            $this->objParam->addFiltro("tlug.id_lugar in (". $this->objParam->getParametro('oficina').")");
+        }
+
+        if($this->objParam->getParametro('id_medio_reclamo')!=''){
+            $this->objParam->addFiltro("rec.id_medio_reclamo in (".$this->objParam->getParametro('id_medio_reclamo').")");
+        }
+
+        if($this->objParam->getParametro('id_tipo_incidente')!=''){
+            $this->objParam->addFiltro("rec.id_tipo_incidente in (".$this->objParam->getParametro('id_tipo_incidente').")");
+        }
+
+        if($this->objParam->getParametro('id_subtipo_incidente') !=''){
+            $this->objParam->addFiltro("rec.id_subtipo_incidente in (".$this->objParam->getParametro('id_subtipo_incidente').")");
+        }
+        
+        if($this->objParam->getParametro('id_oficina_incidente')!=''){
+            $this->objParam->addFiltro("rec.id_oficina_incidente = ".$this->objParam->getParametro('id_oficina_incidente'));
+        }
+
+        if($this->objParam->getParametro('origen')!=''){
+            $this->objParam->addFiltro("rec.origen = ''". $this->objParam->getParametro('origen')."''");
+        }
+        if($this->objParam->getParametro('transito')!=''){
+            $this->objParam->addFiltro("rec.transito = ''". $this->objParam->getParametro('transito')."''");
+        }
+        if($this->objParam->getParametro('destino')!=''){
+            $this->objParam->addFiltro("rec.destino = ''". $this->objParam->getParametro('destino')."''");
+        }
+
+        /****************************************************************************************************************************************************************/
 		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);

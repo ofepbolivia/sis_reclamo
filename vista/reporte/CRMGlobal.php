@@ -953,7 +953,7 @@ header("content-type: text/javascript; charset=UTF-8");
         ],
         tam_pag: 50,
         title: 'CRMGlobal',
-        ActList: '../../sis_reclamo/control/Reclamo/listarReclamo',
+        ActList: '../../sis_reclamo/control/Reclamo/listarCRMGlobal',
         id_store: 'id_reclamo',
         fields: [
             {name: 'desc_nom_cliente', type: 'string'},
