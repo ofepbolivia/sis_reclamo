@@ -188,7 +188,7 @@ BEGIN
 
 	if(p_transaccion='REC_REC_INS')then
         begin
-
+		   --raise exception  'Estimado Usuario Temporalmente no podra registrar reclamos, cualquier consulta contactarse con Responsables SAC. <br> Por Regularización, el servicio estara disponible a partir de las 13:30 pm.';
            -- obtener el codigo del tipo_proceso
            select   tp.codigo, pm.id_proceso_macro
            into v_codigo_tipo_proceso, v_id_proceso_macro
@@ -199,16 +199,23 @@ BEGIN
 
 
           v_fecha_aux =  EXTRACT(YEAR FROM v_parametros.fecha_hora_recepcion::date);
-
-           if( v_fecha_aux > 2017) then
-           	 select g.id_gestion
-             into v_gestion
-             from param.tgestion g
-             where g.gestion = EXTRACT(YEAR FROM current_date);
-           else
+          --v_fecha_aux =  EXTRACT(YEAR FROM v_parametros.fecha_hora_recepcion::date);
+			if v_fecha_aux = 2018 then
+            --if( v_fecha_aux > 2017) then
+               select g.id_gestion
+               into v_gestion
+               from param.tgestion g
+               where g.gestion = v_fecha_aux;
+          	else
+            	select g.id_gestion
+               	into v_gestion
+               	from param.tgestion g
+               	where g.gestion = EXTRACT(YEAR FROM current_date);
+            end if;
+           /*else
            	 raise exception 'Estimado usuario no puede hacer registros de gestiones pasadas, comuniquese con los responsables SAC.';
              --v_gestion = 15;
-           end if;
+           end if;*/
 
 
             --Control de fecha_limite de una respuesta, mas uno porque se cuenta a partir del dia siguiente habil.
@@ -391,7 +398,7 @@ BEGIN
             IF ((v_fecha_mod_r::date != v_parametros.fecha_hora_recepcion::date) OR v_band_incidente or v_fecha_mod_r::date = v_parametros.fecha_hora_recepcion::date) THEN
             	v_fecha_mod = v_parametros.fecha_hora_recepcion::date; --raise exception 'v_fecha_mod: %',v_fecha_mod;
                 IF 	(select v_parametros.id_tipo_incidente IN (4,6,37,38,48,50))THEN
-                	v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 10);
+                	v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 10);--raise exception 'v_fecha_limite: %', v_fecha_limite;
                 ELSIF v_parametros.id_tipo_incidente=36 THEN
                 	v_fecha_limite = param.f_sumar_dias_habiles(v_fecha_mod::date, 7);
                 END IF;
@@ -414,7 +421,6 @@ BEGIN
             END IF;
             --end
 			--Control para el Nro. de dias de Respuesta si se cambia el tipo de incidente.
-
 
 			update rec.treclamo set
 			id_tipo_incidente = v_parametros.id_tipo_incidente,
@@ -490,6 +496,7 @@ BEGIN
                 v_nro_tramite
         from rec.treclamo tr
         where tr.id_reclamo = v_parametros.id_reclamo;
+
         IF (p_administrador = 1)THEN
             if v_codigo_estado != 'borrador' then
                 raise exception 'Solo pueden anularce reclamos del estado borrador';
@@ -526,12 +533,12 @@ BEGIN
 
             -- actualiza estado en el reclamo
 
-            update rec.treclamo tr set
+            update rec.treclamo set
                 --id_estado_wf =  v_id_estado_actual,
                 --estado = 'anulado',
                 --id_usuario_mod=p_id_usuario,
                 --fecha_mod=now()
-                tr.estado_reg = 'inactivo'
+                estado_reg = 'inactivo'
             where id_reclamo  = v_parametros.id_reclamo;
         ELSE
         	RAISE EXCEPTION 'No es posible eliminar el reclamo %, dirijase a su bandeja, ubique el reclamo creado y haga los cambios necesarios haciendo click en el bóton Editar.',v_nro_tramite;

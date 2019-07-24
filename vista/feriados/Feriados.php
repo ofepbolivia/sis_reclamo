@@ -15,16 +15,39 @@ Phx.vista.Feriados=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
-        this.initButtons=this.combo_gestion;
+        //this.initButtons=this.cmbGestion;
         //this.ar1 = this.combo_gestion.store.data.items[0].data;
         //llama al constructor de la clase padre
 		Phx.vista.Feriados.superclass.constructor.call(this,config);
         this.init();
         this.iniciarEventos();
+
+        /*Ext.Ajax.request({
+            url:'../../sis_parametros/control/Gestion/obtenerGestionByFecha',
+            params:{fecha:new Date()},
+            success:function(resp){
+                var reg =  Ext.decode(Ext.util.Format.trim(resp.responseText));
+                this.cmbGestion.setValue(reg.ROOT.datos.id_gestion);
+                this.cmbGestion.setRawValue(reg.ROOT.datos.anho);
+                this.store.baseParams.id_gestion=reg.ROOT.datos.id_gestion;
+                this.load({params:{start:0, limit:this.tam_pag}});
+            },
+            failure: this.conexionFailure,
+            timeout:this.timeout,
+            scope:this
+        });*/
+
+        //this.cmbGestion.on('select',this.capturarEventos, this);
+
         this.load({params:{start:0, limit:this.tam_pag}});
-        console.log('gestion',this.ar1);
+
 	},
-    combo_gestion : new Ext.form.ComboBox({
+
+    capturarEventos: function () {
+        this.store.baseParams.id_gestion = this.cmbGestion.getValue();
+        this.load({params: {start: 0, limit: this.tam_pag}});
+    },
+    /*combo_gestion : new Ext.form.ComboBox({
         name:'gestion',
         store:['2018','2017','2016','2015','2014','2013','2012','2011','2010'],
         typeAhead: true,
@@ -35,6 +58,39 @@ Phx.vista.Feriados=Ext.extend(Phx.gridInterfaz,{
         selectOnFocus:true,
         width:135,
 
+    }),*/
+    cmbGestion: new Ext.form.ComboBox({
+        name: 'gestion',
+        id: 'gestion_reg',
+        fieldLabel: 'Gestion',
+        allowBlank: true,
+        emptyText:'Gestion...',
+        blankText: 'Año',
+        store:new Ext.data.JsonStore(
+            {
+                url: '../../sis_parametros/control/Gestion/listarGestion',
+                id: 'id_gestion',
+                root: 'datos',
+                sortInfo:{
+                    field: 'gestion',
+                    direction: 'DESC'
+                },
+                totalProperty: 'total',
+                fields: ['id_gestion','gestion'],
+                // turn on remote sorting
+                remoteSort: true,
+                baseParams:{par_filtro:'gestion'}
+            }),
+        valueField: 'id_gestion',
+        triggerAction: 'all',
+        displayField: 'gestion',
+        hiddenName: 'id_gestion',
+        mode:'remote',
+        pageSize:50,
+        queryDelay:500,
+        listWidth:'280',
+        hidden:false,
+        width:80
     }),
 			
 	Atributos:[
@@ -352,7 +408,7 @@ Phx.vista.Feriados=Ext.extend(Phx.gridInterfaz,{
         this.Cmp.estado.disable();
 
     },
-    iniciarEventos : function () {
+    /*iniciarEventos : function () {
 
         this.store.baseParams.gestion = '';
 
@@ -367,7 +423,7 @@ Phx.vista.Feriados=Ext.extend(Phx.gridInterfaz,{
             }
 
         } , this);
-    },
+    },*/
 
 	}
 

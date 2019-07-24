@@ -13,12 +13,17 @@ class ACTFeriados extends ACTbase{
 		//$this->objParam->defecto('ordenacion','fecha');
 		//$this->objParam->defecto('dir_ordenacion','asc');
 
-        if($this->objParam->getParametro('gestion') === ''){
+        /*if($this->objParam->getParametro('gestion') === ''){
             $this->objParam->addFiltro("extract (year from now()) = extract(year from tfdos.fecha)");
         }
         if($this->objParam->getParametro('gestion') != '') {
             $this->objParam->addFiltro("extract(year from tfdos.fecha) = ". $this->objParam->getParametro('gestion'));
+        }*/
+
+        if($this->objParam->getParametro('id_gestion')!=''){
+            $this->objParam->addFiltro("tfdos.id_gestion=".$this->objParam->getParametro('id_gestion'));
         }
+
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODFeriados','listarFeriados');

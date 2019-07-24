@@ -83,7 +83,7 @@ BEGIN
                 INTO v_codigo_tipo_proceso, v_id_proceso_macro
                 FROM wf.ttipo_proceso tp
                 WHERE tp.codigo = 'RESP' AND tp.estado_reg = 'activo';
-
+			--raise exception 'id_reclamo %', (p_hstore_respuesta->'id_reclamo')::integer;
             SELECT count(*)
             INTO v_cont_resp
             FROM rec.trespuesta
@@ -112,9 +112,9 @@ BEGIN
 					FROM segu.tusuario tu
 					INNER JOIN orga.tfuncionario tf on tf.id_persona = tu.id_persona
 					WHERE tu.id_usuario = p_id_usuario ;
-					
-   
-                    
+
+
+
                     SELECT
                                  ps_id_proceso_wf,
                                  ps_id_estado_wf,

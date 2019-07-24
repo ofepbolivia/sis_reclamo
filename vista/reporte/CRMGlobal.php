@@ -66,6 +66,24 @@ header("content-type: text/javascript; charset=UTF-8");
         Atributos: [
             {
                 config:{
+                    name: 'nro_tramite',
+                    fieldLabel: 'No. Tramite',
+                    allowBlank: false,
+                    anchor: '50%',
+                    gwidth: 120,
+                    maxLength:100,
+                    renderer: function(value, p, record) {
+                        return String.format('<div ext:qtip="Optimo"><b><font color="green">{0}</font></b><br></div>', value);
+                    }
+                },
+                type:'TextField',
+                filters:{pfiltro:'rec.nro_tramite',type:'string'},
+                grid:true,
+                form:false,
+                bottom_filter : true
+            },
+            {
+                config:{
                     name:'id_cliente',
                     fieldLabel:'Cliente',
                     allowBlank:false,
@@ -990,6 +1008,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'conclusion_recomendacion', type: 'string'},
             {name: 'recomendaciones', type: 'string'},
             {name: 'nro_guia_aerea', type: 'string'},
+            {name: 'nro_tramite', type: 'string'},
 
 
 

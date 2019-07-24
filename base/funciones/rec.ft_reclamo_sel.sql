@@ -228,7 +228,7 @@ BEGIN
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
                             LEFT JOIN rec.treclamo_informe tri ON tri.id_reclamo = rec.id_reclamo
 
-				        where  '||v_filtro;
+				        where rec.estado_reg !=''inactivo'' and '||v_filtro;
 
 			--raise exception 'ordenacion: %',v_consulta;
 			--Definicion de la respuesta
@@ -274,7 +274,7 @@ BEGIN
                             LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo --and res.tipo_respuesta = ''respuesta_final''
 							LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
                             LEFT JOIN rec.treclamo_informe tri ON tri.id_reclamo = rec.id_reclamo
-					    where ';
+					    where rec.estado_reg !=''inactivo'' and ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;

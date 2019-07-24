@@ -174,7 +174,7 @@ BEGIN
 						res.id_respuesta,
 						res.id_reclamo,
 						res.recomendaciones,
-                        ''OB.GC.NE.''||res.nro_cite||''.''||''2018''::text as num_cite,
+                        (''OB.GC.NE.''||lpad(res.nro_cite::text, 4, ''0'')||''.''||date_part(''year'',current_date ))::text as num_cite,
 						--res.nro_cite,
 						res.respuesta,
                         pxp.f_fecha_literal(res.fecha_respuesta) as fecha_respuesta,
