@@ -102,9 +102,17 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 		}
 
-
+        this.sm.on('rowselect', this.getPlazoSelect,this);
+        this.sm.on('rowdeselect', this.getPlazoDeselect,this);
 	},
 
+    getPlazoSelect : function(grid, rowIndex, rec) {
+        this.plazo.setText('PLAZO: '+rec.data.fecha_limite_respuesta.toLocaleDateString());
+    },
+
+    getPlazoDeselect : function(grid, rowIndex, rec) {
+        this.plazo.setText('');
+    },
 
 	compositeFields : function(){  //step 1
 		return{
@@ -1024,7 +1032,30 @@ header("content-type: text/javascript; charset=UTF-8");
 			filters: {pfiltro: 'med.nombre_medio', type: 'string'},
 			grid: true,
 			form: true
-		},{
+		},
+        {
+            config: {
+                name: 'fecha_limite_respuesta',
+                fieldLabel: 'Fecha Limite de Respuesta',
+                allowBlank: true,
+                readOnly: true,
+                anchor: '80%',
+                gwidth: 150,
+                maxLength: 15,
+                format: 'd/m/Y',
+                style: 'background: #EAA8A8',
+                labelStyle: 'background: #EAA8A8',
+                renderer:function (value,p,record){
+                    return value?value.dateFormat('d/m/Y'):''
+                }
+            },
+            type: 'DateField',
+            filters: {pfiltro: 'rec.fecha_limite_respuesta', type: 'date'},
+            id_grupo: 4,
+            grid: true,
+            form: true
+        },
+        {
 			config: {
 				name: 'id_motivo_anulado',
 				fieldLabel: 'Motivo Anulado',

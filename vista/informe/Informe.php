@@ -446,7 +446,11 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.Informe.superclass.preparaMenu.call(this,n);
             this.getBoton('copiar').enable();
             if(this.maestro.estado ==  'pendiente_revision'||this.maestro.estado == 'registrado_ripat'||this.maestro.estado ==  'derivado'){
-                this.getBoton('del').disable();
+                if(this.grid.store.data.items.length > 1){
+                    this.getBoton('del').enable();
+                }else {
+                    this.getBoton('del').disable();
+                }
             }else if(this.maestro.estado ==  'anulado'){
                 this.getBoton('new').disable();
                 this.getBoton('edit').disable();

@@ -317,7 +317,7 @@ class MODReclamo extends MODbase
 		$this->setParametro('origen', 'origen', 'varchar');
 		$this->setParametro('nro_frd', 'nro_frd', 'varchar');
 		$this->setParametro('correlativo_preimpreso_frd', 'correlativo_preimpreso_frd', 'int4');
-		$this->setParametro('fecha_limite_respuesta', 'fecha_limite_respuesta', 'date');
+		//$this->setParametro('fecha_limite_respuesta', 'fecha_limite_respuesta', 'date');
 		$this->setParametro('observaciones_incidente', 'observaciones_incidente', 'text');
 		$this->setParametro('destino', 'destino', 'varchar');
 		$this->setParametro('nro_pir', 'nro_pir', 'int4');
@@ -334,7 +334,7 @@ class MODReclamo extends MODbase
 
 		//$this->setParametro('correlativo','correlativo',  'int4');
 		//Ejecuta la instruccion
-		$this->armarConsulta();
+		$this->armarConsulta(); //echo $this->consulta;exit;
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -371,7 +371,7 @@ class MODReclamo extends MODbase
 		$this->setParametro('origen', 'origen', 'varchar');
 		$this->setParametro('nro_frd', 'nro_frd', 'varchar');
 		$this->setParametro('correlativo_preimpreso_frd', 'correlativo_preimpreso_frd', 'int4');
-		$this->setParametro('fecha_limite_respuesta', 'fecha_limite_respuesta', 'date');
+		//$this->setParametro('fecha_limite_respuesta', 'fecha_limite_respuesta', 'date');
 		$this->setParametro('observaciones_incidente', 'observaciones_incidente', 'text');
 		$this->setParametro('destino', 'destino', 'varchar');
 		$this->setParametro('nro_pir', 'nro_pir', 'int4');

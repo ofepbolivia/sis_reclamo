@@ -30,6 +30,7 @@ header("content-type: text/javascript; charset=UTF-8");
         
         actualizarSegunTab: function(name, indice){
             if(this.finCons){
+                this.plazo.setText('');
                 if(name == 'anulado'){
                     this.getBoton('sig_estado').setVisible(false);
                 }
@@ -293,6 +294,21 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope:this
             });
             this.cmbGestion.on('select',this.capturarEventos, this);
+
+            this.plazo = new Ext.form.Label({
+                name: 'fecha_limite_rev',
+                grupo: [0,1,2,3,4],
+                fieldLabel: 'Fecha',
+                allowBlank: false,
+                anchor: '60%',
+                gwidth: 100,
+                format: 'd/m/Y',
+                hidden : false,
+                readOnly:true,
+                style: 'font-size: 25pt; font-weight: bold; background-image: none; color: #ff4040;'
+            });
+
+            this.tbar.addField(this.plazo);
 
         },
         

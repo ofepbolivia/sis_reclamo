@@ -403,31 +403,12 @@ Phx.vista.Feriados=Ext.extend(Phx.gridInterfaz,{
     },
     onButtonEdit:function () {
         Phx.vista.Feriados.superclass.onButtonEdit.call(this);
-        this.Cmp.fecha.disable();
-        this.Cmp.descripcion.disable();
+        this.Cmp.fecha.enable();
+        this.Cmp.descripcion.enable();
         this.Cmp.estado.disable();
 
-    },
-    /*iniciarEventos : function () {
-
-        this.store.baseParams.gestion = '';
-
-        if(this.combo_gestion.getValue()===''){
-            this.load({params: {start: 0, limit: this.tam_pag}});
-        }
-        this.combo_gestion.on('select', function(c,r,i) {
-            this.store.baseParams.gestion = this.combo_gestion.getValue();
-            if (this.combo_gestion.getValue()) {
-                //console.log('gestion',this.store.baseParams.gestion);
-                this.load({params: {start: 0, limit: this.tam_pag}});
-            }
-
-        } , this);
-    },*/
-
-	}
-
-)
+    }
+});
 </script>
 		
 		

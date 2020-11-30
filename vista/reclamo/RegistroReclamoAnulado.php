@@ -16,7 +16,22 @@ header("content-type: text/javascript; charset=UTF-8");
         Phx.vista.RegistroReclamoAnulado.superclass.constructor.call(this,config);
         this.getBoton('ant_estado').setVisible(false);
         this.getBoton('btnObs').setVisible(false);                    
-        this.store.baseParams.tipo_interfaz=this.nombreVista;               
+        this.store.baseParams.tipo_interfaz=this.nombreVista;
+
+        this.plazo = new Ext.form.Label({
+            name: 'fecha_limite_sel',
+            grupo: [0,1,2,3,4],
+            fieldLabel: 'Fecha',
+            allowBlank: false,
+            anchor: '60%',
+            gwidth: 100,
+            format: 'd/m/Y',
+            hidden : false,
+            readOnly:true,
+            style: 'font-size: 25pt; font-weight: bold; background-image: none; color: #ff4040;'
+        });
+
+        this.tbar.addField(this.plazo);
     },
     
  tabsouth :null,//desabilita la vista hija
@@ -29,24 +44,23 @@ header("content-type: text/javascript; charset=UTF-8");
     tam_pag:50,
     actualizarSegunTab: function(name, indice){
         if(this.finCons){
+            this.plazo.setText('');
             if(name == 'borrador'){
                 this.getBoton('ant_estado').setVisible(false);
                 this.getBoton('btnObs').setVisible(false);
                 this.store.baseParams.pes_estado = name;
-                this.load({params:{start:0, limit:this.tam_pag}});
             }else if(name == 'pendiente_revision'){
                 this.getBoton('ant_estado').setVisible(false);
                 this.getBoton('sig_estado').setVisible(false);
                 this.getBoton('btnObs').setVisible(false);                
                 this.store.baseParams.pes_estado = 'pendiente_revision';
-                this.load({params:{start:0, limit:this.tam_pag}});
             }else{
                 this.store.baseParams.pes_estado = name;
                 this.getBoton('ant_estado').setVisible(false);
                 this.getBoton('sig_estado').setVisible(false);
                 this.getBoton('btnObs').setVisible(false);
-                this.load({params:{start:0, limit:this.tam_pag}});
             }
+            this.load({params:{start:0, limit:this.tam_pag}});
             
         }
     },
@@ -62,12 +76,12 @@ header("content-type: text/javascript; charset=UTF-8");
         }
     },
 
-    disableTabRespuesta:function(){
-        if(this.TabPanelSouth.get(0)){            
+    /*disableTabRespuesta:function(){
+        if(this.TabPanelSouth.get(0)){
             this.TabPanelSouth.get(0).disable();
             //this.TabPanelSouth.setActiveTab(0)
         }
-    },
+    },*/
     preparaMenu:function(n){
         var data = this.getSelectedData();
         var tb =this.tbar;
@@ -76,7 +90,7 @@ header("content-type: text/javascript; charset=UTF-8");
         if(data['estado'] ==  'borrador'){        	
             this.getBoton('sig_estado').setVisible(true);                                    
             this.getBoton('sig_estado').enable();
-            this.disableTabRespuesta();
+            //this.disableTabRespuesta();
 
         }/*else if(data['estado'] ==  'pendiente_revision'){        	
             this.getBoton('sig_estado').setVisible(false);                        

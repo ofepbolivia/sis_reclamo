@@ -210,7 +210,7 @@ BEGIN
             	select g.id_gestion
                	into v_gestion
                	from param.tgestion g
-               	where g.gestion = EXTRACT(YEAR FROM current_date);
+               	where g.gestion = v_fecha_aux;
             end if;
            /*else
            	 raise exception 'Estimado usuario no puede hacer registros de gestiones pasadas, comuniquese con los responsables SAC.';

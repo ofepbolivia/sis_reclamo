@@ -100,6 +100,21 @@ header("content-type: text/javascript; charset=UTF-8");
 
         this.cmbGestion.on('select',this.capturarEventos, this);
         this.getBoton('ant_estado').setVisible(false);
+
+        this.plazo = new Ext.form.Label({
+            name: 'fecha_limite_reg',
+            grupo: [0,1,2,3,4],
+            fieldLabel: 'Fecha',
+            allowBlank: false,
+            anchor: '60%',
+            gwidth: 100,
+            format: 'd/m/Y',
+            hidden : false,
+            readOnly:true,
+            style: 'font-size: 25pt; font-weight: bold; background-image: none; color: #ff4040;'
+        });
+
+        this.tbar.addField(this.plazo);
     },
 
     winFRD: function (){
@@ -166,7 +181,9 @@ header("content-type: text/javascript; charset=UTF-8");
     ],
     tam_pag:50,
     actualizarSegunTab: function(name, indice){
+
         if(this.finCons){
+            this.plazo.setText('');
             if(name == 'borrador'){
                 this.getBoton('ant_estado').setVisible(false);
                 this.store.baseParams.pes_estado = name;
