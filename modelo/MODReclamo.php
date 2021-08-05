@@ -21,7 +21,7 @@ class MODReclamo extends MODbase
 		$this->procedimiento = 'rec.ft_reclamo_sel';
 		$this->transaccion = 'REC_REC_SEL';
 		$this->tipo_procedimiento = 'SEL';//tipo de transaccion
-        
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_reclamo', 'int4');
 		$this->captura('id_tipo_incidente', 'int4');
@@ -197,8 +197,9 @@ class MODReclamo extends MODbase
 		$this->captura('ciudad_residencia', 'varchar');//
 		$this->captura('nro_guia_aerea', 'varchar');//
 		$this->captura('nombre_cargo', 'varchar');
-		//$this->captura('cargo', 'varchar');
-
+		$this->captura('wflo', 'text');		
+		// $this->captura('ult_fecha', 'timestamp');
+		// $this->captura('ult_estado', 'varchar');
 
 		$this->setParametro('id_usuario', 'id_usuario', 'int4');
 
@@ -659,7 +660,7 @@ class MODReclamo extends MODbase
         //Devuelve la respuesta
         return $this->respuesta;
     }
-	
+
 	function getFRD(){
 		$this->procedimiento = 'rec.ft_reclamo_ime';
 		$this->transaccion = 'REC_FRD_GET';
@@ -670,7 +671,7 @@ class MODReclamo extends MODbase
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 		//Devuelve la respuesta
-		return $this->respuesta;	
+		return $this->respuesta;
 	}
 
     function generarReporteGrafico(){
@@ -925,7 +926,7 @@ class MODReclamo extends MODbase
 		$this->procedimiento = 'rec.f_verificar_alerta_falla';
 		$this->transaccion = 'FAILED_MAILS';
 		$this->tipo_procedimiento = 'IME';//tipo de transaccion
-	
+
 		$this->setParametro('id_usuario','id_usuario','int4');
 		//Ejecuta la instruccion
 		$this->armarConsulta();

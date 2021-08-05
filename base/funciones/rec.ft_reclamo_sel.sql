@@ -359,8 +359,20 @@ BEGIN
                             c.email,
                             c.ciudad_residencia,
                             rec.nro_guia_aerea,
-                            fun.nombre_cargo
-
+                            fun.nombre_cargo,
+                            (
+                          	SELECT  ROW_TO_JSON(wfl) as wflo
+                              	FROM (
+                                         select
+                                          ewf.fecha_reg, te.nombre_estado
+                                         from wf.tproceso_wf pwf
+                                         inner join wf.testado_wf ewf on ewf.id_proceso_wf = pwf.id_proceso_wf
+                                         inner join wf.ttipo_estado te on te.id_tipo_estado = ewf.id_tipo_estado
+                                         where  pwf.nro_tramite = rec.nro_tramite
+                                         order by  pwf.fecha_ini desc, ewf.fecha_reg desc
+                                         limit 1
+                                ) wfl
+                            )::text
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
