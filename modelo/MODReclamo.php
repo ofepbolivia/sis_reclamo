@@ -197,9 +197,8 @@ class MODReclamo extends MODbase
 		$this->captura('ciudad_residencia', 'varchar');//
 		$this->captura('nro_guia_aerea', 'varchar');//
 		$this->captura('nombre_cargo', 'varchar');
-		$this->captura('wflo', 'text');		
-		// $this->captura('ult_fecha', 'timestamp');
-		// $this->captura('ult_estado', 'varchar');
+		$this->captura('ult_fecha', 'timestamp');
+		$this->captura('ult_estado', 'varchar');
 
 		$this->setParametro('id_usuario', 'id_usuario', 'int4');
 

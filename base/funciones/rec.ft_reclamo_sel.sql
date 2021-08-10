@@ -360,19 +360,8 @@ BEGIN
                             c.ciudad_residencia,
                             rec.nro_guia_aerea,
                             fun.nombre_cargo,
-                            (
-                          	SELECT  ROW_TO_JSON(wfl) as wflo
-                              	FROM (
-                                         select
-                                          ewf.fecha_reg, te.nombre_estado
-                                         from wf.tproceso_wf pwf
-                                         inner join wf.testado_wf ewf on ewf.id_proceso_wf = pwf.id_proceso_wf
-                                         inner join wf.ttipo_estado te on te.id_tipo_estado = ewf.id_tipo_estado
-                                         where  pwf.nro_tramite = rec.nro_tramite
-                                         order by  pwf.fecha_ini desc, ewf.fecha_reg desc
-                                         limit 1
-                                ) wfl
-                            )::text
+                            tw.fecha_reg as ult_fecha,
+                            tp.nombre_estado as ult_estado
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
@@ -387,6 +376,11 @@ BEGIN
                         left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+
+                        --{dev:bvasquez, date: 10/08/2021, desc:recuperar datos del fluoj}
+                        left join wf.tproceso_wf pw on pw.nro_tramite = rec.nro_tramite and pw.id_estado_wf_prev is not null
+                        left join wf.testado_wf tw on tw.id_proceso_wf = pw.id_proceso_wf and tw.estado_reg = ''activo''
+                        left join wf.ttipo_estado tp on tp.id_tipo_estado = tw.id_tipo_estado
 
                         LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
@@ -427,6 +421,11 @@ BEGIN
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
 
+                        --{dev:bvasquez, date: 10/08/2021, desc:recuperar datos del fluoj}
+                        left join wf.tproceso_wf pw on pw.nro_tramite = rec.nro_tramite and pw.id_estado_wf_prev is not null
+                        left join wf.testado_wf tw on tw.id_proceso_wf = pw.id_proceso_wf and tw.estado_reg = ''activo''
+                        left join wf.ttipo_estado tp on tp.id_tipo_estado = tw.id_tipo_estado
+                        
                         LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
 					    where rec.estado_reg != ''inactivo'' and ';

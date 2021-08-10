@@ -347,16 +347,14 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config: {
-                    name: 'wfl',
+                    name: 'ult_fecha',
                     fieldLabel: 'Fecha Ultimo Estado',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 120,
                     format: 'd/m/Y H:i',
                     renderer: function (value, p, record) {
-                      var j = JSON.parse(record.json.wflo)
-                      var d = new Date(j.fecha_reg)
-                        return d ? d.dateFormat('d/m/Y H:i A') : ''
+                        return value ? value.dateFormat('d/m/Y H:i A') : ''
                     }
                 },
                 type: 'DateField',
@@ -366,15 +364,11 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config: {
-                    name: 'wfl',
+                    name: 'ult_estado',
                     fieldLabel: 'Ultimo Estado',
                     allowBlank: true,
                     anchor: '100%',
-                    gwidth: 150,
-                    renderer: function (value, p, record) {
-                      var j = JSON.parse(record.json.wflo)
-                      return String.format('{0}', j.nombre_estado);
-                    }
+                    gwidth: 150
                 },
                 type: 'TextField',
                 id_grupo:1,
@@ -1129,9 +1123,8 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'id_gestion', type: 'int4'},
             {name: 'nombre_completo2', type: 'string'},
             {name: 'desc_nombre_medio', tyep: 'string'},
-            {name: 'wfl', tyep: 'string'},
-            // {name: 'ult_fecha', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
-            // {name: 'ult_estado', tyep: 'string'}
+            {name: 'ult_fecha', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+            {name: 'ult_estado', tyep: 'string'}
         ],
         sortInfo: {
             field: 'fecha_reg',
