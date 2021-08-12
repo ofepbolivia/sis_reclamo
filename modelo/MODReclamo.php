@@ -199,6 +199,7 @@ class MODReclamo extends MODbase
 		$this->captura('nombre_cargo', 'varchar');
 		$this->captura('ult_fecha', 'timestamp');
 		$this->captura('ult_estado', 'varchar');
+		$this->captura('tiempo_resolucion_rec', 'varchar');
 
 		$this->setParametro('id_usuario', 'id_usuario', 'int4');
 

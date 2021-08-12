@@ -327,7 +327,7 @@ BEGIN
 						rec.pnr,
 						rec.nro_vuelo,
 						rec.id_usuario_reg,
-						rec.fecha_reg,
+						to_char(rec.fecha_reg, ''DD/MM/YYYY HH24:MI:SS'')::timestamp as fecha_reg,
 						rec.usuario_ai,
 						rec.id_usuario_ai,
 						rec.fecha_mod,
@@ -360,8 +360,17 @@ BEGIN
                             c.ciudad_residencia,
                             rec.nro_guia_aerea,
                             fun.nombre_cargo,
-                            tw.fecha_reg as ult_fecha,
-                            tp.nombre_estado as ult_estado
+                            to_char(tw.fecha_reg, ''DD/MM/YYYY HH24:MI:SS'')::timestamp as ult_fecha,
+                            tp.nombre_estado as ult_estado,
+                            case when rec.estado = ''respuesta_registrado_ripat'' then
+                            	case when (rec.f_verificar_dias(rec.fecha_reg::date, tw.fecha_reg::date) * 24)<10 then
+	                                (rec.f_verificar_dias(rec.fecha_reg::date, tw.fecha_reg::date) * 24)||'' Hora''::varchar
+                                else
+                                    (rec.f_verificar_dias(rec.fecha_reg::date, tw.fecha_reg::date) * 24)||'' Horas''::varchar
+                                end
+                            else
+                            	''''::varchar
+                            end as  tiempo_resolucion_rec
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
@@ -425,7 +434,7 @@ BEGIN
                         left join wf.tproceso_wf pw on pw.nro_tramite = rec.nro_tramite and pw.id_estado_wf_prev is not null
                         left join wf.testado_wf tw on tw.id_proceso_wf = pw.id_proceso_wf and tw.estado_reg = ''activo''
                         left join wf.ttipo_estado tp on tp.id_tipo_estado = tw.id_tipo_estado
-                        
+
                         LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
 					    where rec.estado_reg != ''inactivo'' and ';

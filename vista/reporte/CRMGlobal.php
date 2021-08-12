@@ -293,8 +293,8 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config: {
-                    name: 'fecha_reg',
-                    fieldLabel: 'Fecha registro',
+                    name: 'fecha_hora_incidente',
+                    fieldLabel: 'Fecha de Incidente',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 120,
@@ -304,7 +304,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     }
                 },
                 type: 'DateField',
-                id_grupo: 1,
+                filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
+                id_grupo: 2,
                 grid: true,
                 form: false
             },
@@ -329,19 +330,18 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config: {
-                    name: 'fecha_hora_incidente',
-                    fieldLabel: 'Fecha de Incidente',
-                    allowBlank: true,
+                    name: 'fecha_reg',
+                    fieldLabel: 'Fecha registro',
+                    allowBlank: false,
                     anchor: '80%',
                     gwidth: 120,
                     format: 'd/m/Y H:i',
-                    renderer: function (value, p, record) {
+                    renderer: function (value, p, record){
                         return value ? value.dateFormat('d/m/Y H:i A') : ''
                     }
                 },
                 type: 'DateField',
-                filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
-                id_grupo: 2,
+                id_grupo: 1,
                 grid: true,
                 form: false
             },
@@ -349,7 +349,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config: {
                     name: 'ult_fecha',
                     fieldLabel: 'Fecha Ultimo Estado',
-                    allowBlank: true,
+                    allowBlank: false,
                     anchor: '80%',
                     gwidth: 120,
                     format: 'd/m/Y H:i',
@@ -357,7 +357,23 @@ header("content-type: text/javascript; charset=UTF-8");
                         return value ? value.dateFormat('d/m/Y H:i A') : ''
                     }
                 },
-                type: 'DateField',
+                type: 'ult_fecha',
+                id_grupo: 1,
+                grid: true,
+                form: false
+            },
+            {
+                config: {
+                    name: 'tiempo_resolucion_rec',
+                    fieldLabel: 'tiempo de resolución (fecha ultimo estado - fecha registro)',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 140,
+                    renderer: function (value, p, record){
+                      return  String.format('{0}',"<div style='text-align:center'>"+record.data['tiempo_resolucion_rec']+"</div>");
+                    }
+                },
+                type: 'TextField',
                 id_grupo: 1,
                 grid: true,
                 form: false
@@ -1113,18 +1129,19 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             {name: 'id_usuario_reg', type: 'numeric'},
-            {name: 'fecha_reg', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
             {name: 'usuario_ai', type: 'string'},
             {name: 'id_usuario_ai', type: 'numeric'},
-            {name: 'fecha_mod', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+            {name: 'fecha_mod', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'id_usuario_mod', type: 'numeric'},
             {name: 'usr_reg', type: 'string'},
             {name: 'usr_mod', type: 'string'},
             {name: 'id_gestion', type: 'int4'},
             {name: 'nombre_completo2', type: 'string'},
             {name: 'desc_nombre_medio', tyep: 'string'},
-            {name: 'ult_fecha', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
-            {name: 'ult_estado', tyep: 'string'}
+            {name: 'fecha_reg', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'ult_fecha', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'ult_estado', type: 'string'},
+            {name: 'tiempo_resolucion_rec', type: 'string'}
         ],
         sortInfo: {
             field: 'fecha_reg',
