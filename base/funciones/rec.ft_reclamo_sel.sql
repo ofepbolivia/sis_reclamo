@@ -360,13 +360,17 @@ BEGIN
                             c.ciudad_residencia,
                             rec.nro_guia_aerea,
                             fun.nombre_cargo,
-                            to_char(tw.fecha_reg, ''DD/MM/YYYY HH24:MI:SS'')::timestamp as ult_fecha,
-                            tp.nombre_estado as ult_estado,
-                            case when rec.estado = ''respuesta_registrado_ripat'' then
-                            	case when (rec.f_verificar_dias(rec.fecha_reg::date, tw.fecha_reg::date) * 24)<10 then
-	                                (rec.f_verificar_dias(rec.fecha_reg::date, tw.fecha_reg::date) * 24)||'' Hora''::varchar
-                                else
-                                    (rec.f_verificar_dias(rec.fecha_reg::date, tw.fecha_reg::date) * 24)||'' Horas''::varchar
+                            to_char(coalesce(tw.fecha_reg, tew.fecha_reg), ''DD/MM/YYYY HH24:MI:SS'')::timestamp as ult_fecha,
+                            coalesce(tp.nombre_estado, tpw.nombre_estado) as ult_estado,
+                            case when rec.estado != ''anulado'' then
+                                case when coalesce(tw.fecha_reg::date, tew.fecha_reg::date) = rec.fecha_reg::date then
+                                      ''''::varchar
+                                 else
+                                      case when (rec.f_verificar_dias(rec.fecha_reg::date, coalesce(tw.fecha_reg::date, tew.fecha_reg::date))*24)<10 then
+                                          (rec.f_verificar_dias(rec.fecha_reg::date, coalesce(tw.fecha_reg::date, tew.fecha_reg::date)) * 24)||'' Hora''::varchar
+                                      else
+                                          (rec.f_verificar_dias(rec.fecha_reg::date, coalesce(tw.fecha_reg::date, tew.fecha_reg::date)) * 24)||'' Horas''::varchar
+                                      end
                                 end
                             else
                             	''''::varchar
@@ -385,6 +389,7 @@ BEGIN
                         left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+                        left join wf.ttipo_estado tpw on tpw.id_tipo_estado = tew.id_tipo_estado
 
                         --{dev:bvasquez, date: 10/08/2021, desc:recuperar datos del fluoj}
                         left join wf.tproceso_wf pw on pw.nro_tramite = rec.nro_tramite and pw.id_estado_wf_prev is not null
@@ -429,6 +434,7 @@ BEGIN
                         left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+                        left join wf.ttipo_estado tpw on tpw.id_tipo_estado = tew.id_tipo_estado
 
                         --{dev:bvasquez, date: 10/08/2021, desc:recuperar datos del fluoj}
                         left join wf.tproceso_wf pw on pw.nro_tramite = rec.nro_tramite and pw.id_estado_wf_prev is not null
