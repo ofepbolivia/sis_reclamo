@@ -1,1 +1,1 @@
-./../../sis_reclamo/
+../../../sis_reclamo/
