@@ -79,9 +79,7 @@ class RRespuestaFinal extends ReportePDF
         $this->writeHTML($this->datos[0]['respuesta'], true, 0, true, true);
         $this->ln();
 
-        $this->Text(100, $this->GetY()+10, 'Atención al Cliente BoA');
-
-
+        $this->Text(100, $this->GetY() + 10, $this->datos[0]['firma']);
     }
 
     function obtenerFechaEnLetra($fecha){

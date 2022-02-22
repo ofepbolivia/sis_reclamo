@@ -174,7 +174,8 @@ BEGIN
 						res.id_respuesta,
 						res.id_reclamo,
 						res.recomendaciones,
-                        (''OB.GC.NE.''||lpad(res.nro_cite::text, 4, ''0'')||''.''||date_part(''year'',current_date ))::text as num_cite,
+                        case when res.fecha_respuesta > ''2021-12-31''::date then  (''OB.CX.NE.''||lpad(res.nro_cite::text, 4, ''0'')||''.''||date_part(''year'',current_date ))::text
+                        else (''OB.GC.NE.''||lpad(res.nro_cite::text, 4, ''0'')||''.''||date_part(''year'',current_date ))::text end as num_cite,
 						--res.nro_cite,
 						res.respuesta,
                         pxp.f_fecha_literal(res.fecha_respuesta) as fecha_respuesta,
@@ -195,7 +196,8 @@ BEGIN
                         	 WHEN res.procedente::text =ANY(ARRAY[''no''::CHARACTER VARYING,''NO''::character varying, ''no''::character varying]::text[]) THEN ''improcedente''::text
                         ELSE ''ninguno''::text
                         END::character varying as prodedente,
-                        tip.nombre_estado
+                        tip.nombre_estado,
+                        case when res.fecha_respuesta < ''2021-12-31''::date then ''Atención al Cliente BoA''::varchar else ''Satisfacción al Consumidor''::varchar end firma
                         from rec.trespuesta res
 						inner join segu.tusuario usu1 on usu1.id_usuario = res.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = res.id_usuario_mod
@@ -355,7 +357,7 @@ v_consulta:='select
             v_consulta = 'SELECT
             				  tres.id_proceso_wf,
                               tres.id_respuesta,
-                              ''OB.GC.NE.''||tres.nro_cite||''.''||tg.gestion::text as num_cite,
+                              case when tres.fecha_respuesta > ''2021-12-31''::date then ''OB.CX.NE.''||tres.nro_cite||''.''||tg.gestion::text else ''OB.GC.NE.''||tres.nro_cite||''.''||tg.gestion::text end as num_cite,
                               trec.nro_frd,
                               tof.nombre as oficina,
                               tres.estado,
@@ -430,3 +432,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION rec.ft_respuesta_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

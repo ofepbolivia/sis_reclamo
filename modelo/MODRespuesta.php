@@ -224,6 +224,7 @@ class MODRespuesta extends MODbase{
         // $this->captura('gestion','int4');
         $this->captura('prodedente','varchar');
         $this->captura('nombre_estado','varchar');
+        $this->captura('firma','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
