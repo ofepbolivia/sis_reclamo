@@ -30,10 +30,49 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler: this.repEstadistico,
                 tooltip: '<b>Imprimir Reporte</b><br>Genera reporte estadístico del Filtro aplicado.'
             });
+            this.addButton('btnChequeoDocumentosWf',{
+        				text: 'Documentos',
+        				iconCls: 'bchecklist',
+        				disabled: true,
+        				handler: this.loadCheckDocumentosRecWf,
+        				tooltip: '<b>Documentos del Reclamo</b><br/>Subir los documetos requeridos en el Reclamo seleccionado.'
+        		});
+            this.addButton('diagrama_gantt',{
+        				text:'Gant',
+        				iconCls: 'bgantt',
+        				disabled:true,
+        				handler:diagramGantt,
+        				tooltip: '<b>Diagrama Gantt de proceso macro</b>'
+        		});
 
+        		function diagramGantt(){
+        			var data=this.sm.getSelected().data.id_proceso_wf;
+        			Phx.CP.loadingShow();
+        			Ext.Ajax.request({
+        				url:'../../sis_workflow/control/ProcesoWf/diagramaGanttTramite',
+        				params:{'id_proceso_wf':data},
+        				success:this.successExport,
+        				failure: this.conexionFailure,
+        				timeout:this.timeout,
+        				scope:this
+        			});
+        		}
             this.init();
         },
-
+        loadCheckDocumentosRecWf:function() {
+      		var rec=this.sm.getSelected();
+      		rec.data.nombreVista = this.nombreVista;
+      		Phx.CP.loadWindows('../../../sis_workflow/vista/documento_wf/DocumentoWf.php',
+      			'Chequear documento del WF',
+      			{
+      				width:'90%',
+      				height:500
+      			},
+      			rec.data,
+      			this.idContenedor,
+      			'DocumentoWf'
+      		)
+      	},
         repEstadistico : function () {
             //console.log(Phx.CP.getPagina(this.idContenedorPadre).generarEstadisticas());
 
@@ -254,6 +293,24 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config: {
+                    name: 'fecha_hora_incidente',
+                    fieldLabel: 'Fecha de Incidente',
+                    allowBlank: true,
+                    anchor: '80%',
+                    gwidth: 120,
+                    format: 'd/m/Y H:i',
+                    renderer: function (value, p, record) {
+                        return value ? value.dateFormat('d/m/Y H:i A') : ''
+                    }
+                },
+                type: 'DateField',
+                filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
+                id_grupo: 2,
+                grid: true,
+                form: false
+            },
+            {
+                config: {
                     name: 'fecha_hora_recepcion',
                     fieldLabel: 'Fecha de Recepción',
                     allowBlank: false,
@@ -273,9 +330,26 @@ header("content-type: text/javascript; charset=UTF-8");
             },
             {
                 config: {
-                    name: 'fecha_hora_incidente',
-                    fieldLabel: 'Fecha de Incidente',
-                    allowBlank: true,
+                    name: 'fecha_reg',
+                    fieldLabel: 'Fecha registro',
+                    allowBlank: false,
+                    anchor: '80%',
+                    gwidth: 120,
+                    format: 'd/m/Y H:i',
+                    renderer: function (value, p, record){
+                        return value ? value.dateFormat('d/m/Y H:i A') : ''
+                    }
+                },
+                type: 'DateField',
+                id_grupo: 1,
+                grid: true,
+                form: false
+            },
+            {
+                config: {
+                    name: 'ult_fecha',
+                    fieldLabel: 'Fecha Ultimo Estado',
+                    allowBlank: false,
                     anchor: '80%',
                     gwidth: 120,
                     format: 'd/m/Y H:i',
@@ -283,9 +357,37 @@ header("content-type: text/javascript; charset=UTF-8");
                         return value ? value.dateFormat('d/m/Y H:i A') : ''
                     }
                 },
-                type: 'DateField',
-                filters: {pfiltro: 'rec.fecha_hora_incidente', type: 'date'},
-                id_grupo: 2,
+                type: 'ult_fecha',
+                id_grupo: 1,
+                grid: true,
+                form: false
+            },
+            {
+                config: {
+                    name: 'tiempo_resolucion_rec',
+                    fieldLabel: 'tiempo de resolución (fecha ultimo estado - fecha registro)',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 140,
+                    renderer: function (value, p, record){
+                      return  String.format('{0}',"<div style='text-align:center'>"+record.data['tiempo_resolucion_rec']+"</div>");
+                    }
+                },
+                type: 'TextField',
+                id_grupo: 1,
+                grid: true,
+                form: false
+            },
+            {
+                config: {
+                    name: 'ult_estado',
+                    fieldLabel: 'Ultimo Estado',
+                    allowBlank: true,
+                    anchor: '100%',
+                    gwidth: 150
+                },
+                type: 'TextField',
+                id_grupo:1,
                 grid: true,
                 form: false
             },
@@ -335,7 +437,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			filters: {pfiltro: 'med.nombre_medio', type: 'string'},
 			grid: true,
 			form: true
-		},            
+		},
             {
                 config: {
                     name: 'id_oficina_registro_incidente',
@@ -1027,16 +1129,19 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             {name: 'id_usuario_reg', type: 'numeric'},
-            {name: 'fecha_reg', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
             {name: 'usuario_ai', type: 'string'},
             {name: 'id_usuario_ai', type: 'numeric'},
-            {name: 'fecha_mod', type: 'date', dateFormat: 'Y-m-d H:i:s.u'},
+            {name: 'fecha_mod', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'id_usuario_mod', type: 'numeric'},
             {name: 'usr_reg', type: 'string'},
             {name: 'usr_mod', type: 'string'},
             {name: 'id_gestion', type: 'int4'},
             {name: 'nombre_completo2', type: 'string'},
-            {name: 'desc_nombre_medio', tyep: 'string'}
+            {name: 'desc_nombre_medio', tyep: 'string'},
+            {name: 'fecha_reg', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'ult_fecha', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'ult_estado', type: 'string'},
+            {name: 'tiempo_resolucion_rec', type: 'string'}
         ],
         sortInfo: {
             field: 'fecha_reg',
@@ -1065,4 +1170,3 @@ header("content-type: text/javascript; charset=UTF-8");
         }
     });
 </script>
-

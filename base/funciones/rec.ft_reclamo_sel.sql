@@ -327,7 +327,7 @@ BEGIN
 						rec.pnr,
 						rec.nro_vuelo,
 						rec.id_usuario_reg,
-						rec.fecha_reg,
+						to_char(rec.fecha_reg, ''DD/MM/YYYY HH24:MI:SS'')::timestamp as fecha_reg,
 						rec.usuario_ai,
 						rec.id_usuario_ai,
 						rec.fecha_mod,
@@ -359,8 +359,22 @@ BEGIN
                             c.email,
                             c.ciudad_residencia,
                             rec.nro_guia_aerea,
-                            fun.nombre_cargo
-
+                            fun.nombre_cargo,
+                            to_char(coalesce(tw.fecha_reg, tew.fecha_reg), ''DD/MM/YYYY HH24:MI:SS'')::timestamp as ult_fecha,
+                            coalesce(tp.nombre_estado, tpw.nombre_estado) as ult_estado,
+                            case when rec.estado != ''anulado'' then
+                                case when coalesce(tw.fecha_reg::date, tew.fecha_reg::date) = rec.fecha_reg::date then
+                                      ''''::varchar
+                                 else
+                                      case when (rec.f_verificar_dias(rec.fecha_reg::date, coalesce(tw.fecha_reg::date, tew.fecha_reg::date))*24)<10 then
+                                          (rec.f_verificar_dias(rec.fecha_reg::date, coalesce(tw.fecha_reg::date, tew.fecha_reg::date)) * 24)||'' Hora''::varchar
+                                      else
+                                          (rec.f_verificar_dias(rec.fecha_reg::date, coalesce(tw.fecha_reg::date, tew.fecha_reg::date)) * 24)||'' Horas''::varchar
+                                      end
+                                end
+                            else
+                            	''''::varchar
+                            end as  tiempo_resolucion_rec
 						from rec.treclamo rec
 						inner join segu.tusuario usu1 on usu1.id_usuario = rec.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = rec.id_usuario_mod
@@ -375,6 +389,12 @@ BEGIN
                         left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+                        left join wf.ttipo_estado tpw on tpw.id_tipo_estado = tew.id_tipo_estado
+
+                        --{dev:bvasquez, date: 10/08/2021, desc:recuperar datos del fluoj}
+                        left join wf.tproceso_wf pw on pw.nro_tramite = rec.nro_tramite and pw.id_estado_wf_prev is not null
+                        left join wf.testado_wf tw on tw.id_proceso_wf = pw.id_proceso_wf and tw.estado_reg = ''activo''
+                        left join wf.ttipo_estado tp on tp.id_tipo_estado = tw.id_tipo_estado
 
                         LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
@@ -414,6 +434,12 @@ BEGIN
                         left join param.tgestion gest on gest.id_gestion = rec.id_gestion
                         left join rec.tmotivo_anulado ma on ma.id_motivo_anulado = rec.id_motivo_anulado
                         left join wf.testado_wf tew on tew.id_estado_wf = rec.id_estado_wf
+                        left join wf.ttipo_estado tpw on tpw.id_tipo_estado = tew.id_tipo_estado
+
+                        --{dev:bvasquez, date: 10/08/2021, desc:recuperar datos del fluoj}
+                        left join wf.tproceso_wf pw on pw.nro_tramite = rec.nro_tramite and pw.id_estado_wf_prev is not null
+                        left join wf.testado_wf tw on tw.id_proceso_wf = pw.id_proceso_wf and tw.estado_reg = ''activo''
+                        left join wf.ttipo_estado tp on tp.id_tipo_estado = tw.id_tipo_estado
 
                         LEFT JOIN rec.trespuesta res ON res.id_reclamo = rec.id_reclamo
 						LEFT JOIN rec.tinforme infor ON infor.id_reclamo =  rec.id_reclamo
@@ -1159,3 +1185,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION rec.ft_reclamo_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

@@ -141,7 +141,7 @@ BEGIN
                     INTO v_num_cite
                     FROM rec.trespuesta tr
                     inner join rec.treclamo trec on trec.id_reclamo = tr.id_reclamo
-                    WHERE tr.nro_cite = (p_hstore_respuesta->'nro_cite')::varchar and trec.id_gestion = v_reclamo.id_gestion;
+                    WHERE tr.nro_cite = (p_hstore_respuesta->'nro_cite')::varchar and trec.id_gestion = v_reclamo.id_gestion and (tr.fecha_respuesta between ('01/01/'||date_part('year',tr.fecha_respuesta))::date and ('31/12/'||date_part('year',tr.fecha_respuesta))::date);
 
                     IF v_num_cite = (p_hstore_respuesta->'nro_cite')THEN
                     	v_num_cite = (v_num_cite::integer + 1)::varchar;
@@ -243,3 +243,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION rec.f_inserta_respuesta (p_administrador integer, p_id_usuario integer, p_hstore_respuesta public.hstore)
+  OWNER TO postgres;

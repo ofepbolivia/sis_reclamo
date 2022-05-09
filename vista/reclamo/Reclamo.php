@@ -107,7 +107,9 @@ header("content-type: text/javascript; charset=UTF-8");
 	},
 
     getPlazoSelect : function(grid, rowIndex, rec) {
-        this.plazo.setText('PLAZO: '+rec.data.fecha_limite_respuesta.toLocaleDateString());
+        let limite = rec.data.fecha_limite_respuesta;//rec.data.fecha_limite_respuesta.toLocaleDateString()
+        limite = limite.getDate() + '/' + (limite.getMonth()+1) + '/' + limite.getFullYear();
+        this.plazo.setText('PLAZO: '+ limite) ;
     },
 
     getPlazoDeselect : function(grid, rowIndex, rec) {
